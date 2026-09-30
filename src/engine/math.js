@@ -12,3 +12,14 @@ function eig2(a, b, c, d) {
   }
   return { real: true, list: out };
 }
+
+/* Number as text with a true minus sign and at most 2 decimals (trailing zeros dropped). */
+const num = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
+/* "y = 1.5x + 2" for slope m and intercept b */
+function linEq(m, b) {
+  const z = v => Math.abs(v) < .005;
+  if (z(m)) return 'y = ' + (z(b) ? '0' : num(b));
+  let s = 'y = ' + (m < 0 ? '−' : '') + (Math.abs(Math.abs(m) - 1) < .005 ? '' : num(Math.abs(m))) + 'x';
+  if (!z(b)) s += (b < 0 ? ' − ' : ' + ') + num(Math.abs(b));
+  return s;
+}

@@ -283,6 +283,11 @@ a.link:hover { border-color: var(--brass); }
 .link .lvl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lvl); align-self: center; flex: none; }
 .link-l { margin-left: auto; font-family: var(--sans); font-size: .78rem; color: var(--faint); letter-spacing: 0; }
 .link.soon { color: var(--muted); border-style: dashed; }
+
+/* stage split into stacked panes (lessons with two canvases) */
+.stage.split { display: flex; flex-direction: column; }
+.stage .pane { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; }
+.stage .pane + .pane { border-top: 1px solid var(--line); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
@@ -320,6 +325,7 @@ function h(tag, attrs = {}, ...kids) {
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const snap = (v, step) => Math.round(v / step) * step;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt = (v, n = 2) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(n);
 
@@ -483,6 +489,15 @@ class Plane {
     c.fillStyle = color || this.pal.text; c.fillText(text, px, py);
     c.globalAlpha = 1;
   }
+  /* integer tick numbers along both axes (skips 0); thins out on small screens */
+  ticks(step = 1, { size = 15 } = {}) {
+    while (this.scale * step < 26) step *= 2;
+    const b = this.bounds(), col = this.pal.muted, txt = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
+    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step)
+      if (Math.abs(x) > 1e-9) this.label(txt(x), x, 0, { size, italic: false, color: col, dy: 15, halo: true });
+    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step)
+      if (Math.abs(y) > 1e-9) this.label(txt(y), 0, y, { size, italic: false, color: col, dx: -11, align: 'right', halo: true });
+  }
   grid(step = 1, { color, axes = true } = {}) {
     const b = this.bounds(), c = this.ctx;
     c.lineWidth = 1; c.strokeStyle = color || this.pal.grid; c.beginPath();
@@ -495,6 +510,9 @@ class Plane {
     }
   }
 }
+
+/* True when pixel (px, py) is within r pixels of the math point (x, y). */
+const near = (plane, x, y, px, py, r = 17) => Math.hypot(plane.X(x) - px, plane.Y(y) - py) < r;
 
 /* Pointer dragging on a Plane. hit(px,py) returns a handle or null. */
 function draggable(plane, { hit, move, hover }) {
@@ -564,6 +582,17 @@ function eig2(a, b, c, d) {
     const n = Math.hypot(v[0], v[1]); out.push({ l, v: [v[0] / n, v[1] / n] });
   }
   return { real: true, list: out };
+}
+
+/* Number as text with a true minus sign and at most 2 decimals (trailing zeros dropped). */
+const num = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
+/* "y = 1.5x + 2" for slope m and intercept b */
+function linEq(m, b) {
+  const z = v => Math.abs(v) < .005;
+  if (z(m)) return 'y = ' + (z(b) ? '0' : num(b));
+  let s = 'y = ' + (m < 0 ? '−' : '') + (Math.abs(Math.abs(m) - 1) < .005 ? '' : num(Math.abs(m))) + 'x';
+  if (!z(b)) s += (b < 0 ? ' − ' : ' + ') + num(Math.abs(b));
+  return s;
 }
 
 /* =====================================================================
@@ -670,6 +699,392 @@ function Connections(links, selfId) {
   }
   return cols.length ? h('section', { class: 'links', 'aria-label': 'Connections' }, h('h2', {}, 'Connections'), h('div', { class: 'link-cols' }, cols)) : null;
 }
+
+/* =====================================================================
+   SCHOOL — Slope and linear functions
+   ===================================================================== */
+register({
+  id: 'slope-and-linear-functions', level: 'school',
+  title: 'Slope and linear functions',
+  blurb: 'Tilt a line, slide a triangle along it, and see why rise over run never changes.',
+  thumb(c, p) {
+    const pal = p.pal; p.cx = 0; p.cy = 0; p.span = 3.4;
+    p.grid(1);
+    p.path([[-4, -2.5], [4, 3.5]], { stroke: pal.blue, width: 2.5 });
+    p.path([[-2, -1], [1, -1], [1, 1.25]], { fill: alpha(pal.yellow, .22), close: true });
+    p.path([[-2, -1], [1, -1]], { stroke: pal.green, width: 2.5 });
+    p.path([[1, -1], [1, 1.25]], { stroke: pal.red, width: 2.5 });
+  },
+  hook: String.raw`Take one step to the right along a straight line. Why does the height always change by the same amount, wherever you start?`,
+  steps: [
+    { title: 'Rise over run',
+      text: String.raw`<p>The <b>green</b> leg is the <b>run</b>: how far right we move. The <b>red</b> leg is the <b>rise</b>: how far up the line goes over that run.</p><p>The slope is rise ÷ run. Here it is \(3 \div 2 = 1.5\).</p>`,
+      set: { m: 1.5, b: 1, x0: -3, run: 2 } },
+    { title: 'Slide the triangle',
+      text: String.raw`<p>Drag the triangle's left corner along the line. The triangle moves, but its shape does not change.</p><p>Rise ÷ run is the same everywhere. That is exactly what "straight" means.</p>`,
+      set: { m: 1.5, b: 1, x0: 1, run: 2 } },
+    { title: 'Tilt the line',
+      text: String.raw`<p>Drag the triangle's upper corner up or down, or use <b>Slope</b>.</p><p>Positive slope climbs to the right. Negative slope falls. Slope \(0\) is perfectly flat. Here the slope is \(-1.5\).</p>`,
+      set: { m: -1.5, b: 1, x0: 1, run: 2 } },
+    { title: 'Move the intercept',
+      text: String.raw`<p>The yellow point is where the line crosses the y-axis: the height when \(x=0\). Call it \(b\).</p><p>Drag it, or use <b>Intercept</b>. The whole line slides up or down and its slope stays put.</p>`,
+      set: { m: .5, b: -2, x0: -2, run: 4 } }
+  ],
+  formal: String.raw`
+    <p><b>Definition.</b> A <em>linear function</em> has the form
+    \[ y = mx + b, \]
+    where \(m\) is the <em>slope</em> and \(b\) is the <em>y-intercept</em>: the value at \(x=0\).</p>
+    <h3>Slope from two points</h3>
+    <p>For two points \((x_1,y_1)\) and \((x_2,y_2)\) on a non-vertical line,
+    \[ m = \frac{y_2-y_1}{x_2-x_1} = \frac{\text{rise}}{\text{run}}. \]</p>
+    <h3>Why the ratio never changes</h3>
+    <p>Start anywhere at \(x\) and step right by \(h\). The height changes by
+    \[ \big(m(x+h)+b\big) - \big(mx+b\big) = mh, \]
+    which does not depend on \(x\). So rise \(\div\) run \(= mh/h = m\) for every triangle you can draw on the line.</p>
+    <h3>Finding the equation</h3>
+    <p>Through \((1,2)\) and \((3,8)\): the slope is \(\frac{8-2}{3-1}=3\). Put the point \((1,2)\) into \(y=3x+b\) to get \(2=3+b\), so \(b=-1\) and \(y=3x-1\).</p>
+    <h3>Slope as a rate</h3>
+    <p>In real problems \(m\) is a rate of change: units of \(y\) per one unit of \(x\), such as dollars per hour or meters per second. The intercept \(b\) is the starting amount.</p>`,
+  check: [
+    { q: String.raw`A line passes through \((1,2)\) and \((3,8)\). What is its slope?`,
+      choices: ['1/3', '2', '3', '6'], answer: 2,
+      why: String.raw`Rise \(=8-2=6\) and run \(=3-1=2\), so the slope is \(6/2=3\).`,
+      hint: String.raw`Slope is rise divided by run, not the other way around.` },
+    { q: String.raw`Which statement is true about \(y=-2x+5\)?`,
+      choices: ['It falls to the right and crosses the y-axis at 5', 'It rises to the right and crosses the y-axis at 5',
+                'It falls to the right and crosses the y-axis at −2', 'It rises to the right and crosses the y-axis at −2'], answer: 0,
+      why: String.raw`The slope \(m=-2\) is negative, so the line falls. The intercept \(b=5\) is the height at \(x=0\).`,
+      hint: String.raw`Compare with \(y=mx+b\): which number is \(m\), and which is \(b\)?` }
+  ],
+  links: { next: ['systems-of-equations', 'functions-as-transformations'], related: ['derivatives-as-tangent-slopes', 'pythagorean-theorem'] },
+
+  mount({ stage, controls: C }) {
+    const st = { m: 1.5, b: 1, x0: -3, run: 2 };
+    let cancel = () => {}, showRR = true;
+    const P = new Plane(stage, { span: 6 });
+    const yAt = x => st.m * x + st.b;
+
+    P.onDraw = (c, p) => {
+      const pal = p.pal, bd = p.bounds(), { x0, run } = st, x1 = x0 + run, y0 = yAt(x0), y1 = yAt(x1);
+      p.grid(1); p.ticks(1);
+      p.path([[bd.x0, yAt(bd.x0)], [bd.x1, yAt(bd.x1)]], { stroke: pal.blue, width: 3.5 });
+      if (showRR) {
+        const off = 18 / p.scale;
+        p.path([[x0, y0], [x1, y0], [x1, y1]], { fill: alpha(pal.yellow, .2), close: true });
+        p.path([[x0, y0], [x1, y0]], { stroke: pal.green, width: 4 });
+        p.path([[x1, y0], [x1, y1]], { stroke: pal.red, width: 4 });
+        p.label('run = ' + num(run), (x0 + x1) / 2, y0 + (y1 >= y0 ? -off : off), { size: 19, italic: false, color: pal.green });
+        p.label('rise = ' + num(y1 - y0), x1 + off * .7, (y0 + y1) / 2, { size: 19, italic: false, color: pal.red, align: 'left' });
+      }
+      p.dot(0, st.b, 8, pal.yellow, pal.brass, 3);
+      p.label('b = ' + num(st.b), 0, st.b, { size: 19, italic: false, align: 'left', dx: 14, dy: -16 });
+      if (showRR) { p.dot(x0, y0, 8, pal.stage, pal.brass, 3); p.dot(x1, y1, 8, pal.stage, pal.brass, 3); }
+    };
+
+    const upd = () => {
+      const { m, b, x0, run } = st, rise = yAt(x0 + run) - yAt(x0);
+      ro.innerHTML = `<span class="k">Line</span> ${linEq(m, b)}<br>
+        <span class="k">Slope</span> rise ÷ run = ${num(rise)} ÷ ${num(run)} = ${num(rise / run)}<br>
+        <span class="k">Intercept</span> b = ${num(b)}`;
+    };
+    const sync = () => { mS.set(st.m); bS.set(st.b); rS.set(st.run); P.draw(); upd(); };
+    const edit = fn => v => { cancel(); fn(v); sync(); };
+
+    C.title('Line');
+    const mS = C.slider({ label: 'Slope m', min: -4, max: 4, step: .25, value: st.m, onInput: edit(v => { st.m = v; }) });
+    const bS = C.slider({ label: 'Intercept b', min: -6, max: 6, step: .25, value: st.b, onInput: edit(v => { st.b = v; }) });
+    C.title('Triangle');
+    const rS = C.slider({ label: 'Run', min: 1, max: 4, step: 1, value: st.run, format: v => String(v),
+      onInput: edit(v => { st.run = v; st.x0 = clamp(st.x0, -5, 5 - v); }) });
+    C.toggle({ label: 'Show rise and run', value: true, onChange: v => { showRR = v; P.draw(); } });
+    const ro = C.readout(); upd();
+    C.hint('Drag the yellow point, the triangle corners, or use the sliders.');
+
+    draggable(P, {
+      hit: (px, py) => showRR && near(P, st.x0 + st.run, yAt(st.x0 + st.run), px, py) ? 'tip'
+        : showRR && near(P, st.x0, yAt(st.x0), px, py) ? 'start'
+        : near(P, 0, st.b, px, py) ? 'int' : null,
+      move: (hd, x, y) => {
+        cancel();
+        if (hd === 'int') st.b = clamp(snap(y, .25), -6, 6);
+        else if (hd === 'start') st.x0 = clamp(snap(x, 1), -5, 5 - st.run);
+        else {  /* tilt the line about the triangle's left corner */
+          const y0 = yAt(st.x0), m = clamp(snap((y - y0) / st.run, .25), -4, 4), b = y0 - m * st.x0;
+          if (Math.abs(b) <= 6) { st.m = m; st.b = b; }
+        }
+        sync();
+      }
+    });
+
+    const apply = (patch, immediate) => {
+      cancel();
+      if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
+
+/* =====================================================================
+   SCHOOL — Systems of equations
+   ===================================================================== */
+register({
+  id: 'systems-of-equations', level: 'school',
+  title: 'Systems of equations',
+  blurb: 'Two lines, one crossing point: move them and see when they meet once, never, or always.',
+  thumb(c, p) {
+    const pal = p.pal; p.cx = 3; p.cy = 5; p.span = 5.4;
+    p.grid(1);
+    p.path([[-3, -1], [9, 11]], { stroke: pal.blue, width: 2.5 });
+    p.path([[-3, 3.5], [9, 9.5]], { stroke: pal.red, width: 2.5 });
+    p.dot(6, 8, 6, pal.violet, pal.stage, 2);
+  },
+  hook: String.raw`Plan A costs $2 to join plus $1 a day. Plan B costs $5 to join plus $0.50 a day. When do they cost the same?`,
+  steps: [
+    { title: 'Two plans, two lines',
+      text: String.raw`<p>The <b>blue</b> line is plan A: \(y=x+2\). The <b>red</b> line is plan B: \(y=0.5x+5\). Here \(x\) is days and \(y\) is the total cost.</p><p>Each point on a line is a day and a cost that the plan allows.</p>`,
+      set: { m1: 1, b1: 2, m2: .5, b2: 5 } },
+    { title: 'Where they meet',
+      text: String.raw`<p>The violet dot is the one point on both lines: day \(6\), cost $8. Both equations are true there at once.</p><p>That point is the <b>solution</b> of the system. Drag a line's handles and watch the solution move.</p>`,
+      set: { m1: 1, b1: 2, m2: .5, b2: 5 } },
+    { title: 'Parallel: no solution',
+      text: String.raw`<p>Give plan A the same slope as plan B, \(0.5\). The lines now run side by side and never meet.</p><p>Same rate, different starting amount: the plans never cost the same.</p>`,
+      set: { m1: .5, b1: 2, m2: .5, b2: 5 } },
+    { title: 'Same line: infinitely many',
+      text: String.raw`<p>Now give A the same start as well. The two equations describe one line, so every point on it is a solution.</p><p>Nudge either line off again to get back to a single solution.</p>`,
+      set: { m1: .5, b1: 5, m2: .5, b2: 5 } }
+  ],
+  formal: String.raw`
+    <p>A <em>system</em> of two linear equations asks for the points that satisfy both,
+    \[ y = m_1x + b_1, \qquad y = m_2x + b_2. \]</p>
+    <h3>Substitution</h3>
+    <p>At a solution both right-hand sides give the same \(y\), so set them equal:
+    \[ m_1x + b_1 = m_2x + b_2 \;\Longrightarrow\; x = \frac{b_2-b_1}{m_1-m_2}, \]
+    then put this \(x\) back into either equation to get \(y\). For the plans: \(x+2 = 0.5x+5\) gives \(x=6\) and \(y=8\).</p>
+    <h3>The three cases</h3>
+    <p>
+    <b>One solution</b> when \(m_1\neq m_2\): the lines have different slopes, so they cross exactly once.<br>
+    <b>No solution</b> when \(m_1=m_2\) and \(b_1\neq b_2\): parallel lines.<br>
+    <b>Infinitely many</b> when \(m_1=m_2\) and \(b_1=b_2\): the same line.</p>
+    <h3>Elimination</h3>
+    <p>Another way to solve is to add or subtract the equations so a variable cancels. Subtracting the second equation from the first removes \(y\) and leaves the same equation for \(x\). Graphically this is always the same question: where do the two lines meet?</p>`,
+  check: [
+    { q: String.raw`Where do \(y=2x+1\) and \(y=-x+7\) cross?`,
+      choices: ['(1, 3)', '(2, 5)', '(3, 7)', '(6, 13)'], answer: 1,
+      why: String.raw`Set \(2x+1=-x+7\) to get \(3x=6\), so \(x=2\) and \(y=2(2)+1=5\).`,
+      hint: String.raw`Set the two expressions for \(y\) equal, solve for \(x\), then find \(y\).` },
+    { q: String.raw`How many solutions does the system \(y=3x+1\), \(y=3x-4\) have?`,
+      choices: ['One', 'Two', 'None', 'Infinitely many'], answer: 2,
+      why: String.raw`Both lines have slope \(3\) but different intercepts, so they are parallel and never meet.`,
+      hint: String.raw`Compare the slopes and the intercepts of the two lines.` }
+  ],
+  links: { prereq: ['slope-and-linear-functions'], next: ['quadratics-and-the-parabola'], related: ['linear-transformations'] },
+
+  mount({ stage, controls: C }) {
+    const st = { m1: 1, b1: 2, m2: .5, b2: 5 };
+    let cancel = () => {};
+    const P = new Plane(stage, { cx: 2, cy: 3, span: 7.5 });
+    const HX = 3;  /* the slope handle sits at x = 3 on each line */
+    const solve = () => {
+      const dm = st.m1 - st.m2, db = st.b2 - st.b1;
+      if (Math.abs(dm) > .01) { const x = db / dm; return { kind: 'one', x, y: st.m1 * x + st.b1 }; }
+      return { kind: Math.abs(db) < .01 ? 'same' : 'none' };
+    };
+
+    P.onDraw = (c, p) => {
+      const pal = p.pal, bd = p.bounds(), sol = solve();
+      p.grid(1); p.ticks(1);
+      const L = (m, b, col, dash) => p.path([[bd.x0, m * bd.x0 + b], [bd.x1, m * bd.x1 + b]], { stroke: col, width: 3.5, dash });
+      L(st.m1, st.b1, pal.blue);
+      L(st.m2, st.b2, pal.red, sol.kind === 'same' ? [12, 10] : undefined);
+      if (sol.kind === 'one') {
+        p.dot(sol.x, sol.y, 9, pal.violet, pal.stage, 2.5);
+        p.label(`(${num(sol.x)}, ${num(sol.y)})`, sol.x, sol.y, { size: 19, italic: false, color: pal.violet, dy: -22 });
+      }
+      for (const [m, b] of [[st.m1, st.b1], [st.m2, st.b2]]) {
+        p.dot(0, b, 8, pal.stage, pal.brass, 3); p.dot(HX, m * HX + b, 8, pal.stage, pal.brass, 3);
+      }
+    };
+
+    const upd = () => {
+      const s = solve();
+      ro.innerHTML = `<span class="k">A</span> ${linEq(st.m1, st.b1)}<br><span class="k">B</span> ${linEq(st.m2, st.b2)}<br>` +
+        (s.kind === 'one' ? `<span class="k">Solution</span> (${num(s.x)}, ${num(s.y)})`
+          : s.kind === 'none' ? '<span class="k">Same slope, different intercepts:</span> no solution'
+          : '<span class="k">Same line:</span> infinitely many solutions');
+    };
+    const sync = () => { [m1S, b1S, m2S, b2S].forEach((s, i) => s.set(st[['m1', 'b1', 'm2', 'b2'][i]])); P.draw(); upd(); };
+    const edit = k => v => { cancel(); st[k] = v; P.requestDraw(); upd(); };
+
+    C.title('Line A (blue)');
+    const m1S = C.slider({ label: 'Slope', min: -3, max: 3, step: .25, value: st.m1, onInput: edit('m1') });
+    const b1S = C.slider({ label: 'Intercept', min: -4, max: 10, step: .5, value: st.b1, onInput: edit('b1') });
+    C.title('Line B (red)');
+    const m2S = C.slider({ label: 'Slope', min: -3, max: 3, step: .25, value: st.m2, onInput: edit('m2') });
+    const b2S = C.slider({ label: 'Intercept', min: -4, max: 10, step: .5, value: st.b2, onInput: edit('b2') });
+    const ro = C.readout(); upd();
+    C.hint('Drag the ring at each line\'s y-intercept to slide it, and the ring at x = 3 to tilt it.');
+
+    draggable(P, {
+      hit: (px, py) => {
+        let best = null, bd = 18;
+        for (const [k, m, b] of [['1', st.m1, st.b1], ['2', st.m2, st.b2]])
+          for (const [t, x, y] of [['b', 0, b], ['m', HX, m * HX + b]]) {
+            const d = Math.hypot(P.X(x) - px, P.Y(y) - py);
+            if (d < bd) { bd = d; best = t + k; }
+          }
+        return best;
+      },
+      move: (hd, x, y) => {
+        cancel();
+        const k = hd[1];
+        if (hd[0] === 'b') st['b' + k] = clamp(snap(y, .5), -4, 10);
+        else st['m' + k] = clamp(snap((y - st['b' + k]) / HX, .25), -3, 3);
+        sync();
+      }
+    });
+
+    const apply = (patch, immediate) => {
+      cancel();
+      if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
+
+/* =====================================================================
+   SCHOOL — Quadratics and the parabola
+   ===================================================================== */
+register({
+  id: 'quadratics-and-the-parabola', level: 'school',
+  title: 'Quadratics and the parabola',
+  blurb: 'Move the vertex, stretch the curve, and find exactly where it crosses the x-axis.',
+  thumb(c, p) {
+    const pal = p.pal; p.cx = 0; p.cy = -1; p.span = 4.2;
+    p.grid(1);
+    const pts = []; for (let x = -4; x <= 4.001; x += .1) pts.push([x, .5 * x * x - 3]);
+    p.curve(pts, { stroke: pal.blue, width: 2.6 });
+    p.dot(-Math.sqrt(6), 0, 4.5, pal.green, pal.stage, 1.5); p.dot(Math.sqrt(6), 0, 4.5, pal.green, pal.stage, 1.5);
+    p.dot(0, -3, 5, pal.yellow, pal.stage, 1.5);
+  },
+  hook: String.raw`Throw a ball and its path bends into a curve. Why is it always the same kind of curve, and how do we find where it lands?`,
+  steps: [
+    { title: 'Start with y = x²',
+      text: String.raw`<p>Plug in \(x=1,2,3\) and you get \(1,4,9\). Plug in \(-1,-2,-3\) and you get the same values.</p><p>So the curve is a mirror image of itself across the y-axis. It bottoms out at the <b>vertex</b>, the point \((0,0)\).</p>`,
+      set: { a: 1, h: 0, k: 0 } },
+    { title: 'Move the vertex',
+      text: String.raw`<p>In \(y=a(x-h)^2+k\), the vertex is \((h,k)\). Here \(h=2\) and \(k=-4\).</p><p>Drag the vertex. Notice the dashed axis of symmetry always passes straight through it.</p>`,
+      set: { a: 1, h: 2, k: -4 } },
+    { title: 'Stretch and flip',
+      text: String.raw`<p>Drag the ring one step right of the vertex, or use <b>a</b>. It sits exactly \(a\) above the vertex.</p><p>Bigger \(|a|\) makes a narrower curve. Negative \(a\) flips it to open downward, like a thrown ball. Here \(a=-1\).</p>`,
+      set: { a: -1, h: 2, k: 4 } },
+    { title: 'Where it crosses zero',
+      text: String.raw`<p>The green dots are the <b>zeros</b>: where \(y=0\). With \(a=1,h=2,k=-4\) they are \(x=0\) and \(x=4\).</p><p>Drag the vertex up until the dots merge into one, then higher: the zeros disappear.</p>`,
+      set: { a: 1, h: 2, k: -4 } }
+  ],
+  formal: String.raw`
+    <p>A <em>quadratic function</em> has the form
+    \[ y = ax^2 + bx + c \qquad (a\neq 0), \]
+    and its graph is a <em>parabola</em>.</p>
+    <h3>Vertex form</h3>
+    <p>Every quadratic can be written
+    \[ y = a(x-h)^2 + k. \]
+    The vertex is \((h,k)\) and the axis of symmetry is \(x=h\). The graph opens up if \(a>0\) and down if \(a<0\).
+    Completing the square turns \(ax^2+bx+c\) into this form with
+    \[ h = -\frac{b}{2a}, \qquad k = c - \frac{b^2}{4a}. \]</p>
+    <h3>Zeros</h3>
+    <p>Setting \(a(x-h)^2+k=0\) gives \((x-h)^2 = -k/a\), so
+    \[ x = h \pm \sqrt{-k/a}. \]
+    In standard form this is the quadratic formula
+    \[ x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}. \]
+    The quantity \(b^2-4ac\) is the <em>discriminant</em>: positive gives two zeros, zero gives one (the vertex sits on the x-axis), negative gives none.</p>
+    <h3>Why a ball follows a parabola</h3>
+    <p>Gravity changes vertical speed at a steady rate, so height grows like \(-\tfrac12 g t^2\) plus a linear term. That is a quadratic in \(t\).</p>`,
+  check: [
+    { q: String.raw`What is the vertex of \(y=(x-3)^2+2\)?`,
+      choices: ['(−3, 2)', '(3, 2)', '(3, −2)', '(−3, −2)'], answer: 1,
+      why: String.raw`Compare with \(y=a(x-h)^2+k\): \(h=3\) and \(k=2\), so the vertex is \((3,2)\). The sign inside the bracket is opposite to \(h\).`,
+      hint: String.raw`Write it as \((x-h)^2\) and read off \(h\). Then \(k\) is the number added outside.` },
+    { q: String.raw`Where does \(y=x^2-6x+5\) cross the x-axis?`,
+      choices: ['x = 1 and x = 5', 'x = −1 and x = −5', 'x = 2 and x = 3', 'x = 6 and x = 5'], answer: 0,
+      why: String.raw`Factor: \(x^2-6x+5=(x-1)(x-5)\), which is zero at \(x=1\) and \(x=5\). The quadratic formula gives the same.`,
+      hint: String.raw`Find two numbers that multiply to \(5\) and add to \(-6\).` }
+  ],
+  links: { prereq: ['slope-and-linear-functions'], next: ['exponential-growth', 'functions-as-transformations'], related: ['derivatives-as-tangent-slopes'] },
+
+  mount({ stage, controls: C }) {
+    const st = { a: 1, h: 0, k: 0 };
+    let cancel = () => {};
+    const P = new Plane(stage, { cx: 0, cy: 1, span: 6.5 });
+    const f = x => st.a * (x - st.h) * (x - st.h) + st.k;
+    const zeros = () => {
+      if (Math.abs(st.a) < .005) return [];  /* a passes through 0 while a step animates */
+      if (Math.abs(st.k) < .005) return [st.h];
+      const q = -st.k / st.a;
+      return q < 0 ? [] : [st.h - Math.sqrt(q), st.h + Math.sqrt(q)];
+    };
+    const term = (v, pow, first) => {
+      if (Math.abs(v) < .005) return '';
+      const sgn = v < 0 ? (first ? '−' : ' − ') : (first ? '' : ' + '), mag = Math.abs(v);
+      const coef = pow && Math.abs(mag - 1) < .005 ? '' : num(mag);
+      return sgn + coef + (pow === 2 ? 'x²' : pow === 1 ? 'x' : '');
+    };
+    const vertexStr = () => {
+      const { a, h, k } = st, inner = Math.abs(h) < .005 ? 'x' : 'x ' + (h < 0 ? '+ ' : '− ') + num(Math.abs(h));
+      const co = Math.abs(a - 1) < .005 ? '' : Math.abs(a + 1) < .005 ? '−' : num(a);
+      const sq = Math.abs(h) < .005 ? `${co}x²` : `${co}(${inner})²`;
+      return 'y = ' + sq + (Math.abs(k) < .005 ? '' : (k < 0 ? ' − ' : ' + ') + num(Math.abs(k)));
+    };
+    const stdStr = () => {
+      const { a, h, k } = st, b = -2 * a * h, c = a * h * h + k;
+      const s = term(a, 2, true) + term(b, 1, false) + term(c, 0, false);
+      return 'y = ' + s;
+    };
+
+    P.onDraw = (c, p) => {
+      const pal = p.pal, bd = p.bounds(), { a, h, k } = st;
+      p.grid(1); p.ticks(1);
+      p.path([[h, bd.y0], [h, bd.y1]], { stroke: alpha(pal.violet, .8), width: 1.8, dash: [8, 7] });
+      p.path([[h, k], [h + 1, k], [h + 1, k + a]], { stroke: pal['grid-strong'], width: 1.8, dash: [4, 5] });
+      const pts = []; for (let i = 0; i <= 260; i++) { const x = bd.x0 + (bd.x1 - bd.x0) * i / 260; pts.push([x, f(x)]); }
+      p.curve(pts, { stroke: pal.blue, width: 3.5 });
+      for (const z of zeros()) p.dot(z, 0, 7, pal.green, pal.stage, 2.5);
+      p.label(`(${num(h)}, ${num(k)})`, h, k, { size: 19, italic: false, dy: a > 0 ? 26 : -26 });
+      p.dot(h, k, 8, pal.yellow, pal.brass, 3); p.dot(h + 1, k + a, 8, pal.stage, pal.brass, 3);
+    };
+
+    const upd = () => {
+      const z = zeros();
+      ro.innerHTML = `<span class="k">Vertex form</span> ${vertexStr()}<br><span class="k">Standard form</span> ${stdStr()}<br>` +
+        `<span class="k">Vertex</span> (${num(st.h)}, ${num(st.k)}) &nbsp; <span class="k">axis</span> x = ${num(st.h)}<br>` +
+        `<span class="k">Zeros</span> ` + (z.length === 2 ? `x = ${num(z[0])}, ${num(z[1])}` : z.length === 1 ? `x = ${num(z[0])} (one)` : 'none: the curve never reaches the x-axis');
+    };
+    const sync = () => { aS.set(st.a); hS.set(st.h); kS.set(st.k); P.draw(); upd(); };
+    const edit = key => v => { cancel(); st[key] = key === 'a' && Math.abs(v) < .01 ? .25 : v; P.requestDraw(); upd(); };
+
+    C.title('y = a(x − h)² + k');
+    const aS = C.slider({ label: 'a (stretch, flip)', min: -3, max: 3, step: .25, value: st.a, onInput: edit('a') });
+    const hS = C.slider({ label: 'h (vertex x)', min: -4, max: 4, step: .5, value: st.h, onInput: edit('h') });
+    const kS = C.slider({ label: 'k (vertex y)', min: -5, max: 5, step: .5, value: st.k, onInput: edit('k') });
+    const ro = C.readout(); upd();
+    C.hint('Drag the yellow vertex, or the ring one step to its right.');
+
+    draggable(P, {
+      hit: (px, py) => near(P, st.h + 1, st.k + st.a, px, py) ? 'a' : near(P, st.h, st.k, px, py) ? 'v' : null,
+      move: (hd, x, y) => {
+        cancel();
+        if (hd === 'v') { st.h = clamp(snap(x, .5), -4, 4); st.k = clamp(snap(y, .5), -5, 5); }
+        else { const a = clamp(snap(y - st.k, .25), -3, 3); st.a = Math.abs(a) < .01 ? (y - st.k < 0 ? -.25 : .25) : a; }
+        sync();
+      }
+    });
+
+    const apply = (patch, immediate) => {
+      cancel();
+      if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
 
 /* =====================================================================
    VISUALIZATION 1 — Pythagorean theorem (middle & high school)
@@ -794,6 +1209,182 @@ register({
       if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
     };
     return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
+
+/* =====================================================================
+   SCHOOL — The unit circle and trig waves
+   ===================================================================== */
+const TAU = Math.PI * 2;
+
+/* angle as a multiple of pi when it is a simple one, e.g. "π/3", "2π/3"; otherwise null */
+function piFrac(th) {
+  const x = th / Math.PI;
+  for (const q of [1, 2, 3, 4, 6, 8, 12]) {
+    const p = Math.round(x * q);
+    if (Math.abs(x * q - p) < .002) return p === 0 ? '0' : (p === 1 ? 'π' : p + 'π') + (q > 1 ? '/' + q : '');
+  }
+  return null;
+}
+
+register({
+  id: 'the-unit-circle-and-trig-waves', level: 'school',
+  title: 'The unit circle and trig waves',
+  blurb: 'Spin a point around a circle and watch its height draw the sine wave.',
+  thumb(c, p) {
+    const pal = p.pal, th = .87, cs = Math.cos(th), sn = Math.sin(th); p.cx = 0; p.cy = 0; p.span = 1.55;
+    p.grid(.5);
+    const pts = []; for (let i = 0; i <= 90; i++) pts.push([Math.cos(i / 90 * TAU), Math.sin(i / 90 * TAU)]);
+    p.path(pts, { stroke: pal.blue, width: 2.2 });
+    p.path([[0, 0], [cs, 0]], { stroke: pal.green, width: 2.6 });
+    p.path([[cs, 0], [cs, sn]], { stroke: pal.red, width: 2.6 });
+    p.path([[0, 0], [cs, sn]], { stroke: pal.text, width: 1.6 });
+    p.dot(cs, sn, 4.5, pal.yellow, pal.stage, 1.5);
+  },
+  hook: String.raw`A point circles at a steady pace. Why does its height rise and fall in such a smooth, repeating wave?`,
+  steps: [
+    { title: 'A point on a circle',
+      text: String.raw`<p>The circle has radius \(1\). The angle \(\theta\) is measured counterclockwise from the positive x-axis.</p><p>The <b>yellow arc</b> is the distance travelled around the circle. That length <em>is</em> \(\theta\) in radians.</p>`,
+      set: { th: .9, showCos: false } },
+    { title: 'Two legs: cosine and sine',
+      text: String.raw`<p>Drop a vertical line from the point. The <b>green</b> leg is how far right it is, \(\cos\theta\). The <b>red</b> leg is how high it is, \(\sin\theta\).</p><p>The radius is \(1\), so Pythagoras gives \(\cos^2\theta+\sin^2\theta=1\).</p>`,
+      set: { th: Math.PI / 3, showCos: false } },
+    { title: 'Watch the wave',
+      text: String.raw`<p>The lower graph plots the red leg against the angle. Press <b>Play</b>, or drag the point around once.</p><p>The height climbs to \(1\), falls to \(-1\), and repeats every \(2\pi\). That is the sine wave.</p>`,
+      set: { th: TAU, showCos: false } },
+    { title: 'Cosine is the same wave, shifted',
+      text: String.raw`<p>Cosine is the green leg, the point's horizontal position. Plotted the same way it makes the green wave.</p><p>It is the sine wave slid left by a quarter turn, \(\pi/2\): \(\cos\theta=\sin(\theta+\pi/2)\).</p>`,
+      set: { th: Math.PI / 2, showCos: true } }
+  ],
+  formal: String.raw`
+    <p>On the <em>unit circle</em> \(x^2+y^2=1\), the point at angle \(\theta\) from the positive x-axis has coordinates
+    \[ (\cos\theta,\ \sin\theta). \]
+    This defines sine and cosine for every angle, including negative ones and ones past a full turn.</p>
+    <h3>Radians</h3>
+    <p>One radian is the angle whose arc on the unit circle has length \(1\). A full turn has length \(2\pi\), so
+    \[ 360^\circ = 2\pi \text{ rad}, \qquad 180^\circ = \pi\text{ rad}. \]</p>
+    <h3>The Pythagorean identity</h3>
+    <p>The point is on the circle, so
+    \[ \cos^2\theta + \sin^2\theta = 1. \]
+    For an acute angle this is the Pythagorean theorem for a right triangle with hypotenuse \(1\), and \(\sin\theta,\cos\theta\) are the familiar ratios opposite\(/\)hypotenuse and adjacent\(/\)hypotenuse.</p>
+    <h3>Waves</h3>
+    <p>Going a full turn returns to the same point, so
+    \[ \sin(\theta+2\pi)=\sin\theta,\qquad \cos(\theta+2\pi)=\cos\theta. \]
+    Both graphs repeat every \(2\pi\) and stay between \(-1\) and \(1\). Shifting by a quarter turn turns one into the other:
+    \(\cos\theta = \sin\!\left(\theta+\tfrac{\pi}{2}\right)\).</p>
+    <h3>Useful angles</h3>
+    <p>\(\theta=0\): \((1,0)\). \(\theta=\pi/2\): \((0,1)\). \(\theta=\pi\): \((-1,0)\). \(\theta=3\pi/2\): \((0,-1)\). At \(\theta=\pi/4\), both coordinates equal \(\tfrac{\sqrt2}{2}\).</p>`,
+  check: [
+    { q: String.raw`What are the coordinates of the point on the unit circle at \(\theta = 90^\circ\)?`,
+      choices: ['(1, 0)', '(0, 1)', '(−1, 0)', '(0, −1)'], answer: 1,
+      why: String.raw`A quarter turn counterclockwise from \((1,0)\) lands at the top of the circle: \((\cos 90^\circ,\sin 90^\circ)=(0,1)\).`,
+      hint: String.raw`Start at \((1,0)\) and turn a quarter of the way around counterclockwise.` },
+    { q: String.raw`\(\theta\) is in the first quadrant and \(\cos\theta=0.6\). What is \(\sin\theta\)?`,
+      choices: ['0.4', '0.6', '0.8', '1.0'], answer: 2,
+      why: String.raw`\(\sin^2\theta = 1-0.6^2 = 0.64\), and sine is positive in the first quadrant, so \(\sin\theta=0.8\).`,
+      hint: String.raw`Use \(\cos^2\theta+\sin^2\theta=1\).` }
+  ],
+  links: { prereq: ['pythagorean-theorem'], next: ['fourier-series-as-epicycles'], related: ['linear-transformations', 'similarity-and-scaling'] },
+
+  mount({ stage, controls: C }) {
+    const st = { th: .9, showCos: false };
+    let cancel = () => {}, raf = null, last = 0, snapOn = false;
+    stage.classList.add('split');
+    const top = h('div', { class: 'pane', style: 'flex: 11 1 0' }), bot = h('div', { class: 'pane', style: 'flex: 9 1 0' });
+    stage.append(top, bot);
+    const P1 = new Plane(top, { span: 1.5 }), P2 = new Plane(bot, { cx: Math.PI, span: 1 });
+
+    P1.onDraw = (c, p) => {
+      const pal = p.pal, { th } = st, cs = Math.cos(th), sn = Math.sin(th), off = 16 / p.scale;
+      p.grid(.5);
+      const ring = []; for (let i = 0; i <= 120; i++) ring.push([Math.cos(i / 120 * TAU), Math.sin(i / 120 * TAU)]);
+      p.path(ring, { stroke: pal.blue, width: 3 });
+      for (let k = 0; k < 12; k++) p.dot(Math.cos(k * Math.PI / 6), Math.sin(k * Math.PI / 6), 2.5, pal['grid-strong']);
+      c.beginPath(); c.arc(p.X(0), p.Y(0), p.scale, 0, -th, true);
+      c.strokeStyle = pal.yellow; c.lineWidth = 6; c.lineCap = 'round'; c.stroke();
+      p.path([[0, 0], [cs, 0]], { stroke: pal.green, width: 4 });
+      p.path([[cs, 0], [cs, sn]], { stroke: pal.red, width: 4 });
+      p.path([[0, 0], [cs, sn]], { stroke: pal.text, width: 2.5 });
+      const fs = clamp(p.scale * .14, 14, 20);
+      p.label('θ', .3 * Math.cos(th / 2), .3 * Math.sin(th / 2), { size: fs + 3, color: pal.yellow });
+      if (Math.abs(cs) > .12) p.label('cos θ', cs / 2, 0, { size: fs, italic: false, color: pal.green, dy: sn >= 0 ? 17 : -17 });
+      if (Math.abs(sn) > .12) p.label('sin θ', cs, sn / 2, { size: fs, italic: false, color: pal.red, align: cs >= 0 ? 'left' : 'right', dx: cs >= 0 ? 12 : -12 });
+      p.dot(cs, sn, 9, pal.stage, pal.brass, 3.5);
+    };
+
+    P2.onDraw = (c, p) => {
+      const pal = p.pal, { th } = st, sc = Math.min(p.w / (TAU + 1.8), p.h / 3.1);
+      p.span = Math.min(p.w, p.h) / (2 * sc); p.cx = Math.PI; p.cy = 0;
+      const fs = clamp(sc * .16, 13, 17), dash = [5, 6];
+      for (const y of [1, -1]) p.path([[-.25, y], [TAU + .25, y]], { stroke: pal.grid, width: 1.5, dash });
+      for (let k = 1; k <= 4; k++) p.path([[k * Math.PI / 2, -1.15], [k * Math.PI / 2, 1.15]], { stroke: pal.grid, width: 1.5 });
+      p.path([[-.25, 0], [TAU + .25, 0]], { stroke: pal['grid-strong'], width: 2 });
+      p.path([[0, -1.15], [0, 1.15]], { stroke: pal['grid-strong'], width: 2 });
+      ['0', 'π/2', 'π', '3π/2', '2π'].forEach((t, i) => p.label(t, i * Math.PI / 2, 0, { size: fs + 2, color: pal.muted, dy: 16 }));
+      p.label('1', -.3, 1, { size: fs, italic: false, color: pal.muted, align: 'right' }); p.label('−1', -.3, -1, { size: fs, italic: false, color: pal.muted, align: 'right' });
+      const wave = (fn, col) => {
+        const all = [], got = [];
+        for (let i = 0; i <= 200; i++) { const x = TAU * i / 200; all.push([x, fn(x)]); if (x <= th) got.push([x, fn(x)]); }
+        got.push([th, fn(th)]);
+        p.path(all, { stroke: alpha(col, .3), width: 2 });
+        p.path(got, { stroke: col, width: 4 });
+        p.path([[th, 0], [th, fn(th)]], { stroke: col, width: 2, dash });
+        p.dot(th, fn(th), 7, col, pal.stage, 2);
+      };
+      wave(Math.sin, pal.red);
+      if (st.showCos) wave(Math.cos, pal.green);
+      p.label('sin θ', .15, 1.3, { size: fs + 2, italic: false, color: pal.red, align: 'left' });
+      if (st.showCos) p.label('cos θ', 1.35, 1.3, { size: fs + 2, italic: false, color: pal.green, align: 'left' });
+      p.label('θ', TAU + .4, 0, { size: fs + 3, color: pal.muted });
+    };
+
+    const upd = () => {
+      const { th } = st, deg = th * 180 / Math.PI, pf = piFrac(th), cs = Math.cos(th), sn = Math.sin(th), z = v => Math.abs(v) < 5e-4 ? 0 : v;
+      ro.innerHTML = `<span class="k">θ</span> ${deg.toFixed(0)}° = ${pf ? pf + ' rad' : th.toFixed(3) + ' rad'}<br>
+        <span class="k">cos θ</span> ${fmt(z(cs), 3)} &nbsp; <span class="k">sin θ</span> ${fmt(z(sn), 3)}<br>
+        <span class="k">cos² + sin²</span> = ${(cs * cs + sn * sn).toFixed(3)}`;
+    };
+    const sync = () => { thS.set(st.th * 180 / Math.PI); P1.draw(); P2.draw(); upd(); };
+    const setTh = v => { st.th = clamp(snapOn ? snap(v, Math.PI / 12) : v, 0, TAU); };
+    const stopPlay = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } last = 0; playBtn.textContent = 'Play'; };
+
+    C.title('Angle');
+    const thS = C.slider({ label: 'θ in degrees', min: 0, max: 360, step: 1, value: st.th * 180 / Math.PI, format: v => Math.round(v) + '°',
+      onInput: v => { cancel(); stopPlay(); setTh(v * Math.PI / 180); P1.requestDraw(); P2.requestDraw(); upd(); } });
+    const [playBtn] = C.buttons([{ label: 'Play', primary: true, onClick: () => {
+      cancel();
+      if (raf) { stopPlay(); return; }
+      if (reduceMotion) { st.th = (st.th + Math.PI / 6) % TAU; sync(); return; }  /* no continuous motion: step 30° per click */
+      playBtn.textContent = 'Pause';
+      const loop = t => {
+        if (!last) last = t;
+        st.th = (st.th + (t - last) / 1000 * .9) % TAU; last = t; sync(); raf = requestAnimationFrame(loop);
+      };
+      raf = requestAnimationFrame(loop);
+    } }]);
+    C.title('Display');
+    const cosT = C.toggle({ label: 'Show cosine wave', value: st.showCos, onChange: v => { st.showCos = v; P2.draw(); } });
+    C.toggle({ label: 'Snap to 15°', value: false, onChange: v => { snapOn = v; } });
+    const ro = C.readout(); upd();
+    C.hint('Drag the point around the circle, or drag across the wave.');
+
+    draggable(P1, {
+      hit: () => 'p',
+      move: (_, x, y) => { cancel(); stopPlay(); setTh(((Math.atan2(y, x) % TAU) + TAU) % TAU); sync(); }
+    });
+    draggable(P2, {
+      hit: () => 'w',
+      move: (_, x) => { cancel(); stopPlay(); setTh(x); sync(); }
+    });
+
+    const apply = (patch, immediate) => {
+      cancel(); stopPlay();
+      const { showCos, ...rest } = patch;
+      if (showCos !== undefined) { st.showCos = showCos; cosT.checked = showCos; }
+      if (immediate || rest.th === undefined) { Object.assign(st, rest); sync(); return; }
+      cancel = animateTo(st, rest, 400 + 260 * Math.abs(rest.th - st.th), sync);
+    };
+    return { destroy: () => { cancel(); stopPlay(); P1.destroy(); P2.destroy(); }, apply };
   }
 });
 

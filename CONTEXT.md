@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v9
+**Version:** v10
 **Last updated:** 2026-09-30
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -35,8 +35,9 @@ https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (not yet republished from the 
 ## Progress
 - **Done:** Phase 1 (shell, engine, 3 visualizations); UI redesign and type updates (ARCHITECTURE v0.2 to v0.4)
 - **Done:** Phase 2 (v0.5): source split + build script; lesson-format engine; Pythagorean theorem retrofitted as the reference school lesson
-- **Built lessons:** Pythagorean theorem (school, full format); Linear transformations (undergrad) and Conformal maps (grad), legacy format, untouched
-- **Next:** Phase 3, first batch of ~4 school lessons using the new format. Suggested: Slope and linear functions; Systems of equations; Quadratics and the parabola; The unit circle and trig waves (owner to confirm order)
+- **Done:** Phase 3 (v0.6): first four school lessons, all in the full lesson format: Slope and linear functions; Systems of equations; Quadratics and the parabola; The unit circle and trig waves
+- **Built lessons (5 school):** the four above plus Pythagorean theorem. Undergrad (Linear transformations) and grad (Conformal maps) remain legacy format, untouched.
+- **Next:** Phase 4, four more school lessons. Suggested: Functions as transformations; Exponential growth; Area of a circle; Similarity and scaling (owner to confirm). Then Phase 5: Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board.
 
 ## Standing rules
 1. Update the context window every turn and provide it (kept in `CONTEXT.md`).
@@ -44,11 +45,11 @@ https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (not yet republished from the 
 3. Flag tasks that may exceed tool limits before starting and propose smaller chunks.
 
 ## Curriculum (DRAFT, awaiting approval; school level is the active priority)
-42 lessons total (3 built, 39 new). ✓ = built.
+42 lessons total (7 built, 35 new). ✓ = built.
 
 **Middle & high school (13)**
-- Algebra & functions: Slope and linear functions; Systems of equations; Functions as transformations; Quadratics and the parabola; Exponential growth
-- Geometry & trig: Pythagorean theorem ✓; Area of a circle; Similarity and scaling; Inscribed angles; Unit circle and trig waves
+- Algebra & functions: Slope and linear functions ✓; Systems of equations ✓; Functions as transformations; Quadratics and the parabola ✓; Exponential growth
+- Geometry & trig: Pythagorean theorem ✓; Area of a circle; Similarity and scaling; Inscribed angles; Unit circle and trig waves ✓
 - Probability & data: Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board
 
 **Undergraduate (16), ON HOLD**
@@ -70,12 +71,13 @@ Hook question → interactive canvas → guided "Try this" steps that drive the 
 
 ## Roadmap
 - Phase 2: done (engine + split). Upper-level retrofit only if the engine ever requires it.
-- Phases 3–5: middle & high school lessons, ~4 per phase (current priority; 12 new lessons)
+- Phase 3: done (4 lessons). Phases 4–5: remaining 8 middle & high school lessons, ~4 per phase (current priority)
 - Phases 6+: undergraduate and graduate lessons (ON HOLD)
 - Final phase: search, progress tracking, polish
 
 ## Open items
-- Approve or edit the draft curriculum and confirm the order of the first school batch.
+- Confirm the order of the Phase 4 batch.
+- Approve or edit the draft curriculum.
 - Decide whether to republish the artifact (the build output is `index.html`).
 - Note: the home hero still links to the undergraduate "Start with linear maps"; consider pointing it at a school lesson.
 - Note: `CONTEXT.md` had been deleted in the repo's last commit; restored here because standing rule 1 keeps it in the repo.

@@ -16,6 +16,7 @@ function h(tag, attrs = {}, ...kids) {
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, t) => a + (b - a) * t;
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const snap = (v, step) => Math.round(v / step) * step;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fmt = (v, n = 2) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(n);
 

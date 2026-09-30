@@ -50,3 +50,8 @@ a.link:hover { border-color: var(--brass); }
 .link .lvl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lvl); align-self: center; flex: none; }
 .link-l { margin-left: auto; font-family: var(--sans); font-size: .78rem; color: var(--faint); letter-spacing: 0; }
 .link.soon { color: var(--muted); border-style: dashed; }
+
+/* stage split into stacked panes (lessons with two canvases) */
+.stage.split { display: flex; flex-direction: column; }
+.stage .pane { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; }
+.stage .pane + .pane { border-top: 1px solid var(--line); }

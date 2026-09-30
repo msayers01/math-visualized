@@ -97,6 +97,15 @@ class Plane {
     c.fillStyle = color || this.pal.text; c.fillText(text, px, py);
     c.globalAlpha = 1;
   }
+  /* integer tick numbers along both axes (skips 0); thins out on small screens */
+  ticks(step = 1, { size = 15 } = {}) {
+    while (this.scale * step < 26) step *= 2;
+    const b = this.bounds(), col = this.pal.muted, txt = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
+    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step)
+      if (Math.abs(x) > 1e-9) this.label(txt(x), x, 0, { size, italic: false, color: col, dy: 15, halo: true });
+    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step)
+      if (Math.abs(y) > 1e-9) this.label(txt(y), 0, y, { size, italic: false, color: col, dx: -11, align: 'right', halo: true });
+  }
   grid(step = 1, { color, axes = true } = {}) {
     const b = this.bounds(), c = this.ctx;
     c.lineWidth = 1; c.strokeStyle = color || this.pal.grid; c.beginPath();
