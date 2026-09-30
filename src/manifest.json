@@ -1,0 +1,33 @@
+{
+  "styles": [
+    "styles/tokens.css",
+    "styles/shell.css",
+    "styles/viz.css",
+    "styles/prose.css",
+    "styles/lesson.css",
+    "styles/motion.css"
+  ],
+  "engine": [
+    "engine/core.js",
+    "engine/theme.js",
+    "engine/plane.js",
+    "engine/draggable.js",
+    "engine/controls.js",
+    "engine/math.js",
+    "engine/registry.js",
+    "engine/lesson.js"
+  ],
+  "lessons": [
+    "lessons/school/slope-and-linear-functions.js",
+    "lessons/school/systems-of-equations.js",
+    "lessons/school/quadratics-and-the-parabola.js",
+    "lessons/school/pythagorean-theorem.js",
+    "lessons/school/the-unit-circle-and-trig-waves.js",
+    "lessons/ugrad/linear-transformations.js",
+    "lessons/grad/conformal-maps.js"
+  ],
+  "app": [
+    "engine/pages.js",
+    "engine/router.js"
+  ]
+}
