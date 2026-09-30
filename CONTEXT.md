@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v10
+**Version:** v11
 **Last updated:** 2026-09-30
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -14,7 +14,7 @@ Instructions for any AI working on this project (including in a new chat):
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
 ## Artifact
-https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (not yet republished from the v0.5 build)
+https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (republished 2026-09-30 from ARCHITECTURE v0.6; publish a copy of `index.html` without its `<!doctype>/<html>/<head>/<body>` wrappers, since the publish step adds them)
 
 ## Tech
 - Single self-contained `index.html`, now **generated** from `src/` by `node tools/build.js` (edit `src/`, rebuild, commit both)
@@ -78,6 +78,5 @@ Hook question → interactive canvas → guided "Try this" steps that drive the 
 ## Open items
 - Confirm the order of the Phase 4 batch.
 - Approve or edit the draft curriculum.
-- Decide whether to republish the artifact (the build output is `index.html`).
 - Note: the home hero still links to the undergraduate "Start with linear maps"; consider pointing it at a school lesson.
 - Note: `CONTEXT.md` had been deleted in the repo's last commit; restored here because standing rule 1 keeps it in the repo.
