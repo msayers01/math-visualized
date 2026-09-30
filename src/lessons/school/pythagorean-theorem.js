@@ -13,14 +13,45 @@ register({
     p.path([[a,0],[s,a],[b,s],[0,b]], { stroke: pal.yellow, width: 1.6, close: true });
     p.path([[0,0],[s,0],[s,s],[0,s]], { stroke: pal.text, width: 1.2, close: true });
   },
-  explain: String.raw`
-    <h2>What you are looking at</h2>
-    <p>Start with a big square whose side is \(a+b\). Inside it sit four copies of the same right triangle, with legs \(a\) and \(b\) and hypotenuse \(c\). The shaded region is whatever the triangles leave uncovered.</p>
-    <p>In the first arrangement the uncovered region is a tilted square with side \(c\), so its area is \(c^2\). Slide three of the triangles and the uncovered region becomes two squares, with areas \(a^2\) and \(b^2\).</p>
-    <p>Nothing changed size. The big square is the same and so are the four triangles, so the uncovered area must be the same in both pictures:</p>
-    \[ c^2 \;=\; (a+b)^2 - 4\cdot\tfrac12 ab \;=\; a^2 + b^2. \]
-    <h2>Try this</h2>
-    <p>Make \(b\) much smaller than \(a\). The tilted square barely tilts, and \(c\) is only a little longer than \(a\). Now set \(a=b\): the two squares in the second picture are identical, and \(c=a\sqrt2\), the diagonal of a square.</p>`,
+  hook: String.raw`A right triangle has legs 3 and 4. Why must its long side be exactly 5?`,
+  steps: [
+    { title: 'Meet the triangle',
+      text: String.raw`<p>Four copies of a right triangle sit inside a big square of side \(a+b\). The shaded tilted square in the middle has side \(c\), the triangle's long side.</p><p>Notice that the four triangles and the tilted square fill the big square with no gaps.</p>`,
+      set: { a: 3, b: 4, t: 0 } },
+    { title: 'Slide three triangles',
+      text: String.raw`<p>Press <b>Rearrange triangles</b>, or drag <b>Progress</b>. The triangles slide without turning or stretching.</p><p>The shaded region is now two squares, with areas \(a^2\) and \(b^2\). Same pieces, same big square, so the shaded area cannot have changed.</p>`,
+      set: { a: 3, b: 4, t: 1 } },
+    { title: 'Try your own triangle',
+      text: String.raw`<p>Drag the leg sliders. With \(a=5\) and \(b=2\) the two squares are lopsided, yet the readout still says \(a^2+b^2\) equals \(c^2\).</p><p>Find a triangle where \(c\) comes out a whole number.</p>`,
+      set: { a: 5, b: 2, t: 1 } },
+    { title: 'Make the legs equal',
+      text: String.raw`<p>With \(a=b=4\) the two squares are identical, so \(c^2 = 2a^2\) and \(c=a\sqrt2\).</p><p>That is the diagonal of a square: the triangle is half of a square cut corner to corner.</p>`,
+      set: { a: 4, b: 4, t: 1 } }
+  ],
+  formal: String.raw`
+    <p><b>Theorem.</b> In a right triangle with legs \(a\), \(b\) and hypotenuse \(c\),
+    \[ a^2 + b^2 = c^2. \]</p>
+    <h3>Proof by rearrangement</h3>
+    <p>Take a square of side \(a+b\) and place four copies of the triangle inside it so that the leftover region is a square of side \(c\). Then
+    \[ c^2 \;=\; (a+b)^2 - 4\cdot\tfrac12 ab \;=\; a^2 + 2ab + b^2 - 2ab \;=\; a^2 + b^2. \]
+    Sliding three triangles shows the same leftover region as two squares, of areas \(a^2\) and \(b^2\). The area did not change, so the two counts agree.</p>
+    <h3>The converse</h3>
+    <p>If three positive numbers satisfy \(a^2+b^2=c^2\), then a triangle with those side lengths has a right angle opposite \(c\). This is how builders check a corner with a 3-4-5 rope.</p>
+    <h3>Distance in the plane</h3>
+    <p>Put the legs along the coordinate axes. The distance between \((x_1,y_1)\) and \((x_2,y_2)\) is the hypotenuse of a right triangle with legs \(|x_2-x_1|\) and \(|y_2-y_1|\), so
+    \[ d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}. \]</p>`,
+  check: [
+    { q: String.raw`A right triangle has legs \(5\) and \(12\). How long is the hypotenuse?`,
+      choices: ['7', '13', '17', '169'], answer: 1,
+      why: String.raw`\(5^2+12^2 = 25+144 = 169 = 13^2\), so \(c = 13\).`,
+      hint: String.raw`Add the squares of the legs first, then take a square root.` },
+    { q: 'Why does the tilted square have the same area as the two smaller squares?',
+      choices: ['The triangles are all the same shape', 'The same four triangles and the same big square are used, so the leftover area is unchanged',
+                'Because c is the longest side', 'Because a and b are equal'], answer: 1,
+      why: 'Only the positions of the triangles change. Total area minus the four triangles is the same in both arrangements.',
+      hint: 'Think about what stays fixed while the triangles slide.' }
+  ],
+  links: { next: ['similarity-and-scaling', 'the-unit-circle-and-trig-waves'], related: ['area-of-a-circle'] },
   mount({ stage, controls: C }) {
     const st = { a: 3, b: 4, t: 0 };
     let cancel = () => {};
@@ -73,8 +104,8 @@ register({
     const setBtn = () => { play.textContent = st.t > .5 ? 'Put them back' : 'Rearrange triangles'; };
 
     C.title('Triangle');
-    C.slider({ label: 'Leg a', min: 1, max: 6, step: .1, value: st.a, format: v => v.toFixed(1), onInput: v => { st.a = v; fit(); P.requestDraw(); upd(); } });
-    C.slider({ label: 'Leg b', min: 1, max: 6, step: .1, value: st.b, format: v => v.toFixed(1), onInput: v => { st.b = v; fit(); P.requestDraw(); upd(); } });
+    const aS = C.slider({ label: 'Leg a', min: 1, max: 6, step: .1, value: st.a, format: v => v.toFixed(1), onInput: v => { cancel(); st.a = v; fit(); P.requestDraw(); upd(); } });
+    const bS = C.slider({ label: 'Leg b', min: 1, max: 6, step: .1, value: st.b, format: v => v.toFixed(1), onInput: v => { cancel(); st.b = v; fit(); P.requestDraw(); upd(); } });
     C.title('Rearrangement');
     const tS = C.slider({ label: 'Progress', min: 0, max: 1, step: .001, value: 0, format: v => Math.round(v * 100) + '%',
       onInput: v => { cancel(); st.t = v; setBtn(); P.requestDraw(); } });
@@ -83,6 +114,12 @@ register({
       cancel = tween(2400 * Math.abs(to - from), p => { st.t = lerp(from, to, p); tS.set(st.t); P.draw(); }, setBtn);
     } }]);
     const ro = C.readout(); upd();
-    return () => { cancel(); P.destroy(); };
+    /* guided steps: glide to a state patch {a, b, t}, keeping the controls in sync */
+    const sync = () => { aS.set(st.a); bS.set(st.b); tS.set(st.t); fit(); P.draw(); upd(); setBtn(); };
+    const apply = (patch, immediate) => {
+      cancel();
+      if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
   }
 });

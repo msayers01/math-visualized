@@ -1,0 +1,52 @@
+/* ---------- Lesson format: hook, guided steps, quick check, connections ---------- */
+.lede.hook { font-family: var(--display); font-weight: 300; font-size: clamp(1.15rem, 2.2vw, 1.55rem); line-height: 1.4; letter-spacing: -.025em;
+  color: var(--text); max-width: 46ch; border-left: 2px solid var(--lvl, var(--brass)); padding-left: 16px; }
+.panel { max-height: calc(100vh - 104px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 900px) { .panel { max-height: none; overflow: visible; } }
+
+.steps { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.steps-head { display: flex; justify-content: space-between; align-items: baseline; }
+.steps-k { font-family: var(--display); font-size: .95rem; font-weight: 500; letter-spacing: -.02em; }
+.steps-n { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 6px; }
+.dot { flex: 1; height: 22px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
+.dot::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; border-radius: 2px; background: var(--line-strong); transition: background .2s; }
+.dot.done::before { background: var(--brass); opacity: .5; }
+.dot.on::before { background: var(--brass); }
+.step-title { font-family: var(--display); font-size: 1.05rem; font-weight: 400; letter-spacing: -.025em; line-height: 1.3; margin: 2px 0 0; }
+.step-text { font-size: .94rem; line-height: 1.55; color: var(--text); }
+.step-text p { margin: 0 0 .6em; }
+.step-text p:last-child { margin-bottom: 0; }
+.steps-nav { display: flex; gap: 8px; }
+.steps-nav .btn { min-height: 36px; padding: 6px 16px; font-size: .88rem; }
+.btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
+
+.prose h3 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: -.03em; margin: 1.4em 0 .4em; }
+.check, .links { max-width: 68ch; padding: 8px 0 28px; }
+.check h2, .links h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.035em; margin: 0 0 .7em; }
+.q { border: 1px solid var(--line); border-radius: 4px; padding: 18px 20px; background: var(--surface); margin-bottom: 14px; }
+.q-stem { margin: 0 0 14px; font-size: 1.05rem; }
+.q-n { display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; margin-right: 10px; border: 1px solid var(--line-strong); border-radius: 50%;
+  font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; vertical-align: .05em; }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice { font: inherit; font-size: .98rem; padding: 9px 16px; min-height: 40px; border-radius: 999px; border: 1px solid var(--line-strong);
+  background: transparent; color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; text-align: left; }
+.choice:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+.choice.right { border-color: var(--green); background: color-mix(in srgb, var(--green) 16%, transparent); opacity: 1; }
+.choice.wrong { border-color: var(--red); background: color-mix(in srgb, var(--red) 12%, transparent); text-decoration: line-through; text-decoration-thickness: 1px; }
+.choice:disabled { cursor: default; color: var(--text); }
+.choice:disabled:not(.right):not(.wrong) { opacity: .5; }
+.q-fb { margin-top: 12px; font-size: .96rem; line-height: 1.55; color: var(--muted); }
+.q-fb:empty { display: none; }
+.q-fb.ok b { color: var(--green); }
+.q-fb.no b { color: var(--red); }
+
+.link-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px 28px; }
+.link-k { margin: 0 0 8px; font-size: .82rem; color: var(--muted); letter-spacing: .02em; }
+.link-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.link { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 4px;
+  text-decoration: none; font-family: var(--display); font-size: .98rem; letter-spacing: -.02em; line-height: 1.3; transition: border-color .2s; }
+a.link:hover { border-color: var(--brass); }
+.link .lvl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lvl); align-self: center; flex: none; }
+.link-l { margin-left: auto; font-family: var(--sans); font-size: .78rem; color: var(--faint); letter-spacing: 0; }
+.link.soon { color: var(--muted); border-style: dashed; }

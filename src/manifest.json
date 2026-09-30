@@ -1,15 +1,29 @@
 {
   "styles": [
-    "styles/tokens.css", "styles/shell.css", "styles/viz.css", "styles/prose.css", "styles/motion.css"
+    "styles/tokens.css",
+    "styles/shell.css",
+    "styles/viz.css",
+    "styles/prose.css",
+    "styles/lesson.css",
+    "styles/motion.css"
   ],
   "engine": [
-    "engine/core.js", "engine/theme.js", "engine/plane.js", "engine/draggable.js",
-    "engine/controls.js", "engine/math.js", "engine/registry.js"
+    "engine/core.js",
+    "engine/theme.js",
+    "engine/plane.js",
+    "engine/draggable.js",
+    "engine/controls.js",
+    "engine/math.js",
+    "engine/registry.js",
+    "engine/lesson.js"
   ],
   "lessons": [
     "lessons/school/pythagorean-theorem.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
-  "app": ["engine/pages.js", "engine/router.js"]
+  "app": [
+    "engine/pages.js",
+    "engine/router.js"
+  ]
 }

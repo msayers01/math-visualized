@@ -33,6 +33,16 @@ function tween(ms, update, done) {
   return () => { alive = false; cancelAnimationFrame(id); };
 }
 
+/* Animate the numeric fields of `st` to `patch` (used by guided steps). Returns a cancel function. */
+function animateTo(st, patch, ms, update, done) {
+  const keys = Object.keys(patch), from = {};
+  for (const k of keys) from[k] = st[k];
+  return tween(ms, p => {
+    for (const k of keys) st[k] = p >= 1 ? patch[k] : lerp(from[k], patch[k], ease(p));
+    update();
+  }, done);
+}
+
 function palette() {
   const cs = getComputedStyle(document.documentElement), o = {};
   for (const k of ['bg','text','muted','stage','grid','grid-strong','axis','brass','blue','yellow','green','red','violet'])

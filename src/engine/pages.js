@@ -24,7 +24,7 @@ function renderHome(app) {
   /* topic lists, one section per level */
   const thumbs = [], levels = h('div', { class: 'wrap levels' });
   for (const [key, L] of Object.entries(LEVELS)) {
-    const live = VIZ.filter(v => v.level === key), total = live.length + PLANNED[key].length;
+    const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
     const list = h('ul', { class: 'topics' });
     for (const v of live) {
       const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
@@ -33,7 +33,7 @@ function renderHome(app) {
         th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb)),
         h('span', { class: 'go' }, 'Open'))));
     }
-    for (const t of PLANNED[key])
+    for (const t of todo)
       list.append(h('li', { class: 'planned' }, h('div', { class: 'topic' },
         h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
         h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
@@ -82,24 +82,38 @@ function renderHome(app) {
   return () => { cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
 }
 
+/* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
+   legacy `explain` prose; every part is optional. mount() may return a teardown function
+   (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
 function renderViz(app, v) {
   document.title = v.title + ' | Continuum';
-  const i = VIZ.indexOf(v), prev = VIZ[i - 1], next = VIZ[i + 1];
+  const sib = VIZ.filter(x => x.level === v.level), i = sib.indexOf(v), prev = sib[i - 1], next = sib[i + 1];
   const stage = h('div', { class: 'stage', 'data-coords': '', role: 'img', 'aria-label': 'Interactive visualization: ' + v.title },
     ['tl', 'tr', 'bl', 'br'].map(c => h('span', { class: 'tick ' + c })));
   const panel = h('aside', { class: 'panel', 'aria-label': 'Controls' });
-  const prose = h('div', { class: 'prose', html: v.explain });
+  const body = v.formal != null ? h('div', { class: 'prose' }, h('h2', {}, 'The math'), h('div', { html: v.formal }))
+                                : h('div', { class: 'prose', html: v.explain || '' });
+  const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
+  const check = v.check && v.check.length ? QuickCheck(v.check) : null;
+  const conn = v.links ? Connections(v.links, v.id) : null;
+  let scene = {};
+  const stepper = v.steps && v.steps.length
+    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
+  if (stepper) panel.append(stepper.el);
   const pg = (x, cls, k) => h('a', { class: 'pg ' + cls, href: '#/viz/' + x.id }, h('span', { class: 'k' }, k), h('span', { class: 't' }, x.title));
   app.append(h('article', { class: 'wrap viz lvl-' + v.level },
     h('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' },
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
-    h('header', { class: 'viz-head' },
-      h('h1', { class: 'display' }, v.title), h('p', { class: 'lede' }, v.blurb)),
+    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede),
     h('div', { class: 'workbench' }, stage, panel),
-    prose,
+    body, check, conn,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
-  typeset(prose);
-  return v.mount({ stage, controls: Controls(panel) });
+  typeset(body); if (v.hook) typeset(lede);
+  const ret = v.mount({ stage, controls: Controls(panel) });
+  scene = typeof ret === 'function' ? { destroy: ret } : (ret || {});
+  if (stepper) stepper.start();
+  return () => scene.destroy && scene.destroy();
 }
+

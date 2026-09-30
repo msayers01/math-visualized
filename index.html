@@ -231,6 +231,58 @@ a.topic:hover::before { transform: scaleY(1); }
 .foot { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; padding: 28px 0 40px;
   border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
 .foot .wm { font-family: var(--display); font-size: 1rem; font-weight: 500; letter-spacing: -.04em; color: var(--text); }
+/* ---------- Lesson format: hook, guided steps, quick check, connections ---------- */
+.lede.hook { font-family: var(--display); font-weight: 300; font-size: clamp(1.15rem, 2.2vw, 1.55rem); line-height: 1.4; letter-spacing: -.025em;
+  color: var(--text); max-width: 46ch; border-left: 2px solid var(--lvl, var(--brass)); padding-left: 16px; }
+.panel { max-height: calc(100vh - 104px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 900px) { .panel { max-height: none; overflow: visible; } }
+
+.steps { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.steps-head { display: flex; justify-content: space-between; align-items: baseline; }
+.steps-k { font-family: var(--display); font-size: .95rem; font-weight: 500; letter-spacing: -.02em; }
+.steps-n { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 6px; }
+.dot { flex: 1; height: 22px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
+.dot::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; border-radius: 2px; background: var(--line-strong); transition: background .2s; }
+.dot.done::before { background: var(--brass); opacity: .5; }
+.dot.on::before { background: var(--brass); }
+.step-title { font-family: var(--display); font-size: 1.05rem; font-weight: 400; letter-spacing: -.025em; line-height: 1.3; margin: 2px 0 0; }
+.step-text { font-size: .94rem; line-height: 1.55; color: var(--text); }
+.step-text p { margin: 0 0 .6em; }
+.step-text p:last-child { margin-bottom: 0; }
+.steps-nav { display: flex; gap: 8px; }
+.steps-nav .btn { min-height: 36px; padding: 6px 16px; font-size: .88rem; }
+.btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
+
+.prose h3 { font-family: var(--display); font-weight: 400; font-size: 1.15rem; letter-spacing: -.03em; margin: 1.4em 0 .4em; }
+.check, .links { max-width: 68ch; padding: 8px 0 28px; }
+.check h2, .links h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.035em; margin: 0 0 .7em; }
+.q { border: 1px solid var(--line); border-radius: 4px; padding: 18px 20px; background: var(--surface); margin-bottom: 14px; }
+.q-stem { margin: 0 0 14px; font-size: 1.05rem; }
+.q-n { display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; margin-right: 10px; border: 1px solid var(--line-strong); border-radius: 50%;
+  font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; vertical-align: .05em; }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice { font: inherit; font-size: .98rem; padding: 9px 16px; min-height: 40px; border-radius: 999px; border: 1px solid var(--line-strong);
+  background: transparent; color: var(--text); cursor: pointer; transition: border-color .2s, color .2s, background .2s; text-align: left; }
+.choice:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+.choice.right { border-color: var(--green); background: color-mix(in srgb, var(--green) 16%, transparent); opacity: 1; }
+.choice.wrong { border-color: var(--red); background: color-mix(in srgb, var(--red) 12%, transparent); text-decoration: line-through; text-decoration-thickness: 1px; }
+.choice:disabled { cursor: default; color: var(--text); }
+.choice:disabled:not(.right):not(.wrong) { opacity: .5; }
+.q-fb { margin-top: 12px; font-size: .96rem; line-height: 1.55; color: var(--muted); }
+.q-fb:empty { display: none; }
+.q-fb.ok b { color: var(--green); }
+.q-fb.no b { color: var(--red); }
+
+.link-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px 28px; }
+.link-k { margin: 0 0 8px; font-size: .82rem; color: var(--muted); letter-spacing: .02em; }
+.link-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.link { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 4px;
+  text-decoration: none; font-family: var(--display); font-size: .98rem; letter-spacing: -.02em; line-height: 1.3; transition: border-color .2s; }
+a.link:hover { border-color: var(--brass); }
+.link .lvl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lvl); align-self: center; flex: none; }
+.link-l { margin-left: auto; font-family: var(--sans); font-size: .78rem; color: var(--faint); letter-spacing: 0; }
+.link.soon { color: var(--muted); border-style: dashed; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
@@ -283,6 +335,16 @@ function tween(ms, update, done) {
   };
   id = requestAnimationFrame(step);
   return () => { alive = false; cancelAnimationFrame(id); };
+}
+
+/* Animate the numeric fields of `st` to `patch` (used by guided steps). Returns a cancel function. */
+function animateTo(st, patch, ms, update, done) {
+  const keys = Object.keys(patch), from = {};
+  for (const k of keys) from[k] = st[k];
+  return tween(ms, p => {
+    for (const k of keys) st[k] = p >= 1 ? patch[k] : lerp(from[k], patch[k], ease(p));
+    update();
+  }, done);
 }
 
 function palette() {
@@ -515,10 +577,99 @@ const LEVELS = {
 const VIZ = [];
 const register = v => VIZ.push(v);
 const PLANNED = {
-  school: ['Slope and linear functions', 'The unit circle and trig waves', 'Quadratics and the parabola', 'Probability with repeated trials'],
+  school: ['Slope and linear functions', 'Systems of equations', 'Functions as transformations', 'Quadratics and the parabola', 'Exponential growth',
+           'Area of a circle', 'Similarity and scaling', 'Inscribed angles', 'The unit circle and trig waves',
+           'Mean, median, and spread', 'Probability with repeated trials', "Pascal's triangle and the Galton board"],
   ugrad:  ['Derivatives as tangent slopes', 'Riemann sums and the integral', 'Fourier series as epicycles', 'Taylor series'],
   grad:   ['Cayley graphs of groups', 'Homotopy and the fundamental group', 'The Fourier transform', 'Manifolds and tangent spaces']
 };
+
+/* Lesson ids double as URL slugs, and a planned lesson's id is the slug of its title,
+   so cross-links can point at lessons that are not built yet. */
+const slug = t => t.toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const plannedRef = id => {
+  for (const [level, list] of Object.entries(PLANNED)) {
+    const title = list.find(t => slug(t) === id);
+    if (title) return { level, title };
+  }
+  return null;
+};
+/* id -> { level, title, live } for built or planned lessons, else null */
+function lessonRef(id) {
+  const v = VIZ.find(x => x.id === id);
+  if (v) return { level: v.level, title: v.title, live: true };
+  const p = plannedRef(id);
+  return p && { ...p, live: false };
+}
+
+/* =====================================================================
+   LESSON FORMAT: guided steps, quick checks, cross-links
+   ===================================================================== */
+
+/* Guided "Try this" steps. Each step is { title, text (HTML with TeX), set? }.
+   Entering a step calls onEnter(step, index, first); `set` is a state patch that the
+   lesson's mount() applies through the scene it returns (see ARCHITECTURE.md). */
+function Stepper(steps, onEnter) {
+  let i = 0;
+  const count = h('span', { class: 'steps-n' }), title = h('h3', { class: 'step-title' });
+  const text = h('div', { class: 'step-text', 'aria-live': 'polite' });
+  const dots = steps.map((s, k) => h('button', { type: 'button', class: 'dot', 'aria-label': `Step ${k + 1}: ${s.title}`, onclick: () => go(k) }));
+  const back = h('button', { type: 'button', class: 'btn', onclick: () => go(i - 1) }, 'Back');
+  const next = h('button', { type: 'button', class: 'btn primary', onclick: () => go(i + 1) }, 'Next');
+  const el = h('section', { class: 'steps', 'aria-label': 'Guided steps' },
+    h('div', { class: 'steps-head' }, h('span', { class: 'steps-k' }, 'Try this'), count),
+    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next));
+  function go(k, first) {
+    i = clamp(k, 0, steps.length - 1);
+    const s = steps[i];
+    count.textContent = `${i + 1} / ${steps.length}`;
+    title.textContent = s.title; text.innerHTML = s.text; typeset(text);
+    dots.forEach((d, j) => { d.classList.toggle('on', j === i); d.classList.toggle('done', j < i); j === i ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
+    back.disabled = i === 0; next.disabled = i === steps.length - 1;
+    onEnter(s, i, !!first);
+  }
+  return { el, start: () => go(0, true) };
+}
+
+/* Multiple-choice quick check. Each question is { q, choices: [html], answer: index, why, hint? }.
+   A wrong pick is marked and can be retried; the right pick locks the question and shows `why`. */
+function QuickCheck(questions) {
+  const root = h('section', { class: 'check', 'aria-label': 'Quick check' }, h('h2', {}, 'Quick check'));
+  questions.forEach((Q, n) => {
+    const fb = h('div', { class: 'q-fb', 'aria-live': 'polite' });
+    const btns = Q.choices.map((c, k) => h('button', { type: 'button', class: 'choice', html: c, onclick: () => pick(k) }));
+    function pick(k) {
+      if (btns[Q.answer].classList.contains('right')) return;
+      if (k === Q.answer) {
+        btns[k].classList.add('right'); btns.forEach(b => { b.disabled = true; });
+        fb.className = 'q-fb ok'; fb.innerHTML = '<b>Right.</b> ' + Q.why;
+      } else {
+        btns[k].classList.add('wrong'); btns[k].disabled = true;
+        fb.className = 'q-fb no'; fb.innerHTML = '<b>Not quite.</b> ' + (Q.hint || 'Try another answer.');
+      }
+      typeset(fb);
+    }
+    root.append(h('div', { class: 'q' },
+      h('p', { class: 'q-stem', html: `<span class="q-n">${n + 1}</span>${Q.q}` }), h('div', { class: 'choices' }, btns), fb));
+  });
+  typeset(root);
+  return root;
+}
+
+/* Cross-links to other lessons, built or planned. links = { prereq, next, related } (arrays of lesson ids). */
+function Connections(links, selfId) {
+  const groups = [['prereq', 'Builds on'], ['next', 'Leads to'], ['related', 'Related']];
+  const cols = [];
+  for (const [key, name] of groups) {
+    const items = (links[key] || []).filter(id => id !== selfId).map(id => [id, lessonRef(id)]).filter(([, r]) => r);
+    if (!items.length) continue;
+    cols.push(h('div', { class: 'link-col' }, h('p', { class: 'link-k' }, name),
+      h('ul', {}, items.map(([id, r]) => h('li', { class: 'lvl-' + r.level },
+        r.live ? h('a', { class: 'link', href: '#/viz/' + id }, h('span', { class: 'lvl-dot' }), r.title, h('span', { class: 'link-l' }, LEVELS[r.level].name))
+               : h('span', { class: 'link soon' }, h('span', { class: 'lvl-dot' }), r.title, h('span', { class: 'link-l' }, 'Soon')))))));
+  }
+  return cols.length ? h('section', { class: 'links', 'aria-label': 'Connections' }, h('h2', {}, 'Connections'), h('div', { class: 'link-cols' }, cols)) : null;
+}
 
 /* =====================================================================
    VISUALIZATION 1 — Pythagorean theorem (middle & high school)
@@ -535,14 +686,45 @@ register({
     p.path([[a,0],[s,a],[b,s],[0,b]], { stroke: pal.yellow, width: 1.6, close: true });
     p.path([[0,0],[s,0],[s,s],[0,s]], { stroke: pal.text, width: 1.2, close: true });
   },
-  explain: String.raw`
-    <h2>What you are looking at</h2>
-    <p>Start with a big square whose side is \(a+b\). Inside it sit four copies of the same right triangle, with legs \(a\) and \(b\) and hypotenuse \(c\). The shaded region is whatever the triangles leave uncovered.</p>
-    <p>In the first arrangement the uncovered region is a tilted square with side \(c\), so its area is \(c^2\). Slide three of the triangles and the uncovered region becomes two squares, with areas \(a^2\) and \(b^2\).</p>
-    <p>Nothing changed size. The big square is the same and so are the four triangles, so the uncovered area must be the same in both pictures:</p>
-    \[ c^2 \;=\; (a+b)^2 - 4\cdot\tfrac12 ab \;=\; a^2 + b^2. \]
-    <h2>Try this</h2>
-    <p>Make \(b\) much smaller than \(a\). The tilted square barely tilts, and \(c\) is only a little longer than \(a\). Now set \(a=b\): the two squares in the second picture are identical, and \(c=a\sqrt2\), the diagonal of a square.</p>`,
+  hook: String.raw`A right triangle has legs 3 and 4. Why must its long side be exactly 5?`,
+  steps: [
+    { title: 'Meet the triangle',
+      text: String.raw`<p>Four copies of a right triangle sit inside a big square of side \(a+b\). The shaded tilted square in the middle has side \(c\), the triangle's long side.</p><p>Notice that the four triangles and the tilted square fill the big square with no gaps.</p>`,
+      set: { a: 3, b: 4, t: 0 } },
+    { title: 'Slide three triangles',
+      text: String.raw`<p>Press <b>Rearrange triangles</b>, or drag <b>Progress</b>. The triangles slide without turning or stretching.</p><p>The shaded region is now two squares, with areas \(a^2\) and \(b^2\). Same pieces, same big square, so the shaded area cannot have changed.</p>`,
+      set: { a: 3, b: 4, t: 1 } },
+    { title: 'Try your own triangle',
+      text: String.raw`<p>Drag the leg sliders. With \(a=5\) and \(b=2\) the two squares are lopsided, yet the readout still says \(a^2+b^2\) equals \(c^2\).</p><p>Find a triangle where \(c\) comes out a whole number.</p>`,
+      set: { a: 5, b: 2, t: 1 } },
+    { title: 'Make the legs equal',
+      text: String.raw`<p>With \(a=b=4\) the two squares are identical, so \(c^2 = 2a^2\) and \(c=a\sqrt2\).</p><p>That is the diagonal of a square: the triangle is half of a square cut corner to corner.</p>`,
+      set: { a: 4, b: 4, t: 1 } }
+  ],
+  formal: String.raw`
+    <p><b>Theorem.</b> In a right triangle with legs \(a\), \(b\) and hypotenuse \(c\),
+    \[ a^2 + b^2 = c^2. \]</p>
+    <h3>Proof by rearrangement</h3>
+    <p>Take a square of side \(a+b\) and place four copies of the triangle inside it so that the leftover region is a square of side \(c\). Then
+    \[ c^2 \;=\; (a+b)^2 - 4\cdot\tfrac12 ab \;=\; a^2 + 2ab + b^2 - 2ab \;=\; a^2 + b^2. \]
+    Sliding three triangles shows the same leftover region as two squares, of areas \(a^2\) and \(b^2\). The area did not change, so the two counts agree.</p>
+    <h3>The converse</h3>
+    <p>If three positive numbers satisfy \(a^2+b^2=c^2\), then a triangle with those side lengths has a right angle opposite \(c\). This is how builders check a corner with a 3-4-5 rope.</p>
+    <h3>Distance in the plane</h3>
+    <p>Put the legs along the coordinate axes. The distance between \((x_1,y_1)\) and \((x_2,y_2)\) is the hypotenuse of a right triangle with legs \(|x_2-x_1|\) and \(|y_2-y_1|\), so
+    \[ d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2}. \]</p>`,
+  check: [
+    { q: String.raw`A right triangle has legs \(5\) and \(12\). How long is the hypotenuse?`,
+      choices: ['7', '13', '17', '169'], answer: 1,
+      why: String.raw`\(5^2+12^2 = 25+144 = 169 = 13^2\), so \(c = 13\).`,
+      hint: String.raw`Add the squares of the legs first, then take a square root.` },
+    { q: 'Why does the tilted square have the same area as the two smaller squares?',
+      choices: ['The triangles are all the same shape', 'The same four triangles and the same big square are used, so the leftover area is unchanged',
+                'Because c is the longest side', 'Because a and b are equal'], answer: 1,
+      why: 'Only the positions of the triangles change. Total area minus the four triangles is the same in both arrangements.',
+      hint: 'Think about what stays fixed while the triangles slide.' }
+  ],
+  links: { next: ['similarity-and-scaling', 'the-unit-circle-and-trig-waves'], related: ['area-of-a-circle'] },
   mount({ stage, controls: C }) {
     const st = { a: 3, b: 4, t: 0 };
     let cancel = () => {};
@@ -595,8 +777,8 @@ register({
     const setBtn = () => { play.textContent = st.t > .5 ? 'Put them back' : 'Rearrange triangles'; };
 
     C.title('Triangle');
-    C.slider({ label: 'Leg a', min: 1, max: 6, step: .1, value: st.a, format: v => v.toFixed(1), onInput: v => { st.a = v; fit(); P.requestDraw(); upd(); } });
-    C.slider({ label: 'Leg b', min: 1, max: 6, step: .1, value: st.b, format: v => v.toFixed(1), onInput: v => { st.b = v; fit(); P.requestDraw(); upd(); } });
+    const aS = C.slider({ label: 'Leg a', min: 1, max: 6, step: .1, value: st.a, format: v => v.toFixed(1), onInput: v => { cancel(); st.a = v; fit(); P.requestDraw(); upd(); } });
+    const bS = C.slider({ label: 'Leg b', min: 1, max: 6, step: .1, value: st.b, format: v => v.toFixed(1), onInput: v => { cancel(); st.b = v; fit(); P.requestDraw(); upd(); } });
     C.title('Rearrangement');
     const tS = C.slider({ label: 'Progress', min: 0, max: 1, step: .001, value: 0, format: v => Math.round(v * 100) + '%',
       onInput: v => { cancel(); st.t = v; setBtn(); P.requestDraw(); } });
@@ -605,7 +787,13 @@ register({
       cancel = tween(2400 * Math.abs(to - from), p => { st.t = lerp(from, to, p); tS.set(st.t); P.draw(); }, setBtn);
     } }]);
     const ro = C.readout(); upd();
-    return () => { cancel(); P.destroy(); };
+    /* guided steps: glide to a state patch {a, b, t}, keeping the controls in sync */
+    const sync = () => { aS.set(st.a); bS.set(st.b); tS.set(st.t); fit(); P.draw(); upd(); setBtn(); };
+    const apply = (patch, immediate) => {
+      cancel();
+      if (immediate) { Object.assign(st, patch); sync(); } else cancel = animateTo(st, patch, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
   }
 });
 
@@ -877,7 +1065,7 @@ function renderHome(app) {
   /* topic lists, one section per level */
   const thumbs = [], levels = h('div', { class: 'wrap levels' });
   for (const [key, L] of Object.entries(LEVELS)) {
-    const live = VIZ.filter(v => v.level === key), total = live.length + PLANNED[key].length;
+    const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
     const list = h('ul', { class: 'topics' });
     for (const v of live) {
       const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
@@ -886,7 +1074,7 @@ function renderHome(app) {
         th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb)),
         h('span', { class: 'go' }, 'Open'))));
     }
-    for (const t of PLANNED[key])
+    for (const t of todo)
       list.append(h('li', { class: 'planned' }, h('div', { class: 'topic' },
         h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
         h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
@@ -935,26 +1123,39 @@ function renderHome(app) {
   return () => { cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
 }
 
+/* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
+   legacy `explain` prose; every part is optional. mount() may return a teardown function
+   (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
 function renderViz(app, v) {
   document.title = v.title + ' | Continuum';
-  const i = VIZ.indexOf(v), prev = VIZ[i - 1], next = VIZ[i + 1];
+  const sib = VIZ.filter(x => x.level === v.level), i = sib.indexOf(v), prev = sib[i - 1], next = sib[i + 1];
   const stage = h('div', { class: 'stage', 'data-coords': '', role: 'img', 'aria-label': 'Interactive visualization: ' + v.title },
     ['tl', 'tr', 'bl', 'br'].map(c => h('span', { class: 'tick ' + c })));
   const panel = h('aside', { class: 'panel', 'aria-label': 'Controls' });
-  const prose = h('div', { class: 'prose', html: v.explain });
+  const body = v.formal != null ? h('div', { class: 'prose' }, h('h2', {}, 'The math'), h('div', { html: v.formal }))
+                                : h('div', { class: 'prose', html: v.explain || '' });
+  const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
+  const check = v.check && v.check.length ? QuickCheck(v.check) : null;
+  const conn = v.links ? Connections(v.links, v.id) : null;
+  let scene = {};
+  const stepper = v.steps && v.steps.length
+    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
+  if (stepper) panel.append(stepper.el);
   const pg = (x, cls, k) => h('a', { class: 'pg ' + cls, href: '#/viz/' + x.id }, h('span', { class: 'k' }, k), h('span', { class: 't' }, x.title));
   app.append(h('article', { class: 'wrap viz lvl-' + v.level },
     h('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' },
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
-    h('header', { class: 'viz-head' },
-      h('h1', { class: 'display' }, v.title), h('p', { class: 'lede' }, v.blurb)),
+    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede),
     h('div', { class: 'workbench' }, stage, panel),
-    prose,
+    body, check, conn,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
-  typeset(prose);
-  return v.mount({ stage, controls: Controls(panel) });
+  typeset(body); if (v.hook) typeset(lede);
+  const ret = v.mount({ stage, controls: Controls(panel) });
+  scene = typeof ret === 'function' ? { destroy: ret } : (ret || {});
+  if (stepper) stepper.start();
+  return () => scene.destroy && scene.destroy();
 }
 
 /* =====================================================================
@@ -975,7 +1176,7 @@ addEventListener('hashchange', route);
 document.querySelectorAll('.nav a, .wordmark').forEach(a => a.addEventListener('click', e => {
   if (location.hash === a.getAttribute('href')) { e.preventDefault(); route(); }
 }));
-$('#footStat').textContent = `${VIZ.length} topics live, ${Object.values(PLANNED).flat().length} in development.`;
+$('#footStat').textContent = `${VIZ.length} topics live, ${Object.values(PLANNED).flat().filter(t => !VIZ.some(v => v.id === slug(t))).length} in development.`;
 route();
 </script>
 </body>
