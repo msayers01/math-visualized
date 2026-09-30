@@ -1,0 +1,38 @@
+/* ---------- Design tokens: "drafting instruments" — midnight ink / cool paper + brass ---------- */
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #F1F3F6; --surface: rgba(255,255,255,.74); --surface-solid: #FFFFFF; --glass: rgba(241,243,246,.8);
+  --text: #121A2B; --muted: #566174; --faint: #8390A3;
+  --line: rgba(18,26,43,.11); --line-strong: rgba(18,26,43,.22); --dot: rgba(18,26,43,.075);
+  --stage: #F8F9FB; --grid: #DCE2EA; --grid-strong: #A3AEBE; --axis: #121A2B;
+  --brass: #8C6A2A; --brass-ink: #FFFFFF;
+  --blue: #1F7FB3; --yellow: #B7860B; --green: #2E8B45; --red: #C8403D; --violet: #6D4BB8;
+  --display: "Sora", "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --serif: "STIX Two Text", Cambria, Georgia, serif;
+  --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1524; --surface: rgba(24,32,52,.7); --surface-solid: #1A2338; --glass: rgba(15,21,36,.74);
+    --text: #ECEFF5; --muted: #9BA5B9; --faint: #6E7990;
+    --line: rgba(236,239,245,.09); --line-strong: rgba(236,239,245,.18); --dot: rgba(236,239,245,.055);
+    --stage: #0C1220; --grid: #1B2740; --grid-strong: #33476B; --axis: #C9D3E2;
+    --brass: #D4B26A; --brass-ink: #171006;
+    --blue: #5CC3E8; --yellow: #F4D35E; --green: #83C98A; --red: #F2766F; --violet: #B39DF0;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1524; --surface: rgba(24,32,52,.7); --surface-solid: #1A2338; --glass: rgba(15,21,36,.74);
+  --text: #ECEFF5; --muted: #9BA5B9; --faint: #6E7990;
+  --line: rgba(236,239,245,.09); --line-strong: rgba(236,239,245,.18); --dot: rgba(236,239,245,.055);
+  --stage: #0C1220; --grid: #1B2740; --grid-strong: #33476B; --axis: #C9D3E2;
+  --brass: #D4B26A; --brass-ink: #171006;
+  --blue: #5CC3E8; --yellow: #F4D35E; --green: #83C98A; --red: #F2766F; --violet: #B39DF0;
+}
+.lvl-school { --lvl: var(--green); }
+.lvl-ugrad  { --lvl: var(--blue); }
+.lvl-grad   { --lvl: var(--red); }
+

@@ -53,7 +53,6 @@
 .lvl-school { --lvl: var(--green); }
 .lvl-ugrad  { --lvl: var(--blue); }
 .lvl-grad   { --lvl: var(--red); }
-
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: inherit; }
 html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 76px); -webkit-text-size-adjust: 100%; }
@@ -147,7 +146,6 @@ a.topic:hover::before { transform: scaleY(1); }
   .topic { grid-template-columns: 88px minmax(0, 1fr); gap: 14px; padding: 12px 6px; }
   .go { display: none; } .numeral { font-size: 2.8rem; } .topic .t { font-size: 1.05rem; } .topic .d { font-size: .9rem; }
 }
-
 /* ---------- Visualization page ---------- */
 .viz { padding-top: 28px; }
 .crumbs { display: flex; flex-wrap: wrap; gap: 10px; font-size: .88rem; color: var(--faint); }
@@ -215,7 +213,6 @@ a.topic:hover::before { transform: scaleY(1); }
 .readout { font-size: .9rem; line-height: 1.7; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line); padding-top: 14px; }
 .readout .k { color: var(--muted); }
 .hint { font-size: .86rem; color: var(--muted); margin: -6px 0 0; line-height: 1.45; }
-
 /* ---------- Prose & pager ---------- */
 .prose { max-width: 68ch; font-family: var(--sans); font-size: 1.08rem; line-height: 1.72; padding: 56px 0 24px; }
 .prose h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.035em; margin: 1.5em 0 .45em; }
@@ -492,6 +489,21 @@ function Controls(host) {
   };
 }
 
+function eig2(a, b, c, d) {
+  const tr = a + d, det = a * d - b * c, disc = tr * tr / 4 - det;
+  if (disc < -1e-9) return { real: false, re: tr / 2, im: Math.sqrt(-disc) };
+  const r = Math.sqrt(Math.max(0, disc)), ls = r < 1e-9 ? [tr / 2] : [tr / 2 + r, tr / 2 - r], out = [];
+  for (const l of ls) {
+    let v;
+    if (Math.abs(b) > 1e-9) v = [b, l - a];
+    else if (Math.abs(c) > 1e-9) v = [l - d, c];
+    else if (r < 1e-9) { out.push({ l, v: [1, 0] }, { l, v: [0, 1] }); continue; }
+    else v = Math.abs(l - a) < 1e-9 ? [1, 0] : [0, 1];
+    const n = Math.hypot(v[0], v[1]); out.push({ l, v: [v[0] / n, v[1] / n] });
+  }
+  return { real: true, list: out };
+}
+
 /* =====================================================================
    REGISTRY
    ===================================================================== */
@@ -600,21 +612,6 @@ register({
 /* =====================================================================
    VISUALIZATION 2 — Linear transformations (undergraduate)
    ===================================================================== */
-function eig2(a, b, c, d) {
-  const tr = a + d, det = a * d - b * c, disc = tr * tr / 4 - det;
-  if (disc < -1e-9) return { real: false, re: tr / 2, im: Math.sqrt(-disc) };
-  const r = Math.sqrt(Math.max(0, disc)), ls = r < 1e-9 ? [tr / 2] : [tr / 2 + r, tr / 2 - r], out = [];
-  for (const l of ls) {
-    let v;
-    if (Math.abs(b) > 1e-9) v = [b, l - a];
-    else if (Math.abs(c) > 1e-9) v = [l - d, c];
-    else if (r < 1e-9) { out.push({ l, v: [1, 0] }, { l, v: [0, 1] }); continue; }
-    else v = Math.abs(l - a) < 1e-9 ? [1, 0] : [0, 1];
-    const n = Math.hypot(v[0], v[1]); out.push({ l, v: [v[0] / n, v[1] / n] });
-  }
-  return { real: true, list: out };
-}
-
 register({
   id: 'linear-transformations', level: 'ugrad',
   title: 'Linear transformations and eigenvectors',
