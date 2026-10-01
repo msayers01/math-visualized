@@ -66,6 +66,10 @@
     "lessons/school/statistical-questions-and-data-displays.js",
     "lessons/school/compound-events-and-tree-diagrams.js",
     "lessons/school/samples-and-populations.js",
+    "lessons/school/two-way-tables-and-conditional-probability.js",
+    "lessons/school/the-normal-distribution.js",
+    "lessons/school/correlation-and-causation.js",
+    "lessons/school/expected-value.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],

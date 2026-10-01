@@ -102,6 +102,10 @@ const ALIGN = [
   { id: 'mean-median-and-spread',      course: 'stats', skill: 'mid', standards: ['6.1.1.3', '7.1.1.4', '9.1.1.9', '9.1.1.13'] },
   { id: 'probability-with-repeated-trials', course: 'stats', skill: 'mid', standards: ['6.1.2.3', '7.1.2.2', '7.1.2.6', '9.1.2.3', '9.1.2.4'] },
   { id: 'pascals-triangle-and-the-galton-board', course: 'stats', skill: 'adv', standards: ['7.1.2.3', '9.1.2.1', '9.1.2.4', '9.1.2.6'] },
+  { id: 'expected-value', course: 'stats', skill: 'mid', standards: ['9.1.2.7', '9.1.2.8'] },
+  { id: 'correlation-and-causation', course: 'stats', skill: 'mid', standards: ['9.1.1.5', '9.1.1.6'] },
+  { id: 'the-normal-distribution', course: 'stats', skill: 'mid', standards: ['9.1.1.7'] },
+  { id: 'two-way-tables-and-conditional-probability', course: 'stats', skill: 'mid', standards: ['9.1.2.2', '9.1.2.3', '9.1.2.5'] },
 
   /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
   { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },
