@@ -26,8 +26,21 @@ a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 
 
 /* Course groups inside a level */
 .course + .course { margin-top: 34px; }
-.course-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 6px; padding: 0 14px 10px; border-bottom: 1px solid var(--line);
+.course-head { margin: 0 0 6px; padding: 0; border-bottom: 1px solid var(--line);
   font-family: var(--display); font-weight: 400; font-size: 1.05rem; letter-spacing: -.025em; }
+/* the course name is a button that opens and closes its lesson list */
+.course-toggle { display: flex; align-items: baseline; gap: 12px; width: 100%; margin: 0; padding: 4px 14px 10px; border: 0; background: none; color: inherit;
+  font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer; }
+.course-toggle:hover .cname { color: var(--brass); }
+.course-toggle:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; border-radius: 3px; }
+.course-toggle .chev { flex: none; align-self: center; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg); transition: transform .2s; }
+.course.open .course-toggle .chev { transform: rotate(45deg); }
+.course-preview { margin: 8px 14px 4px; color: var(--muted); font-size: .9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.course-preview[hidden], .course .topics[hidden] { display: none; }
+.levels-tools { display: flex; justify-content: flex-end; margin: 0 0 6px; }
+.course-all { padding: 6px 14px; font-size: .85rem; }
+.lesson-loading { padding-top: 96px; padding-bottom: 96px; color: var(--muted); }
 .course-head .n { margin-left: auto; font-family: var(--sans); font-size: .8rem; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
 
 /* Lesson finder */

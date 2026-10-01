@@ -2,6 +2,8 @@
    PAGES
    ===================================================================== */
 const NUMERALS = { school: '01', ugrad: '02', grad: '03' };
+/* courses the visitor has opened on the home page (kept while the page stays open) */
+const OPEN_COURSES = new Set();
 
 function renderHome(app) {
   document.title = 'Continuum: mathematics you can move';
@@ -14,7 +16,7 @@ function renderHome(app) {
         h('h1', { class: 'display hero-title' }, h('span', { class: 'line' }, 'Mathematics'), h('span', { class: 'line' }, 'you can move.')),
         h('p', { class: 'hero-sub' }, 'Interactive visualizations from middle school through graduate study. Drag, slide, and watch each idea change shape.'),
         h('div', { class: 'hero-cta' },
-          h('a', { class: 'btn primary', href: '#/viz/linear-transformations' }, 'Start with linear maps'),
+          h('a', { class: 'btn primary', href: '#/viz/slope-and-linear-functions' }, 'Start with slope'),
           h('a', { class: 'btn', href: '#/level/school' }, 'Browse all topics'))),
       h('div', { class: 'instrument', 'aria-hidden': 'true' },
         h('div', { class: 'inst-item inst-matrix' }, h('span', { class: 'k' }, 'Matrix on screen'), h('span', { class: 'matrix' }, cells)),
@@ -22,9 +24,37 @@ function renderHome(app) {
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Eigenvalues'), eigEl)))));
 
   /* Lesson finder, then one section per level with lessons grouped by course in curriculum order.
-     Filtering only hides rows (thumbnails stay mounted), and the filter state lives in the URL hash. */
-  const F = filterFromHash(location.hash), thumbs = [], rows = new Map(), sections = [];
-  const levels = h('div', { class: 'wrap levels', id: 'lessons' });
+     Each course is a collapsible group: closed groups show only their lesson titles, and a group draws its
+     thumbnails (loading the lessons in a split build) the first time it is open. Filtering opens the groups
+     that have matches and only hides rows; the filter state lives in the URL hash. */
+  const F = filterFromHash(location.hash), rows = new Map(), sections = [], allGroups = [], tPlanes = [];
+  let alive = true;
+  const drawThumbs = g => {
+    for (const v of g.items) {
+      if (g.drawn.has(v.id) || rows.get(v.id).hidden) continue;
+      g.drawn.add(v.id);
+      loadLesson(v.id).then(() => {
+        if (!alive || !v.thumb) return;
+        const P = new Plane(g.thumbEls.get(v.id), { span: 3 }); P.onDraw = v.thumb; P.draw(); tPlanes.push(P);
+      }, () => { g.drawn.delete(v.id); if (alive) g.thumbEls.get(v.id).classList.add('empty'); });
+    }
+  };
+  const syncAll = () => {
+    const vis = allGroups.filter(g => !g.el.hidden);
+    allBtn.textContent = vis.length && vis.every(g => g.open) ? 'Collapse all courses' : 'Expand all courses';
+  };
+  const setOpen = (g, open, remember) => {
+    g.open = open; g.list.hidden = !open; g.preview.hidden = open; g.el.classList.toggle('open', open);
+    g.toggle.setAttribute('aria-expanded', String(open));
+    if (remember) { if (open) OPEN_COURSES.add(g.id); else OPEN_COURSES.delete(g.id); }
+    if (open) drawThumbs(g);
+    syncAll();
+  };
+  const allBtn = h('button', { type: 'button', class: 'btn course-all', onclick: () => {
+    const open = !allGroups.filter(g => !g.el.hidden).every(g => g.open);
+    allGroups.forEach(g => { if (!g.el.hidden) setOpen(g, open, true); });
+  } }, 'Expand all courses');
+  const levels = h('div', { class: 'wrap levels', id: 'lessons' }, h('div', { class: 'levels-tools' }, allBtn));
   const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match these filters.'),
     h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter()); finder.refresh(); apply(); } }, 'Clear filters'));
   for (const [key, L] of Object.entries(LEVELS)) {
@@ -33,17 +63,22 @@ function renderHome(app) {
     for (const c of COURSES.filter(c => c.level === key)) {
       const items = live.filter(v => v.course === c.id);
       if (!items.length) continue;
-      const list = h('ul', { class: 'topics' }), n = h('span', { class: 'n' });
+      const list = h('ul', { class: 'topics', id: 'topics-' + c.id }), n = h('span', { class: 'n' }), thumbEls = new Map();
       for (const v of items) {
         const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
-        if (v.thumb) thumbs.push([th, v.thumb]);
+        thumbEls.set(v.id, th);
         const li = h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
           th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v, false, ProgressChip(v).el)),
           h('span', { class: 'go' }, 'Open')));
         rows.set(v.id, li); list.append(li);
       }
-      const el = h('section', { class: 'course', 'aria-label': c.name }, h('h3', { class: 'course-head' }, c.name, n), list);
-      groups.push({ el, items, n }); body.append(el);
+      const toggle = h('button', { type: 'button', class: 'course-toggle', 'aria-controls': 'topics-' + c.id, 'aria-expanded': 'false' },
+        h('span', { class: 'chev', 'aria-hidden': 'true' }), h('span', { class: 'cname' }, c.name), n);
+      const preview = h('p', { class: 'course-preview' }, items.map(v => v.title).join(' \u00b7 '));
+      const el = h('section', { class: 'course', 'aria-label': c.name }, h('h3', { class: 'course-head' }, toggle), preview, list);
+      const g = { id: c.id, el, items, n, list, toggle, preview, thumbEls, drawn: new Set(), open: false };
+      toggle.addEventListener('click', () => setOpen(g, !g.open, true));
+      groups.push(g); allGroups.push(g); body.append(el);
     }
     let planned = null;
     if (todo.length) {
@@ -72,6 +107,7 @@ function renderHome(app) {
         for (const v of g.items) { const ok = matches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
         g.el.hidden = !k; n += k;
         g.n.textContent = k === g.items.length ? `${k} ${k === 1 ? 'lesson' : 'lessons'}` : `${k} of ${g.items.length}`;
+        setOpen(g, on ? k > 0 : OPEN_COURSES.has(g.id), false);
       }
       if (S.planned) S.planned.hidden = on;
       S.el.hidden = on && !n; shown += n;
@@ -84,7 +120,6 @@ function renderHome(app) {
   const finder = Finder(F, apply);
   app.append(finder.el, levels);
   apply();
-  const tPlanes = thumbs.map(([el, fn]) => { const P = new Plane(el, { span: 3 }); P.onDraw = fn; P.draw(); return P; });
 
   /* hero: a grid cycling through linear maps, with a live readout */
   const P = new Plane(heroCanvas, { span: 3.4, transparent: true });
@@ -117,7 +152,7 @@ function renderHome(app) {
     const loop = now => { if (t0 === null) t0 = now; M = matAt(now - t0); show(M); P.draw(); raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop);
   }
-  return () => { cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
+  return () => { alive = false; cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
 }
 
 /* "Standards alignment" section of a lesson page: each tagged benchmark with its full wording. */
@@ -172,6 +207,7 @@ function renderViz(app, v, startStep = 0) {
   const ret = v.mount({ stage, controls: Controls(panel) });
   scene = typeof ret === 'function' ? { destroy: ret } : (ret || {});
   if (stepper) stepper.start(clamp(startStep, 0, v.steps.length - 1));
+  if (next && !isLoaded(next)) setTimeout(() => loadLesson(next.id).catch(() => {}), 2500);   /* split build: warm the Next lesson */
   return () => scene.destroy && scene.destroy();
 }
 
