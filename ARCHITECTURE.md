@@ -195,6 +195,10 @@ Direction: **precision instruments, modern and sleek**. Midnight ink or cool pap
 | `similarity-and-scaling` | school | Similarity and scaling | Dilation from a draggable center O with scale factor k (−3..3) of a triangle with draggable corners, or a square (k×k copy grid at integer k); lengths, angles, area ratios. Steps set `shape` and animate `k, ox, oy`. |
 | `quadratics-and-the-parabola` | school | Quadratics and the parabola | Vertex form `a(x-h)²+k`: drag the vertex and the ring one step to its right; axis of symmetry, zeros, standard form readout. Steps animate `a, h, k`. |
 | `the-unit-circle-and-trig-waves` | school | The unit circle and trig waves | Two stacked panes (circle above, sine/cosine wave below); drag either pane to set θ; Play, snap to 15°, cosine toggle. Steps animate `th` and set `showCos`. |
+| `what-is-a-function` | school | What is a function? | Two panes: a function machine and a graph. Rules 2x−1, −x+4, x/2+3, x², and the circle x²+y²=25 (not a function: two outputs for one input). Drag the input marker (snaps to table inputs), tap table rows, vertical-line test toggle, table with plotted points, equal-steps staircase with a step-size slider. Steps set `rule, x, tbl, steps, vline, dx`. |
+| `scatter-plots-and-lines-of-fit` | school | Scatter plots and lines of fit | Six hand-written datasets (study time, car age, shoe size, thrown ball, pizza delivery with an outlier, geyser with two clusters). Fit a line with two ringed handles or sliders, red residual segments, average-miss readout against a flat-line baseline, "Show a good line" (least squares), draggable prediction guide with slope and intercept read in context. Steps set `ds` (string flag) and `m, b, x`. |
+| `square-roots-and-irrational-numbers` | school | Square roots and irrational numbers | Two panes: a square of area n (1 to 50) and a number line with a four-level zoom (1 to 0.001). Lower and upper decimal approximations whose squares straddle n; rational (perfect square) versus irrational; first 12 digits via BigInt ("a peek, not a proof"); compare the root of n with another root or a decimal; estimates of a + the root of n. n and the zoom are integers set instantly, the rest animate. |
+| `exponents-and-scientific-notation` | school | Exponents and scientific notation | Two panes: a logarithmic ruler of real sizes (virus to Sun) and a scientific-notation builder with exponent properties, multiply, divide and compare. |
 | `pythagorean-theorem` | school | The Pythagorean theorem | Legs a, b sliders; rearrangement progress; play/reverse. Three triangles translate (no rotation) between the c² and a²+b² arrangements. Full lesson format (hook, 4 steps, formal math, 2 checks, links); reference implementation. |
 | `linear-transformations` | ugrad | Linear transformations and eigenvectors | Matrix entry sliders; drag î/ĵ tips; presets; determinant area; eigenvector lines via `eig2()`. |
 | `conformal-maps` | grad | Conformal maps of the complex plane | Six maps (z², eᶻ, 1/z, sin z, Joukowski, Cayley); rectangular/polar grids; draggable probe showing local scale/rotation from f′(z₀). |
@@ -213,10 +217,10 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
   | Batch | Lesson (proposed id) | Benchmarks | Status |
   |---|---|---|---|
-  | 1 (Grade 8) | `what-is-a-function` | 8.3.7.3, 8.3.7.4 | being built |
-  | 1 (Grade 8) | `scatter-plots-and-lines-of-fit` | 8.1.1.2 to 8.1.1.4 | being built |
-  | 1 (Grade 8) | `square-roots-and-irrational-numbers` | 8.3.5.1, 8.3.5.2, 8.3.6.4 | being built |
-  | 1 (Grade 8) | `exponents-and-scientific-notation` | 8.3.5.3 to 8.3.5.5 | being built |
+  | 1 (Grade 8) | `what-is-a-function` | 8.3.7.3, 8.3.7.4 | built |
+  | 1 (Grade 8) | `scatter-plots-and-lines-of-fit` | 8.1.1.2 to 8.1.1.4 | built |
+  | 1 (Grade 8) | `square-roots-and-irrational-numbers` | 8.3.5.1, 8.3.5.2, 8.3.6.4 | built |
+  | 1 (Grade 8) | `exponents-and-scientific-notation` | 8.3.5.3 to 8.3.5.5 | built |
   | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1 to 8.3.6.3 | planned |
   | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | planned |
   | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | planned |

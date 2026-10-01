@@ -39,7 +39,7 @@
       With start value \(P_0\) and growth rate \(r\) per period:
       \[ \text{linear: } L(t)=P_0(1+rt), \qquad \text{exponential: } P(t)=P_0(1+r)^t. \]</p>
       <h3>The growth factor</h3>
-      <p>Write \(b=1+r\). Each period multiplies the amount by \(b\), so \(P(t+1)/P(t)=b\) for every \(t\). Growth has \(b>1\). Decay has \(0<b<1\). A rate of \(-30\%\) means \(b=0.7\).</p>
+      <p>Write \(b=1+r\). Each period multiplies the amount by \(b\), so \(P(t+1)/P(t)=b\) for every \(t\). Growth has \(b>1\). Decay has \(0&lt;b&lt;1\). A rate of \(-30\%\) means \(b=0.7\).</p>
       <h3>Doubling time and half-life</h3>
       <p>Solving \(P_0 b^t = 2P_0\) gives
       \[ t_{\text{double}} = \frac{\ln 2}{\ln(1+r)} \approx \frac{70}{100\,r}, \]

@@ -105,7 +105,7 @@
       <p><em>Why.</em> Suppose \(\sqrt n=\tfrac pq\) in lowest terms. Then \(p^2=nq^2\), so \(q^2\) divides \(p^2\). But \(p\) and \(q\) share no prime factor, so \(p^2\) and \(q^2\) share none either, which forces \(q^2=1\). Then \(\sqrt n=p\) is a whole number. So when \(\sqrt n\) is not a whole number, it is not rational. For example \(1<\sqrt2<2\), so \(\sqrt2\) is not a whole number, so it is irrational.</p>
       <p>Digits alone cannot show this. No list of digits proves that a decimal never repeats, so the argument above is what we rely on.</p>
       <h3>Rational approximations</h3>
-      <p>For positive numbers, \(a<b\) exactly when \(a^2<b^2\). So squaring decimals tells us where an irrational square root sits. Since \(2.2^2=4.84<5<5.29=2.3^2\), we know \(2.2<\sqrt5<2.3\). Each extra decimal place shrinks the bracket by a factor of \(10\):
+      <p>For positive numbers, \(a&lt;b\) exactly when \(a^2&lt;b^2\). So squaring decimals tells us where an irrational square root sits. Since \(2.2^2=4.84<5<5.29=2.3^2\), we know \(2.2<\sqrt5<2.3\). Each extra decimal place shrinks the bracket by a factor of \(10\):
       \[ 2.2<\sqrt5<2.3,\qquad 2.23<\sqrt5<2.24,\qquad 2.236<\sqrt5<2.237. \]
       The squares of these decimals get closer to \(5\) but never equal it. For instance \(2.236^2=4.999696<5<5.004169=2.237^2\).</p>
       <h3>Locate, compare, and estimate</h3>

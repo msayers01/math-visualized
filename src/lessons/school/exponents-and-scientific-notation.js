@@ -133,7 +133,7 @@
   register({
     id: 'exponents-and-scientific-notation', level: 'school',
     title: 'Exponents and scientific notation',
-    blurb: 'Slide along a ruler of powers of ten, write huge and tiny numbers with one short exponent, and multiply them by adding exponents.',
+    blurb: 'Slide along a ruler of powers of ten, write huge and tiny numbers in scientific notation, and multiply them by adding exponents.',
     thumb(c, p) {
       const pal = p.pal; p.cx = 0; p.cy = 0; p.span = 3;
       const d = 1.1, ay = -1.5;
@@ -154,7 +154,7 @@
     hook: String.raw`The Sun is about 1,400,000,000 meters across and a virus is about 0.0000001 meters. How can you write numbers like these without counting zeros, and still multiply them?`,
     steps: [
       { title: 'Count the factors',
-        text: String.raw`<p>\(10^3\) is three factors of \(10\), shown in <b>green</b>. \(10^4\) is four factors, shown in <b>red</b>. Multiply them and you have \(3+4=7\) factors, so \(10^3\cdot10^4=10^7=10{,}000{,}000\).</p><p>On the line above, each tick to the right is one more factor of \(10\). Multiplying hops right.</p><p>Press <b>Divide</b>. Matching factors above and below the bar cancel. \(10^3\div10^4\) cancels three pairs and leaves one factor below the bar: \(10^{-1}=\tfrac1{10}\). Now slide <b>b</b> down to 3. Everything cancels and \(10^0=1\).</p>`,
+        text: String.raw`<p>\(10^3\) is three factors of \(10\), shown in <b>green</b>. \(10^4\) is four factors, shown in <b>red</b>. Together that is \(3+4=7\) factors, so \(10^3\cdot10^4=10^7=10{,}000{,}000\). On the line above, each tick to the right is one more factor of \(10\).</p><p>Press <b>Divide</b>. Matching factors above and below the bar cancel. \(10^3\div10^4\) cancels three pairs and leaves one factor under the bar: \(10^{-1}=\tfrac1{10}\). Slide <b>b</b> down to 3 and everything cancels: \(10^0=1\). Then try <b>Power</b> and <b>Zero &amp; negative</b>.</p>`,
         set: { view: 'props', rule: 'mul', a: 3, b: 4 } },
       { title: 'Very large, very small',
         text: String.raw`<p>Each tick on the top ruler is ten times bigger than the one before it. Sizes in meters run from a virus, about \(10^{-7}\), to the Sun, about \(1.4\times10^{9}\). That is about \(10^{16}\) times bigger.</p><p>Tap an object to load its size below. Drag the ruler to slide it, or use <b>Zoom</b> to look closer.</p>`,
@@ -167,34 +167,43 @@
         set: { view: 'ops', op: 'mul', m1: 4, n1: 3, m2: 5, n2: 2 } }
     ],
     formal: String.raw`
-      <p>Let \(b\) be a nonzero number and let \(m\) and \(n\) be integers. Then
-      \[ b^m\cdot b^n=b^{m+n},\qquad \frac{b^m}{b^n}=b^{m-n},\qquad (b^m)^n=b^{mn},\qquad b^0=1,\qquad b^{-n}=\frac1{b^n}. \]</p>
+      <p>These rules hold for every nonzero base \(b\) and all integers \(m\) and \(n\).<br>
+      <b>Product.</b> \(b^m\cdot b^n=b^{m+n}\)<br>
+      <b>Quotient.</b> \(\dfrac{b^m}{b^n}=b^{m-n}\)<br>
+      <b>Power of a power.</b> \((b^m)^n=b^{mn}\)<br>
+      <b>Zero exponent.</b> \(b^0=1\)<br>
+      <b>Negative exponent.</b> \(b^{-n}=\dfrac1{b^n}\)</p>
       <h3>Why the product and quotient rules work</h3>
       <p>For a positive integer \(m\), \(b^m\) means \(m\) factors of \(b\). Multiplying \(m\) factors by \(n\) more factors gives \(m+n\) factors. In a quotient, each factor above the bar cancels one below it, because \(b\div b=1\). That leaves \(m-n\) factors. The power rule counts \(n\) groups of \(m\) factors, which is \(mn\) factors.</p>
       <h3>Zero and negative exponents</h3>
-      <p>Counting down one exponent divides by the base: \(10^3=1000\), \(10^2=100\), \(10^1=10\). The pattern continues with \(10^0=1\), \(10^{-1}=\tfrac1{10}\), \(10^{-2}=\tfrac1{100}\). It is also the only choice that keeps the quotient rule true. Since \(\frac{b^3}{b^3}=b^{3-3}=b^0\) and any nonzero number divided by itself is \(1\), we need \(b^0=1\). Since \(\frac{b^2}{b^5}=b^{-3}\) and also \(\frac{b^2}{b^5}=\frac1{b^3}\), we need \(b^{-3}=\frac1{b^3}\).</p>
+      <p>Counting down one exponent divides by the base: \(10^3=1000\), \(10^2=100\), \(10^1=10\). The pattern continues with \(10^0=1\), \(10^{-1}=\tfrac1{10}\), \(10^{-2}=\tfrac1{100}\).</p>
+      <p>It is also the only choice that keeps the quotient rule true. Since \(\dfrac{b^3}{b^3}=b^{3-3}=b^0\) and any nonzero number divided by itself is \(1\), we need \(b^0=1\). Since \(\dfrac{b^2}{b^5}=b^{-3}\) and also \(\dfrac{b^2}{b^5}=\dfrac1{b^3}\), we need \(b^{-3}=\dfrac1{b^3}\).</p>
       <h3>Using the rules</h3>
       <p>\(2^5\cdot2^{-3}=2^{5+(-3)}=2^2=4\). Counting agrees: five factors of 2 above the bar and three below, so three pairs cancel and two factors of 2 remain. Also \((10^{-2})^3=10^{-6}=\tfrac1{1{,}000{,}000}\).</p>
       <p>A few slips to avoid. Add exponents only when you multiply powers of the <em>same</em> base: \(10^3+10^4\ne10^7\) and \(2^3\cdot3^2\ne6^5\). A negative exponent does not make the number negative: \(10^{-2}=0.01\).</p>
       <h3>Scientific notation</h3>
-      <p>A number is in scientific notation when it is written
-      \[ a\times10^{n},\qquad 1\le a<10,\quad n\text{ an integer}. \]
-      The coefficient \(a\) holds the digits and the power of ten holds the size. To write \(a\times10^n\) in standard form, move the decimal point \(n\) places right if \(n>0\) and \(|n|\) places left if \(n<0\). To go the other way, move the point until exactly one nonzero digit is on its left. A large number needs \(n>0\) and a number between 0 and 1 needs \(n<0\).
-      \[ 320{,}000=3.2\times10^{5},\qquad 0.00032=3.2\times10^{-4}. \]
-      Real measurements are rounded, so scientific notation is a natural way to write an approximation. The Sun's diameter is about \(1.4\times10^9\) meters. The coefficient keeps only the digits worth keeping.</p>
+      <p>A number is in <em>scientific notation</em> when it is written
+      \[ a\times10^{n}, \quad 1\le a<10, \quad n \text{ an integer}. \]
+      The coefficient \(a\) holds the digits and the power of ten holds the size.</p>
+      <p>To write \(a\times10^n\) in standard form, move the decimal point \(n\) places right if \(n>0\) and \(|n|\) places left if \(n<0\). To go the other way, move the point until exactly one nonzero digit is on its left, and count the places. A large number needs \(n>0\). A number between 0 and 1 needs \(n<0\). For example, \(320{,}000=3.2\times10^{5}\) and \(0.00032=3.2\times10^{-4}\).</p>
+      <p>Real measurements are rounded, so scientific notation is a natural way to write an approximation. The Sun's diameter is about \(1.4\times10^9\) meters. The coefficient keeps only the digits worth keeping.</p>
       <h3>Comparing</h3>
-      <p>When both coefficients are between 1 and 10, compare the exponents first: the number with the larger exponent is larger. If the exponents are equal, the larger coefficient wins. So
-      \[ 4\times10^{3}>5\times10^{2},\qquad 6.1\times10^{5}<6.3\times10^{5},\qquad 2\times10^{-3}>9\times10^{-4}. \]
-      The symbols are \(<\), \(>\), \(=\), \(\le\) and \(\ge\). The statement \(x\le y\) is true when \(x<y\) or \(x=y\), and \(x\ge y\) is true when \(x>y\) or \(x=y\).</p>
+      <p>When both coefficients are between 1 and 10, compare the exponents first. The number with the larger exponent is larger. If the exponents are equal, the larger coefficient wins.<br>
+      \(4\times10^{3}>5\times10^{2}\), because \(3>2\).<br>
+      \(6.1\times10^{5}<6.3\times10^{5}\), because the exponents match and \(6.1<6.3\).<br>
+      \(2\times10^{-3}>9\times10^{-4}\), because \(-3>-4\).</p>
+      <p>The symbols are \(<\), \(>\), \(=\), \(\le\) and \(\ge\). The statement \(x\le y\) is true when \(x&lt;y\) or \(x=y\). The statement \(x\ge y\) is true when \(x>y\) or \(x=y\).</p>
       <h3>Multiplying and dividing</h3>
       <p>Group the coefficients and the powers of ten, then use the exponent rules:
-      \[ (a\times10^{m})(c\times10^{n})=(ac)\times10^{m+n},\qquad \frac{a\times10^{m}}{c\times10^{n}}=\frac ac\times10^{m-n}. \]
-      The product \(ac\) can be \(10\) or more, and the quotient \(a/c\) can be below \(1\), so finish by writing the coefficient between 1 and 10:
-      \[ 20\times10^{5}=2\times10^{1}\times10^{5}=2\times10^{6},\qquad 0.8\times10^{1}=8\times10^{-1}\times10^{1}=8\times10^{0}. \]
-      Because \(1\le a,c<10\), the product is below \(100\) and the quotient is between \(0.1\) and \(10\), so the exponent changes by at most 1.</p>
-      <p>Light travels about \(3\times10^{8}\) meters per second and a year is about \(3.2\times10^{7}\) seconds, so light covers about \((3\times10^{8})(3.2\times10^{7})=9.6\times10^{15}\) meters in a year.</p>
+      \[ (a\times10^{m})(c\times10^{n}) = (ac)\times10^{m+n}, \]
+      \[ \frac{a\times10^{m}}{c\times10^{n}} = \frac ac\times10^{m-n}. \]</p>
+      <p>The product \(ac\) can be 10 or more, and the quotient \(a/c\) can be below 1. Then finish by writing the coefficient between 1 and 10:
+      \[ 20\times10^{5} = 2\times10^{1}\times10^{5} = 2\times10^{6}, \]
+      \[ 0.8\times10^{1} = 8\times10^{-1}\times10^{1} = 8\times10^{0}. \]
+      Because \(1\le a,c<10\), the product is below 100 and the quotient is between 0.1 and 10. So the exponent changes by at most 1.</p>
+      <p>Light travels about \(3\times10^{8}\) meters per second and a year is about \(3.2\times10^{7}\) seconds. In a year light covers about \((3\times10^{8})(3.2\times10^{7})=9.6\times10^{15}\) meters.</p>
       <h3>How calculators and spreadsheets show it</h3>
-      <p>A screen cannot raise digits, so it writes the power of ten after an E (or e): \(3.2\times10^5\) appears as <b>3.2E5</b>, and \(3.2\times10^{-4}\) as <b>3.2E-4</b>. Some screens add a plus sign, as in <b>3.2E+5</b>. The E means "times ten to the power". It is not Euler's number \(e\approx2.718\). A result too large or too small for the screen switches to this form automatically.</p>`,
+      <p>A screen cannot raise digits, so it writes the power of ten after an E (or e). \(3.2\times10^5\) appears as <b>3.2E5</b>, and \(3.2\times10^{-4}\) as <b>3.2E-4</b>. Some screens add a plus sign, as in <b>3.2E+5</b>. The E means "times ten to the power". It is not Euler's number \(e\approx2.718\). A result too large or too small for the screen switches to this form automatically.</p>`,
     check: [
       { q: String.raw`Which expression is equivalent to \(2^{5}\cdot2^{-3}\)?`,
         choices: [String.raw`\(2^{-15}\)`, String.raw`\(2^{2}\)`, String.raw`\(2^{8}\)`, String.raw`\(2^{-2}\)`], answer: 1,
@@ -443,14 +452,14 @@
       const sciBottom = (c, p) => {
         const pal = p.pal, W = p.w, H = p.h, u = clamp(H / 260, .78, 1.4), m = clamp(st.m, 1, 9.9), n = st.n, D = decim(m, n), sel = selObj();
         txt(c, sel >= 0 ? `${OBJ[sel].name} (${OBJ[sel].what}) in meters, about` : 'The same number written two ways', W / 2, H * .06, 12.5 * u, pal.muted, { weight: 500, maxW: W - 24 });
-        rich(c, [T(D.text, pal.text), T('  =  ', pal.muted), ...sci(D.ms, n, pal.green, pal.red, pal.text)], W / 2, H * .16, 22 * u, { maxW: W - 24 });
+        rich(c, [T(D.text, pal.text), T('  =  ', pal.muted), ...sci(D.ms, n, pal.green, pal.red, pal.text)], W / 2, H * .15, 22 * u, { maxW: W - 24 });
 
         const nC = D.cells.length, padX = 14, gB = D.pt === D.ob ? [D.pt] : [D.pt, D.ob], gapF = .5;
         const pitch = Math.min(38, (W - 2 * padX) / (nC + gB.length * gapF)), gw = pitch * gapF;
         const leftOf = i => sx + i * pitch + gw * gB.filter(b => b <= i).length;
         const total = nC * pitch + gw * gB.length, sx = (W - total) / 2;
         const bx = b => leftOf(b) - gw / 2;
-        const cellW = pitch * .86, cellH = Math.min(pitch * 1.25, H * .17), stripY = H * .53, top = stripY - cellH / 2, base = stripY + cellH / 2 - 6;
+        const cellW = pitch * .86, cellH = Math.min(pitch * 1.25, H * .17), stripY = H * .55, top = stripY - cellH / 2, base = stripY + cellH / 2 - 6;
 
         D.cells.forEach((ch, i) => {
           const x = leftOf(i) + (pitch - cellW) / 2, kd = D.kinds[i];
@@ -570,12 +579,13 @@
         redraw();
       };
 
-      let ruleBtns, opBtns, aS, bS, paS, pbS, pnS, zoomS, cenS, mS, nS, m1S, n1S, m2S, n2S;
+      let pick, ruleBtns, opBtns, aS, bS, paS, pbS, pnS, zoomS, cenS, mS, nS, m1S, n1S, m2S, n2S;
       const gRule = grab(() => {
         C.title('Exponent rule');
         ruleBtns = C.buttons([
           { label: 'Multiply', onClick: () => setRule('mul') }, { label: 'Divide', onClick: () => setRule('div') },
-          { label: 'Power', onClick: () => setRule('pow') }, { label: 'Pattern', onClick: () => setRule('pat') }]);
+          { label: 'Power', onClick: () => setRule('pow') }, { label: 'Zero & negative', onClick: () => setRule('pat') }]);
+        C.hint('Pick a rule, then slide the exponents.');
       });
       const gAB = grab(() => {
         aS = C.slider({ label: 'First exponent a', min: -6, max: 6, step: 1, value: st.a, format: iFmt, onInput: editInt('a') });
@@ -600,7 +610,8 @@
         C.title('Your number');
         mS = C.slider({ label: 'Coefficient a', min: 1, max: 9.9, step: .1, value: st.m, format: v => v.toFixed(1), onInput: editNum('m') });
         nS = C.slider({ label: 'Exponent n', min: -9, max: 9, step: 1, value: st.n, format: iFmt, onInput: editInt('n') });
-        C.hint('Tap an object on the ruler to load its size. Drag the ruler to slide it.');
+        pick = C.select({ label: 'Or load an object\'s size', value: '', onChange: v => { if (v !== '') loadObj(+v); } , options: [{ value: '', label: 'Choose an object' }, ...OBJ.map((o, i) => ({ value: String(i), label: o.name }))] });
+        C.hint('You can also tap an object on the ruler. Drag the ruler to slide it.');
       });
       const gOps = grab(() => {
         opBtns = C.buttons([
@@ -625,10 +636,16 @@
         aS.set(st.a); bS.set(st.b); paS.set(st.pa); pbS.set(st.pb); pnS.set(st.pn);
         zoomS.set(st.w); cenS.set(st.c); mS.set(st.m); nS.set(st.n);
         m1S.set(st.m1); n1S.set(st.n1); m2S.set(st.m2); n2S.set(st.n2);
+        pick.value = selObj() >= 0 ? String(selObj()) : '';
         ctl(); P1.draw(); P2.draw(); upd();
       };
       const setRule = r => { cancel(); st.rule = r; sync(); };
       const setOp = o => { cancel(); st.op = o; fitOps(); sync(); };
+      const loadObj = i => {
+        cancel(); const o = OBJ[i];
+        st.n = o.n; nS.set(o.n);
+        cancel = animateTo(st, { m: o.m }, 450, sync);
+      };
       const goWin = (cc, ww) => { cancel(); cancel = animateTo(st, { c: cc, w: ww }, 700, sync); };
 
       /* ---------- readout ---------- */
@@ -690,12 +707,7 @@
         move: (hd, x) => {
           if (!drag) {
             drag = { x0: x, c0: st.c, moved: false };
-            if (typeof hd === 'number') {
-              cancel(); const o = OBJ[hd];
-              st.n = o.n; nS.set(o.n);
-              cancel = animateTo(st, { m: o.m }, 450, sync);
-              return;
-            }
+            if (typeof hd === 'number') { loadObj(hd); return; }
           }
           if (!drag.moved && Math.abs(x - drag.x0) < 6) return;
           drag.moved = true; cancel();
