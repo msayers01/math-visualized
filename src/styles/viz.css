@@ -52,7 +52,7 @@
 .btn.primary { background: var(--brass); border-color: var(--brass); color: var(--brass-ink); }
 .btn.primary:hover { filter: brightness(1.08); color: var(--brass-ink); }
 .ctl.select { display: flex; flex-direction: column; gap: 6px; }
-.ctl select { -webkit-appearance: none; appearance: none; font: inherit; font-size: .92rem; padding: 9px 36px 9px 12px; border-radius: 4px;
+.ctl select, .fsel { -webkit-appearance: none; appearance: none; font: inherit; font-size: .92rem; padding: 9px 36px 9px 12px; border-radius: 4px;
   border: 1px solid var(--line-strong); color: var(--text); min-height: 40px; cursor: pointer;
   background: var(--stage) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238390A3' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center / 12px; }
 .ctl.toggle { display: flex; align-items: center; gap: 12px; }

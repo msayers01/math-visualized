@@ -21,31 +21,69 @@ function renderHome(app) {
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Determinant'), detEl),
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Eigenvalues'), eigEl)))));
 
-  /* topic lists, one section per level */
-  const thumbs = [], levels = h('div', { class: 'wrap levels' });
+  /* Lesson finder, then one section per level with lessons grouped by course in curriculum order.
+     Filtering only hides rows (thumbnails stay mounted), and the filter state lives in the URL hash. */
+  const F = filterFromHash(location.hash), thumbs = [], rows = new Map(), sections = [];
+  const levels = h('div', { class: 'wrap levels', id: 'lessons' });
+  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match these filters.'),
+    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter()); finder.refresh(); apply(); } }, 'Clear filters'));
   for (const [key, L] of Object.entries(LEVELS)) {
     const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
-    const list = h('ul', { class: 'topics' });
-    for (const v of live) {
-      const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
-      if (v.thumb) thumbs.push([th, v.thumb]);
-      list.append(h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
-        th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb)),
-        h('span', { class: 'go' }, 'Open'))));
+    const body = h('div', { class: 'level-body' }), groups = [];
+    for (const c of COURSES.filter(c => c.level === key)) {
+      const items = live.filter(v => v.course === c.id);
+      if (!items.length) continue;
+      const list = h('ul', { class: 'topics' }), n = h('span', { class: 'n' });
+      for (const v of items) {
+        const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
+        if (v.thumb) thumbs.push([th, v.thumb]);
+        const li = h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
+          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v)),
+          h('span', { class: 'go' }, 'Open')));
+        rows.set(v.id, li); list.append(li);
+      }
+      const el = h('section', { class: 'course', 'aria-label': c.name }, h('h3', { class: 'course-head' }, c.name, n), list);
+      groups.push({ el, items, n }); body.append(el);
     }
-    for (const t of todo)
-      list.append(h('li', { class: 'planned' }, h('div', { class: 'topic' },
-        h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
-        h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
-        h('span', { class: 'go' }, 'Soon'))));
-    levels.append(h('section', { class: 'level lvl-' + key, id: 'level-' + key },
+    let planned = null;
+    if (todo.length) {
+      planned = h('section', { class: 'course', 'aria-label': 'In development' }, h('h3', { class: 'course-head' }, 'In development'),
+        h('ul', { class: 'topics' }, todo.map(t => h('li', { class: 'planned' }, h('div', { class: 'topic' },
+          h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
+          h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
+          h('span', { class: 'go' }, 'Soon'))))));
+      body.append(planned);
+    }
+    const count = h('p', { class: 'count' });
+    const el = h('section', { class: 'level lvl-' + key, id: 'level-' + key },
       h('div', { class: 'level-head' },
         h('span', { class: 'numeral', 'aria-hidden': 'true' }, NUMERALS[key]),
-        h('div', {}, h('h2', { class: 'display' }, L.name), h('p', { class: 'desc' }, L.desc),
-          h('p', { class: 'count' }, `${live.length} of ${total} topics ready`))),
-      list));
+        h('div', {}, h('h2', { class: 'display' }, L.name), h('p', { class: 'desc' }, L.desc), count)),
+      body);
+    levels.append(el); sections.push({ el, live, total, groups, planned, count });
   }
-  app.append(levels);
+  levels.append(empty);
+  const apply = () => {
+    const on = filterActive(F); let shown = 0;
+    for (const S of sections) {
+      let n = 0;
+      for (const g of S.groups) {
+        let k = 0;
+        for (const v of g.items) { const ok = matches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
+        g.el.hidden = !k; n += k;
+        g.n.textContent = k === g.items.length ? `${k} ${k === 1 ? 'lesson' : 'lessons'}` : `${k} of ${g.items.length}`;
+      }
+      if (S.planned) S.planned.hidden = on;
+      S.el.hidden = on && !n; shown += n;
+      S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
+    }
+    empty.hidden = !on || shown > 0;
+    const hash = filterToHash(F);
+    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) history.replaceState(null, '', hash);
+  };
+  const finder = Finder(F, apply);
+  app.append(finder.el, levels);
+  apply();
   const tPlanes = thumbs.map(([el, fn]) => { const P = new Plane(el, { span: 3 }); P.onDraw = fn; P.draw(); return P; });
 
   /* hero: a grid cycling through linear maps, with a live readout */
@@ -82,6 +120,18 @@ function renderHome(app) {
   return () => { cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
 }
 
+/* "Standards alignment" section of a lesson page: each tagged benchmark with its full wording. */
+function Alignment(v) {
+  if (!v.standards.length) return null;
+  return h('section', { class: 'align', 'aria-label': 'Standards alignment' }, h('h2', {}, 'Standards alignment'),
+    h('p', { class: 'align-note' }, 'Minnesota K\u201312 Academic Standards in Mathematics (2022). Select a code to see every lesson that addresses it.'),
+    h('ul', { class: 'align-list' }, v.standards.map(c => {
+      const s = strandOf(c), a = anchorOf(c);
+      return h('li', { class: 'align-item', 'data-strand': s.id }, StdChip(c, true),
+        h('div', {}, h('p', { class: 'bench' }, STANDARDS[c]), h('p', { class: 'anc' }, s.name + ' \u00b7 ' + a.name)));
+    })));
+}
+
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
    legacy `explain` prose; every part is optional. mount() may return a teardown function
    (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
@@ -96,6 +146,7 @@ function renderViz(app, v) {
   const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
   const check = v.check && v.check.length ? QuickCheck(v.check) : null;
   const conn = v.links ? Connections(v.links, v.id) : null;
+  const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
     ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
@@ -105,9 +156,10 @@ function renderViz(app, v) {
     h('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' },
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
-    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede),
+    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede,
+      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#/?course=' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true))),
     h('div', { class: 'workbench' }, stage, panel),
-    body, check, conn,
+    body, check, conn, align,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
   typeset(body); if (v.hook) typeset(lede);
