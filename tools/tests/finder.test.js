@@ -206,6 +206,8 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   await dl.page.goto(URL + '#proportional-relationships.2'); await dl.page.waitForSelector('.stage canvas');
   check('a lesson link opens the lesson at its step', (await dl.page.textContent('h1')) === 'Proportional relationships' && (await dl.page.textContent('.steps-n')) === '2 / 4');
   if (SPLIT) check('a lesson link fetches only that lesson', seen.length === 1 && seen[0] === 'proportional-relationships', seen.join(','));
+  await dl.page.waitForTimeout(500);
+  check('without MathJax a lesson shows readable math, not raw TeX', !/\\\(|\\\[/.test(await dl.page.evaluate(() => document.querySelector('#app').innerText)));
   check('no errors opening a lesson link', dl.errs.length === 0, dl.errs.join(' | '));
   await dl.c.close();
   if (SPLIT) {

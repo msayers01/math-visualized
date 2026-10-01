@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Continuum: mathematics you can move</title>
+<meta name="description" content="Interactive, 3Blue1Brown-style math visualizations with guided lessons, from middle school through graduate study.">
+<meta property="og:title" content="Continuum: mathematics you can move">
+<meta property="og:description" content="Interactive math visualizations with guided lessons and exit tickets, aligned to the Minnesota 2022 standards.">
+<meta name="theme-color" content="#F1F3F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1524" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1524'/%3E%3Cpath d='M22 10.5A8 8 0 1 0 22 21.5' fill='none' stroke='%23D4B26A' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=STIX+Two+Text:ital@1&display=swap" rel="stylesheet">
@@ -14,7 +20,7 @@
     startup: { typeset: false }
   };
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer onerror="window.__mjFail = true"></script>
 <style>
 /* ---------- Design tokens: "drafting instruments" — midnight ink / cool paper + brass ---------- */
 :root {
@@ -242,8 +248,8 @@ a.topic:hover::before { transform: scaleY(1); }
 .steps-k { font-family: var(--display); font-size: .95rem; font-weight: 500; letter-spacing: -.02em; }
 .steps-n { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .dots { display: flex; gap: 6px; }
-.dot { flex: 1; height: 22px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
-.dot::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; border-radius: 2px; background: var(--line-strong); transition: background .2s; }
+.dot { flex: 1; height: 30px; padding: 0; border: 0; background: transparent; cursor: pointer; position: relative; }
+.dot::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; height: 2px; border-radius: 2px; background: var(--line-strong); transition: background .2s; }
 .dot.done::before { background: var(--brass); opacity: .5; }
 .dot.on::before { background: var(--brass); }
 .step-title { font-family: var(--display); font-size: 1.05rem; font-weight: 400; letter-spacing: -.025em; line-height: 1.3; margin: 2px 0 0; }
@@ -479,6 +485,7 @@ label.facet .facet-k { margin-bottom: 0; }
   </div>
 </header>
 <main id="app"></main>
+<noscript><p style="max-width:40em;margin:4em auto;padding:0 1em;font:17px sans-serif">Continuum needs JavaScript to draw its interactive lessons. Please turn JavaScript on and reload.</p></noscript>
 <footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#progress">My progress</a></div></footer>
 
 <script>
@@ -885,7 +892,15 @@ sysDark.addEventListener('change', () => { syncThemeBtn(); dispatchEvent(new Eve
 function typeset(el, tries = 0) {
   if (window.MathJax && MathJax.typesetPromise) {
     MathJax.startup.promise.then(() => MathJax.typesetPromise([el])).catch(() => {});
-  } else if (tries < 50) setTimeout(() => typeset(el, tries + 1), 150);
+  } else if (!window.__mjFail && tries < 50) setTimeout(() => typeset(el, tries + 1), 150);
+  else texFallback(el);
+}
+/* MathJax comes from a CDN that a school network may block. Rather than leave raw \( ... \) in the text,
+   show the math as readable plain text (2/3, x², ×). */
+function texFallback(el) {
+  const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
+  while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) if (/\\[(\[]/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\\\((.*?)\\\)|\\\[(.*?)\\\]/gs, (m, a, b) => texFlat(a ?? b).replace(/\s+/g, ' ').trim());
 }
 
 /* =====================================================================
@@ -1500,15 +1515,21 @@ function CopyButton(label, getText, { cls = 'btn small', title = '' } = {}) {
   return h('span', { class: 'copy' }, btn, box);
 }
 
-/* TeX in quick-check text, flattened for plain-text copies */
-function texToText(s) {
+/* TeX flattened to readable plain text (used for plain-text copies and when MathJax cannot load) */
+function texFlat(s) {
   const sup = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
-  return String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '').replace(/\\\(|\\\)|\\\[|\\\]/g, '')
-    .replace(/\\(?:text|mathrm)\{([^}]*)\}/g, '$1').replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '($1)/($2)').replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
-    .replace(/\^\{?(-?\d+)\}?/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
+  const arg = t => t.replace(/^\{|\}$/g, ''), part = t => (/^[-−]?[A-Za-z0-9._]+$/.test(t) ? t : '(' + t + ')');
+  return String(s).replace(/\\\(|\\\)|\\\[|\\\]/g, '')
+    .replace(/\\(?:text|mathrm|mathbf|operatorname)\{([^}]*)\}/g, '$1').replace(/\\[td]?frac\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])/g, (_, a, b) => part(arg(a)) + '/' + part(arg(b)))
+    .replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
+    .replace(/\^\{(-?\d+)\}/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\^\{([^{}]+)\}/g, '^($1)').replace(/\^(\d)/g, (_, d) => sup[d]).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
     .replace(/\\pm/g, '±').replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
-    .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1')
-    .replace(/[{}]/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+    .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\(?:Longrightarrow|Rightarrow|implies)\b/g, '⇒').replace(/\\(?:Leftrightarrow|iff)\b/g, '⇔').replace(/\\(?:rightarrow|to)\b/g, '→').replace(/\\left|\\right/g, '')
+    .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '');
+}
+/* TeX in quick-check text (an HTML string), flattened for plain-text copies */
+function texToText(s) {
+  return texFlat(String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '')).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 }
 
 /* =====================================================================
