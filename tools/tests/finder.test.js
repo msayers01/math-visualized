@@ -86,7 +86,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
     const sum = await page.textContent('.finder-sum');
     check('summary ' + toHash(F), sum === `${exp.length} of ${TOTAL} lessons match`, sum);
     const hiddenSections = await page.evaluate(() => [...document.querySelectorAll('.level')].filter(l => l.hidden).map(l => l.id));
-    const expLevels = ['school', 'ugrad', 'grad'].filter(l => !exp.some(id => ({ 'linear-transformations': 'ugrad', 'conformal-maps': 'grad' }[id] || 'school') === l));
+    const expLevels = ['school', 'ugrad', 'grad'].filter(l => !exp.some(id => D.COURSES.find(c => c.id === D.ALIGN.find(x => x.id === id).course).level === l));
     check('hidden levels ' + toHash(F), JSON.stringify(hiddenSections.sort()) === JSON.stringify(expLevels.map(l => 'level-' + l).sort()), hiddenSections);
     check('planned hidden when filtering ' + toHash(F), await page.evaluate(() => [...document.querySelectorAll('.course[aria-label="In development"]')].every(e => e.hidden)));
   }

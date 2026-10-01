@@ -100,6 +100,10 @@ const ALIGN = [
   { id: 'pascals-triangle-and-the-galton-board', course: 'stats', skill: 'adv', standards: ['7.1.2.3', '9.1.2.1', '9.1.2.4', '9.1.2.6'] },
 
   /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
+  { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },
+  { id: 'derivatives-as-tangent-slopes', course: 'calculus', skill: 'intro', standards: [] },
+  { id: 'limits-and-epsilon-delta', course: 'calculus', skill: 'intro', standards: [] },
+  { id: 'the-fundamental-theorem-of-calculus', course: 'calculus', skill: 'mid', standards: [] },
   { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
   { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
 ];

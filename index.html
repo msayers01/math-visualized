@@ -812,6 +812,10 @@ const ALIGN = [
   { id: 'pascals-triangle-and-the-galton-board', course: 'stats', skill: 'adv', standards: ['7.1.2.3', '9.1.2.1', '9.1.2.4', '9.1.2.6'] },
 
   /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
+  { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },
+  { id: 'derivatives-as-tangent-slopes', course: 'calculus', skill: 'intro', standards: [] },
+  { id: 'limits-and-epsilon-delta', course: 'calculus', skill: 'intro', standards: [] },
+  { id: 'the-fundamental-theorem-of-calculus', course: 'calculus', skill: 'mid', standards: [] },
   { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
   { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
 ];
@@ -15047,6 +15051,1846 @@ register({
       };
       sync();
       return { destroy: () => { cancel(); stage.style.minHeight = prevMin; P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   UNDERGRAD — Riemann sums and the integral
+   ===================================================================== */
+{
+  const PI = Math.PI, W = 10, H = 6.6;
+  const f3 = v => (Math.abs(v) < 5e-4 ? '0.000' : (v < 0 ? '−' : '') + Math.abs(v).toFixed(3));
+  const piFmt = v => {
+    const k = Math.round(v / (PI / 8)); if (!k) return '0';
+    const m = Math.abs(k) / 8; return (k < 0 ? '−' : '') + (m === 1 ? '' : String(+m.toFixed(3))) + 'π';
+  };
+
+  /* The functions. f is the integrand, F an antiderivative (used only for the exact value). */
+  const FN = [
+    { key: 'sq', name: 'x²  (rising)', eq: 'f(x) = x²', f: x => x * x, F: x => x * x * x / 3,
+      lo: 0, hi: 2.5, ylo: -.7, yhi: 6.8, step: .25, ys: 1, xs: .5 },
+    { key: 'sin', name: 'sin x  (rises, then falls)', eq: 'f(x) = sin x', f: Math.sin, F: x => -Math.cos(x),
+      lo: -PI / 2, hi: 5 * PI / 2, ylo: -1.45, yhi: 1.45, step: PI / 8, ys: .5, xs: PI / 2, pi: true },
+    { key: 'dec', name: '6e^(−x/2)  (falling)', eq: 'f(x) = 6e^(−x/2)', f: x => 6 * Math.exp(-x / 2), F: x => -12 * Math.exp(-x / 2),
+      lo: 0, hi: 6, ylo: -.7, yhi: 6.6, step: .25, ys: 2, xs: 1 },
+    { key: 'cross', name: 'x³/4 − x  (crosses the axis)', eq: 'f(x) = x³/4 − x', f: x => x * x * x / 4 - x, F: x => x * x * x * x / 16 - x * x / 2,
+      lo: -3.5, hi: 3.5, ylo: -4.6, yhi: 4.6, step: .25, ys: 2, xs: 1 },
+    { key: 'step', name: 'A step function (jumps)', eq: 'f(x) = 1, then 3, then 2',
+      f: x => x < 1 ? 1 : x < 2.5 ? 3 : 2, F: x => x <= 1 ? x : x <= 2.5 ? 1 + 3 * (x - 1) : 5.5 + 2 * (x - 2.5),
+      lo: 0, hi: 4.5, ylo: -.6, yhi: 3.8, step: .25, ys: 1, xs: 1, breaks: [1, 2.5] },
+    { key: 'car', name: 'A car: velocity v(t)', eq: 'v(t) = ½(t − 1)(t − 4)', f: t => (t - 1) * (t - 4) / 2, F: t => (t * t * t / 3 - 2.5 * t * t + 4 * t) / 2,
+      lo: 0, hi: 5.5, ylo: -1.7, yhi: 3.6, step: .25, ys: 1, xs: 1, vel: true }
+  ];
+  const RULES = [['left', 'Left endpoints'], ['right', 'Right endpoints'], ['mid', 'Midpoints'], ['trap', 'Trapezoids'], ['rand', 'Random point in each strip']];
+  const RNAME = { left: 'Left sum', right: 'Right sum', mid: 'Midpoint sum', trap: 'Trapezoid sum', rand: 'Random-point sum' };
+
+  const sampleSum = (D, a, b, n, rule, u) => {
+    const dx = (b - a) / n; let s = 0;
+    for (let i = 0; i < n; i++) {
+      const x0 = a + i * dx, x1 = x0 + dx;
+      s += rule === 'trap' ? (D.f(x0) + D.f(x1)) / 2
+        : D.f(rule === 'left' ? x0 : rule === 'right' ? x1 : rule === 'mid' ? x0 + dx / 2 : x0 + u[i] * dx);
+    }
+    return s * dx;
+  };
+  const exact = (D, a, b) => D.F(b) - D.F(a);
+  const absInt = (D, a, b) => { const N = 20000, dx = (b - a) / N; let s = 0; for (let i = 0; i < N; i++) s += Math.abs(D.f(a + (i + .5) * dx)); return s * dx; };
+  const minN = (D, a, b, rule, tol) => {
+    const I = exact(D, a, b);
+    for (let n = 1; n <= 100; n++) if (Math.abs(sampleSum(D, a, b, n, rule) - I) <= tol) return n;
+    return null;
+  };
+  const makeU = seed => { let s = seed; return Array.from({ length: 100 }, () => (s = (s * 16807) % 2147483647) / 2147483647); };
+
+  /* Challenge 1: the smallest n for a target accuracy. */
+  const TOL = [
+    { fn: 0, a: 0, b: 2, tol: 0.1 },
+    { fn: 1, a: 0, b: PI, tol: 0.01 },
+    { fn: 2, a: 0, b: 4, tol: 0.25 }
+  ];
+  const where = (D, a, b) => (D.vel ? 't' : 'x') + ' from ' + (D.pi ? piFmt(a) : +a.toFixed(3)) + ' to ' + (D.pi ? piFmt(b) : +b.toFixed(3));
+  const fname = D => D.key === 'sq' ? 'x²' : D.key === 'sin' ? 'sin x' : D.key === 'dec' ? '6e^(−x/2)' : D.name;
+
+  /* Challenge 2: over or under. */
+  const PRED = [
+    { set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left' }, text: 'This is x² (rising) from 0 to 2 with 4 strips and the LEFT rule. Will the sum be bigger or smaller than the exact area?', ans: 1,
+      why: 'x² is rising, so the left edge of each strip is its lowest point. Every rectangle sits inside the curve and misses a sliver of area.' },
+    { set: { fn: 0, a: 0, b: 2, n: 4, rule: 'right' }, text: 'Same curve and strips, but now the RIGHT rule. Bigger or smaller than the exact area?', ans: 0,
+      why: 'On a rising curve the right edge of each strip is its highest point. Every rectangle pokes out above the curve.' },
+    { set: { fn: 2, a: 0, b: 4, n: 4, rule: 'left' }, text: 'Now a FALLING curve, 6e^(−x/2) from 0 to 4, with 4 strips and the LEFT rule. Bigger or smaller than the exact area?', ans: 0,
+      why: 'On a falling curve the left edge of each strip is its highest point. Every rectangle pokes out above the curve.' },
+    { set: { fn: 2, a: 0, b: 4, n: 4, rule: 'right' }, text: 'Same falling curve and strips with the RIGHT rule. Bigger or smaller than the exact area?', ans: 1,
+      why: 'On a falling curve the right edge of each strip is its lowest point. Every rectangle sits inside the curve.' },
+    { set: { fn: 1, a: 0, b: PI, n: 4, rule: 'left' }, text: 'A trickier one: sin x from 0 to π with 4 strips and the LEFT rule. The curve rises, then falls. Bigger or smaller than the exact area?', ans: 1,
+      why: 'The rule "left is low, right is high" only works when the curve is always rising or always falling. Here the left rectangles are too small on the rising half and too big on the falling half. The first mistake is larger, so the sum ends a little below the area.' }
+  ];
+  const PRED_OPT = ['Bigger (overestimate)', 'Smaller (underestimate)', 'Exactly equal'];
+
+  /* Challenge 3: the car. */
+  const CAR = { fn: 5, a: 0, b: 5, n: 20, rule: 'mid' };
+  const VEL = [
+    { text: 'The graph is a car\'s velocity in m/s (positive means forward). Look at the readout for t from 0 to 5 s. Where is the car at t = 5 compared with where it started?',
+      opts: ['4.083 m ahead of the start', '0.417 m behind the start', '0.417 m ahead of the start', 'Exactly back at the start'], ans: 1,
+      why: 'Net change in position is the signed area. Forward area (yellow) is about 0.917 + 0.917 = 1.833. Backward area (red) is 2.250. Net: 1.833 − 2.250 = −0.417 m, so the car ends behind where it started.' },
+    { text: 'How far did the car\'s odometer say it travelled from t = 0 to t = 5?',
+      opts: ['2.250 m', '0.417 m', '−0.417 m', '4.083 m'], ans: 3,
+      why: 'An odometer never runs backward, so red area counts as positive too: 1.833 + 2.250 = 4.083 m. That is the "Total distance" line in the readout. Net change and distance agree only when the velocity never goes negative.' },
+    { text: 'The curve touches zero at t = 1 and t = 4. What is the car doing for t between 1 and 4?',
+      opts: ['Moving forward, but slowly', 'Standing still', 'Moving backward', 'Moving forward, then stopping'], ans: 2,
+      why: 'There the velocity is negative (the curve is below the axis), so the car is reversing. The area between the curve and the axis there is 2.250, and it counts as a distance backward.' }
+  ];
+
+  /* Challenge 4: the limit. */
+  const LIM = { fn: 0, a: 0, b: 1, n: 10, rule: 'left' };
+  const limTable = () => {
+    const D = FN[0], rows = [1, 2, 5, 10, 100, 1000];
+    return rows.map(n => ({ n, L: sampleSum(D, 0, 1, n, 'left'), R: sampleSum(D, 0, 1, n, 'right') }));
+  };
+  const LIMQ = [
+    { text: 'The table shows left and right sums for x² on [0, 1]. As n grows, the left sums rise and the right sums fall. Both close in on one number. Which?',
+      opts: ['0.300', '0.500', '1/3 ≈ 0.333', '0.250'], ans: 2,
+      why: 'For a rising function the true area is always trapped between the left and right sums. At n = 1000 they are 0.3328 and 0.3338. Both are heading to 1/3, and that limit is what ∫₀¹ x² dx means.' },
+    { text: 'At n = 100 the left and right sums differ by 0.010. How far apart will they be at n = 1000?',
+      opts: ['0.100', '0.010', '0.001', '0'], ans: 2,
+      why: 'The gap is (rise of the function) × (strip width) = (1 − 0) × 1/n. At n = 1000 that is 0.001. It is never exactly 0 for any finite n. Only the limit n → ∞ closes it completely.' },
+    { text: 'Now switch the rule to Midpoints (use the Rectangles menu) and compare with the table. Does a different rule give a different limit?',
+      opts: ['Yes, it uses different heights', 'Only when n is even', 'No, every rule closes in on the same number, 1/3', 'Yes, it gives exactly 0.5'], ans: 2,
+      why: 'Every rule picks a height somewhere inside each thin strip. As the strips get thinner, the heights inside one strip differ by less and less, so all the rules agree in the limit. That is why the integral does not depend on the rule.' }
+  ];
+  const TITLES = ['Challenge 1: how many rectangles?', 'Challenge 2: over or under?', 'Challenge 3: distance travelled', 'Challenge 4: the limit'];
+
+  register({
+    id: 'riemann-sums-and-the-integral', level: 'ugrad',
+    title: 'Riemann sums and the integral',
+    blurb: 'Chop the area under a curve into rectangles, change the rule and the count, and watch the sums close in on the integral.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 1.5; p.cy = 1.9; p.span = 2.6;
+      p.path([[-.1, 0], [3.1, 0]], { stroke: pal['grid-strong'], width: 1.5 });
+      p.path([[0, -.1], [0, 3.8]], { stroke: pal['grid-strong'], width: 1.5 });
+      const n = 6, dx = 2.4 / n;
+      for (let i = 0; i < n; i++) {
+        const x0 = .3 + i * dx, y = x0 * x0 * .6;
+        p.path([[x0, 0], [x0, y], [x0 + dx, y], [x0 + dx, 0]], { fill: alpha(pal.yellow, .38), stroke: alpha(pal.yellow, .9), width: 1.2, close: true });
+      }
+      const pts = []; for (let x = .1; x <= 2.9; x += .05) pts.push([x, x * x * .6]);
+      p.curve(pts, { stroke: pal.blue, width: 2.8 });
+    },
+    hook: String.raw`A car's speedometer gives its speed at every instant, but never the distance. How can you get the distance travelled from the speed alone, and what happens if the car reverses?`,
+    steps: [
+      { title: 'Rectangles under a curve',
+        text: String.raw`<p>We want the yellow area under \(y=x^2\) between \(x=0\) and \(x=2\). Curved edges are hard, so cut it into \(n=4\) strips of width \(\Delta x=0.5\) and replace each by a rectangle.</p><p>With the <b>left</b> rule each height is the curve's value at the strip's left edge. The sum is \(1.750\), but the exact area is \(2.667\). The error is \(-0.917\).</p><p>Try Challenge 1: find the smallest \(n\) that gets within the target, and compare the rules.</p>`,
+        set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 0 } },
+      { title: 'Over or under?',
+        text: String.raw`<p>Before you look, predict. Does the left sum come out too big or too small? What about the right sum? It depends on whether the curve is rising or falling.</p><p>Answer each case in Challenge 2. The rectangles stay hidden until you do. Each answer explains why, and the case with \(\sin x\) breaks the simple rule.</p>`,
+        set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 1 } },
+      { title: 'Velocity: area is distance',
+        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
+        set: { fn: 5, a: 0, b: 5, n: 20, rule: 'mid', ch: 2 } },
+      { title: 'The limit',
+        text: String.raw`<p>Back to \(x^2\), now on \([0,1]\). Drag \(n\) up to 100. The left sum is \(0.285\) at \(n=10\) and the right sum is \(0.385\); at \(n=100\) they are \(0.328\) and \(0.338\).</p><p>The integral is the number all the sums close in on as \(n\to\infty\). Challenge 4 asks which number, and whether the rule matters.</p>`,
+        set: { fn: 0, a: 0, b: 1, n: 10, rule: 'left', ch: 3 } }
+    ],
+    formal: String.raw`
+      <p>Let \(f\) be a bounded function on \([a,b]\) (every function in this lesson is). The definite integral is built in three moves: cut, sum, take a limit.</p>
+      <h3>The Riemann sum</h3>
+      <p>Cut \([a,b]\) into \(n\) strips of equal width \(\Delta x = \dfrac{b-a}{n}\), with edges \(x_i = a+i\,\Delta x\) for \(i = 0,\dots,n\). In strip \(i\) (from \(x_{i-1}\) to \(x_i\)) pick a <em>sample point</em> \(x_i^*\). The strip contributes a rectangle of height \(f(x_i^*)\) and width \(\Delta x\), so
+      \[ S_n = \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
+      The sample rule is your choice: left \(x_i^* = x_{i-1}\), right \(x_i^* = x_i\), midpoint \(x_i^* = \tfrac12(x_{i-1}+x_i)\), or any point at all. The <em>trapezoid</em> sum is the average of the left and right sums, \(T_n = \tfrac12(L_n+R_n)\).</p>
+      <h3>The definite integral</h3>
+      <p>The <b>definite integral</b> is the limit of these sums as the strips get thin,
+      \[ \int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
+      Here \(dx\) is the width \(\Delta x\) in the limit, and \(x\) is a dummy variable. For a continuous \(f\), or one with finitely many jumps, the limit exists and does not depend on how the sample points are chosen. That independence is why all the rules in the lesson close in on the same number.</p>
+      <h3>Signed area and net change</h3>
+      <p>Where \(f\ge 0\) a rectangle adds its area. Where \(f&lt;0\) its height is negative, so it subtracts. The integral is therefore <em>signed area</em>: area above the axis minus area below. If \(v(t)\) is velocity, then \(\int_a^b v\,dt\) is the <em>net change in position</em>, while the total distance travelled is \(\int_a^b |v|\,dt\). For the car in the lesson, \(v(t) = \tfrac12(t-1)(t-4)\) on \([0,5]\) gives \(\int v\,dt = -\tfrac{5}{12} \approx -0.417\) m and \(\int|v|\,dt = \tfrac{49}{12} \approx 4.083\) m.</p>
+      <h3>Worked example: \(\int_0^1 x^2\,dx\)</h3>
+      <p>Use \(n\) strips, so \(\Delta x = 1/n\) and \(x_i = i/n\). With right endpoints,
+      \[ R_n = \sum_{i = 1}^{n}\Big (\frac{i}{n}\Big )^2\frac1n = \frac{1}{n^3} \sum_{i = 1}^{n} i^2 = \frac{1}{n^3} \cdot \frac{n(n+1)(2n+1)}{6} = \frac{(n+1)(2n+1)}{6n^2}. \]
+      Expanding, \(R_n = \dfrac13+\dfrac{1}{2n}+\dfrac{1}{6n^2}\). Left endpoints use \(i = 0,\dots,n-1\) and give \(L_n = \dfrac{(n-1)(2n-1)}{6n^2} = \dfrac13-\dfrac{1}{2n}+\dfrac{1}{6n^2}\). As \(n\to\infty\) the terms with \(n\) in the denominator vanish, so
+      \[ \int_0^1 x^2\,dx = \lim_{n\to\infty}R_n = \lim_{n\to\infty}L_n = \frac13. \]
+      Check with \(n = 4\): \(L_4 = \frac{3\cdot 7}{96} = 0.21875\) and \(R_4 = \frac{5\cdot 9}{96} = 0.46875\), and \(\tfrac13\) lies between them.</p>
+      <h3>How fast the sums converge</h3>
+      <p>If \(f\) is monotone, the exact integral lies between \(L_n\) and \(R_n\), and \(|R_n-L_n| = |f(b)-f(a)|\,\Delta x\). So the left and right errors are about \(\tfrac{(b-a)\,|f(b)-f(a)|}{2n}\): doubling \(n\) halves the error. For a smooth \(f\) the midpoint and trapezoid sums do better, with error about \(\dfrac{(b-a)\,\Delta x^2}{24}\,|f''|\) for the midpoint and twice that, with the opposite sign, for the trapezoid. Doubling \(n\) then divides the error by about 4. Two caveats: the quadratic rate needs a smooth \(f\), and it fails across a jump, where every rule falls back to an error of order \(\Delta x\). The left sum of \(\sin x\) on \([0,\pi]\) is also unusually good, because \(f(0) = f(\pi) = 0\) makes it equal to the trapezoid sum.</p>
+      <h3>What is not covered</h3>
+      <p>The limit exists for every continuous \(f\) on a closed interval, but proving that needs the completeness of the real numbers and is left to a course in analysis. Integrals over infinite intervals, or of functions that blow up, are <em>improper</em> and need a second limit. Computing integrals by evaluating limits of sums is slow; the next lesson shows how antiderivatives give the exact value directly.</p>`,
+    check: [
+      { q: String.raw`A runner on a straight track has velocity \(+4\) m/s for 3 seconds, then \(-2\) m/s for 5 seconds (positive means east). What are the net change in position and the total distance run?`,
+        choices: ['Net change 22 m, distance 2 m', 'Net change 2 m east, distance 2 m', 'Net change 2 m west, distance 22 m', 'Net change 2 m east, distance 22 m'], answer: 3,
+        why: String.raw`Signed area: \(4\cdot 3=12\) m east and \(-2\cdot 5=-10\) m, so the net change is \(12-10=+2\) m. The distance counts both pieces as positive: \(12+10=22\) m. Net change and distance differ whenever the velocity changes sign.`,
+        hint: String.raw`The part with negative velocity subtracts from the net change but adds to the distance.` },
+      { q: String.raw`Let \(f(x)=x^2\) on \([0,2]\), cut into \(n=4\) strips of width \(0.5\). The exact area is about \(2.667\). What is the sum using the right endpoint of each strip, and is it an overestimate or an underestimate?`,
+        choices: ['1.75, an underestimate', '2.75, an overestimate', '3.75, an overestimate', '3.75, an underestimate'], answer: 2,
+        why: String.raw`The right endpoints are \(0.5,1,1.5,2\), so the heights are \(0.25,1,2.25,4\). The sum is \((0.25+1+2.25+4)\times 0.5=3.75\). Since \(x^2\) is rising, the right edge is the highest point of each strip, so every rectangle sticks out above the curve and the sum is an overestimate. (The value 1.75 is the left sum, and 2.75 is the trapezoid sum.)`,
+        hint: String.raw`Compute \(f\) at \(0.5, 1, 1.5, 2\), add, and multiply by the width. For a rising curve, is the right edge the highest or lowest point of a strip?` }
+    ],
+    links: { prereq: ['limits-and-epsilon-delta'], next: ['the-fundamental-theorem-of-calculus'], related: ['area-of-a-circle', 'derivatives-as-tangent-slopes'] },
+
+    mount({ stage, controls: C }) {
+      const st = { fn: 0, a: 0, b: 2, n: 4, rule: 'left' };
+      let cancel = () => {}, u = makeU(7), hide = false, seed = 7;
+      const ch = { i: 0, tol: { k: 0, fb: '', ok: false }, pred: { k: 0, picked: [], fb: '', done: false },
+        vel: { k: 0, picked: [], fb: '', done: false }, lim: { k: 0, picked: [], fb: '', done: false } };
+      const P = new Plane(stage, { span: 6 });
+      const D = () => FN[st.fn];
+      const gap = () => D().step * (D().pi ? 2 : 2);
+      const fa = v => D().pi ? piFmt(v) : String(+v.toFixed(3)).replace('-', '−');
+
+      P.onDraw = (c, p) => {
+        const d = D(), pal = p.pal, { a, b, n, rule } = st;
+        p.fit(W, H, { l: 1.5, r: 1.4, t: 1.5, b: 1.5 });
+        const fs = clamp(p.scale * .36, 11, 16), ux = x => (x - d.lo) / (d.hi - d.lo) * W, vy = y => (y - d.ylo) / (d.yhi - d.ylo) * H;
+        const pt = (x, y) => [ux(x), vy(y)];
+        /* grid and axes */
+        for (let y = Math.ceil(d.ylo / d.ys) * d.ys; y <= d.yhi + 1e-9; y += d.ys) {
+          p.path([[0, vy(y)], [W, vy(y)]], { stroke: pal.grid, width: 1.2 });
+          if (Math.abs(y) > 1e-9) p.label(String(+y.toFixed(2)).replace('-', '−'), 0, vy(y), { size: fs, italic: false, color: pal.muted, align: 'right', dx: -8 });
+        }
+        for (let x = Math.ceil(d.lo / d.xs - 1e-9) * d.xs; x <= d.hi + 1e-9; x += d.xs) {
+          p.path([[ux(x), 0], [ux(x), H]], { stroke: pal.grid, width: 1.2 });
+          if (Math.abs(x) > 1e-9) p.label(d.pi ? piFmt(x) : String(+x.toFixed(2)).replace('-', '−'), ux(x), vy(0), { size: fs, italic: false, color: pal.muted, dy: 23 });
+        }
+        p.path([[0, vy(0)], [W, vy(0)]], { stroke: pal['grid-strong'], width: 2 });
+        if (d.lo <= 0 && d.hi >= 0) p.path([[ux(0), 0], [ux(0), H]], { stroke: pal['grid-strong'], width: 2 });
+        p.label(d.vel ? 't (s)' : 'x', W, vy(0), { size: fs + 1, italic: !d.vel, color: pal.muted, align: 'left', dx: 10 });
+        p.label(d.vel ? 'v (m/s)' : 'y', ux(Math.max(d.lo, 0)), H, { size: fs + 1, italic: !d.vel, color: pal.muted, align: 'left', dx: 8, dy: -10 });
+
+        /* rectangles (or trapezoids), clipped so area above and below the axis get different colors */
+        const dx = (b - a) / n, y0 = p.Y(vy(0)), sample = [];
+        for (let i = 0; i < n; i++) {
+          const x0 = a + i * dx, x1 = x0 + dx;
+          const xs = rule === 'left' ? x0 : rule === 'right' ? x1 : rule === 'mid' ? x0 + dx / 2 : x0 + u[i] * dx;
+          sample.push(xs);
+          if (hide) continue;
+          const poly = rule === 'trap' ? [pt(x0, 0), pt(x0, d.f(x0)), pt(x1, d.f(x1)), pt(x1, 0)]
+            : [pt(x0, 0), pt(x0, d.f(xs)), pt(x1, d.f(xs)), pt(x1, 0)];
+          for (const up of [true, false]) {
+            c.save(); c.beginPath();
+            if (up) c.rect(0, 0, p.w, y0); else c.rect(0, y0, p.w, p.h - y0);
+            c.clip();
+            c.beginPath(); poly.forEach(([x, y], k) => k ? c.lineTo(p.X(x), p.Y(y)) : c.moveTo(p.X(x), p.Y(y))); c.closePath();
+            c.fillStyle = alpha(up ? pal.yellow : pal.red, .4); c.fill();
+            if (n <= 60) { c.strokeStyle = alpha(up ? pal.yellow : pal.red, .95); c.lineWidth = n <= 30 ? 1.5 : 1; c.stroke(); }
+            c.restore();
+          }
+        }
+        if (hide) for (let i = 0; i <= n; i++) { const x = a + i * dx; p.path([[ux(x), vy(0) - .12], [ux(x), vy(0) + .12]], { stroke: pal['grid-strong'], width: 1.5 }); }
+
+        /* the curve (broken at jumps) */
+        const brk = [d.lo, ...(d.breaks || []), d.hi], N = 300;
+        for (let k = 0; k < brk.length - 1; k++) {
+          const s = brk[k], e = brk[k + 1], pts = [];
+          for (let i = 0; i <= N; i++) { const x = s + (e - s) * i / N; pts.push(pt(x, d.f(i === N ? e - 1e-9 : x))); }
+          p.path(pts, { stroke: pal.blue, width: 3.2 });
+        }
+        if (n <= 25) for (const xs of sample) p.dot(ux(xs), vy(d.f(xs)), 4.5, pal.yellow, pal.stage, 1.5);
+
+        /* interval handles on the axis */
+        p.path([[ux(a), 0], [ux(a), H]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 6] });
+        p.path([[ux(b), 0], [ux(b), H]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 6] });
+        for (const [v, nm] of [[a, 'a'], [b, 'b']]) {
+          p.dot(ux(v), vy(0), 8, pal.yellow, pal.brass, 3);
+          p.label(nm, ux(v), vy(0), { size: fs + 3, dy: -20 });
+        }
+        /* legend */
+        const lx = p.X(0), ly = p.Y(H) - 38, sq = clamp(p.scale * .3, 9, 13);
+        c.font = `500 ${fs}px "Hanken Grotesk", system-ui, sans-serif`; c.textBaseline = 'middle'; c.textAlign = 'left';
+        c.fillStyle = alpha(pal.yellow, .6); c.fillRect(lx, ly - sq / 2, sq, sq); c.fillStyle = pal.text;
+        const t1 = d.vel ? 'forward (+)' : 'above axis (+)'; c.fillText(t1, lx + sq + 5, ly);
+        const x2 = lx + sq + 5 + c.measureText(t1).width + 16;
+        c.fillStyle = alpha(pal.red, .6); c.fillRect(x2, ly - sq / 2, sq, sq); c.fillStyle = pal.text;
+        c.fillText(d.vel ? 'backward (−)' : 'below axis (−)', x2 + sq + 5, ly);
+      };
+
+      /* ---------- readout ---------- */
+      const upd = () => {
+        const d = D(), { a, b, n, rule } = st, dx = (b - a) / n;
+        const S = sampleSum(d, a, b, n, rule, u), I = exact(d, a, b), e = S - I;
+        let html = `<span class="k">${d.eq}</span><br><span class="k">On</span> [${fa(a)}, ${fa(b)}] &nbsp; <span class="k">n =</span> ${n} &nbsp; <span class="k">Δ${d.vel ? 't' : 'x'} =</span> ${f3(dx)}<br>`;
+        if (hide) html += '<span class="k">Sum</span> hidden until you predict';
+        else {
+          html += `<span class="k">${d.vel ? 'Net change, ' + RNAME[rule].toLowerCase() : RNAME[rule]}</span> ${f3(S)}<br>` +
+            `<span class="k">${d.vel ? 'Net change, exact' : 'Exact integral'}</span> ${f3(I)}<br><span class="k">Error (sum − exact)</span> ${f3(e)}`;
+          if (d.vel) html += `<br><span class="k">Total distance (area counted +)</span> ${f3(absInt(d, a, b))}`;
+        }
+        ro.innerHTML = html;
+      };
+      const fixSl = (s, inp, v) => {
+        const d = D(); inp.min = d.lo; inp.max = d.hi; inp.step = d.step / (d.pi ? 1 : 1);
+        s.set(v); inp.style.setProperty('--p', ((v - d.lo) / (d.hi - d.lo) * 100) + '%');
+      };
+      const sync = () => { nS.set(st.n); fixSl(aS, aI, st.a); fixSl(bS, bI, st.b); fnSel.value = String(st.fn); ruleSel.value = st.rule; P.draw(); upd(); };
+      const edit = fn => v => { cancel(); fn(v); sync(); };
+
+      /* ---------- controls ---------- */
+      const probe = C.readout(), host = probe.parentNode; probe.remove();
+      C.title('Function');
+      const fnSel = C.select({ label: 'Curve', options: FN.map((f, i) => ({ value: String(i), label: f.name })), value: '0',
+        onChange: v => { cancel(); st.fn = +v; const def = { sq: [0, 2], sin: [0, PI], dec: [0, 4], cross: [-3, 3], step: [0, 4], car: [0, 5] }[D().key]; st.a = def[0]; st.b = def[1]; hide = false; sync(); } });
+      C.title('Rectangles');
+      const ruleSel = C.select({ label: 'Sample rule', options: RULES.map(r => ({ value: r[0], label: r[1] })), value: st.rule,
+        onChange: v => { cancel(); st.rule = v; sync(); } });
+      const nS = C.slider({ label: 'Number of rectangles n', min: 1, max: 100, step: 1, value: st.n, format: v => String(Math.round(v)), onInput: edit(v => { st.n = Math.round(v); }) });
+      const aS = C.slider({ label: 'Start a', min: 0, max: 3, step: .25, value: st.a, format: fa, onInput: edit(v => { st.a = clamp(snap(v, D().step), D().lo, st.b - gap()); }) });
+      const aI = host.lastElementChild.querySelector('input');
+      const bS = C.slider({ label: 'End b', min: 0, max: 3, step: .25, value: st.b, format: fa, onInput: edit(v => { st.b = clamp(snap(v, D().step), st.a + gap(), D().hi); }) });
+      const bI = host.lastElementChild.querySelector('input');
+      C.buttons([{ label: 'New random points', onClick: () => { seed = (seed * 31 + 11) % 997; u = makeU(seed); sync(); } }]);
+      const ro = C.readout();
+      const chBox = h('div', { class: 'ctl', style: 'border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px' });
+      host.append(chBox);
+      C.hint('Drag the two yellow handles on the axis, or use the sliders.');
+
+      draggable(P, {
+        hit: (px, py) => {
+          const d = D(), ya = P.Y(((0 - d.ylo) / (d.yhi - d.ylo)) * H), xa = P.X((st.a - d.lo) / (d.hi - d.lo) * W), xb = P.X((st.b - d.lo) / (d.hi - d.lo) * W);
+          const da = Math.hypot(xa - px, ya - py), db = Math.hypot(xb - px, ya - py);
+          if (Math.min(da, db) > 22) return null;
+          return da <= db ? 'a' : 'b';
+        },
+        move: (hd, ux) => {
+          cancel(); const d = D(), x = clamp(snap(d.lo + ux / W * (d.hi - d.lo), d.step), d.lo, d.hi);
+          if (hd === 'a') st.a = clamp(x, d.lo, st.b - gap()); else st.b = clamp(x, st.a + gap(), d.hi);
+          sync();
+        }
+      });
+
+      /* ---------- challenges ---------- */
+      const setup = (s, ms = 800) => {
+        cancel(); const { a, b, fn, n, rule } = s, cur = st.fn;
+        st.fn = fn; st.n = n; st.rule = rule;
+        if (fn !== cur || ms === 0) { st.a = a; st.b = b; sync(); }
+        else cancel = animateTo(st, { a, b }, ms, sync);
+        sync();
+      };
+      const say = (cls, html) => h('p', { style: `margin:0;padding-left:10px;border-left:3px solid var(--${cls});font-size:.9rem;line-height:1.5`, html });
+      const optButtons = (q, state, onPick) => h('div', { class: 'ctl buttons', style: 'flex-direction:column;align-items:stretch' },
+        q.opts.map((o, i) => { const b = h('button', { type: 'button', class: 'btn', style: 'justify-content:flex-start;text-align:left', onclick: () => onPick(i) }, o); if (state.done || state.picked.includes(i)) b.disabled = true; return b; }));
+      function render() {
+        const kids = [];
+        kids.push(h('div', { class: 'ctl buttons', role: 'tablist' }, TITLES.map((t, i) =>
+          h('button', { type: 'button', class: i === ch.i ? 'btn primary' : 'btn', style: 'padding:6px 12px', 'aria-label': t, onclick: () => goCh(i, true) }, String(i + 1)))));
+        kids.push(h('p', { class: 'ctl-title', style: 'margin:0' }, TITLES[ch.i]));
+        if (ch.i === 0) {
+          const s = ch.tol, T = TOL[s.k], d = FN[T.fn];
+          kids.push(h('p', { style: 'margin:0;font-size:.92rem', html: `Target ${s.k + 1} of ${TOL.length}: for <b>${fname(d)}</b> with ${where(d, T.a, T.b)}, get the sum within <b>${T.tol}</b> of the exact integral. Choose a rule and slide <b>n</b> to the <em>smallest</em> number that works, then submit.` }));
+          if (s.fb) kids.push(s.fb);
+          kids.push(h('div', { class: 'ctl buttons' }, [
+            h('button', { type: 'button', class: 'btn primary', onclick: submitTol }, 'Submit this n'),
+            h('button', { type: 'button', class: 'btn', onclick: () => { setup({ fn: T.fn, a: T.a, b: T.b, n: st.n, rule: st.rule }); } }, 'Reset graph'),
+            h('button', { type: 'button', class: 'btn', onclick: () => { s.k = (s.k + 1) % TOL.length; s.fb = ''; const N = TOL[s.k]; setup({ fn: N.fn, a: N.a, b: N.b, n: 4, rule: st.rule === 'rand' ? 'left' : st.rule }); render(); } }, 'Next target')]));
+        } else if (ch.i === 3) {
+          const s = ch.lim, q = LIMQ[s.k], rows = limTable();
+          kids.push(h('div', { style: 'font-size:.84rem;font-variant-numeric:tabular-nums;line-height:1.55;overflow-x:auto', html:
+            '<table style="border-collapse:collapse;width:100%"><tr style="color:var(--muted);text-align:right"><th style="text-align:left;font-weight:500">n</th><th style="font-weight:500">Left sum</th><th style="font-weight:500">Right sum</th><th style="font-weight:500">Gap</th></tr>' +
+            rows.map(r => `<tr style="text-align:right"><td style="text-align:left">${r.n}</td><td>${r.L.toFixed(4)}</td><td>${r.R.toFixed(4)}</td><td>${(r.R - r.L).toFixed(4)}</td></tr>`).join('') + '</table>' }));
+          kids.push(h('p', { style: 'margin:0;font-size:.92rem', html: q.text }));
+          kids.push(optButtons(q, s, pick => quiz(s, q, pick, ch.i)));
+          if (s.fb) kids.push(s.fb);
+          if (s.done && s.k < LIMQ.length - 1) kids.push(h('div', { class: 'ctl buttons' }, h('button', { type: 'button', class: 'btn primary', onclick: () => { s.k++; s.picked = []; s.done = false; s.fb = ''; render(); } }, 'Next question')));
+        } else {
+          const s = ch.i === 1 ? ch.pred : ch.vel, list = ch.i === 1 ? PRED : VEL, q = list[s.k];
+          kids.push(h('p', { style: 'margin:0;font-size:.92rem', html: q.text }));
+          const opts = ch.i === 1 ? { opts: PRED_OPT } : q;
+          kids.push(optButtons(opts, s, pick => quiz(s, q, pick, ch.i)));
+          if (s.fb) kids.push(s.fb);
+          if (s.done && s.k < list.length - 1) kids.push(h('div', { class: 'ctl buttons' }, h('button', { type: 'button', class: 'btn primary', onclick: () => {
+            s.k++; s.picked = []; s.done = false; s.fb = '';
+            if (ch.i === 1) { setup(PRED[s.k].set); hide = true; sync(); }
+            render(); } }, ch.i === 1 ? 'Next case' : 'Next question')));
+        }
+        chBox.replaceChildren(...kids);
+      }
+      function quiz(s, q, pick, which) {
+        const good = pick === q.ans;
+        if (which === 1) {
+          hide = false; s.done = true; s.picked = [pick]; setup(q.set, 0);
+          const d = FN[q.set.fn], S = sampleSum(d, q.set.a, q.set.b, q.set.n, q.set.rule), I = exact(d, q.set.a, q.set.b);
+          s.fb = say(good ? 'green' : 'red', `<b>${good ? 'Right.' : 'Not quite.'}</b> The sum is ${f3(S)} and the exact area is ${f3(I)}, so the sum is ${S > I ? 'bigger' : 'smaller'} by ${f3(Math.abs(S - I))}. ${q.why}`);
+          sync();
+        } else if (good) { s.done = true; s.picked = [pick]; s.fb = say('green', `<b>Right.</b> ${q.why}`); }
+        else { s.picked.push(pick); s.fb = say('red', `<b>Not that one.</b> ${wrongWhy(which, s.k, pick)} Try another answer.`); }
+        render();
+      }
+      const wrongWhy = (which, k, pick) => {
+        const T = which === 2 ? [
+          ['That is the total area with every piece counted positive, which is the distance, not the net change.', '', 'The sign is wrong. The backward area (2.250) is bigger than the forward area (1.833), so the net is negative.', 'The pieces do not cancel exactly. The "Net change" line of the readout is not 0.'],
+          ['That is just the red (backward) area. The odometer adds up all the travel, forward and backward.', 'That is the net change. The odometer does not subtract the backward trip.', 'A distance cannot be negative. The odometer counts every piece as positive.', ''],
+          ['The curve is below the axis there, so the velocity is negative, not positive.', 'Standing still means velocity exactly 0, but here the velocity is below 0.', '', 'It does not stop in the middle. The curve stays below the axis, so v is negative the whole time.']
+        ] : [
+          ['0.300 is close, but the left sums are already above 0.3 at n = 100 and still rising.', 'Look at the last rows: none of those sums is anywhere near 0.5.', '', 'The left sums have already passed 0.25. Look at the last rows.'],
+          ['That is the gap at n = 10. The gap shrinks as n grows.', 'That is the gap at n = 100. A larger n makes it smaller still.', '', 'The gap shrinks, but it is not exactly 0 for any finite n.'],
+          ['Different heights inside a strip differ less and less as the strip gets thin, so the limit does not change.', 'Whether n is even or odd does not matter. The strips get thin either way.', '', 'Switch to midpoints and look at n = 100. The sum is about 0.333, not 0.5.']
+        ];
+        return (T[k] && T[k][pick]) || 'Check the readout and the table again.';
+      };
+      function submitTol() {
+        const s = ch.tol, T = TOL[s.k], d = FN[T.fn], rule = st.rule;
+        if (rule === 'rand') { s.fb = say('yellow', 'Random points give a different sum each time, so pick left, right, midpoint or trapezoid for this challenge.'); render(); return; }
+        if (st.fn !== T.fn || Math.abs(st.a - T.a) > 1e-6 || Math.abs(st.b - T.b) > 1e-6) { s.fb = say('yellow', 'The graph no longer matches this target. Press Reset graph, then choose n.'); render(); return; }
+        const I = exact(d, T.a, T.b), e1 = Math.abs(sampleSum(d, T.a, T.b, st.n, rule) - I), e2 = Math.abs(sampleSum(d, T.a, T.b, Math.min(2 * st.n, 200), rule) - I);
+        const ratio = e2 > 1e-12 ? e1 / e2 : Infinity;
+        const dbl = e2 < 1e-12 ? 'Doubling n would make the sum exact.' : `If you double n to ${2 * st.n}, the error goes from ${f3(e1)} to ${f3(e2)}, divided by ${ratio.toFixed(1)}. ` +
+          (ratio < 2.8 ? 'That is about half, so for this rule the error shrinks like 1/n.' : ratio < 6 ? 'That is about a quarter, so for this rule the error shrinks like 1/n².' : 'The error shrinks even faster here.');
+        if (e1 > T.tol) {
+          s.fb = say('red', `<b>Not yet.</b> With n = ${st.n} the error is ${f3(e1)}, and the target is ${T.tol}. ${dbl} Try a larger n, or a different rule.`);
+        } else {
+          const m = minN(d, T.a, T.b, rule, T.tol), fmtN = v => v == null ? 'more than 100' : String(v);
+          const all = ['left', 'right', 'mid', 'trap'].map(r => `${RNAME[r].replace(' sum', '').toLowerCase()} ${fmtN(minN(d, T.a, T.b, r, T.tol))}`).join(', ');
+          const verdict = m === st.n ? `<b>Yes, the smallest for this rule.</b> The error is ${f3(e1)}.` : `<b>It works, but not the smallest.</b> The error is ${f3(e1)}, and n = ${m} already meets the target for this rule.`;
+          const mL = minN(d, T.a, T.b, 'left', T.tol), mM = minN(d, T.a, T.b, 'mid', T.tol);
+          const cmp = mL == null || mL > 2 * mM ? 'Midpoint and trapezoid need far fewer rectangles here: their error shrinks like 1/n², while left and right shrink like 1/n.'
+            : 'The rules are close here. For sin x on [0, π] both end heights are 0, so the left and right errors shrink like 1/n² too, and midpoint is only about twice as accurate.';
+          s.fb = say(m === st.n ? 'green' : 'yellow', `${verdict} ${dbl}<br>Smallest n for each rule on this target: ${all}. ${cmp}`);
+        }
+        render();
+      }
+      function goCh(i, doSetup) {
+        ch.i = i; hide = false;
+        if (doSetup) {
+          if (i === 0) { const T = TOL[ch.tol.k]; setup({ fn: T.fn, a: T.a, b: T.b, n: st.n, rule: st.rule === 'rand' ? 'left' : st.rule }); }
+          else if (i === 1) { setup(PRED[ch.pred.k].set); hide = !ch.pred.done; }
+          else if (i === 2) setup(CAR); else setup(LIM);
+        } else if (i === 1) hide = !ch.pred.done;
+        sync(); render();
+      }
+      const apply = (patch, immediate) => {
+        cancel();
+        let { fn, rule, n, ch: c2, a, b } = patch;
+        if (c2 === 1) ({ fn, rule, n, a, b } = PRED[ch.pred.k].set);
+        if (fn !== undefined) st.fn = fn; if (rule !== undefined) st.rule = rule; if (n !== undefined) st.n = n;
+        if (c2 !== undefined) {
+          ch.i = c2; hide = c2 === 1 && !ch.pred.done;
+          render();
+        }
+        if (immediate || fn !== undefined) { if (a !== undefined) st.a = a; if (b !== undefined) st.b = b; sync(); }
+        else cancel = animateTo(st, { a: a ?? st.a, b: b ?? st.b }, 900, sync);
+        if (fn !== undefined && !immediate) sync();
+      };
+      sync(); render();
+      return { destroy: () => { cancel(); P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   UNDERGRAD — Derivatives as tangent slopes
+   ===================================================================== */
+{
+  const rnd = v => Math.round(v * 1000) / 1000;
+  const n4 = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(4));
+  const fm = v => !isFinite(v) ? 'undefined' : Math.abs(v) >= 1000 ? (v < 0 ? '−' : '') + Math.round(Math.abs(v)).toLocaleString('en') : num(v);
+  const nice = (span, n) => { const r = span / n, e = Math.pow(10, Math.floor(Math.log10(r))), f = r / e; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * e; };
+  const HS = [1, .5, .1, .01];
+
+  /* the functions: f, its derivative d (NaN where none), plot ranges, and the points where f' fails */
+  const FN = {
+    sq:   { label: 'x²', tex: 'x²', f: x => x * x, d: x => 2 * x, xr: [-3, 3], yr: [-1, 9.5], dr: [-6.5, 6.5], bad: [] },
+    cu:   { label: 'x³', tex: 'x³', f: x => x * x * x, d: x => 3 * x * x, xr: [-2, 2], yr: [-8.5, 8.5], dr: [-1.5, 12.5], bad: [] },
+    sin:  { label: 'sin x', tex: 'sin x', f: Math.sin, d: Math.cos, xr: [-4, 4], yr: [-1.6, 1.6], dr: [-1.6, 1.6], bad: [] },
+    abs:  { label: '|x|  (corner)', tex: '|x|', f: Math.abs, d: x => x === 0 ? NaN : x < 0 ? -1 : 1, xr: [-3, 3], yr: [-.6, 3.4], dr: [-1.6, 1.6], bad: [0], kind: 'corner' },
+    cbrt: { label: 'cube root of x', tex: '∛x', f: Math.cbrt, d: x => x === 0 ? NaN : 1 / (3 * Math.pow(Math.cbrt(x), 2)), xr: [-3, 3], yr: [-1.7, 1.7], dr: [-1, 6], bad: [0], kind: 'vertical' },
+    jump: { label: 'a jump at 0', tex: 'g(x)', f: x => .5 * x + (x >= 0 ? 1 : 0), d: x => x === 0 ? NaN : .5, xr: [-3, 3], yr: [-3, 3], dr: [-1, 2], bad: [0], kind: 'jump' }
+  };
+  const isBad = (F, x) => F.bad.some(b => Math.abs(b - x) < 1e-6);
+  const secant = (F, x, h) => (F.f(x + h) - F.f(x)) / h;
+
+  /* what happens to the secant slopes as h shrinks, from the right and from the left */
+  const verdict = (F, x) => {
+    const R1 = secant(F, x, .01), L1 = secant(F, x, -.01), R2 = secant(F, x, .0001), L2 = secant(F, x, -.0001);
+    const grows = (a, b) => Math.abs(b) > 30 && Math.abs(b) > 1.5 * Math.abs(a);
+    const gr = grows(R1, R2), gl = grows(L1, L2);
+    if (gr && gl && R2 * L2 > 0) return { ok: false, kind: 'vertical', text: `Both sides grow without limit (${fm(R1)} and ${fm(L1)} at h = 0.01). The slope never settles: the tangent would be vertical.` };
+    if (gr || gl) return { ok: false, kind: 'jump', text: `One side settles near ${fm(gr ? L2 : R2)}, but the ${gr ? 'right' : 'left'} side keeps growing as h shrinks (${fm(gr ? R1 : L1)} at h = 0.01). There is no single slope.` };
+    if (Math.abs(R2 - L2) > .05) return { ok: false, kind: 'corner', text: `The right side settles near ${fm(R2)} and the left side near ${fm(L2)}. They disagree, so there is no single slope.` };
+    return { ok: true, kind: 'smooth', text: `Both sides settle near ${fm((R2 + L2) / 2)}. They agree, so the slope here is ${fm((R2 + L2) / 2)}.` };
+  };
+
+  /* per-function facts shown after a sketch is checked */
+  const WHY = {
+    sq: `The parabola is flat at its bottom, x = 0, so f′ = 0 there. To the left it falls (negative slope) and to the right it rises (positive slope), and it gets steeper the farther you go from 0. That is the straight line f′(x) = 2x. The slope keeps growing, so the steepest points in this window are its two ends.`,
+    cu: `The curve flattens for an instant at x = 0, so f′(0) = 0. But it never turns around: it rises on both sides, so f′ touches 0 at x = 0 and is positive everywhere else. It is steepest at the ends of the window. That is f′(x) = 3x², a parabola that never goes below the axis.`,
+    sin: `The slope is 0 at the peak and trough of the wave (x ≈ ±1.57) and largest, 1, where the wave crosses zero going up (x = 0). Where sin falls it is steepest downhill, slope −1, at x ≈ ±3.14. The slope graph has the same wave shape, shifted: it is cos x.`,
+    abs: `Left of 0 the graph falls at a constant rate, slope −1. Right of 0 it rises at slope +1. At the corner x = 0 there is no slope at all, so the true derivative is two flat pieces with a jump and no value at 0. A single connected line is not right here.`,
+    cbrt: `The graph always rises, so f′ is positive everywhere it exists. Near 0 the curve is almost vertical, so the slope is huge there, and it flattens as you move away. At x = 0 the slope grows without limit and there is no value.`,
+    jump: `The graph is a straight line with slope 0.5 on each side, so f′ = 0.5 everywhere except x = 0. At the jump there is no slope, because the two sides do not even meet.`
+  };
+
+  register({
+    id: 'derivatives-as-tangent-slopes', level: 'ugrad',
+    title: 'Derivatives as tangent slopes',
+    blurb: 'Slide two points together until a secant line becomes a tangent, then sketch the slope graph yourself.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 0; p.cy = 1.6; p.span = 3.6;
+      p.grid(1, { axes: false });
+      p.path([[-4, 0], [4, 0]], { stroke: pal['grid-strong'], width: 1.4 });
+      p.path([[0, -1], [0, 5]], { stroke: pal['grid-strong'], width: 1.4 });
+      const pts = []; for (let i = 0; i <= 60; i++) { const x = -2.4 + 4.8 * i / 60; pts.push([x, x * x * .62]); }
+      p.curve(pts, { stroke: pal.blue, width: 2.8 });
+      p.path([[-.2, -.85], [2.0, 1.86]], { stroke: pal.violet, width: 2.4 });
+      p.dot(1, .62, 4.5, pal.yellow, pal.stage, 1.5);
+    },
+    hook: String.raw`A curve is bending, so it has no single slope. Yet at any one point it points in a definite direction. How do you measure a slope you can only see up close?`,
+    steps: [
+      { title: 'A secant line',
+        text: String.raw`<p>The graph is \(f(x)=x^2\). Point <b>P</b> sits at \(x=1\) and <b>Q</b> sits at \(x+h\) with \(h=1\). The <b>violet</b> line through them is a <em>secant</em>.</p><p>Its slope is rise over run: \((4-1)\div 1=3\). The violet dot in the lower graph plots that slope (3) at \(x=1\).</p>`,
+        set: { x: 1, h: 1, fn: 'sq', mode: 'explore', mirror: false, tangent: false, reveal: false } },
+      { title: 'Squeeze Q toward P',
+        text: String.raw`<p>Now \(h=0.01\), so Q is almost on top of P. The secant slope is \((1.0201-1)\div 0.01=2.01\).</p><p>Look at the table: from the right the slopes go \(3,\ 2.5,\ 2.1,\ 2.01\), and from the left \(1,\ 1.5,\ 1.9,\ 1.99\). Both sides settle on \(2\), the slope of the dashed <b>tangent</b> line. Drag P along the curve to trace out the slope graph.</p>`,
+        set: { x: 1, h: .01, fn: 'sq', mode: 'explore', mirror: true, tangent: true, reveal: false } },
+      { title: 'Sketch the derivative',
+        text: String.raw`<p>Your turn, with \(f(x)=x^3\). P is at \(x=-1\) and the slope there is about \(2.97\), close to \(3\). Drag P, read each slope, and use <b>Pin slope</b> or drag across the lower graph to sketch \(f'\).</p><p>When you are done, press <b>Check my sketch</b>. The lesson overlays the true derivative and explains where yours differs.</p>`,
+        set: { x: -1, h: .01, fn: 'cu', mode: 'sketch', mirror: false, tangent: false, reveal: false } },
+      { title: 'Where slope fails',
+        text: String.raw`<p>The graph is \(|x|\), and P is at its corner, \(x=0\). With \(h=0.5\) the right secant has slope \(1\) and the left secant (the dashed one) has slope \(-1\).</p><p>Shrinking \(h\) does not help: the table stays at \(1\) and \(-1\). When the two sides disagree there is no tangent. Try the cube root and the jump (move P to \(0\) each time), then press <b>Mark this x as bad</b> where you find one.</p>`,
+        set: { x: 0, h: .5, fn: 'abs', mode: 'explore', mirror: true, tangent: false, reveal: false } }
+    ],
+    formal: String.raw`
+      <p>A <em>secant</em> line of a function \(f\) through the points at \(x\) and \(x+h\) has slope
+      \[ \frac{f(x+h)-f(x)}{h}, \]
+      called a <em>difference quotient</em>. It is the average rate of change of \(f\) over the interval of length \(h\). The number \(h\) may be positive or negative, and \(h\neq 0\).</p>
+      <h3>Definition of the derivative</h3>
+      <p>The <em>derivative</em> of \(f\) at \(x\) is the limit of the difference quotients as \(h\) shrinks to \(0\):
+      \[ f'(x)=\lim_{h\to 0}\frac{f(x+h)-f(x)}{h}, \]
+      provided this limit exists as a finite number. It is the slope of the tangent line at that point. Leibniz wrote it as \(\dfrac{dy}{dx}\), a limit of \(\Delta y/\Delta x\). The tangent line at \(x=a\) is \(y=f(a)+f'(a)(x-a)\).</p>
+      <h3>Worked example: \(f(x)=x^2\)</h3>
+      <p>Expand the numerator:
+      \[ \frac{(x+h)^2-x^2}{h}=\frac{2xh+h^2}{h}=2x+h \qquad (h\neq 0). \]
+      As \(h\to 0\) this tends to \(2x\), so \(f'(x)=2x\). At \(x=1\) the quotient is \(2+h\), which is exactly the table in step 2: \(3,\ 2.5,\ 2.1,\ 2.01\) for \(h=1,\ 0.5,\ 0.1,\ 0.01\), and \(1,\ 1.5,\ 1.9,\ 1.99\) for the negative values. The tangent at \(x=1\) is \(y=1+2(x-1)\).</p>
+      <h3>The power rule, as a pattern</h3>
+      <p>The same expansion for \(x^3\) gives \((x+h)^3-x^3=3x^2h+3xh^2+h^3\), so the quotient is \(3x^2+3xh+h^2\to 3x^2\). The pattern:
+      \[ \frac{d}{dx}\,x^n = n\,x^{n-1}. \]
+      Check it: \(n=1\) gives \(1\) (a line of slope 1), \(n=2\) gives \(2x\), \(n=3\) gives \(3x^2\). Test \(n=4\) at \(x=1\): the rule predicts \(4\), and the quotient \((1.01^4-1)/0.01\approx 4.06\) is close. For positive integers \(n\) the binomial theorem proves the rule. It also holds for other exponents when \(x&gt;0\); with \(n=\tfrac13\) it gives \(\tfrac13x^{-2/3}\), which blows up at \(0\), matching the vertical tangent you saw. The derivatives of \(\sin x\) and \(\cos x\) are \(\cos x\) and \(-\sin x\); this lesson only checks them numerically.</p>
+      <h3>What differentiable means</h3>
+      <p>\(f\) is <em>differentiable at \(a\)</em> if \(f'(a)\) exists as a finite number. That requires the right-hand limit (\(h\to 0^+\)) and the left-hand limit (\(h\to 0^-\)) of the difference quotient to both exist and be equal. The three failures you saw:</p>
+      <p>\(|x|\) at \(0\): the quotient is \(1\) for \(h&gt;0\) and \(-1\) for \(h&lt;0\), so the one-sided limits differ (a corner).<br>
+      \(\sqrt[3]{x}\) at \(0\): the quotient is \(h^{-2/3}\), which grows without bound from both sides (a vertical tangent, no finite slope).<br>
+      A jump: the quotient grows without bound on the side where the function jumps (the function is not even continuous).</p>
+      <h3>Differentiable implies continuous, not the reverse</h3>
+      <p>If \(f'(a)\) exists, write
+      \[ f(a+h)-f(a)=\frac{f(a+h)-f(a)}{h}\cdot h \;\longrightarrow\; f'(a)\cdot 0=0 \quad (h\to 0), \]
+      so \(f(a+h)\to f(a)\): \(f\) is continuous at \(a\). Therefore a jump (a discontinuity) can never have a derivative. The converse is false: \(|x|\) is continuous at \(0\) but not differentiable there. Differentiable means "a non-vertical tangent line exists"; continuous only means "no break".</p>
+      <h3>What the numbers do and do not show</h3>
+      <p>A table of quotients suggests a limit but does not prove one. The algebra above (cancel \(h\), then let \(h\to 0\)) is what proves it.</p>`,
+    check: [
+      { q: String.raw`Let \(f(x)=x^2\). A secant line is drawn through the graph points at \(x=3\) and \(x=3.1\). What is its slope?`,
+        choices: ['6', '6.1', '0.61', '9.61'], answer: 1,
+        why: String.raw`\(f(3)=9\) and \(f(3.1)=9.61\), so the rise is \(0.61\) and the run is \(0.1\). The slope is \(0.61\div 0.1=6.1\). The tangent slope at \(x=3\) is exactly \(6\), and this secant is a little steeper because \(h=0.1\) is not yet zero.`,
+        hint: String.raw`Slope is rise divided by run. Do not forget to divide by \(h\).` },
+      { q: String.raw`For \(f(x)=|x|\), the secant slope between \(x=0\) and \(x=h\) equals \(1\) for every \(h&gt;0\), and equals \(-1\) for every \(h&lt;0\). Which statement is correct?`,
+        choices: [String.raw`\(f'(0)=0\), the average of \(1\) and \(-1\)`, String.raw`\(f'(0)=1\), because we usually move to the right`,
+                  String.raw`\(f'(0)\) does not exist, even though \(f\) is continuous at \(0\)`, String.raw`\(f'(0)\) does not exist, because \(f\) is not continuous at \(0\)`], answer: 2,
+        why: String.raw`The derivative needs one limit, and the two sides give different limits, \(1\) and \(-1\). So \(f'(0)\) does not exist. But \(|x|\) has no break at \(0\) (it is continuous), which shows that continuous does not imply differentiable.`,
+        hint: String.raw`A limit must be a single number. Does \(|x|\) have a jump or a gap at \(0\)?` }
+    ],
+    links: { prereq: ['limits-and-epsilon-delta', 'slope-and-linear-functions'], next: ['the-fundamental-theorem-of-calculus'], related: ['quadratics-and-the-parabola', 'exponential-growth', 'riemann-sums-and-the-integral'] },
+
+    mount({ stage, controls: C }) {
+      const st = { x: 1, h: 1 };
+      let fnKey = 'sq', mode = 'explore', mirror = false, tangent = false, reveal = false;
+      let cancel = () => {}, trail = {}, sk = [], checked = false, fb = '';
+      const cur = () => FN[fnKey];
+      const cols = () => Math.round((cur().xr[1] - cur().xr[0]) * 10) + 1;
+      const colX = i => rnd(cur().xr[0] + i / 10);
+      const colOf = x => clamp(Math.round((x - cur().xr[0]) * 10), 0, cols() - 1);
+
+      stage.classList.add('split');
+      const top = h('div', { class: 'pane', style: 'flex: 11 1 0' }), bot = h('div', { class: 'pane', style: 'flex: 9 1 0' });
+      stage.append(top, bot);
+      const P1 = new Plane(top, { span: 5 }), P2 = new Plane(bot, { span: 5 });
+      let fr1 = null, fr2 = null;
+
+      /* math coordinates are pixels here (y up from the bottom), so each pane has its own x and y scale */
+      const frame = (p, xr, yr) => {
+        const L = 46, R = 14, T = 16, B = 28, w = Math.max(10, p.w - L - R), hh = Math.max(10, p.h - T - B);
+        p.span = Math.min(p.w, p.h) / 2; p.cx = p.w / 2; p.cy = p.h / 2;
+        return { L, R, T, B, w, hh, xr, yr,
+          sx: x => L + (x - xr[0]) / (xr[1] - xr[0]) * w, sy: y => B + (y - yr[0]) / (yr[1] - yr[0]) * hh,
+          ix: px => xr[0] + (px - L) / w * (xr[1] - xr[0]), iy: py => yr[0] + (py - B) / hh * (yr[1] - yr[0]) };
+      };
+      const poly = (c, p, pts, col, width, dash) => {
+        c.beginPath(); let pen = false;
+        for (const q of pts) { if (!q) { pen = false; continue; } if (pen) c.lineTo(q[0], p.h - q[1]); else c.moveTo(q[0], p.h - q[1]); pen = true; }
+        c.strokeStyle = col; c.lineWidth = width; c.lineJoin = 'round'; c.lineCap = 'round'; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
+      };
+      const clipTo = (c, p, fr) => { c.save(); c.beginPath(); c.rect(fr.L, p.h - fr.B - fr.hh, fr.w, fr.hh); c.clip(); };
+      const drawAxes = (c, p, fr, fs, yname) => {
+        const pal = p.pal, { xr, yr } = fr;
+        const xs = nice(xr[1] - xr[0], Math.max(3, fr.w / 70)), ys = nice(yr[1] - yr[0], Math.max(3, fr.hh / 45));
+        clipTo(c, p, fr);
+        for (let x = Math.ceil(xr[0] / xs) * xs; x <= xr[1] + 1e-9; x += xs) poly(c, p, [[fr.sx(x), fr.B], [fr.sx(x), fr.B + fr.hh]], pal.grid, 1.2);
+        for (let y = Math.ceil(yr[0] / ys) * ys; y <= yr[1] + 1e-9; y += ys) poly(c, p, [[fr.L, fr.sy(y)], [fr.L + fr.w, fr.sy(y)]], pal.grid, 1.2);
+        if (yr[0] < 0 && yr[1] > 0) poly(c, p, [[fr.L, fr.sy(0)], [fr.L + fr.w, fr.sy(0)]], pal['grid-strong'], 2);
+        if (xr[0] < 0 && xr[1] > 0) poly(c, p, [[fr.sx(0), fr.B], [fr.sx(0), fr.B + fr.hh]], pal['grid-strong'], 2);
+        c.restore();
+        const t = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
+        for (let x = Math.ceil(xr[0] / xs) * xs; x <= xr[1] + 1e-9; x += xs) p.label(t(x), fr.sx(x), fr.B - 14, { size: fs, italic: false, color: pal.muted, halo: false });
+        for (let y = Math.ceil(yr[0] / ys) * ys; y <= yr[1] + 1e-9; y += ys) p.label(t(y), fr.L - 8, fr.sy(y), { size: fs, italic: false, color: pal.muted, align: 'right', halo: false });
+        if (yname) p.label(yname, fr.L + 8, fr.B + fr.hh - 8, { size: fs + 4, color: pal.text, align: 'left' });
+      };
+      const curvePts = (F, fn, fr, ymin, ymax) => {
+        const pts = [], N = 400, [x0, x1] = F.xr;
+        for (let i = 0; i <= N; i++) {
+          const x = x0 + (x1 - x0) * i / N, y = fn(x);
+          if (!isFinite(y) || y < ymin - 40 * (ymax - ymin) || y > ymax + 40 * (ymax - ymin)) { pts.push(null); continue; }
+          if (F.bad.length && i > 0 && F.bad.some(b => x - (x1 - x0) / N < b && b <= x)) pts.push(null);
+          pts.push([fr.sx(x), fr.sy(y)]);
+        }
+        return pts;
+      };
+      const cursorX = fr => fr.sx(st.x);
+
+      /* ---------- top pane: f, P, Q, secants ---------- */
+      P1.onDraw = (c, p) => {
+        const pal = p.pal, F = cur(), fr = fr1 = frame(p, F.xr, F.yr), fs = clamp(p.w / 28, 12, 15);
+        drawAxes(c, p, fr, fs, '');
+        const { x, h: hh } = st, fx = F.f(x), px = fr.sx(x), py = fr.sy(fx);
+        clipTo(c, p, fr);
+        const line = (m, col, w, dash) => {
+          const a = F.xr[0], b = F.xr[1];
+          poly(c, p, [[fr.sx(a), fr.sy(fx + m * (a - x))], [fr.sx(b), fr.sy(fx + m * (b - x))]], col, w, dash);
+        };
+        poly(c, p, curvePts(F, F.f, fr, F.yr[0], F.yr[1]), pal.blue, 3.5);
+        if (fnKey === 'jump') { p.dot(fr.sx(0), fr.sy(0), 5, pal.stage, pal.blue, 2.5); p.dot(fr.sx(0), fr.sy(1), 5, pal.blue, pal.blue, 2); }
+        const okh = Math.abs(hh) > 1e-9;
+        if (tangent) { const d = F.d(x); if (isFinite(d)) line(d, pal.text, 2, [3, 5]); }
+        if (okh && mirror) line(secant(F, x, -hh), alpha(pal.violet, .85), 2.4, [8, 6]);
+        if (okh) line(secant(F, x, hh), pal.violet, 3.2);
+        /* rise and run legs */
+        if (okh) {
+          const qx = fr.sx(x + hh), qy = fr.sy(F.f(x + hh));
+          if (Math.abs(qx - px) > 24 && Math.abs(qy - py) > 10) {
+            poly(c, p, [[px, py], [qx, py]], pal.green, 3); poly(c, p, [[qx, py], [qx, qy]], pal.red, 3);
+          }
+        }
+        poly(c, p, [[px, fr.B], [px, fr.B + fr.hh]], pal['grid-strong'], 1.4, [4, 6]);
+        c.restore();
+        if (okh) {
+          const qx = fr.sx(x + hh), qy = fr.sy(F.f(x + hh)), inside = qx >= fr.L && qx <= fr.L + fr.w;
+          if (mirror) { const mx = fr.sx(x - hh), my = fr.sy(F.f(x - hh)); if (mx >= fr.L && mx <= fr.L + fr.w && Math.hypot(mx - px, my - py) > 8) p.dot(mx, my, 6, pal.stage, pal.violet, 2.5); }
+          if (inside && Math.hypot(qx - px, qy - py) > 8) p.dot(qx, qy, 7, pal.violet, pal.stage, 2);
+          if (inside && Math.hypot(qx - px, qy - py) > 34) p.label('Q', qx, qy, { size: fs + 5, color: pal.violet, dy: qy >= py ? -17 : 17, dx: qx >= px ? 8 : -8 });
+        }
+        p.dot(px, py, 9, pal.yellow, pal.brass, 3.5);
+        p.label('P', px, py, { size: fs + 5, color: pal.text, dx: -14, dy: 17 });
+        p.label(fnKey === 'jump' ? 'f has a jump at 0' : 'f(x) = ' + F.tex, F.xr[0] < 0 ? fr.sx(0) + 10 : fr.L + 8, fr.B + fr.hh - 12, { size: fs + 4, color: pal.blue, align: 'left', italic: false });
+      };
+
+      /* ---------- bottom pane: the slope graph ---------- */
+      P2.onDraw = (c, p) => {
+        const pal = p.pal, F = cur(), fr = fr2 = frame(p, F.xr, F.dr), fs = clamp(p.w / 28, 12, 15);
+        drawAxes(c, p, fr, fs, mode === 'sketch' ? 'your f′' : 'slope of f');
+        const { x } = st, hh = st.h, okh = Math.abs(hh) > 1e-9;
+        const showTrue = mode === 'explore' ? reveal : checked;
+        clipTo(c, p, fr);
+        if (showTrue) {
+          poly(c, p, curvePts(F, F.d, fr, F.dr[0], F.dr[1]), pal.blue, 3.5);
+          if (fnKey === 'abs') for (const v of [-1, 1]) { c.restore(); p.dot(fr.sx(0), fr.sy(v), 5, pal.stage, pal.blue, 2.5); clipTo(c, p, fr); }
+          if (fnKey === 'jump') { c.restore(); p.dot(fr.sx(0), fr.sy(.5), 5, pal.stage, pal.blue, 2.5); clipTo(c, p, fr); }
+        }
+        if (mode === 'explore') {
+          const ks = Object.keys(trail).map(Number).sort((a, b) => a - b), tp = []; let prev = null;
+          for (const k of ks) { if (prev !== null && k - prev > 1) tp.push(null); tp.push([fr.sx(k / 10), fr.sy(clamp(trail[k], F.dr[0] - 1, F.dr[1] + 1))]); prev = k; }
+          poly(c, p, tp, alpha(pal.violet, .5), 2.5);
+          for (const q of tp) if (q) p.dot(q[0], p.h - q[1] === q[1] ? q[1] : q[1], 3, alpha(pal.violet, .6));
+        } else {
+          const sp = []; let prev = -9;
+          sk.forEach((v, i) => { if (v == null) return; if (i - prev > 1) sp.push(null); sp.push([fr.sx(colX(i)), fr.sy(v)]); prev = i; });
+          poly(c, p, sp, pal.green, 3.2);
+          sk.forEach((v, i) => { if (v != null && (i % 3 === 0 || !checked)) p.dot(fr.sx(colX(i)), fr.sy(v), 3, pal.green); });
+          if (checked) bad.forEach((i, k) => { if (k % 2 === 0) p.dot(fr.sx(colX(i)), fr.sy(sk[i]), 5, null, pal.red, 2.5); });
+        }
+        /* live slope at P */
+        poly(c, p, [[cursorX(fr), fr.B], [cursorX(fr), fr.B + fr.hh]], pal['grid-strong'], 1.4, [4, 6]);
+        if (okh) {
+          const m = secant(F, x, hh), my = clamp(m, F.dr[0] - .3, F.dr[1] + .3);
+          if (mirror) { const ml = secant(F, x, -hh); p.dot(cursorX(fr), fr.sy(clamp(ml, F.dr[0] - .3, F.dr[1] + .3)), 6, pal.stage, pal.violet, 2.5); }
+          c.restore();
+          p.dot(cursorX(fr), fr.sy(my), 7.5, pal.violet, pal.stage, 2);
+          const above = fr.sy(my) < fr.B + fr.hh - 30;
+          p.label('slope ' + fm(m), cursorX(fr), fr.sy(my), { size: fs + 2, italic: false, color: pal.violet, dy: above ? -18 : 18, dx: cursorX(fr) > fr.L + fr.w - 70 ? -36 : 0 });
+        } else c.restore();
+        if (mode === 'sketch' && !checked && sk.every(v => v == null))
+          p.label('drag here to sketch f′, or pin measured slopes', fr.L + fr.w / 2, fr.B + fr.hh / 2, { size: fs + 3, italic: false, color: pal.muted });
+      };
+
+      /* ---------- readouts ---------- */
+      const upd = () => {
+        const F = cur(), { x } = st, hh = st.h, fx = F.f(x);
+        if (Math.abs(hh) < 1e-9) {
+          ro.innerHTML = `<span class="k">P</span> (${n4(x)}, ${n4(fx)})<br><span class="k">h = 0</span>: Q lands on P. Rise 0 over run 0 has no value, so there is no secant. Slide h a little.`;
+        } else {
+          const y1 = F.f(x + hh), m = (y1 - fx) / hh;
+          ro.innerHTML = `<span class="k">P</span> (${n4(x)}, ${n4(fx)}) &nbsp; <span class="k">Q</span> (${n4(x + hh)}, ${n4(y1)})<br>
+            <span class="k">rise</span> f(x+h) − f(x) = ${n4(y1 - fx)}<br><span class="k">run</span> h = ${num(hh)}<br>
+            <span class="k">slope</span> rise ÷ run = <b>${fm(m)}</b>` +
+            (mirror ? `<br><span class="k">other side</span> Q′ at x − h, slope ${fm(secant(F, x, -hh))}` : '');
+        }
+        const v = verdict(F, x);
+        tb.innerHTML = `<table style="width:100%;border-collapse:collapse"><tr><td><span class="k">h</span></td><td style="text-align:right"><span class="k">from the right</span></td><td style="text-align:right"><span class="k">from the left</span></td></tr>` +
+          HS.map(k => `<tr><td>${k}</td><td style="text-align:right">${fm(secant(F, x, k))}</td><td style="text-align:right">${fm(secant(F, x, -k))}</td></tr>`).join('') +
+          `</table><span class="k">Verdict at x = ${num(x)}</span> ${v.text}`;
+        fbEl.innerHTML = fb; fbEl.style.display = fb ? '' : 'none';
+      };
+
+      const record = () => { const m = secant(cur(), st.x, st.h); if (Math.abs(st.h) > 1e-9 && isFinite(m)) trail[Math.round(st.x * 10)] = m; };
+      const sync = () => { xS.set(st.x); hS.set(st.h); P1.draw(); P2.draw(); upd(); };
+      const userMoved = () => { cancel(); record(); sync(); };
+      const clearFb = () => { fb = ''; };
+
+      /* ---------- controls ---------- */
+      C.title('Function');
+      const sel = C.select({ label: 'Graph of f', value: fnKey, options: Object.keys(FN).map(k => ({ value: k, label: FN[k].label })), onChange: v => { cancel(); setFn(v); sync(); } });
+      C.title('Secant');
+      const xS = C.slider({ label: 'Point P at x', min: -4, max: 4, step: .1, value: st.x, format: v => num(v), onInput: v => { st.x = clamp(rnd(v), cur().xr[0], cur().xr[1]); userMoved(); } });
+      const hS = C.slider({ label: 'Step h (Q is at x + h)', min: -2, max: 2, step: .01, value: st.h, format: v => (+v).toFixed(2).replace('-', '−'), onInput: v => { st.h = rnd(v); userMoved(); } });
+      const ro = C.readout();
+      const tb = C.readout();
+      const tgT = C.toggle({ label: 'Show the tangent line', value: tangent, onChange: v => { tangent = v; P1.draw(); } });
+      const miT = C.toggle({ label: 'Show the other side (x − h)', value: mirror, onChange: v => { mirror = v; sync(); } });
+      const reT = C.toggle({ label: 'Show the true slope graph', value: reveal, onChange: v => { reveal = v; P2.draw(); } });
+      C.title('Challenges');
+      const [bEx, bSk] = C.buttons([
+        { label: 'Explore', primary: true, onClick: () => { cancel(); setMode('explore'); sync(); } },
+        { label: 'Sketch f′', onClick: () => { cancel(); if (!['sq', 'cu', 'sin', 'abs', 'cbrt', 'jump'].includes(fnKey)) setFn('sq'); setMode('sketch'); sync(); } }
+      ]);
+      const exRow = C.buttons([
+        { label: 'Mark this x as bad', onClick: () => detect(true) },
+        { label: 'No bad point', onClick: () => detect(false) }
+      ]);
+      const skRow = C.buttons([
+        { label: 'Pin slope', onClick: () => pin() },
+        { label: 'Check my sketch', primary: true, onClick: () => grade() },
+        { label: 'Clear', onClick: () => { sk = new Array(cols()).fill(null); checked = false; bad = []; fb = ''; sync(); } }
+      ]);
+      const fbEl = C.readout(); fbEl.style.display = 'none';
+      C.hint('Drag P or Q on the upper graph (or anywhere along it), or use the sliders.');
+      const rowOf = els => els[0].parentNode;
+      const toggleRow = t => t.parentNode;
+
+      let bad = [];
+      const resetSketch = () => { sk = new Array(cols()).fill(null); checked = false; bad = []; };
+      function setFn(k) {
+        fnKey = k; sel.value = k; trail = {}; resetSketch(); clearFb();
+        st.x = clamp(st.x, cur().xr[0], cur().xr[1]);
+      }
+      function setMode(m) {
+        mode = m; checked = false; bad = []; clearFb();
+        bEx.className = m === 'explore' ? 'btn primary' : 'btn'; bSk.className = m === 'sketch' ? 'btn primary' : 'btn';
+        rowOf(exRow).style.display = m === 'explore' ? '' : 'none'; rowOf(skRow).style.display = m === 'sketch' ? '' : 'none';
+        toggleRow(reT).style.display = m === 'explore' ? '' : 'none';
+        if (m === 'sketch') resetSketch();
+      }
+      resetSketch(); setMode('explore');
+
+      /* ---------- challenge: find the bad point ---------- */
+      function detect(says) {
+        const F = cur(), x = st.x, v = verdict(F, x);
+        if (says) {
+          if (isBad(F, x)) {
+            fb = `<span class="k">Yes.</span> At x = ${num(x)} the slope fails. ${v.text} ` + ({
+              corner: 'Why: the graph turns a corner. A tangent line would have to tilt both ways at once.',
+              vertical: 'Why: the curve rises almost straight up here, so the secants get steeper and steeper. A vertical line has no slope.',
+              jump: 'Why: the graph breaks. Going left from P the secant has to cross the gap, and a gap divided by a tiny h is huge. A function with a jump is not continuous, so it cannot have a derivative.'
+            }[F.kind] || '');
+          } else if (v.ok) {
+            fb = `<span class="k">Not here.</span> At x = ${num(x)} ${v.text} Slide P to look for a place where the two sides stop agreeing as h shrinks.`;
+          } else {
+            fb = `<span class="k">Close, but not the exact spot.</span> The slopes already look odd at x = ${num(x)}, but the graph has no break here. Move P by 0.1 steps and watch where the verdict changes.`;
+          }
+        } else {
+          fb = F.bad.length
+            ? `<span class="k">Not quite.</span> This graph has a point where the left and right secants disagree or blow up. Slide P along it and read the verdict until it says no single slope.`
+            : `<span class="k">Right.</span> ${F.label} is smooth: at every x the left and right secant slopes settle on the same number. The graph has a tangent everywhere.`;
+        }
+        upd();
+      }
+
+      /* ---------- challenge: sketch the derivative ---------- */
+      function pin() {
+        const m = secant(cur(), st.x, st.h);
+        if (Math.abs(st.h) < 1e-9 || !isFinite(m)) { fb = 'Choose a small h that is not 0 first.'; upd(); return; }
+        const F = cur(); checked = false; bad = [];
+        sk[colOf(st.x)] = clamp(m, F.dr[0], F.dr[1]);
+        fb = `Pinned slope ${fm(m)} at x = ${num(st.x)}. Move P and pin more, or drag across the lower graph.`; sync();
+      }
+      function grade() {
+        const F = cur(), n = cols(), tol = .07 * (F.dr[1] - F.dr[0]);
+        const drawn = []; sk.forEach((v, i) => { if (v != null && !isBad(F, colX(i))) drawn.push(i); });
+        const need = Math.round((n - F.bad.length) * .6);
+        if (drawn.length < need) {
+          fb = `<span class="k">Not enough yet.</span> You have sketched ${drawn.length} of ${n - F.bad.length} x-values. Every x needs a slope, so cover most of the graph. Drag across the lower graph, or pin slopes at more places.`;
+          upd(); return;
+        }
+        const tr = i => clamp(F.d(colX(i)), F.dr[0], F.dr[1]);
+        const errs = drawn.map(i => ({ i, e: Math.abs(sk[i] - tr(i)) })), okN = errs.filter(o => o.e <= tol).length;
+        bad = errs.filter(o => o.e > tol).map(o => o.i);
+        checked = true;
+        const runs = []; let run = null;
+        const cat = o => { const sv = sk[o.i], dv = tr(o.i); return sv * dv < 0 && Math.abs(dv) > tol / 2 ? (dv > 0 ? 'pos' : 'neg') : Math.abs(sv) > Math.abs(dv) ? 'flat' : 'steep'; };
+        for (const o of errs) {
+          if (o.e <= tol) continue;
+          const k = cat(o);
+          if (run && o.i - run.last <= 3 && run.k === k) { run.last = o.i; run.list.push(o); } else { run = { first: o.i, last: o.i, list: [o], k }; runs.push(run); }
+        }
+        const frac = okN / drawn.length;
+        let msg = frac >= .85 ? `<span class="k">Close match.</span> Within tolerance of the true derivative (blue): ${okN} of ${drawn.length} points.`
+          : frac >= .5 ? `<span class="k">Partly right.</span> Close to the true derivative (blue): ${okN} of ${drawn.length} points. The red rings mark the rest.`
+          : `<span class="k">Not yet.</span> Close to the true derivative (blue): ${okN} of ${drawn.length} points. The red rings mark the misses.`;
+        runs.sort((a, b) => b.list.length - a.list.length);
+        const notes = runs.slice(0, 3).map(r => {
+          const w = r.list.reduce((a, b) => (b.e > a.e ? b : a)), xm = colX(w.i), s = sk[w.i], d = tr(w.i), xa = colX(r.first), xb = colX(r.last);
+          const where = r.first === r.last ? `at x = ${num(xa)}` : `from x = ${num(xa)} to x = ${num(xb)}`;
+          if (s * d < 0 && Math.abs(d) > tol / 2) return `${where} you drew ${s > 0 ? 'above' : 'below'} the axis, but f is ${d > 0 ? 'rising' : 'falling'} there, so its slope is ${d > 0 ? 'positive' : 'negative'} (at x = ${num(xm)} it is ${fm(d)}).`;
+          return `${where} you drew about ${fm(s)}, but at x = ${num(xm)} the tangent slope is ${fm(d)}, so the curve is ${Math.abs(s) > Math.abs(d) ? 'flatter' : 'steeper'} than you drew.`;
+        });
+        if (notes.length) msg += ' Differences: ' + notes.join(' Also, ');
+        else msg += ' Your sketch matches everywhere you drew.';
+        fb = msg + ' <br><span class="k">Why the true graph looks like this.</span> ' + WHY[fnKey];
+        sync();
+      }
+
+      /* ---------- dragging ---------- */
+      draggable(P1, {
+        hit: (px, py) => {
+          if (!fr1) return null;
+          const F = cur(), x = st.x, fx = F.f(x), dP = Math.hypot(fr1.sx(x) - px, p1y(fr1.sy(fx)) - py), dQ = Math.hypot(fr1.sx(x + st.h) - px, p1y(fr1.sy(F.f(x + st.h))) - py);
+          return dQ < 16 && dQ < dP - 2 && Math.abs(st.h) > 1e-9 ? 'Q' : 'P';
+        },
+        move: (hd, mx) => {
+          const F = cur(), xm = fr1.ix(mx);
+          if (hd === 'P') st.x = clamp(rnd(snap(xm, .1)), F.xr[0], F.xr[1]);
+          else { let nh = clamp(rnd(snap(xm - st.x, .01)), -2, 2); if (Math.abs(nh) < .005) nh = st.h < 0 ? -.01 : .01; st.h = nh; }
+          userMoved();
+        }
+      });
+      const p1y = my => P1.h - my;
+      let lastCol = null, lastVal = 0;
+      P2.canvas.addEventListener('pointerdown', () => { lastCol = null; });
+      draggable(P2, {
+        hit: () => 'b',
+        move: (_, mx, my) => {
+          const F = cur();
+          if (mode === 'explore') { st.x = clamp(rnd(snap(fr2.ix(mx), .1)), F.xr[0], F.xr[1]); userMoved(); return; }
+          cancel(); checked = false; bad = [];
+          const col = colOf(fr2.ix(mx)), val = clamp(fr2.iy(my), F.dr[0], F.dr[1]);
+          if (lastCol === null) sk[col] = val;
+          else { const a = Math.min(lastCol, col), b = Math.max(lastCol, col); for (let i = a; i <= b; i++) sk[i] = b === a ? val : lerp(lastVal, val, (i - lastCol) / (col - lastCol)); }
+          lastCol = col; lastVal = val;
+          fb = ''; P2.requestDraw(); upd();
+        }
+      });
+
+      /* ---------- steps ---------- */
+      const apply = (patch, immediate) => {
+        cancel();
+        const { fn, mode: md, mirror: mi, tangent: tg, reveal: rv, ...rest } = patch;
+        if (fn !== undefined && fn !== fnKey) setFn(fn);
+        if (md !== undefined) setMode(md);
+        if (mi !== undefined) { mirror = mi; miT.checked = mi; }
+        if (tg !== undefined) { tangent = tg; tgT.checked = tg; }
+        if (rv !== undefined) { reveal = rv; reT.checked = rv; }
+        clearFb();
+        if (immediate || !Object.keys(rest).length) { Object.assign(st, rest); record(); sync(); }
+        else cancel = animateTo(st, rest, 900, sync, () => { record(); sync(); });
+      };
+      upd();
+      return { destroy: () => { cancel(); P1.destroy(); P2.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   UNDERGRAD — Limits and epsilon-delta
+   ===================================================================== */
+{
+  const sig = (v, n = 2) => +v.toPrecision(n);
+  const N = (v, n = 4) => {
+    if (v === Infinity) return '∞'; if (v === -Infinity) return '−∞'; if (!isFinite(v)) return 'undefined';
+    return String(+v.toPrecision(n)).replace('-', '−');
+  };
+  const niceStep = v => { const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; };
+  const decs = step => clamp(-Math.floor(Math.log10(step) + 1e-9), 0, 6);
+  const tick = (v, d) => (v < -1e-12 ? '−' : '') + Math.abs(v).toFixed(d);
+  const good = t => `<b style="color:var(--green)">${t}</b>`, bad = t => `<b style="color:var(--red)">${t}</b>`;
+  const cap = s => s[0].toUpperCase() + s.slice(1);
+  const CAP = 6, MIN_DELTA = .001;
+
+  /* view = [xmin, xmax, ymin, ymax]; piv = zoom centre; zp = how much the x-axis zooms compared with the y-axis;
+     pts = ends of the curve at x = a; fa / alt = value of f at a (default / changed); lim = what f heads for from each side */
+  const FN = {
+    sq:   { name: 'f(x) = x²', f: x => x * x, a: 2, L0: 4, dL: .05, view: [0, 4, -1, 9], piv: 4, zp: 1, pts: [[2, 4]], fa: 4, alt: 1,
+            lim: { left: 4, right: 4 }, targets: [1, .5, .1, .01], slope: 4 },
+    lin:  { name: 'f(x) = 3x − 1', f: x => 3 * x - 1, a: 2, L0: 5, dL: .05, view: [0, 4, -1, 11], piv: 5, zp: 1, pts: [[2, 5]], fa: 5, alt: 0,
+            lim: { left: 5, right: 5 }, targets: [1, .5, .1, .01], slope: 3 },
+    sinc: { name: 'f(x) = sin(x) / x', f: x => Math.sin(x) / x, a: 0, L0: 1, dL: .01, view: [-6, 6, -.5, 1.8], piv: 1, zp: .5, pts: [[0, 1]], fa: null, alt: 1.6,
+            lim: { left: 1, right: 1 }, targets: [1, .5, .1, .01], slope: 0 },
+    jump: { name: 'f(x) = x for x < 1, x + 2 for x ≥ 1', f: x => (x < 1 ? x : x + 2), a: 1, L0: 2, dL: .05, view: [-1, 3, -1, 5], piv: 2, zp: 1, pts: [[1, 1], [1, 3]], fa: 3, alt: 0,
+            lim: { left: 1, right: 3 }, targets: [1.5, 1, .5, .1] },
+    osc:  { name: 'f(x) = sin(1/x)', f: x => Math.sin(1 / x), a: 0, L0: 0, dL: .02, view: [-1.2, 1.2, -1.6, 1.6], piv: 0, zp: 1, pts: [], fa: null, alt: 1,
+            lim: { left: null, right: null }, kind: 'osc', targets: [.5, .2, .1, .01] },
+    asym: { name: 'f(x) = 1/x²', f: x => 1 / (x * x), a: 0, L0: 3, dL: .1, view: [-2, 2, -1, 9], piv: 3, zp: 1, pts: [], fa: null, alt: 0,
+            lim: { left: null, right: null }, kind: 'asym', zmax: 1, targets: [2, 1, .5, .1] }
+  };
+  const FN_OPTS = [['sq', 'x² near 2'], ['lin', '3x − 1 near 2'], ['sinc', 'sin(x)/x near 0'], ['jump', 'A jump at 1'], ['osc', 'sin(1/x) near 0'], ['asym', '1/x² near 0']];
+
+  register({
+    id: 'limits-and-epsilon-delta', level: 'ugrad',
+    title: 'Limits and epsilon-delta',
+    blurb: 'Play the epsilon-delta game on a graph and see exactly when a limit exists and when it does not.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 0; p.cy = 0; p.span = 3;
+      p.grid(1, { axes: false });
+      const f = x => .75 * x + .12 * x * x * x, pts = [], inn = [];
+      for (let x = -3.6; x <= 3.6; x += .1) pts.push([x, f(x)]);
+      for (let x = -.9; x <= .9; x += .05) inn.push([x, f(x)]);
+      p.path([[-4, -.8], [4, -.8], [4, .8], [-4, .8]], { fill: alpha(pal.violet, .16), close: true });
+      p.path([[-.9, -4], [.9, -4], [.9, 4], [-.9, 4]], { fill: alpha(pal.green, .16), close: true });
+      p.path([[-4, .8], [4, .8]], { stroke: pal.violet, width: 1.5, dash: [5, 5] });
+      p.path([[-4, -.8], [4, -.8]], { stroke: pal.violet, width: 1.5, dash: [5, 5] });
+      p.path([[-.9, -4], [-.9, 4]], { stroke: pal.green, width: 1.5, dash: [5, 5] });
+      p.path([[.9, -4], [.9, 4]], { stroke: pal.green, width: 1.5, dash: [5, 5] });
+      p.path(pts, { stroke: alpha(pal.blue, .5), width: 2.5 });
+      p.path(inn, { stroke: pal.blue, width: 4 });
+      p.dot(0, 0, 6, pal.yellow, pal.stage, 2);
+    },
+    hook: String.raw`Near a point, a function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
+    steps: [
+      { title: 'Getting close',
+        text: String.raw`<p>The limit \(\lim_{x\to a} f(x) = L\) says: as \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). Here \(f(x)=x^2\) and \(a=2\).</p><p>Drag the point, or press <b>Step closer</b>. Read the table: from both sides the values of \(f(x)\) head for \(4\). At \(x=2.001\) we get \(4.004\), and at \(x=1.999\) we get \(3.996\).</p>`,
+        set: { fn: 'sq', mode: 'approach', side: 'both', alt: false, xo: .1, z: 1, n: 0 } },
+      { title: 'The point itself does not matter',
+        text: String.raw`<p>Now \(f(x)=\sin(x)/x\) and \(a=0\). At \(x=0\) the formula gives \(0/0\), so \(f(0)\) is undefined. The graph has an open circle at \((0,1)\).</p><p>The table still heads for \(1\) from both sides. Tick <b>Change the value of f at a</b> to put a dot at \((0,1.6)\). The table does not change, because a limit only looks at \(x\) near \(a\), never at \(a\).</p>`,
+        set: { fn: 'sinc', mode: 'approach', side: 'both', alt: false, xo: .5, z: 1, n: 0 } },
+      { title: 'The epsilon-delta game',
+        text: String.raw`<p>Back to \(x^2\) near \(2\). Someone picks a tolerance \(\varepsilon\): the violet band says \(f(x)\) must stay within \(\varepsilon\) of \(L=4\). You answer with a \(\delta\): the green band of \(x\) values near \(a\).</p><p>With \(\varepsilon=0.1\) and \(\delta=0.1\) you lose: the red parts of the curve escape the violet band, first at \(x=2.025\) on the right and \(x=1.975\) on the left. Drag a green edge until the curve fits. Then try <b>Mode: Challenge</b>.</p>`,
+        set: { fn: 'sq', mode: 'game', side: 'both', alt: false, eps: .1, del: .1, n: 0 } },
+      { title: 'When no delta works',
+        text: String.raw`<p>This function jumps at \(x=1\): it heads for \(1\) from the left and \(3\) from the right. We test \(L=2\) with \(\varepsilon=0.5\). No \(\delta\) can work, because points just left and just right of \(a\) are far from \(2\).</p><p>Set <b>Side</b> to <em>Left only</em> and drag \(L\) to \(1\). Now a \(\delta\) works: the one-sided limit exists. Try \(\sin(1/x)\) and \(1/x^2\) in <b>Function</b> too.</p>`,
+        set: { fn: 'jump', mode: 'game', side: 'both', alt: false, eps: .5, del: .2, n: 0 } }
+    ],
+    formal: String.raw`
+      <h3>The definition</h3>
+      <p>Let \(f\) be defined on both sides of \(a\), though not necessarily at \(a\). We write \(\lim_{x\to a} f(x) = L\) when
+      \[ \text{for every } \varepsilon>0 \text{ there is a } \delta>0 \text{ such that } 0 &lt; |x-a| &lt; \delta \implies |f(x)-L| &lt; \varepsilon. \]
+      Here \(|x-a|&lt;\delta\) means \(x\) lies in the green band, and \(|f(x)-L|&lt;\varepsilon\) means \(f(x)\) lies in the violet band. The statement is a game: an opponent picks any \(\varepsilon\), however small, and you must reply with a \(\delta\) that works. The \(\delta\) may depend on \(\varepsilon\) (and on \(a\)), but not on \(x\).</p>
+      <h3>A worked proof: a linear function</h3>
+      <p><b>Claim.</b> \(\lim_{x\to 2}(3x-1) = 5\).</p>
+      <p><em>Scratch work.</em> We want \(|(3x-1)-5| &lt; \varepsilon\). Now \(|(3x-1)-5| = |3x-6| = 3|x-2|\), and \(3|x-2| &lt; \varepsilon\) exactly when \(|x-2| &lt; \varepsilon/3\). So try \(\delta=\varepsilon/3\).</p>
+      <p><em>Proof.</em> Let \(\varepsilon>0\) and put \(\delta=\varepsilon/3\). If \(0&lt;|x-2|&lt;\delta\), then
+      \[ |(3x-1)-5| = 3|x-2| &lt; 3\delta = \varepsilon. \qquad \blacksquare \]
+      The same argument shows that for \(f(x)=mx+b\) with \(m\neq 0\), the choice \(\delta=\varepsilon/|m|\) works, and it is the largest possible. This is why a smaller \(\varepsilon\) forces a smaller \(\delta\), in proportion: a steeper line turns a small change in \(x\) into a bigger change in \(f(x)\).</p>
+      <h3>Curves: the same game, no formula for delta</h3>
+      <p>For \(f(x)=x^2\) near \(2\), \(|x^2-4| = |x-2|\,|x+2|\). If \(|x-2|&lt;1\) then \(|x+2|&lt;5\), so \(\delta=\min(1,\varepsilon/5)\) works. The challenge shows the best \(\delta\) is a little larger than that and tends to \(\varepsilon/4\) from below as \(\varepsilon\to0\), where \(4=f'(2)\) is the slope of the tangent line. Near a point, a smooth curve behaves like its tangent line.</p>
+      <h3>One-sided limits</h3>
+      <p>The <em>left limit</em> \(\lim_{x\to a^-}f(x)=L\) uses only \(a-\delta &lt; x &lt; a\). The <em>right limit</em> \(\lim_{x\to a^+}f(x)=L\) uses only \(a &lt; x &lt; a+\delta\). The two-sided limit exists exactly when both one-sided limits exist and are equal.</p>
+      <p>For the jump \(f(x)=x\) (\(x&lt;1\)), \(f(x)=x+2\) (\(x\ge1\)), the left limit is \(1\) and the right limit is \(3\). Suppose some \(L\) worked for \(\varepsilon=1\). Points just left and just right of \(1\) have values about \(2\) apart, yet each would be within \(1\) of \(L\). The values differ by \(2+2r\) at distance \(r\) from \(1\), and two numbers within \(1\) of \(L\) differ by less than \(2\). Contradiction, so no limit exists.</p>
+      <h3>Why the value at a does not matter</h3>
+      <p>The definition says \(0&lt;|x-a|\), which excludes \(x=a\). So \(f(a)\) can be undefined, as for \(\sin(x)/x\) at \(0\), or different from \(L\). Changing \(f(a)\) never changes a limit. When \(\lim_{x\to a}f(x)=f(a)\) we call \(f\) <em>continuous</em> at \(a\); this is a separate fact that must be checked.</p>
+      <h3>When the limit does not exist</h3>
+      <p>For \(\sin(1/x)\), the points \(x_n=1/(\pi/2+2\pi n)\) have \(f=1\) and the points \(y_n=1/(-\pi/2+2\pi n)\) have \(f=-1\), and both sequences tend to \(0\). Any \(L\) is at least \(1\) away from \(1\) or from \(-1\), so \(\varepsilon=1\) defeats every \(\delta\). For \(1/x^2\), values grow without bound, so they leave every band. Writing \(\lim_{x\to0}1/x^2=\infty\) describes this behavior; it does not say a real number \(L\) exists.</p>
+      <p><b>Caution.</b> Trying a few small \(\delta\) values and seeing them work is not a proof. A proof gives a \(\delta\) that works for every \(x\) in the band, as the algebra above does. The pictures here only test finitely many points.</p>`,
+    check: [
+      { q: String.raw`Let \(f(x)=4x+1\), \(a=3\) and \(L=13\). An opponent picks \(\varepsilon=0.2\). We need \(|f(x)-13|&lt;0.2\) whenever \(0&lt;|x-3|&lt;\delta\). Which is the largest \(\delta\) from this list that is guaranteed to work?`,
+        choices: ['δ = 0.8', 'δ = 0.2', 'δ = 0.05', 'δ = 0.01'], answer: 2,
+        why: String.raw`Here \(|f(x)-13| = |4x-12| = 4|x-3|\). This is below \(0.2\) exactly when \(|x-3|&lt;0.05\). So \(\delta=0.05\) works, \(\delta=0.01\) also works but is smaller, and \(0.2\) and \(0.8\) are too wide: for example \(x=3.1\) gives \(f=13.4\), which is \(0.4\) from \(13\).`,
+        hint: String.raw`Write \(|f(x)-13|\) as a multiple of \(|x-3|\), then ask when that multiple is less than \(0.2\).` },
+      { q: String.raw`Let \(f(x)=x\) for \(x&lt;1\) and \(f(x)=x+2\) for \(x\ge 1\). The graph jumps at \(x=1\): \(f(1)=3\), \(f(x)\) is close to \(1\) just left of \(1\), and close to \(3\) just right of \(1\). Which statement is true?`,
+        choices: [String.raw`\(\lim_{x\to1}f(x)=3\), because \(f(1)=3\).`,
+                  String.raw`\(\lim_{x\to1}f(x)\) does not exist, because the left limit \(1\) and the right limit \(3\) differ.`,
+                  String.raw`\(\lim_{x\to1}f(x)=2\), halfway between the two sides.`,
+                  String.raw`\(\lim_{x\to1}f(x)=1\), because the left side is reached first.`], answer: 1,
+        why: String.raw`A two-sided limit needs both one-sided limits to exist and agree. Here they are \(1\) and \(3\). The value \(f(1)=3\) does not decide a limit, and no single number is within a small \(\varepsilon\) of values near both \(1\) and \(3\).`,
+        hint: String.raw`Compare what \(f(x)\) approaches from the left with what it approaches from the right.` }
+    ],
+    links: { next: ['derivatives-as-tangent-slopes', 'riemann-sums-and-the-integral'], related: ['slope-and-linear-functions', 'functions-as-transformations'] },
+
+    mount({ stage, controls: C }) {
+      const st = { fn: 'sq', mode: 'approach', side: 'both', alt: false, auto: true, eps: .1, del: .1, xo: .1, z: 1, n: 0 };
+      let cancel = () => {};
+      const P = new Plane(stage, { span: 5 });
+      const F = () => FN[st.fn];
+      const Lv = () => +(F().L0 + st.n * F().dL).toFixed(4);
+      const faV = () => (st.alt ? F().alt : F().fa);
+      const sides = () => (st.side === 'both' ? [-1, 1] : [st.side === 'left' ? -1 : 1]);
+      const sname = s => (s < 0 ? 'left' : 'right');
+      const autoZ = eps => { const [, , y0, y1] = F().view; return clamp((y1 - y0) / 6 / eps, 1, F().zmax || 1000); };
+      const pix = p => { p.cx = p.w / 2; p.cy = p.h / 2; p.span = Math.min(p.w, p.h) / 2; };
+      const esc = (v, L, eps) => !isFinite(v) || Math.abs(v - L) >= eps;
+
+      /* ---------- the math: does a delta work? ---------- */
+      const rsFor = d => { const out = [], M = 1200; for (let i = 1; i < M; i++) out.push(d * i / M, d * Math.pow(i / M, 3)); out.push(d * (1 - 1e-9)); return out; };
+      function scanSide(s, d, L, eps) {
+        const f = F().f, a = F().a, rs = rsFor(d);
+        let first = Infinity, worst = -1, wr = 0, wv = 0;
+        for (const r of rs) {
+          const v = f(a + s * r);
+          if (esc(v, L, eps) && r < first) first = r;
+          const dev = isFinite(v) ? Math.abs(v - L) : Infinity;
+          if (dev > worst) { worst = dev; wr = r; wv = v; }
+        }
+        if (first === Infinity) return { s, ok: true, worst, wr, wv };
+        let lo = 0, hi = first, ex = null;
+        for (const r of rs) { if (r < first && r > lo) lo = r; if (r >= d * 1e-3 && (ex === null || r < ex) && esc(f(a + s * r), L, eps)) ex = r; }
+        for (let k = 0; k < 50; k++) { const m = (lo + hi) / 2; if (esc(f(a + s * m), L, eps)) hi = m; else lo = m; }
+        return { s, ok: false, first: hi, ex, worst, wr, wv };
+      }
+      const bestCache = {};
+      function bestDelta() {
+        const L = Lv(), key = [st.fn, L, st.eps, st.side].join('|');
+        if (bestCache[key] === undefined) {
+          const b = Math.min(...sides().map(s => scanSide(s, CAP, L, st.eps).first ?? Infinity));
+          bestCache[key] = b < MIN_DELTA ? null : b;
+        }
+        return bestCache[key];
+      }
+      const sideNote = (s, L, eps) => {
+        const f = F(), v = f.lim[sname(s)];
+        if (v !== null && v !== undefined) return `Near a on the ${sname(s)} side, f(x) heads for ${N(v)}, which is ${N(Math.abs(v - L), 3)} from L = ${N(L)}. That is not less than ε = ${N(eps)}.`;
+        if (f.kind === 'osc') return `Near a, f(x) keeps swinging between −1 and 1, so it never settles within ε of one number.`;
+        return `Near a, f(x) grows without bound, so it leaves every band.`;
+      };
+      function verdict() {
+        const L = Lv(), eps = st.eps, a = F().a, res = sides().map(s => scanSide(s, st.del, L, eps));
+        const ok = res.every(r => r.ok), lines = [];
+        for (const r of res) if (!r.ok) {
+          const nm = cap(sname(r.s));
+          if (r.first <= .002 * st.del) {
+            lines.push(`${nm} side: f(x) leaves the band even extremely close to a, for example at x = ${N(a + r.s * (r.ex ?? r.wr), 5)}.`);
+          } else {
+            lines.push(`${nm} side: f(x) first leaves the band at x = ${N(a + r.s * r.first)}. At x = ${N(a + r.s * r.wr)} it is ${isFinite(r.wv) ? N(r.wv, 3) : 'not finite'}${isFinite(r.wv) ? `, which is ${N(Math.abs(r.wv - L), 3)} from L (not less than ε = ${N(eps)})` : ''}.`);
+          }
+        }
+        return { ok, res, lines, L, eps };
+      }
+      const bestLine = () => {
+        const b = bestDelta();
+        if (b === null) return `No δ works: even δ = ${MIN_DELTA} fails.`;
+        if (!isFinite(b)) return 'Every δ works: f(x) never gets that far from L.';
+        return `The best δ is about ${N(b)}. Any smaller δ works too; any larger one fails.`;
+      };
+
+      /* ---------- challenge ---------- */
+      const ch = { i: 0, rec: [], msg: '' };
+      const tgt = () => F().targets;
+      function chStart(i) {
+        ch.i = i; st.eps = tgt()[i]; st.del = .5; if (st.auto) st.z = autoZ(st.eps);
+        ch.msg = `Challenge ${i + 1} of ${tgt().length}: ε = ${N(st.eps)}. Set δ so that the curve stays inside the violet band for every x in the green band, then press Check.`;
+      }
+      function chReset() { ch.rec = []; chStart(0); }
+      function chSummary() {
+        const rows = ch.rec.map((r, i) => r.status === 'ok'
+          ? `ε = ${N(tgt()[i])}: best δ ≈ ${N(r.best, 3)} (δ/ε ≈ ${N(r.best / tgt()[i], 3)})` : `ε = ${N(tgt()[i])}: no δ works`).join('<br>');
+        const f = F(), anyNone = ch.rec.some(r => r.status === 'none');
+        let why;
+        if (anyNone) why = 'When no δ works for some ε, the limit is not L, or there is no limit there at all.';
+        else if (f.slope) why = `As ε shrinks, the best δ shrinks with it. The ratio δ/ε settles near ${N(1 / f.slope, 3)}, which is 1 divided by the slope ${f.slope}. A steeper graph needs a narrower δ, and for a straight line δ = ε/|slope| is exact.`;
+        else why = 'As ε shrinks, the best δ shrinks too. How fast depends on how steeply the graph rises or falls near a: the ratio δ/ε is large where the graph is nearly flat and small where it is steep.';
+        return `<b>All done.</b><br>${rows}<br>${why}`;
+      }
+      function chCheck() {
+        if (st.mode !== 'challenge') { ch.msg = 'Choose Mode: Challenge first.'; return; }
+        const v = verdict(), eps = st.eps, i = ch.i;
+        if (v.ok) {
+          const b = bestDelta();
+          ch.rec[i] = { status: 'ok', delta: st.del, best: b };
+          const prev = ch.rec[i - 1] && ch.rec[i - 1].status === 'ok' ? ch.rec[i - 1].best : null;
+          ch.msg = `${good('Works.')} For every x with 0 &lt; |x − a| &lt; ${N(st.del)}, f(x) stays within ${N(eps)} of ${N(v.L)}. ${bestLine()}` +
+            (prev !== null && isFinite(b) ? ` Last time the best δ was ${N(prev, 3)}. A smaller ε means a smaller best δ.` : '');
+        } else {
+          ch.msg = `${bad('Fails.')} ${v.lines.join(' ')} ` + (bestDelta() === null ? `It looks like no δ can work for this ε. If you agree, press “No δ works”.` : `The green band has to stop before the x values that escape, so δ must be less than the distance from a to the nearest one.`);
+        }
+      }
+      function chNone() {
+        if (st.mode !== 'challenge') { ch.msg = 'Choose Mode: Challenge first.'; return; }
+        const b = bestDelta(), L = Lv();
+        if (b === null) {
+          ch.rec[ch.i] = { status: 'none' };
+          ch.msg = `${good('Correct.')} ${[...new Set(sides().map(s => sideNote(s, L, st.eps)))].join(' ')} No matter how small δ is, some x in the green band escapes.`;
+        } else ch.msg = `${bad('Not so.')} A δ does work here: for example δ = ${N(sig(b * .9, 2))}. Set δ to that or smaller and press Check.`;
+      }
+      function chNext() {
+        if (st.mode !== 'challenge') { ch.msg = 'Choose Mode: Challenge first.'; return; }
+        if (!ch.rec[ch.i]) { ch.msg = 'Finish this ε first: find a δ that works and press Check, or press “No δ works” if you think none can.'; return; }
+        if (ch.i < tgt().length - 1) chStart(ch.i + 1); else ch.msg = chSummary();
+      }
+
+      /* ---------- geometry and drawing ---------- */
+      const geo = () => {
+        const f = F(), [x0, x1, y0, y1] = f.view, zx = Math.pow(st.z, f.zp), zy = st.z;
+        const xlo = f.a + (x0 - f.a) / zx, xhi = f.a + (x1 - f.a) / zx, ylo = f.piv + (y0 - f.piv) / zy, yhi = f.piv + (y1 - f.piv) / zy;
+        const bx = 56, by = 14, bw = Math.max(60, P.w - bx - 12), bh = Math.max(60, P.h - by - 32);
+        return { xlo, xhi, ylo, yhi, bx, by, bw, bh,
+          X: x => bx + (x - xlo) / (xhi - xlo) * bw, Y: y => by + bh - (y - ylo) / (yhi - ylo) * bh,
+          ix: px => xlo + (px - bx) / bw * (xhi - xlo), iy: py => ylo + (by + bh - py) / bh * (yhi - ylo) };
+      };
+      const handles = g => {
+        const f = F(), L = Lv(), a = f.a, hs = [];
+        if (st.mode === 'approach') {
+          const y = f.f(a + st.xo);
+          hs.push({ id: 'x', x: g.X(a + st.xo), y: isFinite(y) ? clamp(g.Y(y), g.by + 4, g.by + g.bh - 4) : g.by + 4 });
+        } else {
+          if (st.mode === 'game') {
+            hs.push({ id: 'eps', x: g.bx + 16, y: clamp(g.Y(L + st.eps), g.by + 8, g.by + g.bh - 8) });
+            hs.push({ id: 'eps', x: g.bx + 16, y: clamp(g.Y(L - st.eps), g.by + 8, g.by + g.bh - 8) });
+          }
+          if (st.side !== 'right') hs.push({ id: 'del', x: clamp(g.X(a - st.del), g.bx + 8, g.bx + g.bw - 8), y: g.by + 14 });
+          if (st.side !== 'left') hs.push({ id: 'del', x: clamp(g.X(a + st.del), g.bx + 8, g.bx + g.bw - 8), y: g.by + 14 });
+          hs.push({ id: 'L', x: g.X(a), y: clamp(g.Y(L), g.by + 8, g.by + g.bh - 8) });
+        }
+        return hs;
+      };
+
+      P.onDraw = (c, p) => {
+        pix(p);
+        const pal = p.pal, g = geo(), f = F(), a = f.a, L = Lv(), game = st.mode !== 'approach';
+        const fs = clamp(p.w / 26, 15, 19), lw = clamp(p.w / 190, 2.8, 3.6);
+        const T = (s, x, y, o) => p.label(s, x, p.h - y, Object.assign({ italic: false, size: fs }, o));
+        const seg = (pts, o) => p.path(pts.map(([x, y]) => [x, p.h - y]), o);
+        const right = g.bx + g.bw, bot = g.by + g.bh;
+        const xt = niceStep((g.xhi - g.xlo) / clamp(g.bw / 80, 3, 6)), yt = niceStep((g.yhi - g.ylo) / clamp(g.bh / 55, 3, 6));
+        const xd = decs(xt), yd = decs(yt), xa = g.X(a), yL = g.Y(L);
+
+        c.save(); c.beginPath(); c.rect(g.bx, g.by, g.bw, g.bh); c.clip();
+        for (let k = Math.ceil(g.xlo / xt); k * xt <= g.xhi; k++) seg([[g.X(k * xt), g.by], [g.X(k * xt), bot]], { stroke: Math.abs(k) < 1e-9 ? pal['grid-strong'] : pal.grid, width: 1.5 });
+        for (let k = Math.ceil(g.ylo / yt); k * yt <= g.yhi; k++) seg([[g.bx, g.Y(k * yt)], [right, g.Y(k * yt)]], { stroke: Math.abs(k) < 1e-9 ? pal['grid-strong'] : pal.grid, width: 1.5 });
+
+        const lo = g.X(a - (st.side === 'right' ? 0 : st.del)), hi = g.X(a + (st.side === 'left' ? 0 : st.del));
+        if (game) {
+          const yt1 = g.Y(L + st.eps), yb1 = g.Y(L - st.eps);
+          seg([[g.bx, yt1], [right, yt1], [right, yb1], [g.bx, yb1]], { fill: alpha(pal.violet, .15), close: true });
+          seg([[lo, g.by], [hi, g.by], [hi, bot], [lo, bot]], { fill: alpha(pal.green, .15), close: true });
+          for (const y of [yt1, yb1]) seg([[g.bx, y], [right, y]], { stroke: pal.violet, width: 1.8, dash: [7, 5] });
+          for (const x of [lo, hi]) seg([[x, g.by], [x, bot]], { stroke: pal.green, width: 1.8, dash: [7, 5] });
+        }
+        seg([[xa, g.by], [xa, bot]], { stroke: alpha(pal.text, .35), width: 1.2, dash: [3, 5] });
+
+        /* the curve, one piece per colour */
+        const paths = { out: new Path2D(), ok: new Path2D(), bad: new Path2D(), axis: new Path2D() };
+        const inside = (s, r) => game && r < st.del && (st.side === 'both' || (st.side === 'left') === (s < 0));
+        for (const s of [-1, 1]) {
+          const R = s < 0 ? a - g.xlo : g.xhi - a, M = 1400; let prev = null;
+          for (let i = 1; i <= M; i++) {
+            const r = R * Math.pow(i / M, 3), x = a + s * r, y = f.f(x);
+            if (!isFinite(y)) { prev = null; continue; }
+            const X = g.X(x), Y = clamp(g.Y(y), -1e4, 1e4), cur = { X, Y, e: esc(y, L, st.eps) };
+            if (prev) {
+              const pth = !inside(s, r) ? paths.out : (cur.e || prev.e) ? paths.bad : paths.ok;
+              pth.moveTo(prev.X, prev.Y); pth.lineTo(X, Y);
+              if (pth === paths.bad) { paths.axis.moveTo(prev.X, bot - 3); paths.axis.lineTo(X, bot - 3); }
+            }
+            prev = cur;
+          }
+        }
+        c.lineJoin = 'round'; c.lineCap = 'round';
+        c.strokeStyle = alpha(pal.blue, game ? .5 : 1); c.lineWidth = lw; c.stroke(paths.out);
+        c.strokeStyle = pal.blue; c.lineWidth = lw + 1.6; c.stroke(paths.ok);
+        c.strokeStyle = pal.red; c.lineWidth = lw + 1.6; c.stroke(paths.bad);
+        c.lineWidth = 5; c.stroke(paths.axis);
+        c.restore();
+
+        /* frame and tick labels */
+        seg([[g.bx, g.by], [right, g.by], [right, bot], [g.bx, bot]], { stroke: pal['grid-strong'], width: 1.5, close: true });
+        for (let k = Math.ceil(g.xlo / xt); k * xt <= g.xhi; k++) {
+          const x = g.X(k * xt); if (Math.abs(x - xa) < 34 || x > right - 12) continue;
+          T(tick(k * xt, xd), x, bot + 15, { color: pal.muted, size: fs - 1 });
+        }
+        for (let k = Math.ceil(g.ylo / yt); k * yt <= g.yhi; k++) {
+          const y = g.Y(k * yt); if (game && Math.abs(y - yL) < 16) continue;
+          T(tick(k * yt, yd), g.bx - 7, y, { color: pal.muted, size: fs - 1, align: 'right' });
+        }
+        T('a = ' + N(a), xa, bot + 15, { color: pal.text, size: fs });
+        if (game) T('L = ' + N(L), g.bx - 7, clamp(yL, g.by + 8, bot - 8), { color: pal.text, size: fs, align: 'right' });
+
+        /* band labels and handles */
+        if (game) {
+          const yu = g.Y(L + st.eps), yd = g.Y(L - st.eps), ex = right - 8;
+          if (yd - yu > 40) {
+            if (yu > g.by + 16) T('L+ε', ex, yu - 11, { color: pal.violet, align: 'right', size: fs });
+            if (yd < bot - 16) T('L−ε', ex, yd + 11, { color: pal.violet, align: 'right', size: fs });
+          } else if (yu > g.by + 16) T('L±ε', ex, yu - 11, { color: pal.violet, align: 'right', size: fs });
+          const ty = g.by + 33;
+          if (hi - lo > 84 && st.side === 'both') { T('a−δ', lo, ty, { color: pal.green, size: fs }); T('a+δ', hi, ty, { color: pal.green, size: fs }); }
+          else T(st.side === 'both' ? 'a±δ' : st.side === 'left' ? 'a−δ' : 'a+δ', st.side === 'both' ? xa : st.side === 'left' ? lo : hi, ty, { color: pal.green, size: fs });
+        }
+        if (game) p.dot(xa, p.h - clamp(yL, g.by + 8, bot - 8), 8, pal.yellow, pal.brass, 3);
+
+        /* point(s) of the graph at x = a */
+        const fa = faV(); let hit = false;
+        for (const [px, py] of f.pts) {
+          const X = g.X(px), Y = g.Y(py);
+          if (X < g.bx || X > right || Y < g.by || Y > bot) continue;
+          if (fa !== null && Math.abs(fa - py) < 1e-9) { p.dot(X, p.h - Y, 5.5, pal.blue, pal.stage, 2); hit = true; }
+          else p.dot(X, p.h - Y, 5.5, pal.stage, pal.blue, 2.5);
+        }
+        if (fa !== null && !hit) { const Y = g.Y(fa); if (Y >= g.by && Y <= bot) p.dot(xa, p.h - Y, 5.5, pal.blue, pal.stage, 2); }
+
+        /* the point you move (approach mode) */
+        if (!game) {
+          const x = a + st.xo, y = f.f(x), X = g.X(x);
+          if (isFinite(y)) {
+            const Y = clamp(g.Y(y), g.by + 4, bot - 4);
+            seg([[X, bot], [X, Y]], { stroke: pal.green, width: 2, dash: [5, 5] });
+            seg([[g.bx, Y], [X, Y]], { stroke: pal.red, width: 2, dash: [5, 5] });
+            p.dot(X, p.h - Y, 6, pal.yellow, pal.stage, 2);
+            T('f(x) = ' + N(y, 4), X > g.bx + g.bw * .6 ? X - 12 : X + 12, Y < g.by + 26 ? Y + 18 : Y - 16, { color: pal.text, size: fs, align: X > g.bx + g.bw * .6 ? 'right' : 'left' });
+          }
+        }
+        for (const hd of handles(g)) p.dot(hd.x, p.h - hd.y, 8, hd.id === 'L' ? null : pal.stage, pal.brass, 3);
+        if (!game) { const hd = handles(g)[0]; p.dot(hd.x, p.h - hd.y, 5, pal.yellow, null); }
+      };
+
+      /* ---------- controls ---------- */
+      const tableHTML = () => {
+        const f = F(), a = f.a, fv = x => N(f.f(x), 5), rows = [1, .1, .01, .001].map(d =>
+          `<tr><td>${N(a - d, 5)}</td><td>${fv(a - d)}</td><td>${N(a + d, 5)}</td><td>${fv(a + d)}</td></tr>`).join('');
+        const l = f.f(a - .001), r = f.f(a + .001);
+        const end = isFinite(l) && isFinite(r) && Math.abs(l - r) < .01 && Math.abs(l) < 1e3
+          ? `Both columns head toward about ${N((l + r) / 2, 3)}.` : 'The two columns do not head toward one number.';
+        return `<table style="width:100%;border-collapse:collapse;text-align:right"><tr><th colspan="2" style="text-align:center">from the left</th><th colspan="2" style="text-align:center">from the right</th></tr>` +
+          `<tr><th>x</th><th>f(x)</th><th>x</th><th>f(x)</th></tr>${rows}</table>${end}`;
+      };
+      const upd = () => {
+        const f = F(), a = f.a, L = Lv(), fa = faV(), faTxt = fa === null ? `f(${N(a)}) is undefined` : `f(${N(a)}) = ${N(fa)}${st.alt ? ' (changed)' : ''}`;
+        let html = `<span class="k">Function</span> ${f.name}<br><span class="k">Point</span> a = ${N(a)}, ${faTxt}<br>`;
+        if (st.mode === 'approach') {
+          const x = a + st.xo;
+          html += `<span class="k">Your x</span> ${N(x, 5)}, f(x) = ${N(f.f(x), 5)}<br>${tableHTML()}`;
+        } else {
+          const v = verdict(), xl = a - (st.side === 'right' ? 0 : st.del), xr = a + (st.side === 'left' ? 0 : st.del);
+          if (st.mode === 'challenge') html += `<span class="k">Challenge</span> ${ch.i + 1} of ${tgt().length}, ε = ${N(st.eps)}<br>`;
+          html += `<span class="k">Violet band</span> f(x) must stay between ${N(L - st.eps)} and ${N(L + st.eps)}<br>` +
+            `<span class="k">Green band</span> x from ${N(xl)} to ${N(xr)}, skipping x = ${N(a)}<br>` +
+            `<span class="k">Result</span> ${v.ok ? good('Every x in the green band stays inside.') : bad('Some x escape the violet band.')}<br>`;
+          if (!v.ok && st.mode === 'game') html += v.lines.join('<br>') + '<br>';
+          if (st.mode === 'game') {
+            html += `<span class="k">Best δ</span> ${bestLine()}`;
+            if (bestDelta() === null) html += '<br>' + [...new Set(sides().map(s => sideNote(s, L, st.eps)))].join('<br>');
+          } else {
+            const done = tgt().map((t, i) => ch.rec[i] ? `ε = ${N(t)}: ${ch.rec[i].status === 'ok' ? 'δ = ' + N(ch.rec[i].delta) : 'no δ works'}` : null).filter(Boolean);
+            if (done.length) html += `<span class="k">Solved</span> ${done.join('; ')}<br>`;
+            html += `<br>${ch.msg}`;
+          }
+        }
+        ro.innerHTML = html;
+      };
+      const sync = () => {
+        fnS.value = st.fn; modeS.value = st.mode; sideS.value = st.side; altT.checked = st.alt; autoT.checked = st.auto;
+        const put = (sl, v) => { if (Math.abs(sl.get() - v) > .025) sl.set(v); };
+        put(epsS, Math.log10(st.eps)); put(delS, Math.log10(st.del)); put(LS, st.n); put(zS, Math.log10(st.z));
+        P.draw(); upd();
+      };
+      const epsOf = s => clamp(sig(Math.pow(10, s)), .005, 3), delOf = s => clamp(sig(Math.pow(10, s)), MIN_DELTA, 3);
+      const stage1 = fn => (...a) => { cancel(); fn(...a); sync(); };
+      const configChanged = () => { if (st.mode === 'challenge') chReset(); };
+
+      const fnS = C.select({ label: 'Function', options: FN_OPTS.map(([value, label]) => ({ value, label })), value: st.fn, onChange: stage1(v => {
+        st.fn = v; st.n = 0; st.z = st.mode === 'approach' ? 1 : (st.auto ? autoZ(st.eps) : 1); st.xo = clamp(st.xo, -.5, .5) || .1; configChanged(); }) });
+      const modeS = C.select({ label: 'Mode', options: [{ value: 'approach', label: 'Approach: table of values' }, { value: 'game', label: 'Play with ε and δ' }, { value: 'challenge', label: 'Challenge: find δ' }], value: st.mode,
+        onChange: stage1(v => { setMode(v); }) });
+      const sideS = C.select({ label: 'Side', options: [{ value: 'both', label: 'Both sides' }, { value: 'left', label: 'Left only (x < a)' }, { value: 'right', label: 'Right only (x > a)' }], value: st.side,
+        onChange: stage1(v => { st.side = v; configChanged(); }) });
+      const altT = C.toggle({ label: 'Change the value of f at a', value: false, onChange: stage1(v => { st.alt = v; }) });
+      C.title('Approach');
+      C.buttons([
+        { label: 'Step closer', onClick: stage1(() => { st.xo = Math.sign(st.xo) * Math.max(.001, sig(Math.abs(st.xo) / 10)); }) },
+        { label: 'Other side', onClick: stage1(() => { st.xo = -st.xo; }) },
+        { label: 'Reset', onClick: stage1(() => { st.xo = .1; }) }
+      ]);
+      C.title('Epsilon, delta and L');
+      const epsS = C.slider({ label: 'ε (violet band)', min: -2.3, max: Math.log10(3), step: .01, value: Math.log10(st.eps), format: s => N(epsOf(s)),
+        onInput: stage1(s => {
+          if (st.mode === 'challenge') { st.eps = tgt()[ch.i]; ch.msg = 'In a challenge, ε is chosen for you.'; return; }
+          st.eps = epsOf(s); if (st.auto) st.z = autoZ(st.eps); }) });
+      const delS = C.slider({ label: 'δ (green band)', min: -3, max: Math.log10(3), step: .01, value: Math.log10(st.del), format: s => N(delOf(s)),
+        onInput: stage1(s => { st.del = delOf(s); }) });
+      const LS = C.slider({ label: 'Candidate limit L', min: -40, max: 40, step: 1, value: 0, format: n => N(+(F().L0 + n * F().dL).toFixed(4)),
+        onInput: stage1(n => { st.n = n; configChanged(); }) });
+      C.title('View');
+      const autoT = C.toggle({ label: 'Zoom to fit the violet band', value: true, onChange: stage1(v => { st.auto = v; if (v && st.mode !== 'approach') st.z = autoZ(st.eps); }) });
+      const zS = C.slider({ label: 'Zoom', min: 0, max: 3, step: .02, value: 0, format: s => '×' + N(sig(Math.pow(10, s), 2)),
+        onInput: stage1(s => { st.z = Math.pow(10, s); st.auto = false; }) });
+      C.title('Challenge');
+      C.buttons([
+        { label: 'Check my δ', onClick: stage1(chCheck) },
+        { label: 'No δ works', onClick: stage1(chNone) },
+        { label: 'Next ε', onClick: stage1(chNext) }
+      ]);
+      const ro = C.readout();
+      C.hint('Drag the point, the green edges, the violet edges or the yellow dot L. Pick a mode first.');
+
+      function setMode(m) {
+        st.mode = m;
+        if (m === 'approach') st.z = 1;
+        else { if (st.auto) st.z = autoZ(st.eps); if (m === 'challenge') { st.n = 0; chReset(); } }
+      }
+
+      draggable(P, {
+        hit: (px, py) => {
+          const g = geo(); let best = null, bd = (matchMedia('(pointer: coarse)').matches ? 28 : 20);
+          for (const hd of handles(g)) { const d = Math.hypot(hd.x - px, hd.y - py); if (d < bd) { bd = d; best = hd.id; } }
+          return best;
+        },
+        move: (id, x, yup) => {
+          cancel(); const g = geo(), f = F(), py = P.h - yup, a = f.a;
+          if (id === 'x') {
+            const o = clamp(g.ix(x) - a, g.xlo - a, g.xhi - a), m = Math.max(.001, sig(Math.abs(o)));
+            st.xo = (o < 0 ? -1 : 1) * Math.min(m, Math.max(a - g.xlo, g.xhi - a));
+          } else if (id === 'eps') st.eps = clamp(sig(Math.abs(g.iy(py) - Lv())), .005, 3);
+          else if (id === 'del') st.del = clamp(sig(Math.abs(g.ix(x) - a)), MIN_DELTA, 3);
+          else if (id === 'L') { st.n = clamp(Math.round((g.iy(py) - f.L0) / f.dL), -40, 40); configChanged(); }
+          sync();
+        }
+      });
+
+      function apply(patch, immediate) {
+        cancel();
+        const { fn, mode, side, alt, auto, ...nums } = patch, n = nums.n; delete nums.n;
+        if (fn !== undefined) { st.fn = fn; if (nums.z === undefined) st.z = 1; st.n = 0; }
+        if (side !== undefined) st.side = side;
+        if (alt !== undefined) st.alt = alt;
+        if (auto !== undefined) st.auto = auto;
+        if (n !== undefined) st.n = n;
+        if (mode !== undefined) st.mode = mode;
+        if (st.mode === 'approach') { if (nums.z === undefined) nums.z = 1; }
+        else if (st.auto && nums.z === undefined) nums.z = autoZ(nums.eps !== undefined ? nums.eps : st.eps);
+        if (st.mode === 'challenge' && mode !== undefined) chReset();
+        if (immediate) { Object.assign(st, nums); sync(); } else cancel = animateTo(st, nums, 900, sync);
+        sync();
+      }
+      sync();
+      return { destroy: () => { cancel(); P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   UNDERGRADUATE (Calculus) — The fundamental theorem of calculus
+   ===================================================================== */
+{
+  const PI = Math.PI, W = 10, H = 4, EPS = 1e-9;
+  const nice = v => { const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; };
+  const n2 = v => num(Math.abs(v) < .005 ? 0 : v);
+  const piLab = x => {
+    const r = x / PI;
+    for (const q of [1, 2, 3, 4, 6, 12]) {
+      const k = Math.round(r * q);
+      if (Math.abs(r * q - k) < 1e-6) return k === 0 ? '0' : (k === 1 ? 'π' : k + 'π') + (q > 1 ? '/' + q : '');
+    }
+    return null;
+  };
+  const mk = o => Object.assign({ breaks: [], zeros: [], a0: 0 }, o);
+  const FNS = {
+    hills: mk({ label: 'Hills and a dip', f: x => (x - 1) * (x - 4) / 2, anti: x => x * x * x / 6 - 5 * x * x / 4 + 2 * x,
+      dom: [0, 6], snap: .1, sab: .5, zeros: [1, 4], ab: [1, 4], cs: [0, 2, -1.5], antiL: 'x³/6 − 5x²/4 + 2x' }),
+    square: mk({ label: 'x²', f: x => x * x, anti: x => x * x * x / 3,
+      dom: [0, 3], snap: .1, sab: .5, ab: [1, 3], cs: [0, 2, -3], antiL: 'x³/3' }),
+    wave: mk({ label: 'cos x', f: Math.cos, anti: Math.sin, pi: true,
+      dom: [0, 2 * PI], snap: PI / 12, sab: PI / 6, ab: [PI / 2, 3 * PI / 2], cs: [0, 1.5, -1], antiL: 'sin x' }),
+    exp: mk({ label: 'eˣ', f: Math.exp, anti: Math.exp,
+      dom: [0, 2.5], snap: .1, sab: .5, ab: [.5, 2], cs: [0, 2, -1], antiL: 'eˣ' }),
+    steps: mk({ label: 'Steps (f jumps)', f: x => x < 2 ? 2 : x < 4 ? -1 : 1, anti: x => x < 2 ? 2 * x : x < 4 ? 6 - x : x - 2,
+      dom: [0, 6], snap: .1, sab: 1, breaks: [2, 4], ab: [1, 5], cs: [0, 2, -1], antiL: 'A(x)' }),
+    corner: mk({ label: 'Corner (f has a point)', f: x => 1.5 - Math.abs(x - 3), anti: x => x <= 3 ? x * x / 2 - 1.5 * x : 4.5 * x - x * x / 2 - 9,
+      dom: [0, 6], snap: .1, sab: 1, zeros: [1.5, 4.5], ab: [1, 5], cs: [0, 1, -1.5], antiL: 'A(x)' })
+  };
+  const ORDER = ['hills', 'square', 'wave', 'exp', 'steps', 'corner'];
+  const QFN = ['hills', 'corner'], QORD = { hills: [1, 3, 0, 2], corner: [3, 0, 2, 1] }, QSHIFT = { hills: 1.2, corner: .8 };
+  const FORD = [1, 3, 0, 2];
+
+  const Aat = (fn, lo, x) => fn.anti(x) - fn.anti(lo);
+  const candFn = (fn, k) => k === 3 ? x => 2 * fn.anti(x) : x => fn.anti(x) + fn.cs[k];
+  const candLabel = (fn, k) => k === 3 ? '2·(' + fn.antiL + ')' : fn.antiL + (fn.cs[k] === 0 ? '' : fn.cs[k] > 0 ? ' + ' + fn.cs[k] : ' − ' + Math.abs(fn.cs[k]));
+  const pn = v => Math.abs(v) < .005 || v > 0 ? n2(v) : '(' + n2(v) + ')';
+  const fx = (fn, x) => { if (fn.pi) { const t = piLab(x); if (t) return t === '0' ? '0' : t + ' (' + n2(x) + ')'; } return n2(x); };
+  const ticksOf = fn => {
+    const out = [];
+    if (fn.pi) for (let k = 0; k <= 4; k++) out.push({ x: k * PI / 2, t: piLab(k * PI / 2) });
+    else for (let x = fn.dom[0]; x <= fn.dom[1] + 1e-9; x++) out.push({ x, t: String(x) });
+    return out;
+  };
+  /* piecewise samples of f on [s, e]: one array of points per continuous piece */
+  const segs = (fn, s, e, n = 200) => {
+    const cuts = [s, ...fn.breaks.filter(b => b > s + 1e-9 && b < e - 1e-9), e], out = [], dw = fn.dom[1] - fn.dom[0];
+    for (let i = 0; i < cuts.length - 1; i++) {
+      const u = cuts[i], v = cuts[i + 1], m = Math.max(3, Math.ceil(n * (v - u) / dw)), pts = [];
+      for (let k = 0; k <= m; k++) {
+        const x = u + (v - u) * k / m;
+        pts.push([x, k === 0 ? fn.f(x + EPS) : k === m ? fn.f(x - EPS) : fn.f(x)]);
+      }
+      out.push(pts);
+    }
+    return out;
+  };
+  const padRange = (lo, hi) => { const d = (hi - lo) * .1; return [lo < 0 ? lo - d : 0, hi > 0 ? hi + d : 0]; };
+  const rangeOf = (gs, d0, d1) => {
+    let lo = 0, hi = 0;
+    for (let i = 0; i <= 240; i++) for (const g of gs) { const v = g(d0 + (d1 - d0) * i / 240); lo = Math.min(lo, v); hi = Math.max(hi, v); }
+    return padRange(lo, hi);
+  };
+  const stats = fn => fn._s || (fn._s = (() => {
+    const [d0, d1] = fn.dom;
+    let rf = rangeOf([fn.f, x => fn.f(x - EPS)], d0, d1);
+    return {
+      f: rf,
+      A: rangeOf([x => Aat(fn, fn.a0, x)], d0, d1),
+      F: rangeOf([0, 1, 2, 3].map(k => candFn(fn, k)), d0, d1)
+    };
+  })());
+  const quizCands = fn => {
+    const A = x => Aat(fn, fn.a0, x), c = QSHIFT[fn.key];
+    const base = [{ kind: 'true', g: A }, { kind: 'neg', g: x => -A(x) }, { kind: 'f', g: fn.f }, { kind: 'shift', g: x => A(x) + c }];
+    return QORD[fn.key].map(i => base[i]);
+  };
+  const quizRange = fn => fn._q || (fn._q = rangeOf(quizCands(fn).map(c => c.g), fn.dom[0], fn.dom[1]));
+  Object.keys(FNS).forEach(k => { FNS[k].key = k; });
+
+  /* drawing helpers (normalized plot area [0,W] x [0,H], one uniform scale) */
+  const chart = (p, fn, yr, title, tcol) => {
+    p.fit(W, H, { l: 1.8, r: .7, t: .85, b: 1 });
+    const pal = p.pal, [d0, d1] = fn.dom, [yl, yh] = yr, fs = clamp(p.scale * .33, 14, 17);
+    const ux = x => (x - d0) / (d1 - d0) * W, vy = y => (y - yl) / (yh - yl) * H;
+    const step = nice((yh - yl) / 4);
+    for (let k = Math.ceil(yl / step - 1e-9); k * step <= yh + 1e-9; k++) {
+      const v = k * step;
+      p.path([[0, vy(v)], [W, vy(v)]], { stroke: pal.grid, width: 1.5 });
+      p.label(num(+v.toFixed(6)), 0, vy(v), { size: fs, italic: false, color: pal.muted, align: 'right', dx: -9 });
+    }
+    for (const t of ticksOf(fn)) {
+      p.path([[ux(t.x), 0], [ux(t.x), H]], { stroke: pal.grid, width: 1.5 });
+      p.label(t.t, ux(t.x), 0, { size: fs, italic: false, color: pal.muted, dy: 16 });
+    }
+    p.path([[0, vy(0)], [W, vy(0)]], { stroke: pal['grid-strong'], width: 2 });
+    p.label('x', W + .12, vy(0), { size: fs + 3, color: pal.muted, align: 'left' });
+    p.label(title, -1.75, H + .05, { size: fs + 1, italic: false, color: tcol, align: 'left', dy: -12 });
+    return { ux, vy, fs, d0, d1, xOf: nx => d0 + nx / W * (d1 - d0) };
+  };
+  const shade = (p, fn, lo, hi, g, a) => {
+    if (hi - lo < 1e-9) return;
+    const pal = p.pal;
+    for (const seg of segs(fn, lo, hi)) {
+      let run = [], sign = 0, prev = null;
+      const flush = () => {
+        if (run.length > 1 && sign) p.path([[g.ux(run[0][0]), g.vy(0)], ...run.map(([x, y]) => [g.ux(x), g.vy(y)]), [g.ux(run[run.length - 1][0]), g.vy(0)]],
+          { fill: alpha(sign > 0 ? pal.yellow : pal.red, a), close: true });
+        run = [];
+      };
+      for (const [x, y] of seg) {
+        const s = Math.abs(y) < 1e-12 ? 0 : Math.sign(y);
+        if (prev && s && sign && s !== sign) {
+          const xc = prev[0] + prev[1] / (prev[1] - y) * (x - prev[0]);
+          run.push([xc, 0]); flush(); run = [[xc, 0]]; sign = s;
+        } else if (!sign && s) sign = s;
+        run.push([x, y]); prev = [x, y];
+      }
+      flush();
+    }
+  };
+  const curveOf = (p, fn, g, col, w, a = 1) => {
+    for (const seg of segs(fn, g.d0, g.d1)) p.path(seg.map(([x, y]) => [g.ux(x), g.vy(y)]), { stroke: alpha(col, a), width: w });
+  };
+  const fnPath = (p, g, gf, col, w, x0, x1, dash) => {
+    const pts = [], n = 200;
+    for (let i = 0; i <= n; i++) { const x = x0 + (x1 - x0) * i / n; pts.push([g.ux(x), g.vy(gf(x))]); }
+    p.path(pts, { stroke: col, width: w, dash });
+  };
+
+  register({
+    id: 'the-fundamental-theorem-of-calculus', level: 'ugrad',
+    title: 'The fundamental theorem of calculus',
+    blurb: 'Build the area function, see its slope equal the height of the curve, and use that to compute integrals.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 3; p.cy = 2.7; p.span = 3.7;
+      const f = x => (x - 1) * (x - 4) / 2, A = x => x * x * x / 6 - 5 * x * x / 4 + 2 * x, by = 4.3, ay = 1.5, kf = .28, ka = .5;
+      const top = [], bot = [];
+      for (let i = 0; i <= 60; i++) { const x = i / 10; top.push([x, by + kf * f(x)]); bot.push([x, ay + ka * A(x)]); }
+      const sh = (x0, x1, col) => { const pts = [[x0, by]]; for (let i = 0; i <= 20; i++) { const x = x0 + (x1 - x0) * i / 20; pts.push([x, by + kf * f(x)]); } pts.push([x1, by]); p.path(pts, { fill: alpha(col, .4), close: true }); };
+      sh(0, 1, pal.yellow); sh(1, 3, pal.red);
+      p.path([[0, by], [6, by]], { stroke: pal['grid-strong'], width: 1.5 }); p.path([[0, ay], [6, ay]], { stroke: pal['grid-strong'], width: 1.5 });
+      p.path(top, { stroke: pal.blue, width: 2.6 });
+      p.path(bot.filter(q => q[0] <= 3.001), { stroke: pal.green, width: 3 });
+      p.path(bot.filter(q => q[0] >= 2.999), { stroke: alpha(pal.green, .35), width: 2 });
+      p.path([[3, by + kf * f(3)], [3, ay + ka * A(3)]], { stroke: pal['grid-strong'], width: 1.5, dash: [4, 4] });
+      p.path([[2.1, ay + ka * A(3) + .5 * ka * 1], [3.9, ay + ka * A(3) - .5 * ka * 1]], { stroke: pal.violet, width: 2.2 });
+      p.dot(3, ay + ka * A(3), 4.5, pal.green, pal.stage, 1.5);
+    },
+    hook: String.raw`Area is built by adding up thin strips. Slope is built by dividing a small change by a small step. Why should the area function have a slope equal to the height of the curve?`,
+    steps: [
+      { title: 'Area that accumulates',
+        text: String.raw`<p>The top graph is a function \(f\). Pick a fixed start \(a=0\) and a movable point \(x\). The shaded region between \(f\) and the x-axis, from \(a\) to \(x\), is the <b>signed area</b>. Yellow counts as positive, red as negative.</p><p>The bottom graph plots that area, \(A(x)\), as \(x\) moves. At \(x=1\) the curve \(f\) touches zero and \(A\) is at its peak, \(0.92\). Drag \(x\) to the right: \(f\) goes below the axis, red area is subtracted, and \(A\) falls.</p>`,
+        set: { mode: 'acc', fk: 'hills', x: 1 } },
+      { title: 'The slope of A is the height of f',
+        text: String.raw`<p>Now \(x=3\), where \(f(3)=-1\). A thin strip of width \(dx=0.5\) starts at \(x\). It is nearly a rectangle of height \(f(x)\), so its area is about \(f(x)\,dx=-0.5\).</p><p>The true change in \(A\) is \(-0.42\), so \(\Delta A\div dx=-0.83\), already close to \(f(3)=-1\). Drag the <b>dx</b> slider down and the ratio closes in on \(-1\). The violet tangent has slope \(f(x)\).</p>`,
+        set: { mode: 'slope', fk: 'hills', x: 3, dx: .5 } },
+      { title: 'Which graph is A?',
+        text: String.raw`<p>Now you only have \(f\). Four graphs are offered. One of them is \(A(x)\), the area from \(a=0\).</p><p>Read \(f\) first. Where is it positive? Where is it zero? Use the first half of the theorem to decide how \(A\) must behave, then click a graph. Dragging \(x\) shades the area and marks \(x\) on all four graphs.</p>`,
+        set: { mode: 'quiz', fk: 'hills', x: 2 } },
+      { title: 'Compute an area from an antiderivative',
+        text: String.raw`<p>Now shade the area under \(f(x)=x^2\) from \(a=1\) to \(b=3\). Drag the yellow ends to change \(a\) and \(b\).</p><p>Choose an <b>antiderivative</b> \(F\), a function whose slope is \(f\). Some choices differ by a constant, and one is not an antiderivative at all. Then compute \(F(b)-F(a)\) and pick the number. The lesson then checks it against the shaded area.</p>`,
+        set: { mode: 'ftc', fk: 'square', fi: null, a: 1, b: 3 } }
+    ],
+    formal: String.raw`
+      <p>Let \(f\) be continuous on an interval \([a,b]\). The <em>accumulation function</em> is
+      \[ A(x)=\int_a^x f(t)\,dt, \qquad a\le x\le b, \]
+      the signed area between the graph of \(f\) and the t-axis from \(a\) to \(x\). (The letter \(t\) is a dummy variable, so that \(x\) can be the upper limit.) Area above the axis counts as positive and area below as negative. Note that \(A(a)=0\).</p>
+      <h3>Part 1: the slope of the area function</h3>
+      <p><b>Theorem.</b> If \(f\) is continuous on \([a,b]\), then \(A\) is differentiable and
+      \[ A'(x)=f(x) \quad\text{for every } x \text{ in } [a,b]. \]
+      <b>Strip argument.</b> Take a small step \(h>0\). Then
+      \[ A(x+h)-A(x)=\int_x^{x+h} f(t)\,dt, \]
+      the area of a thin strip of width \(h\). On \([x,x+h]\) the continuous function \(f\) has a smallest value \(m_h\) and a largest value \(M_h\), so the strip lies between two rectangles:
+      \[ m_h\,h \;\le\; A(x+h)-A(x) \;\le\; M_h\,h. \]
+      Divide by \(h\). As \(h\to0\), continuity forces both \(m_h\) and \(M_h\) to approach \(f(x)\), so the difference quotient \(\frac{A(x+h)-A(x)}{h}\) is squeezed to \(f(x)\). Steps \(h&lt;0\) are the same with the inequalities reversed.</p>
+      <h3>Part 2: computing integrals</h3>
+      <p><b>Theorem.</b> If \(f\) is continuous on \([a,b]\) and \(F'=f\) on \([a,b]\) (\(F\) is an <em>antiderivative</em> of \(f\)), then
+      \[ \int_a^b f(x)\,dx = F(b)-F(a) = \Big[F(x)\Big]_a^b. \]
+      <b>Derivation from Part 1.</b> Both \(A\) and \(F\) have derivative \(f\), so \((A-F)'=0\) on the interval. A function with zero derivative on an interval is constant (this is the one place the mean value theorem enters), so \(A(x)=F(x)+C\). Put \(x=a\): \(0=A(a)=F(a)+C\), so \(C=-F(a)\). Then
+      \[ \int_a^b f(x)\,dx = A(b)=F(b)-F(a). \]
+      <b>The constant cancels.</b> Any other antiderivative is \(F+K\), and \((F(b)+K)-(F(a)+K)=F(b)-F(a)\). That is why no \(+C\) is needed for a definite integral.</p>
+      <h3>Worked examples</h3>
+      <p>With \(F(x)=x^3/3\):
+      \[ \int_1^3 x^2\,dx=\Big[\tfrac{x^3}{3}\Big]_1^3=9-\tfrac13=\tfrac{26}{3}. \]
+      With \(F(x)=\sin x\), the signed area of \(\cos x\) over \([0,\pi]\) is zero, because the part above the axis cancels the part below:
+      \[ \int_0^{\pi}\cos x\,dx=\sin\pi-\sin0=0, \qquad \int_{\pi/2}^{3\pi/2}\cos x\,dx=\sin\tfrac{3\pi}{2}-\sin\tfrac{\pi}{2}=-2. \]
+      With \(F(x)=e^x\): \(\int_0^1 e^x\,dx=e-1\approx1.72\). Part 1 also handles functions with no elementary antiderivative: \(\frac{d}{dx}\int_0^x e^{-t^2}dt=e^{-x^2}\), and with the chain rule \(\frac{d}{dx}\int_0^{x^2}\cos t\,dt=2x\cos(x^2)\).</p>
+      <h3>Jumps and corners</h3>
+      <p>If \(f\) has a jump, \(A\) is still continuous, because a strip of width \(h\) has area at most \(Mh\) and that tends to \(0\). But \(A\) has a corner there. For \(f=2\) on \([0,2)\) and \(f=-1\) on \([2,4)\), we get \(A(x)=2x\) up to \(x=2\) and \(A(x)=6-x\) after it. The slope of \(A\) is \(2\) on the left and \(-1\) on the right, so \(A'(2)\) does not exist. Part 1 needs continuity of \(f\) at \(x\). If \(f\) only has a corner, \(A\) is still differentiable with \(A'=f\).</p>
+      <h3>Common errors</h3>
+      <p><b>Wrong order or sign.</b> It is \(F(b)-F(a)\), end minus start. Area below the axis is negative, so an integral can be negative or zero while the shaded region is not empty.</p>
+      <p><b>Chasing the constant.</b> Adding \(+C\) to \(F\) changes \(F(b)\) and \(F(a)\) by the same amount, so the difference is unchanged. You need \(+C\) only for an indefinite integral.</p>
+      <p><b>Integrating across a discontinuity.</b> The proof of Part 2 given here needs \(f\) continuous on all of \([a,b]\) (a continuous \(F\) with \(F'=f\) except at a few points also works, as the Steps function shows). Taking \(F(x)=-1/x\) on \([-1,1]\) for \(f=1/x^2\) gives \(F(1)-F(-1)=-2\), but \(f>0\) everywhere it is defined, so no integral over \([-1,1]\) can be negative. The function blows up at \(0\) and the theorem does not apply. For a step function, split at the jump and integrate each piece.</p>`,
+    check: [
+      { q: String.raw`Let \(A(x)=\int_0^x (t^2-4)\,dt\), the signed area between the graph of \(t^2-4\) and the t-axis from \(0\) to \(x\). What is \(A'(1)\)?`,
+        choices: [String.raw`\(-\tfrac{11}{3}\)`, String.raw`\(3\)`, String.raw`\(-3\)`, String.raw`\(-4\)`], answer: 2,
+        why: String.raw`By Part 1, \(A'(x)\) is the integrand evaluated at \(x\): \(A'(1)=1^2-4=-3\). The value \(-\tfrac{11}{3}\) is \(A(1)\), the area itself, not its slope. The slope is negative because the integrand is negative at \(t=1\), so \(A\) is falling there.`,
+        hint: String.raw`The slope of the accumulation function at \(x\) is the height of the integrand at \(x\). Do not compute the area.` },
+      { q: String.raw`The function \(F(x)=x^3+5\) is an antiderivative of \(f(x)=3x^2\). Using this \(F\), what is \(\int_1^2 3x^2\,dx\)?`,
+        choices: ['13', '19', '12', '7'], answer: 3,
+        why: String.raw`\(F(2)=8+5=13\) and \(F(1)=1+5=6\), so \(F(2)-F(1)=7\). The \(+5\) is in both values and cancels. Answer 13 forgets to subtract \(F(1)\), 19 adds instead of subtracting, and 12 adds the constant to \(F(2)\) only.`,
+        hint: String.raw`Compute \(F(2)\) and \(F(1)\) separately, constant included, then subtract: end minus start.` }
+    ],
+    links: { prereq: ['derivatives-as-tangent-slopes', 'riemann-sums-and-the-integral'], related: ['slope-and-linear-functions', 'area-of-a-circle'] },
+
+    mount({ stage, controls: C }) {
+      const st = { x: 1, dx: .5, a: 1, b: 3 };
+      const S = { mode: 'acc', fk: 'hills', fi: null, solved: false, q: null, pick: null, wrong: [], msg: '' };
+      let cancel = () => {};
+      stage.classList.add('split');
+      const top = h('div', { class: 'pane', style: 'flex: 1 1 0' }), bot = h('div', { class: 'pane', style: 'flex: 1 1 0' });
+      stage.append(top, bot);
+      const P1 = new Plane(top, { span: 6 }), P2 = new Plane(bot, { span: 6 });
+      const cur = () => FNS[S.fk];
+      const mapOf = fn => { const [d0, d1] = fn.dom; return { xOf: nx => d0 + nx / W * (d1 - d0), d0, d1 }; };
+      const range = () => { const fn = cur(), s = stats(fn); return [s.f, S.mode === 'ftc' ? s.F : s.A]; };
+      const lohi = () => S.mode === 'ftc' ? [st.a, st.b] : [cur().a0, st.x];
+      const atBreak = (fn, x) => fn.breaks.some(b => Math.abs(b - x) < 1e-6);
+
+      /* ---------- top pane: f and the shaded area ---------- */
+      P1.onDraw = (c, p) => {
+        const fn = cur(), pal = p.pal, g = chart(p, fn, stats(fn).f, 'f(x)', pal.blue), { ux, vy } = g, M = S.mode;
+        const [lo, hi] = lohi();
+        shade(p, fn, lo, hi, g, .32);
+        if (M === 'slope') {
+          const f0 = fn.f(st.x);
+          shade(p, fn, st.x, st.x + st.dx, g, .6);
+          p.path([[ux(st.x), vy(0)], [ux(st.x + st.dx), vy(0)], [ux(st.x + st.dx), vy(f0)], [ux(st.x), vy(f0)]], { stroke: pal.yellow, width: 2.5, close: true, dash: [5, 4] });
+          p.label('f(x)·dx', ux(st.x + st.dx / 2), vy(f0), { size: g.fs, italic: false, color: pal.text, dy: f0 >= 0 ? -16 : 16, align: st.x > fn.dom[1] - 1 ? 'right' : 'center' });
+        }
+        curveOf(p, fn, g, pal.blue, 3.5);
+        for (const b of fn.breaks) {
+          p.path([[ux(b), vy(fn.f(b - EPS))], [ux(b), vy(fn.f(b + EPS))]], { stroke: pal.muted, width: 1.5, dash: [4, 4] });
+          p.dot(ux(b), vy(fn.f(b - EPS)), 5, pal.stage, pal.blue, 2.5); p.dot(ux(b), vy(fn.f(b + EPS)), 5, pal.blue, pal.stage, 1.5);
+        }
+        if (M === 'ftc') {
+          for (const [v, nm] of [[st.a, 'a'], [st.b, 'b']]) {
+            p.path([[ux(v), vy(0)], [ux(v), vy(fn.f(v))]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 5] });
+            p.dot(ux(v), vy(0), 9, pal.stage, pal.brass, 3.5);
+            p.label(nm, ux(v), vy(0), { size: g.fs + 3, color: pal.text, dy: fn.f(v) >= 0 ? 20 : -20 });
+          }
+        } else {
+          p.dot(ux(fn.a0), vy(0), 5, pal.yellow, pal.stage, 1.5);
+          p.label('a', ux(fn.a0), vy(0), { size: g.fs + 3, color: pal.muted, dy: -16 });
+          const fv = fn.f(st.x);
+          p.path([[ux(st.x), vy(0)], [ux(st.x), vy(fv)]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 5] });
+          p.dot(ux(st.x), vy(fv), 9, pal.stage, pal.brass, 3.5);
+          p.label('x', ux(st.x), vy(0), { size: g.fs + 3, color: pal.text, dy: fv >= 0 ? 18 : -18 });
+        }
+      };
+
+      /* ---------- bottom pane ---------- */
+      const cell = (i, p) => { const pad = 8, cw = (p.w - 3 * pad) / 2, ch = (p.h - 3 * pad) / 2; return { x: pad + (i % 2) * (cw + pad), y: pad + (i >> 1) * (ch + pad), w: cw, h: ch }; };
+      const drawQuiz = (c, p) => {
+        const fn = cur(), pal = p.pal, cands = quizCands(fn), [yl, yh] = quizRange(fn), [d0, d1] = fn.dom;
+        cands.forEach((cd, i) => {
+          const r = cell(i, p), isWrong = S.wrong.includes(i), isRight = S.solved && cd.kind === 'true';
+          const px = v => r.x + 8 + (v - d0) / (d1 - d0) * (r.w - 16), py = v => r.y + r.h - 8 - (v - yl) / (yh - yl) * (r.h - 30);
+          c.fillStyle = isRight ? alpha(pal.green, .12) : isWrong ? alpha(pal.red, .1) : 'transparent'; c.fillRect(r.x, r.y, r.w, r.h);
+          c.strokeStyle = isRight ? pal.green : isWrong ? pal.red : S.pick === i ? pal.brass : pal['grid-strong']; c.lineWidth = isRight || isWrong ? 3 : 1.5;
+          c.strokeRect(r.x, r.y, r.w, r.h);
+          c.strokeStyle = pal['grid-strong']; c.lineWidth = 1.5; c.beginPath(); c.moveTo(r.x + 8, py(0)); c.lineTo(r.x + r.w - 8, py(0)); c.stroke();
+          c.strokeStyle = alpha(pal.green, 1); c.lineWidth = 3; c.lineJoin = 'round'; c.beginPath();
+          for (let k = 0; k <= 160; k++) { const x = d0 + (d1 - d0) * k / 160, y = cd.g(x); k ? c.lineTo(px(x), py(y)) : c.moveTo(px(x), py(y)); }
+          c.stroke();
+          c.beginPath(); c.arc(px(st.x), py(cd.g(st.x)), 5, 0, TAU); c.fillStyle = pal.yellow; c.fill(); c.strokeStyle = pal.stage; c.lineWidth = 1.5; c.stroke();
+          c.font = '600 ' + clamp(r.h * .16, 12, 15) + 'px "Hanken Grotesk", Arial, sans-serif'; c.textAlign = 'left'; c.textBaseline = 'top';
+          c.fillStyle = pal.text; c.fillText('Graph ' + (i + 1), r.x + 8, r.y + 6);
+        });
+      };
+      P2.onDraw = (c, p) => {
+        if (S.mode === 'quiz') return drawQuiz(c, p);
+        const fn = cur(), pal = p.pal, M = S.mode, [d0, d1] = fn.dom;
+        const [, yr] = range(), g = chart(p, fn, yr, M === 'ftc' ? 'F(x)' : 'A(x)', pal.green), { ux, vy } = g;
+        if (M === 'ftc') {
+          for (const v of [st.a, st.b]) p.path([[ux(v), 0], [ux(v), H]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 5] });
+          for (let k = 0; k < 4; k++) {
+            if (k === S.fi) continue;
+            fnPath(p, g, candFn(fn, k), alpha(pal.green, .4), 2, d0, d1);
+          }
+          for (let j = 0; j < 4; j++) {
+            const k = FORD[j], gx = d0 + (d1 - d0) * (.07 + .09 * j), gf = candFn(fn, k);
+            p.label(String(j + 1), ux(gx), vy(gf(gx)), { size: g.fs, italic: false, color: pal.muted, dy: -13 });
+          }
+          if (S.fi != null) {
+            const F = candFn(fn, S.fi), Fa = F(st.a), Fb = F(st.b), col = S.fi === 3 ? pal.red : pal.green;
+            fnPath(p, g, F, col, 4, d0, d1);
+            p.path([[ux(st.a), vy(Fa)], [ux(st.b), vy(Fa)]], { stroke: pal.muted, width: 1.5, dash: [5, 5] });
+            p.path([[ux(st.b), vy(Fa)], [ux(st.b), vy(Fb)]], { stroke: Fb >= Fa ? pal.yellow : pal.red, width: 6 });
+            p.dot(ux(st.a), vy(Fa), 6, pal.green, pal.stage, 2); p.dot(ux(st.b), vy(Fb), 6, pal.green, pal.stage, 2);
+            if (S.solved) {
+              p.label('F(a) = ' + n2(Fa), ux(st.a), vy(Fa), { size: g.fs, italic: false, color: pal.text, dy: Fb >= Fa ? 17 : -17, align: 'right', dx: -4 });
+              p.label('F(b) = ' + n2(Fb), ux(st.b), vy(Fb), { size: g.fs, italic: false, color: pal.text, dy: Fb >= Fa ? -17 : 17, align: 'right', dx: -4 });
+            }
+          }
+          return;
+        }
+        const A = x => Aat(fn, fn.a0, x), x = st.x, Ax = A(x), fv = fn.f(x);
+        fnPath(p, g, A, alpha(pal.green, .3), 2.5, d0, d1);
+        fnPath(p, g, A, pal.green, 4.5, d0, x);
+        p.path([[ux(x), 0], [ux(x), H]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 5] });
+        if (M === 'slope') {
+          const ext = (d1 - d0) * .17, brk = atBreak(fn, x);
+          const tang = (s, xa, xb, a) => {
+            let t0 = xa, t1 = xb;
+            if (s > 1e-9) { t1 = Math.min(t1, x + (yr[1] - Ax) / s); t0 = Math.max(t0, x - (Ax - yr[0]) / s); }
+            else if (s < -1e-9) { t1 = Math.min(t1, x + (yr[0] - Ax) / s); t0 = Math.max(t0, x + (yr[1] - Ax) / s); }
+            p.path([[ux(t0), vy(Ax + s * (t0 - x))], [ux(t1), vy(Ax + s * (t1 - x))]], { stroke: alpha(pal.violet, a), width: 3 });
+          };
+          if (brk) { tang(fn.f(x - EPS), Math.max(d0, x - ext), x, .9); tang(fn.f(x + EPS), x, Math.min(d1, x + ext), .9); }
+          else tang(fv, Math.max(d0, x - ext), Math.min(d1, x + ext), 1);
+          const x2 = x + st.dx, A2 = A(x2);
+          p.path([[ux(x), vy(Ax)], [ux(x2), vy(Ax)]], { stroke: pal.green, width: 3 });
+          p.path([[ux(x2), vy(Ax)], [ux(x2), vy(A2)]], { stroke: pal.red, width: 3 });
+          p.dot(ux(x2), vy(A2), 4.5, pal.red, pal.stage, 1.5);
+          if (Math.abs(vy(A2) - vy(Ax)) * p.scale > 14) p.label('ΔA', ux(x2), (vy(Ax) + vy(A2)) / 2, { size: g.fs, italic: false, color: pal.red, align: 'left', dx: 8 });
+        }
+        p.dot(ux(x), vy(Ax), 8, pal.green, pal.stage, 2.5);
+        p.label(n2(Ax), ux(x), vy(Ax), { size: g.fs, italic: false, color: pal.text, dy: fv >= 0 ? 17 : -17, align: x > d1 - (d1 - d0) * .2 ? 'right' : 'center', dx: x > d1 - (d1 - d0) * .2 ? -8 : 0 });
+        p.dot(ux(fn.a0), vy(0), 5, pal.yellow, pal.stage, 1.5);
+      };
+
+      /* ---------- readout ---------- */
+      const K = t => `<span class="k">${t}</span> `;
+      const upd = () => {
+        const fn = cur(), M = S.mode, x = st.x, A = Aat(fn, fn.a0, x), fv = fn.f(x);
+        let s = '';
+        if (M === 'acc' || M === 'quiz') {
+          const verdict = Math.abs(fv) < .005 ? 'f(x) = 0, so A is level here.' : fv > 0 ? 'f(x) is positive, so A is rising.' : 'f(x) is negative, so A is falling.';
+          s = K('x') + fx(fn, x) + '<br>' + K('f(x)') + n2(fv) + (atBreak(fn, x) ? ' (f jumps here)' : '') + '<br>' + K('A(x)') + n2(A) + ' (signed area from a = ' + fx(fn, fn.a0) + ')' + (M === 'acc' ? '<br>' + verdict : '');
+          if (M === 'acc' && atBreak(fn, x)) s += ' A has a corner at this x.';
+        } else if (M === 'slope') {
+          const dA = Aat(fn, x, x + st.dx), brk = atBreak(fn, x);
+          s = K('x') + fx(fn, x) + ', ' + K('dx') + n2(st.dx) + '<br>' +
+            K('Strip') + 'f(x)·dx = ' + n2(fv) + ' × ' + n2(st.dx) + ' = ' + n2(fv * st.dx) + '<br>' +
+            K('True change') + 'ΔA = ' + n2(dA) + '<br>' +
+            K('ΔA ÷ dx') + n2(dA / st.dx) + '<br>' +
+            (brk ? K('Corner') + 'A has slope ' + n2(fn.f(x - EPS)) + ' on the left and ' + n2(fn.f(x + EPS)) + ' on the right, so there is no single tangent.' : K('Height of f') + 'f(x) = ' + n2(fv) + ', the slope of the tangent to A.');
+        } else {
+          const ar = Aat(fn, st.a, st.b);
+          s = K('a, b') + fx(fn, st.a) + ', ' + fx(fn, st.b) + '<br>';
+          if (S.fi == null) s += 'Pick an antiderivative F.';
+          else {
+            const F = candFn(fn, S.fi);
+            s += K('F(x)') + candLabel(fn, S.fi);
+            if (S.solved) s += '<br>' + K('F(b) − F(a)') + n2(F(st.b)) + ' − ' + pn(F(st.a)) + ' = ' + n2(F(st.b) - F(st.a)) + '<br>' + K('Shaded area') + n2(ar);
+            else if (S.fi !== 3) s += '<br>Work out F(b) − F(a).';
+          }
+        }
+        ro.innerHTML = s + (S.msg ? '<br><br>' + S.msg : '');
+      };
+
+      /* ---------- controls ---------- */
+      const probe = C.readout(), host = probe.parentElement; probe.remove();
+      const setMode = m => { cancel(); if (m !== S.mode) { S.mode = m; modeChanged(); } sync(); };
+      C.title('Part of the theorem');
+      const mbtn = C.buttons([
+        { label: '1 Accumulate', onClick: () => setMode('acc') },
+        { label: '2 Slope of A', onClick: () => setMode('slope') },
+        { label: '3 Which is A?', onClick: () => setMode('quiz') },
+        { label: '4 F(b) − F(a)', onClick: () => setMode('ftc') }
+      ]);
+      const sel = C.select({ label: 'Function f', value: S.fk, options: ORDER.map(k => ({ value: k, label: FNS[k].label })),
+        onChange: v => { cancel(); S.fk = v; if (S.mode === 'quiz') S.mode = 'acc'; fnChanged(); sync(); } });
+      const selBox = sel.parentElement;
+      const dxS = C.slider({ label: 'Strip width dx', min: .05, max: 1, step: .05, value: st.dx, format: v => v.toFixed(2),
+        onInput: v => { cancel(); st.dx = v; st.x = Math.min(st.x, cur().dom[1] - v); sync(); } });
+      const dxBox = host.lastElementChild;
+      const mkRow = (cls, labels, onPick) => {
+        const row = h('div', { class: 'ctl buttons ' + cls });
+        const els = labels.map((t, i) => h('button', { type: 'button', class: 'btn', onclick: () => onPick(i) }, t)); row.append(...els); host.append(row);
+        return { row, els };
+      };
+      const qTitle = h('p', { class: 'ctl-title' }, 'Which graph is A?'); host.append(qTitle);
+      const qRow = mkRow('qrow', ['Graph 1', 'Graph 2', 'Graph 3', 'Graph 4'], i => pickGraph(i));
+      const qNext = mkRow('qnext', ['Try another function'], () => { cancel(); S.fk = S.fk === 'hills' ? 'corner' : 'hills'; sel.value = S.fk; fnChanged(); sync(); });
+      const fTitle = h('p', { class: 'ctl-title' }, 'Choose an antiderivative F'); host.append(fTitle);
+      const fRow = mkRow('frow', ['', '', '', ''], j => pickF(FORD[j]));
+      const aTitle = h('p', { class: 'ctl-title' }, 'F(b) − F(a) equals'); host.append(aTitle);
+      const aRow = mkRow('arow', ['', '', '', ''], i => pickAns(i));
+      const ro = C.readout();
+      C.hint('Drag in either graph. In part 4, drag a and b.');
+
+      /* ---------- state changes ---------- */
+      const resetQuiz = () => { S.pick = null; S.wrong = []; S.solved = false; S.msg = ''; };
+      const resetFtc = () => { S.solved = false; S.q = null; S.msg = ''; };
+      const fnChanged = () => {
+        const fn = cur(); resetQuiz(); S.q = null; S.fi = null;
+        st.x = clamp(st.x, fn.dom[0], fn.dom[1]); if (S.mode === 'slope') st.x = Math.min(st.x, fn.dom[1] - st.dx);
+        st.a = fn.ab[0]; st.b = fn.ab[1]; sel.value = S.fk;
+      };
+      const modeChanged = () => {
+        resetQuiz(); S.q = null; S.fi = null;
+        if (S.mode === 'quiz' && !QFN.includes(S.fk)) { S.fk = 'hills'; fnChanged(); }
+        if (S.mode === 'slope') st.x = Math.min(st.x, cur().dom[1] - st.dx);
+      };
+      const buildQ = () => {
+        const fn = cur(), F = candFn(fn, S.fi), Fa = F(st.a), Fb = F(st.b), ar = Aat(fn, st.a, st.b);
+        const raw = [['nosub', Fb], ['flip', Fa - Fb], ['usedf', fn.f(st.b) - fn.f(st.a)], ['plus', Fb + Fa], ['off', ar + 1], ['off', ar - 1], ['off', 2 * ar]];
+        const opts = [{ kind: 'right', v: ar }];
+        for (const [kind, v] of raw) if (opts.length < 4 && opts.every(o => Math.abs(o.v - v) > .005)) opts.push({ kind, v });
+        const r = Math.abs(Math.round(st.a * 6 + st.b * 5)) % 4 + (S.fi % 2);
+        S.q = opts.map((_, i) => opts[(i + r) % 4]);
+      };
+      const slopeCheckMsg = () => {
+        const fn = cur(), xs = [st.b, st.a, (st.a + st.b) / 2], xt = xs.reduce((m, v) => Math.abs(fn.f(v - EPS)) > Math.abs(fn.f(m - EPS)) ? v : m, xs[0]);
+        const h0 = fn.f(xt - EPS);
+        return 'At x = ' + fx(fn, xt) + ', f is ' + n2(h0) + ' but this curve has slope ' + n2(2 * h0) + ', twice as steep. An antiderivative must have slope exactly f. Scaling a function scales its slope too.';
+      };
+      const pickF = k => {
+        cancel(); S.fi = k; const fn = cur(), F = candFn(fn, k), ar = Aat(fn, st.a, st.b);
+        if (k === 3) { S.msg = 'This is not an antiderivative. ' + slopeCheckMsg() + (S.solved ? ' Its F(b) − F(a) is ' + n2(F(st.b) - F(st.a)) + ', which misses the shaded area ' + n2(ar) + '.' : ''); }
+        else {
+          if (!S.solved) buildQ();
+          S.msg = S.solved
+            ? 'Same answer: F(b) − F(a) = ' + n2(F(st.b) - F(st.a)) + '. ' + (k === 0 ? 'This is the plain antiderivative.' : 'The constant ' + (fn.cs[k] > 0 ? '+' : '−') + Math.abs(fn.cs[k]) + ' is in both F(b) and F(a), so it cancels.')
+            : 'Good. Its slope is f, so it is an antiderivative. The four graphs in the bottom pane differ by constants, apart from the one that is scaled. Now compute F(b) − F(a).';
+        }
+        sync();
+      };
+      const pickAns = i => {
+        cancel(); const o = S.q && S.q[i]; if (!o) return;
+        const fn = cur(), ar = Aat(fn, st.a, st.b), neg = ar < -.005;
+        if (o.kind === 'right') {
+          S.solved = true;
+          S.msg = 'Correct. F(b) − F(a) = ' + n2(ar) + ' matches the shaded area.' + (neg ? ' It is negative because the region lies below the axis.' : '') + ' Now pick a different F (one with another constant) and watch F(b) and F(a) both move while the difference stays put.';
+        } else {
+          S.msg = {
+            nosub: 'That is just F(b). The area starts at a, not at 0, so subtract the value of F at the start: F(b) − F(a).',
+            flip: 'Right size, wrong sign. The order is end minus start: F(b) − F(a).' + (neg ? ' Here f lies mostly below the axis, so the area is negative.' : ''),
+            usedf: 'You subtracted heights of f. The theorem subtracts heights of F, the antiderivative.',
+            plus: 'You added. The area is the change in F from a to b, so subtract: F(b) − F(a).',
+            off: 'Not this one. Work out F(b), then F(a), then subtract.'
+          }[o.kind];
+        }
+        sync();
+      };
+      const pickGraph = i => {
+        cancel(); const fn = cur(), cd = quizCands(fn)[i], z = fn.zeros, s0 = fn.f(.05) > 0, zs = z.map(n2).join(' and ');
+        S.pick = i;
+        if (cd.kind === 'true') {
+          S.solved = true;
+          S.msg = 'Correct. A starts at 0, falls where f is negative, rises where f is positive, and turns around at x = ' + zs + ', where f is zero.';
+        } else {
+          if (!S.wrong.includes(i)) S.wrong.push(i);
+          S.msg = {
+            neg: 'This graph is upside down. f is ' + (s0 ? 'positive' : 'negative') + ' from x = 0 to x = ' + n2(z[0]) + ', so A must ' + (s0 ? 'rise' : 'fall') + ' there. This graph does the opposite. Check where f is positive.',
+            f: 'This is the graph of f itself. A must start at 0, because the area from a to a is 0. A also turns around where f is zero (x = ' + zs + '), not where f has its own peaks and dips.',
+            shift: 'The shape is right but the start is wrong. A(a) is the area from a to a, which is 0, so A must start at height 0. This graph starts at ' + n2(QSHIFT[fn.key]) + '.'
+          }[cd.kind];
+        }
+        sync();
+      };
+
+      /* ---------- sync ---------- */
+      const sync = () => {
+        const fn = cur(), M = S.mode;
+        mbtn.forEach((b, i) => b.classList.toggle('primary', ['acc', 'slope', 'quiz', 'ftc'][i] === M));
+        selBox.style.display = M === 'quiz' ? 'none' : '';
+        dxBox.style.display = M === 'slope' ? '' : 'none';
+        qTitle.style.display = qRow.row.style.display = qNext.row.style.display = M === 'quiz' ? '' : 'none';
+        fTitle.style.display = fRow.row.style.display = M === 'ftc' ? '' : 'none';
+        const showA = M === 'ftc' && S.fi != null && S.fi !== 3 && S.q;
+        aTitle.style.display = aRow.row.style.display = showA ? '' : 'none';
+        dxS.set(st.dx);
+        qRow.els.forEach((b, i) => { b.disabled = S.solved; b.classList.toggle('primary', S.pick === i); });
+        fRow.els.forEach((b, j) => { const k = FORD[j]; b.textContent = (j + 1) + ': ' + candLabel(fn, k); b.classList.toggle('primary', S.fi === k); });
+        if (showA) aRow.els.forEach((b, i) => { b.textContent = n2(S.q[i].v); b.disabled = S.solved; });
+        P1.draw(); P2.draw(); upd();
+      };
+      const fixup = () => {
+        const fn = cur(), [d0, d1] = fn.dom;
+        st.x = clamp(st.x, d0, S.mode === 'slope' ? d1 - st.dx : d1);
+        st.a = clamp(st.a, d0, d1 - fn.sab); st.b = clamp(st.b, st.a + fn.sab, d1);
+      };
+
+      /* ---------- dragging ---------- */
+      const dragX = (nx) => {
+        const fn = cur(), m = mapOf(fn), x = m.xOf(nx);
+        if (S.mode === 'ftc') return null;
+        st.x = clamp(snap(x, fn.snap), fn.dom[0], S.mode === 'slope' ? fn.dom[1] - st.dx : fn.dom[1]);
+        return true;
+      };
+      const dragAB = (hd, nx) => {
+        const fn = cur(), x = snap(mapOf(fn).xOf(nx), fn.sab), [d0, d1] = fn.dom;
+        const na = hd === 'a' ? clamp(x, d0, st.b - fn.sab) : st.a, nb = hd === 'b' ? clamp(x, st.a + fn.sab, d1) : st.b;
+        if (na !== st.a || nb !== st.b) { st.a = na; st.b = nb; resetFtc(); if (S.fi != null && S.fi !== 3) { buildQ(); } }
+      };
+      const hitTop = (px, py) => {
+        if (S.mode !== 'ftc') return 'x';
+        const x = mapOf(cur()).xOf(P1.toMath(px, py)[0]);
+        return Math.abs(x - st.a) < Math.abs(x - st.b) ? 'a' : 'b';
+      };
+      draggable(P1, {
+        hit: hitTop,
+        move: (hd, nx) => { cancel(); if (hd === 'x') dragX(nx); else dragAB(hd, nx); sync(); }
+      });
+      draggable(P2, {
+        hit: (px, py) => {
+          if (S.mode === 'quiz') { for (let i = 0; i < 4; i++) { const r = cell(i, P2); if (!S.solved && px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) return 'q' + i; } return null; }
+          return S.mode === 'ftc' ? hitTop(px, py) : 'x';
+        },
+        move: (hd, nx) => {
+          cancel();
+          if (hd[0] === 'q') { const i = +hd[1]; if (S.pick !== i) pickGraph(i); return; }
+          if (hd === 'x') dragX(nx); else dragAB(hd, nx); sync();
+        }
+      });
+
+      /* ---------- steps ---------- */
+      const apply = (patch, immediate) => {
+        cancel();
+        const { mode, fk, fi, ...rest } = patch;
+        const accLike = m => m === 'acc' || m === 'slope', fkNew = fk !== undefined && fk !== S.fk;
+        const ctxChanged = (mode !== undefined && mode !== S.mode) || fkNew;
+        const anim = !fkNew && accLike(S.mode) && (mode === undefined || accLike(mode));
+        if (mode !== undefined) S.mode = mode;
+        if (fk !== undefined && fk !== S.fk) { S.fk = fk; sel.value = fk; }
+        if (ctxChanged) { resetQuiz(); S.q = null; S.fi = null; }
+        if (fi !== undefined) S.fi = fi;
+        if (ctxChanged && S.mode === 'ftc') { st.a = cur().ab[0]; st.b = cur().ab[1]; }
+        if (immediate || !anim || !Object.keys(rest).length) { Object.assign(st, rest); fixup(); sync(); }
+        else cancel = animateTo(st, rest, 700, () => { fixup(); sync(); });
+      };
+      modeChanged(); fnChanged(); st.x = 1; sync();
+      return { destroy: () => { cancel(); P1.destroy(); P2.destroy(); }, apply };
     }
   });
 }

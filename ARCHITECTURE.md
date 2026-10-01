@@ -2,7 +2,7 @@
 
 Interactive, 3Blue1Brown-style math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
-**Version:** 0.14 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2, Grade 6-7 foundations batches F-A and F-B)
+**Version:** 0.15 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2, Grade 6-7 foundations batches F-A and F-B)
 **Last updated:** 2026-10-01
 
 ## 1. Deployment model
@@ -287,10 +287,10 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
   | Batch | Lesson (id) | Course | Status |
   |---|---|---|---|
-  | U1 | `limits-and-epsilon-delta` | Calculus | being built |
-  | U1 | `derivatives-as-tangent-slopes` | Calculus | being built |
-  | U1 | `riemann-sums-and-the-integral` | Calculus | being built |
-  | U1 | `the-fundamental-theorem-of-calculus` | Calculus | being built |
+  | U1 | `limits-and-epsilon-delta` | Calculus | built |
+  | U1 | `derivatives-as-tangent-slopes` | Calculus | built |
+  | U1 | `riemann-sums-and-the-integral` | Calculus | built |
+  | U1 | `the-fundamental-theorem-of-calculus` | Calculus | built |
   | U2 | `taylor-series`, `when-infinite-sums-converge` | Calculus | planned |
   | U2 | `vectors-span-and-linear-combinations`, `dot-product-and-projection` | Linear Algebra | planned |
   | U3 | `gradient-and-contour-maps`, `divergence-and-curl` | Multivariable & ODEs | planned |
@@ -303,6 +303,7 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
 ## 10. Change log
 
+- **0.15 (2026-10-01):** Undergraduate batch U1, the Calculus course: Limits and epsilon-delta (the epsilon-delta game on a graph, six functions, challenge mode), Derivatives as tangent slopes (secants to tangents, a live slope graph, sketch-the-derivative and find-the-bad-point challenges), Riemann sums and the integral (five sample rules, signed area, net change versus distance, smallest-n challenge), The fundamental theorem of calculus (accumulation function, strip argument, which-graph-is-A, F(b)-F(a)). New courses added (Calculus, Multivariable Calculus & Differential Equations, Complex Numbers/Fourier/Probability). An independent read recomputed every worked number and found no numeric or answer-key errors; fixes made: a misleading hook and a wrong feedback message (limits), a wrong "full wave" claim and two overstated continuity statements (fundamental theorem), "speed" vs "velocity" and a weak related link (Riemann), small wording fixes (derivatives). Tests: course and level checks are data-driven. Not republished to the artifact.
 - **0.14.1 (2026-10-01):** Footer credit line "By Michael Sayers" (template and `.credit` style).
 - **0.14 (2026-10-01):** Bug and polish pass. Swept every lesson at 1280, 390 and 320 px (light and dark), every step deep link, every exit ticket, the home, progress and token pages, 24 malformed link tokens and 30 rapid navigations: no page errors, no horizontal overflow, no broken links, all thumbnails drawn. Fixes: (1) **MathJax blocked or offline** (a school network can block the cdnjs host): lesson text used to show raw `\( ... \)`; `typeset()` now falls back to readable plain text (`texFallback`, built on the new `texFlat`: 2/3, x², ×, ⇒; the template's script tag sets `__mjFail` on error so the fallback is immediate, otherwise after 7.5 s). `texToText` (copy exit ticket as text) shares the same code and now writes `(y-y_1)/(x-x_1)`, `1/(b³)` and `2^(5+(-3))` correctly (it used to mangle nested exponents and fractions such as `\tfrac1{10}`). (2) Favicon (inline SVG), page description, Open Graph title and description, light and dark `theme-color`, and a `<noscript>` message. (3) Step dots on lesson pages are 30 px tall (were 22) for touch. Tests: both suites cover the fallback (`texFlat` cases; no raw TeX on a lesson page with MathJax blocked). Known and not changed: canvas handles cannot be moved with the keyboard (sliders and buttons can); the top navigation is hidden below 640 px (the footer still links to My progress; level headings are reached by scrolling).
 - **0.13 (2026-10-01):** Home page and loading. (1) The hero's main button no longer starts the undergraduate "linear maps" lesson; it starts "Slope and linear functions" ("Start with slope"). (2) Course groups on the home page are collapsible (all closed at first, with a title preview; Expand all; filters open the groups with matches; the visitor's choices are remembered while the page is open), so the page no longer lists every lesson at once. (3) Lazy loading: `node tools/build.js --split` writes `dist/index.html` (159 KB instead of 1.19 MB) and one script per lesson (`dist/lessons/<id>.js`, 25 to 96 KB each); the engine fetches a lesson only when its page, its exit ticket or its thumbnail in an opened course needs it, shows a loading and a "Could not load, Try again" state, and warms the Next lesson. Lesson metadata for the home page comes from running each lesson in a build-time sandbox (`captureLessons` in `tools/build.js`), so no lesson file changed. The single-file `index.html` is unchanged in behavior and still the committed, offline-capable build. Tests: both suites run against either build (`CONTINUUM_BUILD=split`), and new checks cover the hero, collapsing, expand all, filter auto-open, and the split build's network behavior. Known limits: thumbnails in a closed course are not drawn until it is opened (the preview is text); a split build needs its `lessons/` folder next to `index.html`.
