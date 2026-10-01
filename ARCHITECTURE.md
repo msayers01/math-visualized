@@ -101,7 +101,7 @@ Every lesson belongs to one **course**, has one **skill level**, and carries zer
 
 **Skill level** describes the lesson, not the student. Introductory: a first look, needs nothing else on this site. Intermediate: an on-grade skill that builds on earlier ideas. Advanced: proof-style reasoning, or ideas beyond the grade-band benchmarks (the unit circle lesson's radians and periodic waves, the Galton board's binomial distribution). The two undergraduate/graduate lessons carry a skill level only so every lesson has one.
 
-**Tagging rule.** A benchmark is tagged only when the lesson's steps, interactive, formal math or quick checks actually address it, not when the topic is merely nearby. Fewer accurate tags beat many loose ones, because teachers filter on them. A lesson's **grades** are its course's grades plus the band of every benchmark it is tagged with (so a statistics lesson tagged 6.1.1.3, 7.1.1.4 and two 9.x benchmarks is found under Grade 6, Grade 7 and Grades 9-11); its **strands** come from the benchmark codes.
+**Tagging rule.** A benchmark is tagged only when the lesson's steps, interactive, formal math or quick checks actually address it, not when the topic is merely nearby. Fewer accurate tags beat many loose ones, because teachers filter on them. A tag means the lesson addresses a substantial part of the benchmark, not necessarily all of it: an independent review of the first 34 tags against each lesson's text rated 10 as direct and 23 as partial (for example, a benchmark that also asks for tables, technology or multi-step contexts that the lesson does not provide), and led to dropping the two weakest tags (9.2.3.3 on the unit circle lesson, 9.3.7.2 on transformations) and adding five clearly supported ones (7.1.2.3 and 9.1.2.4 on the Galton board, 7.1.2.6 on repeated trials, 8.3.7.7 on exponential growth, 9.3.7.3 on quadratics). A two-tier "direct / partial" marker would be the next refinement if a stricter mapping is wanted. A lesson's **grades** are its course's grades plus the band of every benchmark it is tagged with (so a statistics lesson tagged 6.1.1.3, 7.1.1.4 and two 9.x benchmarks is found under Grade 6, Grade 7 and Grades 9-11); its **strands** come from the benchmark codes.
 
 **Display order** (computed by `orderLessons()`, so every list and the pager agree): level, then course sequence, then skill level (introductory first), then the lesson's first benchmark in the document's own order (strand, anchor, benchmark), then registration order. A final stable pass never places a lesson before a same-course lesson it builds on (`links.prereq`).
 
@@ -119,15 +119,15 @@ Every lesson belongs to one **course**, has one **skill level**, and carries zer
 | Grade 8 Mathematics | The Pythagorean theorem | Introductory | 8.2.3.1, 8.2.3.3 |
 | Grade 8 Mathematics | Slope and linear functions | Introductory | 8.2.4.1, 8.3.7.5, 8.3.7.6 |
 | Grade 8 Mathematics | Systems of equations | Intermediate | 8.2.4.3, 8.3.6.9 |
-| Algebra 1 | Exponential growth | Intermediate | 8.3.5.6, 8.3.7.8, 8.3.7.9, 9.3.7.1 |
-| Algebra 1 | Functions as transformations | Intermediate | 9.3.7.2, 9.3.7.3 |
-| Algebra 1 | Quadratics and the parabola | Intermediate | 9.3.6.2, 9.3.6.3, 9.3.6.5 |
+| Algebra 1 | Exponential growth | Intermediate | 8.3.5.6, 8.3.7.7, 8.3.7.8, 8.3.7.9, 9.3.7.1 |
+| Algebra 1 | Functions as transformations | Intermediate | 9.3.7.3 |
+| Algebra 1 | Quadratics and the parabola | Intermediate | 9.3.6.2, 9.3.6.3, 9.3.6.5, 9.3.7.3 |
 | Geometry | Similarity and scaling | Intermediate | 7.2.4.2, 7.2.4.3, 9.2.3.9 |
 | Geometry | Inscribed angles | Intermediate | 9.2.4.8 |
-| Precalculus & Trigonometry | The unit circle and trig waves | Advanced | 9.2.3.3, 9.2.3.8 |
+| Precalculus & Trigonometry | The unit circle and trig waves | Advanced | 9.2.3.8 (nearest benchmark; the lesson extends it) |
 | Statistics & Probability | Mean, median, and spread | Intermediate | 6.1.1.3, 7.1.1.4, 9.1.1.9, 9.1.1.13 |
-| Statistics & Probability | Probability with repeated trials | Intermediate | 6.1.2.3, 7.1.2.2, 9.1.2.3, 9.1.2.4 |
-| Statistics & Probability | Pascal's triangle and the Galton board | Advanced | 9.1.2.1, 9.1.2.6 |
+| Statistics & Probability | Probability with repeated trials | Intermediate | 6.1.2.3, 7.1.2.2, 7.1.2.6, 9.1.2.3, 9.1.2.4 |
+| Statistics & Probability | Pascal's triangle and the Galton board | Advanced | 7.1.2.3, 9.1.2.1, 9.1.2.4, 9.1.2.6 |
 | Linear Algebra | Linear transformations and eigenvectors | Intermediate | (K-12 standards do not apply) |
 | Complex Analysis | Conformal maps of the complex plane | Advanced | (K-12 standards do not apply) |
 
