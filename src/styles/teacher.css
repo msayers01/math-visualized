@@ -72,3 +72,4 @@
 }
 .foot-link { color: var(--muted); text-underline-offset: 3px; }
 .foot-link:hover { color: var(--text); }
+.credit { margin: -22px 0 0; padding: 0 0 36px; font-size: .8rem; color: var(--faint); }

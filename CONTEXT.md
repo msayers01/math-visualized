@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v33
+**Version:** v34
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -101,6 +101,7 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **Done (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (done and audited: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7)); batch F-B (done and audited): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
+- **Done (v0.14.1):** footer credit "By Michael Sayers" (`<p class="credit">` in `src/template.html`).
 - **Done (v0.14):** bug and polish pass (plain-text math when MathJax is blocked, favicon and meta tags, noscript, larger step dots; no other bugs found by the sweeps). Not republished to the artifact.
 - **Next:** nothing in progress. Waiting for the owner to choose the next area (see Open items). Lazy loading and collapsible course groups are built (v0.13, on PR #6).
 
