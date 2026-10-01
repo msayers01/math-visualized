@@ -61,8 +61,8 @@ const ALIGN = [
 
   /* Grade 7 */
   { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
-  { id: 'percent-change-and-money', course: 'grade7', skill: 'mid', standards: ['7.3.6.5'] },
-  { id: 'scale-drawings-and-proportions', course: 'grade7', skill: 'mid', standards: ['7.2.4.4', '7.3.6.4'] },
+  { id: 'percent-change-and-money', course: 'grade7', skill: 'mid', standards: ['7.3.6.5', '6.3.5.11'] },
+  { id: 'scale-drawings-and-proportions', course: 'grade7', skill: 'mid', standards: ['7.2.4.4', '7.3.6.4', '6.3.6.6'] },
   { id: 'proportional-relationships', course: 'grade7', skill: 'mid', standards: ['7.3.7.1', '7.3.7.2', '7.3.7.3'] },
 
   /* Grade 8 */

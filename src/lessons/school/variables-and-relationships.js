@@ -247,7 +247,7 @@
       </ul>
       <p>A rule of the form \(y = mx + b\) covers all three. The multiplier \(m\) is how much \(y\) changes for each 1 step in \(x\). The added number \(b\) is the value of \(y\) when \(x=0\). If \(m=1\) we write \(y = x + b\), and if \(b=0\) we write \(y = mx\).</p>
       <h3>Reading a table</h3>
-      <p>Look at how \(y\) changes when \(x\) goes up by 1. In Mia's jar, \(y\) goes up by 2 every time, and 2 is the number that multiplies \(x\). Then find \(y\) when \(x=0\): it is 5, the number that is added.</p>
+      <p>Look at how \(y\) changes when \(x\) goes up by 1. In Mia's jar, \(y\) goes up by 2 every time, and 2 is the number that multiplies \(x\). Then find \(y\) when \(x=0\): it is 5, the number that is added. So the rule is \(y = 2x + 5\). After 10 weeks, \(x=10\) and \(y = 2\times 10 + 5 = 25\), so the jar holds $25.</p>
       <p>Be careful when \(x\) skips. In the table \((2,5)\), \((4,9)\), \((6,13)\), \((8,17)\), \(y\) goes up 4 each time, but \(x\) goes up 2 each time. So \(y\) goes up \(4 \div 2 = 2\) for each 1 of \(x\). Going back one step of 1 from \(x=2\) gives \(y=3\), and another gives \(y=1\) at \(x=0\). The rule is \(y = 2x + 1\).</p>
       <h3>Reading a graph</h3>
       <p>The graph of these rules is a set of points on a straight line. The point where the graph meets the \(y\)-axis is \((0, b)\): the start. Each 1 step to the right goes up \(m\). For \(y = 2x + 5\), the graph starts at \((0,5)\) and goes up 2 for each step right.</p>

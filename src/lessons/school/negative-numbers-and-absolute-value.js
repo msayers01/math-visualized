@@ -161,6 +161,7 @@
       return `${A} is to the ${side(it.A - it.B)} of ${B} on the number line. The number on the ${rel === '<' ? 'left is the lesser' : 'right is the greater'}, so ${A} ${REL[rel]} ${B}. It reads the same the other way: ${B} ${REL[rel === '<' ? '>' : '<']} ${A}.${tail}`;
     }
     if (sym === '=') return `They are not at the same spot, so they are not equal. ${A} is to the ${side(it.A - it.B)} of ${B}.`;
+    if (rel === '=') return `${A} and ${B} are two names for one number. They sit on the same spot, so neither is to the left or the right of the other. ${A} ${REL[sym]} ${B} would need one of them to be farther ${sym === '<' ? 'left' : 'right'}, so the correct symbol is ${A} = ${B}.`;
     return `${A} ${REL[sym]} ${B} would mean ${A} is to the ${sym === '<' ? 'left' : 'right'} of ${B}. But on the number line, ${A} is to the ${side(it.A - it.B)} of ${B}. The number on the ${rel === '<' ? 'left is the lesser' : 'right is the greater'}, so it is ${A} ${REL[rel]} ${B}.${tail}`;
   };
 
