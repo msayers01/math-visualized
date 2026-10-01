@@ -3456,7 +3456,7 @@ function renderHome(app) {
     }
     empty.hidden = !on || shown > 0;
     const hash = filterToHash(F);
-    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) history.replaceState(null, '', hash);
+    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
   };
   const finder = Finder(F, apply);
   app.append(finder.el, levels);
