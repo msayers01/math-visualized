@@ -61,6 +61,7 @@
     "lessons/ugrad/riemann-sums-and-the-integral.js",
     "lessons/ugrad/derivatives-as-tangent-slopes.js",
     "lessons/ugrad/limits-and-epsilon-delta.js",
+    "lessons/ugrad/the-fundamental-theorem-of-calculus.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],

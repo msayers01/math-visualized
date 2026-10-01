@@ -103,6 +103,7 @@ const ALIGN = [
   { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },
   { id: 'derivatives-as-tangent-slopes', course: 'calculus', skill: 'intro', standards: [] },
   { id: 'limits-and-epsilon-delta', course: 'calculus', skill: 'intro', standards: [] },
+  { id: 'the-fundamental-theorem-of-calculus', course: 'calculus', skill: 'mid', standards: [] },
   { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
   { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
 ];
