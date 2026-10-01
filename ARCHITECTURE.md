@@ -19,9 +19,9 @@ Interactive, 3Blue1Brown-style math visualization website covering three levels:
 ```
 src/template.html        page shell with /*@STYLES*/ and /*@SCRIPTS*/ markers
 src/manifest.json        ordered lists: styles, curriculum, engine, lessons, app
-src/styles/*.css         tokens, shell (top bar/hero/levels), viz (page + controls), prose, lesson, motion, curriculum (tags, chips, finder)
+src/styles/*.css         tokens, shell (top bar/hero/levels), viz (page + controls), prose, lesson, motion, curriculum (tags, chips, finder), teacher (progress, tickets, print)
 src/curriculum/*.js      standards-mn2022.js (the 2022 Minnesota benchmarks) and curriculum.js (grades, courses, skill levels, per-lesson alignment)
-src/engine/*.js          core, theme (+typeset), plane, draggable, controls, math, registry, curriculum, lesson, finder, pages, router
+src/engine/*.js          core, theme (+typeset), plane, draggable, controls, math, registry, curriculum, lesson, finder, share, progress, teacher, pages, router
 src/lessons/<level>/<id>.js   one register({...}) per lesson
 tools/build.js           concatenates everything into index.html and checks the curriculum data
 ```
@@ -40,16 +40,27 @@ tools/build.js           concatenates everything into index.html and checks the 
 | `curriculum.js` | Pure helpers over the curriculum data: derived tags, `orderLessons()`, `applyCurriculum()`, filter predicate and URL encoding (no DOM; `tools/build.js` runs it too) |
 | `lesson.js` | `Stepper`, `QuickCheck`, `Connections` (lesson format components) |
 | `finder.js` | `SkillMeter`, `StdChip`, `LessonTags`, `Finder` (the filter bar) |
+| `share.js` | `parseRoute()`, share tokens (`lessonToken`, `ticketToken`, `filterToken`), `shareUrl`, `embedded`, `canPrint`, `copyText`, `CopyButton`, `texToText` |
+| `progress.js` | `Progress` (per-browser progress store and plain-text summary) |
+| `teacher.js` | `ProgressChip`, `renderProgress()`, `renderTicket()` |
 | `pages.js` | `renderHome()` (hero + live readout, finder, level sections with lessons grouped by course, thumbnails), `renderViz()` (lesson page with course, skill, grades, benchmark chips and the "Standards alignment" section) |
 | `router.js` | Hash routing and teardown |
 
 ## 3. Routing
 
-- `#/` or empty: home page (hero animation + topic lists per level).
-- `#/viz/<id>`: visualization page.
-- `#/level/<school|ugrad|grad>`: home page scrolled to that level (used by the top nav and breadcrumbs).
-- `#/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1`: home page with the lesson filters applied (any subset of the five keys) and scrolled to the finder. The finder keeps the hash in sync with `history.replaceState`, so filtered views can be shared; unknown values are ignored.
-- On every route change the previous page's teardown function runs (cancels animation frames, disconnects observers, removes listeners).
+`parseRoute()` in `engine/share.js` turns the hash into a page. Every shareable view has a **plain token** (letters, digits, `.`, `_`, `~`, `-` only), because that is the only hash form a link to the artifact viewer can deliver to the page; the older slash forms still work and are never generated.
+
+| Token | Page |
+|---|---|
+| empty, `#/`, or anything unrecognized | home page (hero animation, lesson finder, lists per level) |
+| `#school`, `#ugrad`, `#grad` (or `#/level/<id>`) | home page scrolled to that level (top nav, breadcrumbs) |
+| `#<lesson-id>` (or `#/viz/<id>`) | lesson page |
+| `#<lesson-id>.3` | lesson page opened at step 3 (clamped to the last step) |
+| `#<lesson-id>.ticket`, `#<lesson-id>.key` | printable exit ticket, student version or with the answer key |
+| `#progress` | the progress page |
+| `#find~grade_8~skill_intro~strand_pr~course_grade8~std_8.2.4.1` (or `#/?grade=8&...`) | home page with lesson filters applied (any subset of the five keys, repeat `grade`, `skill` or `strand` for several values) and scrolled to the finder; unknown values are ignored |
+
+The finder and the stepper keep the address in sync with `history.replaceState` (inside try/catch, because the artifact viewer's frame may refuse it), so the address bar is always a shareable link. On every route change the previous page's teardown function runs (cancels animation frames, disconnects observers, removes listeners).
 
 ## 4. Lesson module contract
 
@@ -81,7 +92,7 @@ register({
 
 Lessons with two canvases add class `split` to the stage and stack two `.pane` hosts, one `Plane` each (see the unit circle lesson). A step's `set` may also carry non-numeric flags (e.g. `showCos`); the lesson's `apply` splits them from the numeric fields it animates. Lessons whose axes need different scales (the plane has one uniform scale) draw in a normalized area and set `p.span`/`p.cx`/`p.cy` inside `onDraw` (see `exponential-growth`, and the wave pane of the unit circle). Integer parameters (slice counts) go in a step's `set` but are applied instantly, not animated. Keep handles from overlapping in a lesson's default state, and let the more specific handle win in `hit`.
 
-Page order: breadcrumb, title, hook (or blurb), course / skill / grades / benchmark chips, stage + side panel (stepper above the controls), "The math", quick check, connections, "Standards alignment" (lessons with benchmarks only), pager. The pager moves within a level in the computed curriculum order (section 5).
+Page order: breadcrumb, title, hook (or blurb), course / skill / grades / benchmark chips, stage + side panel (stepper above the controls, with its copy-link button), "The math", quick check, exit-ticket links, connections, "Standards alignment" (lessons with benchmarks only), pager. The pager moves within a level in the computed curriculum order (section 5).
 
 **Steps.** Entering a step (Back/Next, or clicking the progress bar) calls the scene's `apply(step.set, immediate)`. `immediate` is true for the first step on load. `apply` should stop any running animation, move the lesson state to the patch (`animateTo(st, patch, ms, update)` in `core.js` tweens numeric fields and honors reduced motion), and keep sliders in sync via their `set()`. Steps without `set` just show text. A user dragging a control should cancel a running step animation.
 
@@ -107,7 +118,12 @@ Every lesson belongs to one **course**, has one **skill level**, and carries zer
 
 **Build checks** (`tools/build.js`, run on every build and on `--check`; `--order` prints the sequence): every lesson has exactly one `ALIGN` entry and every entry names a real lesson; course, skill and benchmark codes exist; a course's level matches its lessons' level; no repeated codes; and across the whole computed order every "Builds on" link points backward and every "Leads to" link points forward. A failure names the lesson and the link to move to "related" or the placement to change.
 
-**Filters** (home page, `Finder` in `finder.js`). Five facets: grade level (chips), course (dropdown), skill level (chips), standard (dropdown, only benchmarks that some lesson carries, grouped by strand) and standard strand (color chips). Several choices within grade, skill or strand match any of them; different facets must all match. Each option shows how many lessons it would leave given the other facets, and options that would leave none are disabled. Filtering only hides rows (thumbnails stay mounted), hides levels and courses that end up empty, hides "In development" rows, and shows an empty state with a clear button. Below 700px the facets collapse behind a "Filters" button with a badge for the active count. The standard and strand facets disappear if no lesson carries a benchmark. Benchmark chips on lesson pages link to `#/?std=<code>`, and the course tag to `#/?course=<id>`. Inside the artifact viewer only a plain `#anchor` from an artifact link reaches `location.hash`, so a filtered link shared as an artifact link may not apply the filters; links clicked inside the page and the standalone `index.html` work.
+**Filters** (home page, `Finder` in `finder.js`). Five facets: grade level (chips), course (dropdown), skill level (chips), standard (dropdown, only benchmarks that some lesson carries, grouped by strand) and standard strand (color chips). Several choices within grade, skill or strand match any of them; different facets must all match. Each option shows how many lessons it would leave given the other facets, and options that would leave none are disabled. Filtering only hides rows (thumbnails stay mounted), hides levels and courses that end up empty, hides "In development" rows, and shows an empty state with a clear button. Below 700px the facets collapse behind a "Filters" button with a badge for the active count. The standard and strand facets disappear if no lesson carries a benchmark. Benchmark chips on lesson pages link to `#find~std_<code>`, and the course tag to `#find~course_<id>`. "Copy link to this view" copies the current filter token.
+
+**Teacher tools** (`share.js`, `progress.js`, `teacher.js`, `styles/teacher.css`).
+- **Step links.** Stepping a lesson updates the address to `#<id>.<step>`; "Copy link to this step" copies it. A deep link applies that step's state at once (each step's `set` patch is a complete state). Inside the artifact viewer (`embedded`, detected by `window.top !== window.self`) the page cannot know the artifact's own address, so the copy buttons copy only the token (`#slope-and-linear-functions.3`) and say to add it after the page's address; opened on its own (a file or a web host) they copy the full address. Hosting the site on its own address removes that limit. If the clipboard is refused, a selected text box appears instead.
+- **Progress** (`Progress`). Per lesson: steps opened, quick-check questions answered right (and how many on the first try). Complete = every step opened and every check answered right (a legacy lesson with neither is complete once opened). Shown as a chip on lesson rows and lesson pages, and on `#progress` with a name field, a plain-text "Copy summary" (grouped by course) for handing to a teacher, print, and a two-step reset. Data is stored per browser in `localStorage` (key `continuum-progress-v1`), with an in-memory fallback when storage is blocked. There are no accounts and no server, so a teacher sees a class only through the summaries students send. A real class view needs a backend (or the artifact `db` capability) and is a separate decision.
+- **Exit ticket** (`renderTicket`). The lesson's quick-check questions as a one-page handout with name and date lines and the lesson's benchmark chips, in a student version and a version with the answer key; "Copy as text" flattens TeX (`texToText`); print styles hide the site chrome. The print button is hidden when embedded, because the viewer's frame cannot print.
 
 **Maintaining the standards.** `education.mn.gov` serves a browser check ("Radware") instead of the PDFs to scripted downloads, so a new version of the standards has to be supplied as a file. The 2022 data was produced by extracting the benchmark tables (Python `pdfplumber`, one row per benchmark), cross-checking every code against an independent `pdftotext` pass (185 of 185, no numbering gaps), and comparing the lossy benchmarks against the rendered pages.
 
@@ -218,7 +234,7 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | 5 (Algebra 1) | `linear-and-exponential-models` (regression, residuals) | 9.1.1.6, 9.1.1.10, 9.1.1.11 | planned |
 
   Left out on purpose (not a good fit for an interactive canvas, or better as a calculator or a teacher-led task): 8.1.1.1, 8.1.1.5, 8.1.1.6 (designing investigations, building and explaining displays), 8.3.5.7, 8.3.5.8, 9.3.5.5, 9.3.5.6, 9.3.5.10 to 9.3.5.12 (finance reasoning and loan or retirement comparisons; a loan calculator tool could cover some), 9.3.5.3 (complex numbers), 9.3.5.4 (matrices), 9.3.6.6 (circle equation, Geometry), 9.3.6.7 (inverse proportion). Batches are built and reviewed one at a time so that every lesson gets the same testing as the first thirteen.
-- **Teacher features (in progress):** share links to a lesson step that also work inside the artifact viewer (plain-anchor form), local progress tracking with a copyable summary, and a printable exit ticket per lesson with an answer key.
+- **Teacher features (done in 0.10, see section 5):** plain-anchor share links to a lesson step, local progress tracking with a copyable summary, and a printable exit ticket per lesson. Not built: a class-wide teacher view (needs a backend), a combined multi-lesson ticket builder.
 - **Final:** search and polish (progress tracking and teacher tools moved up, see above). (The lesson finder and standards alignment arrived early, in 0.9.)
 
 ## 10. Change log
