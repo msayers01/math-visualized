@@ -64,6 +64,7 @@ const ALIGN = [
   { id: 'square-roots-and-irrational-numbers', course: 'grade8', skill: 'mid', standards: ['8.3.5.1', '8.3.5.2', '8.3.6.4'] },
   { id: 'exponents-and-scientific-notation', course: 'grade8', skill: 'mid', standards: ['8.3.5.3', '8.3.5.4', '8.3.5.5'] },
   { id: 'forms-of-a-linear-equation', course: 'grade8', skill: 'mid', standards: ['8.3.6.5', '8.3.6.6', '8.3.7.1'] },
+  { id: 'parallel-and-perpendicular-lines', course: 'grade8', skill: 'mid', standards: ['8.2.4.2'] },
 
   /* Algebra 1 */
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
