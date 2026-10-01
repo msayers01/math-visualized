@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v36
+**Version:** v37
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -101,6 +101,7 @@ Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-sl
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **Done (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (done and audited: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7)); batch F-B (done and audited): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
+- **In progress (owner's request, 2026-10-01): school statistics and probability, batch S1** (four builders running: sample-spaces-and-probability, statistical-questions-and-data-displays (Grade 6), compound-events-and-tree-diagrams, samples-and-populations (Grade 7)). Plan and later batches S2 and S3 in ARCHITECTURE.md section 9; ask the owner before each batch (tag audit follows S1 as before).
 - **Done: undergraduate batch U1** (Calculus: limits-and-epsilon-delta, derivatives-as-tangent-slopes, riemann-sums-and-the-integral, the-fundamental-theorem-of-calculus; math independently read, fixes applied). **Next, waiting for the owner's go-ahead: U2** (taylor-series, when-infinite-sums-converge, vectors-span-and-linear-combinations, dot-product-and-projection), then U3 and U4 (7 more lessons). Each batch costs roughly 0.6 to 1.2M builder tokens. The builder brief has an undergraduate section (`tools/lesson-brief.md`).
 - **Done (v0.14.1):** footer credit "By Michael Sayers" (`<p class="credit">` in `src/template.html`).
 - **Done (v0.14):** bug and polish pass (plain-text math when MathJax is blocked, favicon and meta tags, noscript, larger step dots; no other bugs found by the sweeps). Not republished to the artifact.
