@@ -556,7 +556,7 @@
           ex = `<b>r is ${rf(r)}, yet the dots follow a clear curve.</b> The left half falls and the right half rises, and the two cancel. r measures only <em>straight-line</em> association, so it can miss a strong pattern that is not a line.` + (Math.abs(st.guess) > .3 ? ' A clear pattern tempts people to guess a big r, but this pattern is a curve.' : '');
         } else if (st.pat === 'out') {
           const r23 = corr(st.pts.slice(0, 23));
-          ex = `With the ringed dot, r = ${rf(r)}. Without it, the other 23 dots have r = ${rf(r23)}. <b>One dot can move r a lot.</b> Drag it to the bottom right corner and watch r fall, then bring it back to the band.`;
+          ex = `With the ringed dot, r = ${rf(r)}. Without it, the other 23 dots have r = ${rf(r23)}. Drag the ringed dot to the bottom right corner and watch r fall: <b>one dot far from the pattern can move r a lot.</b> Then bring it back to the band.`;
         } else {
           ex = `<b>Sign:</b> ${r > .005 ? 'positive, the dots rise as you move right' : r < -.005 ? 'negative, the dots fall as you move right' : 'zero, no straight-line trend'}. <b>Size:</b> ${sizeWord(a)} (${rf(a)} out of 1). The closer the dots are to the line, the closer |r| is to 1. <b>Not the slope:</b> the line's slope is ${num(f.m)}, a different number. r says how tightly the dots hug a line, not how steep it is.`;
         }

@@ -105,7 +105,7 @@ const ALIGN = [
   { id: 'expected-value', course: 'stats', skill: 'mid', standards: ['9.1.2.7', '9.1.2.8'] },
   { id: 'correlation-and-causation', course: 'stats', skill: 'mid', standards: ['9.1.1.5', '9.1.1.6'] },
   { id: 'the-normal-distribution', course: 'stats', skill: 'mid', standards: ['9.1.1.7'] },
-  { id: 'two-way-tables-and-conditional-probability', course: 'stats', skill: 'mid', standards: ['9.1.2.5', '9.1.2.2'] },
+  { id: 'two-way-tables-and-conditional-probability', course: 'stats', skill: 'mid', standards: ['9.1.2.2', '9.1.2.3', '9.1.2.5'] },
 
   /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
   { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },

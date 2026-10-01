@@ -257,7 +257,7 @@
       } },
     { ask: 'Set the prize to $10, so the game is fair, and press Play 10 a few times. A player spins 10 times. Which statement is correct?',
       items: seat([
-        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example +$8 after one win, or −$20 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
+        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$18 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
         I('The net is exactly $0.', false, `${no('Not quite.')} Fair means the AVERAGE per spin is $0 in the long run. A few spins can end far from $0.`),
         I('The player will lose, because the host always wins.', false, `${no('Not quite.')} In a fair game the host has no advantage on average. Over a few spins either side can come out ahead.`)
       ], 0) }
@@ -447,11 +447,11 @@
     check: [
       { q: 'A game costs $2 to play. You roll a fair die. If you roll a 6, you win $9. If you roll anything else, you win nothing. What is the expected net gain per play (the average of what you win minus the $2 you pay)?',
         choices: ['+$1.50', '+$7.00', '−$0.50', '−$2.00'], answer: 2,
-        why: String.raw`The expected payout is \(9\cdot\tfrac16 + 0\cdot\tfrac56 = \$1.50\). Subtract the \$2 fee: \(1.50-2 = -\$0.50\). Another way: the net is \(+7\) with probability \(\tfrac16\) and \(-2\) with probability \(\tfrac56\), and \(\tfrac76-\tfrac{10}6=-\tfrac12\).`,
+        why: String.raw`The expected payout is \(9\cdot\tfrac16 + 0\cdot\tfrac56 = \$1.50\). Subtract the \$2 fee: \(1.50-2 = -\$0.50\). Another way: the net is \(+7\) with probability \(\tfrac16\) and \(-2\) with probability \(\tfrac56\), and \(\tfrac76-\tfrac{10}6=-\tfrac12\). The answer \(+\$1.50\) forgets the fee, and \(+\$7\) is only the best case, not the average.`,
         hint: 'First find the expected payout (each prize times its probability), then subtract the fee.' },
       { q: 'In practice, a player made 22 of 40 two-point shots and 12 of 30 three-point shots. Use these results as probabilities. Which shot earns more points per attempt?',
         choices: ['The two-point shot, because it goes in more often (0.55 against 0.40)', 'The three-point shot: 3 × 0.40 = 1.20 points per attempt, against 2 × 0.55 = 1.10', 'The two-point shot: 2 × 0.55 = 1.20 points per attempt, against 3 × 0.40 = 1.10', 'They earn the same number of points per attempt'], answer: 1,
-        why: String.raw`The probabilities are \(22/40=0.55\) and \(12/30=0.40\). Points per attempt: \(2\cdot0.55=1.10\) for the two-point shot and \(3\cdot0.40=1.20\) for the three-point shot. A shot that goes in less often can still earn more if each make is worth more.`,
+        why: String.raw`The probabilities are \(22/40=0.55\) and \(12/30=0.40\). Points per attempt: \(2\cdot0.55=1.10\) for the two-point shot and \(3\cdot0.40=1.20\) for the three-point shot. A shot that goes in less often can still earn more if each make is worth more. Swapping the two results (1.20 for the two-point shot) comes from mixing up which shot has which probability.`,
         hint: 'Estimate each probability as made divided by tries, then multiply by the points for a make.' }
     ],
     links: { prereq: ['probability-with-repeated-trials'], related: ['compound-events-and-tree-diagrams', 'sample-spaces-and-probability', 'percent-change-and-money', 'mean-median-and-spread'] },

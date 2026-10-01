@@ -126,7 +126,7 @@
     check: [
       { q: String.raw`The scores on a school test follow a normal distribution with mean \(72\) and standard deviation \(6\). About what percent of students scored between \(66\) and \(78\)?`,
         choices: ['34%', '50%', '68%', '95%'], answer: 2,
-        why: String.raw`\(66=72-6\) and \(78=72+6\), so the region is within \(1\) standard deviation of the mean. About \(68\%\) of values lie there.`,
+        why: String.raw`\(66=72-6\) and \(78=72+6\), so the region is within \(1\) standard deviation of the mean. About \(68\%\) of values lie there. The answer \(34\%\) is only one side of the mean, and \(95\%\) is the share within \(2\) standard deviations, a wider band.`,
         hint: 'How many standard deviations from the mean are 66 and 78?' },
       { q: 'Four data sets each have a mean and a standard deviation. For which one would a normal curve built from those two numbers fit the data worst?',
         choices: ['Weights of 400 bags of flour packed to 1 kg: one peak near 1.00 kg, falling off evenly on both sides',

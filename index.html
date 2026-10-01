@@ -817,7 +817,7 @@ const ALIGN = [
   { id: 'expected-value', course: 'stats', skill: 'mid', standards: ['9.1.2.7', '9.1.2.8'] },
   { id: 'correlation-and-causation', course: 'stats', skill: 'mid', standards: ['9.1.1.5', '9.1.1.6'] },
   { id: 'the-normal-distribution', course: 'stats', skill: 'mid', standards: ['9.1.1.7'] },
-  { id: 'two-way-tables-and-conditional-probability', course: 'stats', skill: 'mid', standards: ['9.1.2.5', '9.1.2.2'] },
+  { id: 'two-way-tables-and-conditional-probability', course: 'stats', skill: 'mid', standards: ['9.1.2.2', '9.1.2.3', '9.1.2.5'] },
 
   /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
   { id: 'riemann-sums-and-the-integral', course: 'calculus', skill: 'mid', standards: [] },
@@ -19429,7 +19429,7 @@ register({
       \[ P(A\mid B)=P(A). \]
       Equivalent forms are \(P(A\text{ and }B)=P(A)\,P(B)\) and \(P(B\mid A)=P(B)\). In the phone survey, \(P(A)=\tfrac{40}{100}=0.40\) and \(P(A\mid B)=\tfrac{21}{50}=0.42\). If they were exactly independent, we would expect \(0.40\times 50=20\) music fans with an iPhone, and we see 21. In the grade survey, \(P(A)=0.4\) but \(P(A\mid B)=0.5\) and \(P(A\mid\text{not }B)=0.25\). Knowing the grade changes the chance a lot, so those events are not independent.</p>
       <h3>Caveats</h3>
-      <p>Counts from a real survey are almost never exactly equal, so you judge whether the two chances are close. A gap of 0.02 with 100 students is ordinary wobble. A gap of 0.10 or more, with counts this size, suggests the events really are tied together. "Not independent" means the events are associated. It does not mean one causes the other. This lesson uses data where every student is equally likely to be picked, and it does not give a formal test for how large a gap is too large.</p>`,
+      <p>Counts from a real survey are almost never exactly equal, so you judge whether the two chances are close. A gap of 0.02 with 100 students is ordinary wobble. A gap above about 0.05, with counts this size, is large enough that this lesson calls the events associated. "Not independent" means the events are associated. It does not mean one causes the other. This lesson uses data where every student is equally likely to be picked, and it does not give a formal test for how large a gap is too large.</p>`,
     check: [
       { q: 'A survey of 80 students asked two questions: do you take the bus or walk to school, and do you have a part-time job. The counts are: bus and job 12, bus and no job 28, walk and job 8, walk and no job 32. A student is picked at random. What is the probability that the student has a job, given that the student takes the bus?',
         choices: ['12/80 = 3/20', '12/40 = 3/10', '12/20 = 3/5', '20/80 = 1/4'], answer: 1,
@@ -19993,7 +19993,7 @@ register({
     check: [
       { q: String.raw`The scores on a school test follow a normal distribution with mean \(72\) and standard deviation \(6\). About what percent of students scored between \(66\) and \(78\)?`,
         choices: ['34%', '50%', '68%', '95%'], answer: 2,
-        why: String.raw`\(66=72-6\) and \(78=72+6\), so the region is within \(1\) standard deviation of the mean. About \(68\%\) of values lie there.`,
+        why: String.raw`\(66=72-6\) and \(78=72+6\), so the region is within \(1\) standard deviation of the mean. About \(68\%\) of values lie there. The answer \(34\%\) is only one side of the mean, and \(95\%\) is the share within \(2\) standard deviations, a wider band.`,
         hint: 'How many standard deviations from the mean are 66 and 78?' },
       { q: 'Four data sets each have a mean and a standard deviation. For which one would a normal curve built from those two numbers fit the data worst?',
         choices: ['Weights of 400 bags of flour packed to 1 kg: one peak near 1.00 kg, falling off evenly on both sides',
@@ -20829,7 +20829,7 @@ register({
           ex = `<b>r is ${rf(r)}, yet the dots follow a clear curve.</b> The left half falls and the right half rises, and the two cancel. r measures only <em>straight-line</em> association, so it can miss a strong pattern that is not a line.` + (Math.abs(st.guess) > .3 ? ' A clear pattern tempts people to guess a big r, but this pattern is a curve.' : '');
         } else if (st.pat === 'out') {
           const r23 = corr(st.pts.slice(0, 23));
-          ex = `With the ringed dot, r = ${rf(r)}. Without it, the other 23 dots have r = ${rf(r23)}. <b>One dot can move r a lot.</b> Drag it to the bottom right corner and watch r fall, then bring it back to the band.`;
+          ex = `With the ringed dot, r = ${rf(r)}. Without it, the other 23 dots have r = ${rf(r23)}. Drag the ringed dot to the bottom right corner and watch r fall: <b>one dot far from the pattern can move r a lot.</b> Then bring it back to the band.`;
         } else {
           ex = `<b>Sign:</b> ${r > .005 ? 'positive, the dots rise as you move right' : r < -.005 ? 'negative, the dots fall as you move right' : 'zero, no straight-line trend'}. <b>Size:</b> ${sizeWord(a)} (${rf(a)} out of 1). The closer the dots are to the line, the closer |r| is to 1. <b>Not the slope:</b> the line's slope is ${num(f.m)}, a different number. r says how tightly the dots hug a line, not how steep it is.`;
         }
@@ -21271,7 +21271,7 @@ register({
       } },
     { ask: 'Set the prize to $10, so the game is fair, and press Play 10 a few times. A player spins 10 times. Which statement is correct?',
       items: seat([
-        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example +$8 after one win, or −$20 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
+        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$18 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
         I('The net is exactly $0.', false, `${no('Not quite.')} Fair means the AVERAGE per spin is $0 in the long run. A few spins can end far from $0.`),
         I('The player will lose, because the host always wins.', false, `${no('Not quite.')} In a fair game the host has no advantage on average. Over a few spins either side can come out ahead.`)
       ], 0) }
@@ -21461,11 +21461,11 @@ register({
     check: [
       { q: 'A game costs $2 to play. You roll a fair die. If you roll a 6, you win $9. If you roll anything else, you win nothing. What is the expected net gain per play (the average of what you win minus the $2 you pay)?',
         choices: ['+$1.50', '+$7.00', '−$0.50', '−$2.00'], answer: 2,
-        why: String.raw`The expected payout is \(9\cdot\tfrac16 + 0\cdot\tfrac56 = \$1.50\). Subtract the \$2 fee: \(1.50-2 = -\$0.50\). Another way: the net is \(+7\) with probability \(\tfrac16\) and \(-2\) with probability \(\tfrac56\), and \(\tfrac76-\tfrac{10}6=-\tfrac12\).`,
+        why: String.raw`The expected payout is \(9\cdot\tfrac16 + 0\cdot\tfrac56 = \$1.50\). Subtract the \$2 fee: \(1.50-2 = -\$0.50\). Another way: the net is \(+7\) with probability \(\tfrac16\) and \(-2\) with probability \(\tfrac56\), and \(\tfrac76-\tfrac{10}6=-\tfrac12\). The answer \(+\$1.50\) forgets the fee, and \(+\$7\) is only the best case, not the average.`,
         hint: 'First find the expected payout (each prize times its probability), then subtract the fee.' },
       { q: 'In practice, a player made 22 of 40 two-point shots and 12 of 30 three-point shots. Use these results as probabilities. Which shot earns more points per attempt?',
         choices: ['The two-point shot, because it goes in more often (0.55 against 0.40)', 'The three-point shot: 3 × 0.40 = 1.20 points per attempt, against 2 × 0.55 = 1.10', 'The two-point shot: 2 × 0.55 = 1.20 points per attempt, against 3 × 0.40 = 1.10', 'They earn the same number of points per attempt'], answer: 1,
-        why: String.raw`The probabilities are \(22/40=0.55\) and \(12/30=0.40\). Points per attempt: \(2\cdot0.55=1.10\) for the two-point shot and \(3\cdot0.40=1.20\) for the three-point shot. A shot that goes in less often can still earn more if each make is worth more.`,
+        why: String.raw`The probabilities are \(22/40=0.55\) and \(12/30=0.40\). Points per attempt: \(2\cdot0.55=1.10\) for the two-point shot and \(3\cdot0.40=1.20\) for the three-point shot. A shot that goes in less often can still earn more if each make is worth more. Swapping the two results (1.20 for the two-point shot) comes from mixing up which shot has which probability.`,
         hint: 'Estimate each probability as made divided by tries, then multiply by the points for a make.' }
     ],
     links: { prereq: ['probability-with-repeated-trials'], related: ['compound-events-and-tree-diagrams', 'sample-spaces-and-probability', 'percent-change-and-money', 'mean-median-and-spread'] },
