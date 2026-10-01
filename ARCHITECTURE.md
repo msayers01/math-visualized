@@ -2,7 +2,7 @@
 
 Interactive, 3Blue1Brown-style math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
-**Version:** 0.10 (teacher tools, Grade 8 and Algebra 1 course plan, batch 1 lessons)
+**Version:** 0.11 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2)
 **Last updated:** 2026-10-01
 
 ## 1. Deployment model
@@ -204,6 +204,10 @@ Direction: **precision instruments, modern and sleek**. Midnight ink or cool pap
 | `scatter-plots-and-lines-of-fit` | school | Scatter plots and lines of fit | Six hand-written datasets (study time, car age, shoe size, thrown ball, pizza delivery with an outlier, geyser with two clusters). Fit a line with two ringed handles or sliders, red residual segments, average-miss readout against a flat-line baseline, "Show a good line" (least squares), draggable prediction guide with slope and intercept read in context. Steps set `ds` (string flag) and `m, b, x`. |
 | `square-roots-and-irrational-numbers` | school | Square roots and irrational numbers | Two panes: a square of area n (1 to 50) and a number line with a four-level zoom (1 to 0.001). Lower and upper decimal approximations whose squares straddle n; rational (perfect square) versus irrational; first 12 digits via BigInt ("a peek, not a proof"); compare the root of n with another root or a decimal; estimates of a + the root of n. n and the zoom are integers set instantly, the rest animate. |
 | `exponents-and-scientific-notation` | school | Exponents and scientific notation | Two panes. Top: a logarithmic ruler of powers of ten carrying 10 real objects labelled "about" (tap, drag to pan, zoom). Bottom switches between exponent rules (factor tokens above and below a fraction bar, matching pairs cancel), a scientific-notation builder (coefficient and exponent sliders, a decimal-point-move strip, calculator display such as 3.2E5), and a worked multiply, divide and compare panel with colored parts and a renormalizing step. |
+| `solving-equations-with-a-balance` | school | Solving equations with a balance | A balance scale with two pans, or a formula panel ("Formulas" mode). The student picks an amount and an operation (add, subtract, multiply, divide) and it is applied to both sides at once; the move log names the property of equality used, and a wrong move (for example undoing in the wrong order) is explained with the actual numbers. Equations include parentheses, variables on both sides, and formulas solved for one letter. Steps load equations (`mode`, `eq` flags). |
+| `forms-of-a-linear-equation` | school | Forms of a linear equation | One line defined by two points, a point and a slope, slope-intercept or standard form (integer sliders, ringed handles). Point-slope, slope-intercept and standard forms update together with a graph view (rise-run, intercepts, proportional check). "Convert" walks the student through each algebra move (distribute, combine, clear fractions, make A positive) and explains wrong choices; "Match a line" overlays a dashed target line. |
+| `parallel-and-perpendicular-lines` | school | Parallel and perpendicular lines | A blue line (two rings: one slides it, one tilts it; Horizontal and Vertical buttons) and a point P. The student drags P and a ring on their own line to build the parallel and the perpendicular through P, with slope triangles and the turned triangle shown; "Pick the equation" and a challenge ("Make it parallel / perpendicular", "Show me", "New line and point") give feedback that explains the slope relation (same slope; product of slopes −1). |
+| `distance-and-the-pythagorean-theorem` | school | Distance and the Pythagorean theorem | One canvas, three modes. Plane: drag A and B on an integer grid; legs, squares on the sides, exact simplified radical and decimal; shared row or column shows subtraction. A "place B so that AB = 4, 5, √13, √50, 10" challenge explains too short, too long or right. 3D box: length, width and height sliders (1 to 12) draw the base diagonal and the space diagonal as two right triangles, with presets and a "longest rod exactly 6, 9 or 11" challenge. Stories: ladder, rod in a box, city blocks, TV screen; the student chooses add or subtract squares for each triangle. |
 | `pythagorean-theorem` | school | The Pythagorean theorem | Legs a, b sliders; rearrangement progress; play/reverse. Three triangles translate (no rotation) between the c² and a²+b² arrangements. Full lesson format (hook, 4 steps, formal math, 2 checks, links); reference implementation. |
 | `linear-transformations` | ugrad | Linear transformations and eigenvectors | Matrix entry sliders; drag î/ĵ tips; presets; determinant area; eigenvector lines via `eig2()`. |
 | `conformal-maps` | grad | Conformal maps of the complex plane | Six maps (z², eᶻ, 1/z, sin z, Joukowski, Cayley); rectangular/polar grids; draggable probe showing local scale/rotation from f′(z₀). |
@@ -218,7 +222,7 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 - **Phase 4 (done in 0.7):** Functions as transformations, Exponential growth, Area of a circle, Similarity and scaling.
 - **Phase 5 (done in 0.8):** Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board. The school level (13 lessons) is complete.
 - **Phases 6+:** undergraduate and graduate lessons (on hold until the owner lifts the school-only priority).
-- **Course plan: Grade 8 and Algebra 1 (started 2026-10-01).** Goal: a complete, standards-aligned sequence for these two courses, then teacher features around it. Only 11 of the 38 Grade 8 benchmarks were covered when the plan began (the whole Data Sciences anchor was untouched); batch 1 brings it to 22 of 38 (46 of the 185 benchmarks are tagged in all). A lesson is planned only for benchmarks an interactive visual can actually teach.
+- **Course plan: Grade 8 and Algebra 1 (started 2026-10-01).** Goal: a complete, standards-aligned sequence for these two courses, then teacher features around it. Only 11 of the 38 Grade 8 benchmarks were covered when the plan began (the whole Data Sciences anchor was untouched); batch 1 brought it to 22 of 38 and batch 2 to 30 of 38 (55 of the 185 benchmarks are tagged in all). Still untagged in Grade 8: 8.3.6.7, 8.3.6.8 and 8.3.7.2 (batch 3), 8.3.6.2 (evaluating expressions with radicals and absolute values; no lesson yet, candidate to fold into batch 3), and 8.1.1.1, 8.1.1.5, 8.3.5.7, 8.3.5.8 (left out on purpose, below). A lesson is planned only for benchmarks an interactive visual can actually teach.
 
   | Batch | Lesson (proposed id) | Benchmarks | Status |
   |---|---|---|---|
@@ -226,10 +230,10 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | 1 (Grade 8) | `scatter-plots-and-lines-of-fit` | 8.1.1.2 to 8.1.1.4 | built |
   | 1 (Grade 8) | `square-roots-and-irrational-numbers` | 8.3.5.1, 8.3.5.2, 8.3.6.4 | built |
   | 1 (Grade 8) | `exponents-and-scientific-notation` | 8.3.5.3 to 8.3.5.5 | built |
-  | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1 to 8.3.6.3 | being built |
-  | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | being built |
-  | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | being built |
-  | 2 (Grade 8) | `distance-and-the-pythagorean-theorem` (plane and 3D) | 8.2.3.2, 8.2.3.3 | being built |
+  | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1, 8.3.6.3 | built |
+  | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | built |
+  | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | built |
+  | 2 (Grade 8) | `distance-and-the-pythagorean-theorem` (plane and 3D) | 8.2.3.2, 8.2.3.3 | built |
   | 3 (Grade 8) | `inequalities-and-absolute-value` | 8.3.6.7, 8.3.6.8 | planned |
   | 3 (Grade 8) | `patterns-and-the-nth-term` | 8.3.7.2 | planned |
   | 4 (Algebra 1) | `domain-range-and-key-features` | 9.3.7.6, 9.3.7.7, 9.3.7.10 | planned |
