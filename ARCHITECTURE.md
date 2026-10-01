@@ -283,6 +283,20 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | F-B | `percent-change-and-money` (tax, tips, markups, simple interest) | Grade 7 | 7.3.6.5 | built |
 
   Possible later additions (not planned yet): adding and subtracting integers with distance on the number line (7.3.5.2, 7.3.5.4, 7.3.5.6), two-step equations and inequalities (7.3.6.2), unit rates with fractions (7.3.5.7), prisms (6.2.3.1, 6.2.3.2), angle sums (6.2.4.1, 6.2.4.2), coordinates and polygons (6.2.4.3), prime factors, GCF and LCM (6.3.5.4, 6.3.5.5), fraction models (6.3.5.8), sampling and inference (7.1.1.2 to 7.1.1.4), compound events (7.1.2.3 to 7.1.2.6).
+- **Statistics and probability, school level (started 2026-10-01, at the owner's request).** Fills the biggest gaps in the Data and Probability strand (before this plan: Grade 6 data and chance 2 of 8 benchmarks tagged, Grade 7 4 of 12, Grade 8 4 of 6, Grades 9-11 6 of 23). Grade 6 and 7 lessons sit in the Grade 6 and Grade 7 courses (as the ratio lessons do) and the high-school ones in Statistics & Probability. Lessons for benchmarks that are about designing studies, writing questions or discussing culture and community (6.1.1.2, 6.1.1.5, 7.1.1.1, 7.1.1.6, 8.1.1.1, 8.1.1.5, 9.1.1.1, 9.1.1.2, 9.1.1.12, 9.1.1.14) are left to teachers, because a canvas cannot teach them well.
+
+  | Batch | Lesson (id) | Course | Benchmarks | Status |
+  |---|---|---|---|---|
+  | S1 | `sample-spaces-and-probability` | Grade 6 | 6.1.2.1, 6.1.2.2, 7.1.2.1 | being built |
+  | S1 | `statistical-questions-and-data-displays` | Grade 6 | 6.1.1.1, 6.1.1.4 | being built |
+  | S1 | `compound-events-and-tree-diagrams` | Grade 7 | 7.1.2.4 | being built |
+  | S1 | `samples-and-populations` | Grade 7 | 7.1.1.2, 7.1.1.3 | being built |
+  | S2 | `two-way-tables-and-conditional-probability` (with Venn diagrams) | Statistics & Probability | 9.1.2.5, 9.1.2.2 | planned |
+  | S2 | `the-normal-distribution` | Statistics & Probability | 9.1.1.7 | planned |
+  | S2 | `correlation-and-causation` | Statistics & Probability | 9.1.1.5, 9.1.1.6 | planned |
+  | S2 | `expected-value` | Statistics & Probability | 9.1.2.7, 9.1.2.8 | planned |
+  | S3 | `bias-and-study-design` and `misleading-graphs` | Statistics & Probability | 9.1.1.3, 9.1.1.4, 9.1.1.15 | planned |
+
 - **Undergraduate lessons (started 2026-10-01; the owner lifted the school-only hold for undergraduate work, graduate stays on hold).** The 15 undergraduate lessons not yet built, in four batches of parallel builders (same method as the school batches; no Minnesota standards apply, so there is no tag audit, but each batch still gets integration, tests, screenshots and an independent read for mathematical correctness). Courses added to `COURSES`: Calculus, Multivariable Calculus & Differential Equations, Complex Numbers, Fourier & Probability (Linear Algebra already existed). New lessons use the full lesson format (hook, 4 steps, formal, 2 checks, links); the one existing undergraduate lesson, `linear-transformations`, is still in the legacy format.
 
   | Batch | Lesson (id) | Course | Status |
