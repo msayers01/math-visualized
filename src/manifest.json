@@ -42,6 +42,10 @@
     "lessons/school/mean-median-and-spread.js",
     "lessons/school/probability-with-repeated-trials.js",
     "lessons/school/pascals-triangle-and-the-galton-board.js",
+    "lessons/school/what-is-a-function.js",
+    "lessons/school/scatter-plots-and-lines-of-fit.js",
+    "lessons/school/square-roots-and-irrational-numbers.js",
+    "lessons/school/exponents-and-scientific-notation.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
