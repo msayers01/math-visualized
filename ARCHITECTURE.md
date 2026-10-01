@@ -283,6 +283,21 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | F-B | `percent-change-and-money` (tax, tips, markups, simple interest) | Grade 7 | 7.3.6.5 | built |
 
   Possible later additions (not planned yet): adding and subtracting integers with distance on the number line (7.3.5.2, 7.3.5.4, 7.3.5.6), two-step equations and inequalities (7.3.6.2), unit rates with fractions (7.3.5.7), prisms (6.2.3.1, 6.2.3.2), angle sums (6.2.4.1, 6.2.4.2), coordinates and polygons (6.2.4.3), prime factors, GCF and LCM (6.3.5.4, 6.3.5.5), fraction models (6.3.5.8), sampling and inference (7.1.1.2 to 7.1.1.4), compound events (7.1.2.3 to 7.1.2.6).
+- **Undergraduate lessons (started 2026-10-01; the owner lifted the school-only hold for undergraduate work, graduate stays on hold).** The 15 undergraduate lessons not yet built, in four batches of parallel builders (same method as the school batches; no Minnesota standards apply, so there is no tag audit, but each batch still gets integration, tests, screenshots and an independent read for mathematical correctness). Courses added to `COURSES`: Calculus, Multivariable Calculus & Differential Equations, Complex Numbers, Fourier & Probability (Linear Algebra already existed). New lessons use the full lesson format (hook, 4 steps, formal, 2 checks, links); the one existing undergraduate lesson, `linear-transformations`, is still in the legacy format.
+
+  | Batch | Lesson (id) | Course | Status |
+  |---|---|---|---|
+  | U1 | `limits-and-epsilon-delta` | Calculus | being built |
+  | U1 | `derivatives-as-tangent-slopes` | Calculus | being built |
+  | U1 | `riemann-sums-and-the-integral` | Calculus | being built |
+  | U1 | `the-fundamental-theorem-of-calculus` | Calculus | being built |
+  | U2 | `taylor-series`, `when-infinite-sums-converge` | Calculus | planned |
+  | U2 | `vectors-span-and-linear-combinations`, `dot-product-and-projection` | Linear Algebra | planned |
+  | U3 | `gradient-and-contour-maps`, `divergence-and-curl` | Multivariable & ODEs | planned |
+  | U3 | `slope-fields-and-phase-portraits` | Multivariable & ODEs | planned |
+  | U3 | `eulers-formula-and-complex-multiplication` | Complex, Fourier & Probability | planned |
+  | U4 | `fourier-series-as-epicycles`, `the-central-limit-theorem`, `bayes-theorem` | Complex, Fourier & Probability | planned |
+
 - **Teacher features (done in 0.10, see section 5):** plain-anchor share links to a lesson step, local progress tracking with a copyable summary, and a printable exit ticket per lesson. Not built: a class-wide teacher view (needs a backend), a combined multi-lesson ticket builder.
 - **Final:** search and polish (progress tracking and teacher tools moved up, see above). (The lesson finder and standards alignment arrived early, in 0.9.)
 

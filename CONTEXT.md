@@ -1,11 +1,11 @@
 # Continuum: Context Window
 
-**Version:** v34
+**Version:** v35
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
 Instructions for any AI working on this project (including in a new chat):
-- Work only on **middle & high school** lessons until the owner explicitly says otherwise.
+- **Update 2026-10-01: the owner lifted the hold for UNDERGRADUATE lessons** (build the 15 unbuilt ones, plan in ARCHITECTURE.md section 9). Graduate lessons stay on hold. Otherwise work only on school lessons unless the owner says otherwise.
 - Do **not** build, draft, prototype, or code any undergraduate or graduate lessons, even if they appear in the curriculum or roadmap below. They are listed for planning only.
 - Engine and lesson-format work is allowed, since the school lessons need it. When touching the existing undergraduate and graduate lessons, change only what an engine update requires; do not extend them (this includes their "planned" lists).
 - If a request is ambiguous about level, assume middle & high school and ask before touching upper-level content.
@@ -101,6 +101,7 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **Done (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (done and audited: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7)); batch F-B (done and audited): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
+- **In progress (owner's request, 2026-10-01): undergraduate lessons, batch U1** (four builders running: limits-and-epsilon-delta, derivatives-as-tangent-slopes, riemann-sums-and-the-integral, the-fundamental-theorem-of-calculus; course Calculus). Then U2 to U4 (11 more lessons), asking the owner before each batch. The builder brief has an undergraduate section (`tools/lesson-brief.md`).
 - **Done (v0.14.1):** footer credit "By Michael Sayers" (`<p class="credit">` in `src/template.html`).
 - **Done (v0.14):** bug and polish pass (plain-text math when MathJax is blocked, favicon and meta tags, noscript, larger step dots; no other bugs found by the sweeps). Not republished to the artifact.
 - **Next:** nothing in progress. Waiting for the owner to choose the next area (see Open items). Lazy loading and collapsible course groups are built (v0.13, on PR #6).

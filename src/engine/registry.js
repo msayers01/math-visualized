@@ -42,7 +42,9 @@ const PLANNED = {
   school: ['Slope and linear functions', 'Systems of equations', 'Functions as transformations', 'Quadratics and the parabola', 'Exponential growth',
            'Area of a circle', 'Similarity and scaling', 'Inscribed angles', 'The unit circle and trig waves',
            'Mean, median, and spread', 'Probability with repeated trials', "Pascal's triangle and the Galton board"],
-  ugrad:  ['Derivatives as tangent slopes', 'Riemann sums and the integral', 'Fourier series as epicycles', 'Taylor series'],
+  ugrad:  ['Limits and epsilon-delta', 'Derivatives as tangent slopes', 'Riemann sums and the integral', 'The fundamental theorem of calculus', 'Taylor series', 'When infinite sums converge',
+           'Vectors, span, and linear combinations', 'Dot product and projection', 'Gradient and contour maps', 'Divergence and curl', 'Slope fields and phase portraits',
+           "Euler's formula and complex multiplication", 'Fourier series as epicycles', 'The central limit theorem', "Bayes' theorem"],
   grad:   ['Cayley graphs of groups', 'Homotopy and the fundamental group', 'The Fourier transform', 'Manifolds and tangent spaces']
 };
 

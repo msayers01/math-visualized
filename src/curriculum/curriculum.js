@@ -38,7 +38,10 @@ const COURSES = [
   { id: 'algebra2',         level: 'school', name: 'Algebra 2',                  grades: ['9-11'] },
   { id: 'precalc',          level: 'school', name: 'Precalculus & Trigonometry', grades: ['9-11'] },
   { id: 'stats',            level: 'school', name: 'Statistics & Probability',   grades: ['9-11'] },
+  { id: 'calculus',         level: 'ugrad',  name: 'Calculus',                   grades: ['ug'] },
   { id: 'linear-algebra',   level: 'ugrad',  name: 'Linear Algebra',             grades: ['ug'] },
+  { id: 'multivariable',    level: 'ugrad',  name: 'Multivariable Calculus & Differential Equations', grades: ['ug'] },
+  { id: 'fourier-probability', level: 'ugrad', name: 'Complex Numbers, Fourier & Probability', grades: ['ug'] },
   { id: 'complex-analysis', level: 'grad',   name: 'Complex Analysis',           grades: ['gr'] }
 ];
 

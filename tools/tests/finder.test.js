@@ -55,8 +55,10 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   check('school courses in sequence', JSON.stringify(school.courses.map(c => c.name)) === JSON.stringify(schoolCourses), JSON.stringify(school.courses.map(c => c.name)));
   for (const cr of school.courses) check('order within ' + cr.name, JSON.stringify(cr.ids) === JSON.stringify(want[cr.name]), JSON.stringify(cr.ids));
   const ug = heads.find(h => h.level === 'level-ugrad'), gr = heads.find(h => h.level === 'level-grad');
-  check('ugrad courses', ug.courses.map(c => c.name).join('|') === 'Linear Algebra|In development', ug.courses.map(c => c.name).join('|'));
-  check('grad courses', gr.courses.map(c => c.name).join('|') === 'Complex Analysis|In development', gr.courses.map(c => c.name).join('|'));
+  /* courses that have lessons, in course order, then the planned list while anything is still planned */
+  const courseNames = lvl => D.COURSES.filter(c => c.level === lvl && D.ALIGN.some(a => a.course === c.id)).map(c => c.name).concat(['In development']).join('|');
+  check('ugrad courses', ug.courses.map(c => c.name).join('|') === courseNames('ugrad'), ug.courses.map(c => c.name).join('|'));
+  check('grad courses', gr.courses.map(c => c.name).join('|') === courseNames('grad'), gr.courses.map(c => c.name).join('|'));
   const allIds = (await visibleIds(page)).sort();
   check('every lesson listed once', allIds.length === TOTAL && new Set(allIds).size === TOTAL, allIds.length);
   check('no errors on load', errs.length === 0, errs.join(' | '));
