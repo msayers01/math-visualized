@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v13
+**Version:** v14
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -14,7 +14,7 @@ Instructions for any AI working on this project (including in a new chat):
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
 ## Artifact
-https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (republished 2026-10-01 from ARCHITECTURE v0.7, nine school lessons; publish a copy of `index.html` without its `<!doctype>/<html>/<head>/<body>` wrappers, since the publish step adds them)
+https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (republished 2026-10-01 from ARCHITECTURE v0.8, thirteen school lessons; publish a copy of `index.html` without its `<!doctype>/<html>/<head>/<body>` wrappers, since the publish step adds them)
 
 ## Tech
 - Single self-contained `index.html`, now **generated** from `src/` by `node tools/build.js` (edit `src/`, rebuild, commit both)
@@ -37,8 +37,9 @@ https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (republished 2026-10-01 from A
 - **Done:** Phase 2 (v0.5): source split + build script; lesson-format engine; Pythagorean theorem retrofitted as the reference school lesson
 - **Done:** Phase 3 (v0.6): Slope and linear functions; Systems of equations; Quadratics and the parabola; The unit circle and trig waves
 - **Done:** Phase 4 (v0.7): Functions as transformations; Exponential growth; Area of a circle; Similarity and scaling
-- **Built lessons (9 school):** the eight above plus Pythagorean theorem, all in the full lesson format. Undergrad (Linear transformations) and grad (Conformal maps) remain legacy format, untouched.
-- **Next:** Phase 5, the last four school lessons: Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board (owner to confirm order). Then the school level is complete.
+- **Done:** Phase 5 (v0.8): Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board
+- **School level is COMPLETE:** all 13 middle & high school lessons are built in the full lesson format. Undergrad (Linear transformations) and grad (Conformal maps) remain legacy format, untouched.
+- **Next:** nothing is queued. The owner decides what comes next (see Open items). Upper-level work stays on hold until the owner lifts the school-only priority.
 
 ## Standing rules
 1. Update the context window every turn and provide it (kept in `CONTEXT.md`).
@@ -46,12 +47,12 @@ https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV (republished 2026-10-01 from A
 3. Flag tasks that may exceed tool limits before starting and propose smaller chunks.
 
 ## Curriculum (DRAFT, awaiting approval; school level is the active priority)
-42 lessons total (11 built, 31 new). ✓ = built.
+42 lessons total (15 built, 27 new). ✓ = built.
 
 **Middle & high school (13)**
 - Algebra & functions: Slope and linear functions ✓; Systems of equations ✓; Functions as transformations ✓; Quadratics and the parabola ✓; Exponential growth ✓
-- Geometry & trig: Pythagorean theorem ✓; Area of a circle ✓; Similarity and scaling ✓; Inscribed angles; Unit circle and trig waves ✓
-- Probability & data: Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board
+- Geometry & trig: Pythagorean theorem ✓; Area of a circle ✓; Similarity and scaling ✓; Inscribed angles ✓; Unit circle and trig waves ✓
+- Probability & data: Mean, median, and spread ✓; Probability with repeated trials ✓; Pascal's triangle and the Galton board ✓
 
 **Undergraduate (16), ON HOLD**
 - Calculus: Limits and ε–δ; Derivatives as tangent slopes; Riemann sums and the integral; Fundamental theorem of calculus; Taylor series; When infinite sums converge
@@ -72,12 +73,12 @@ Hook question → interactive canvas → guided "Try this" steps that drive the 
 
 ## Roadmap
 - Phase 2: done (engine + split). Upper-level retrofit only if the engine ever requires it.
-- Phases 3–4: done (8 lessons). Phase 5: the last 4 middle & high school lessons (current priority)
+- Phases 3–5: done (12 school lessons; school level complete)
 - Phases 6+: undergraduate and graduate lessons (ON HOLD)
 - Final phase: search, progress tracking, polish
 
 ## Open items
-- Confirm the order of the Phase 5 batch. After it, the school level is complete; the owner decides what comes next (upper levels stay on hold until then).
-- Approve or edit the draft curriculum.
-- Note: the home hero still links to the undergraduate "Start with linear maps"; consider pointing it at a school lesson.
-- Note: `CONTEXT.md` had been deleted in the repo's last commit; restored here because standing rule 1 keeps it in the repo.
+- School level is complete. Owner to choose what is next: lift the school-only priority and start the undergraduate level, polish the school level (e.g. progress tracking, search, a school-first home page), or something else.
+- The home hero still links to the undergraduate "Start with linear maps"; consider pointing it at a school lesson.
+- Cross-links can only point at lessons that exist or are in `PLANNED`; lessons such as Central limit theorem and Bayes' theorem are in the curriculum but not in `PLANNED`, so they cannot be linked yet.
+- Note: `CONTEXT.md` had been deleted in the repo's earlier commit; restored because standing rule 1 keeps it in the repo.
