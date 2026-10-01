@@ -15587,7 +15587,7 @@ register({
         if (op === 'sz') {
           const k = A_.szq, S = SZ[k];
           return mkQ('sz' + k, `${kk('Pair ' + (k + 1) + ' of 2')}<br>${S.q}`, [
-            { t: 'Yes, add the entries that line up', why: 'Adding needs every entry to have a partner in the same position. Here some entries have no partner (marked in red), so there is nothing to add them to.' },
+            { t: 'Yes, add the entries that line up', why: 'Adding needs every entry to have a partner in the same position. Here some entries have no partner (they turn red once you answer), so there is nothing to add them to.' },
             { t: 'No, they are not the same size', right: true, why: k === 0 ? 'The sales matrix is 2 by 3 and the extra matrix is 2 by 2. The entries in column 3 of the sales matrix have no partner (red), so the sum is not defined. Matrices must have the same dimensions to be added.' : 'Both have 6 entries, but 2 by 3 and 3 by 2 are different shapes. The entry in row 1, column 3 has no partner in the 3 by 2 matrix, and the entries in row 3 of the 3 by 2 matrix have no partner in the 2 by 3. Same number of entries is not enough: the dimensions must match.' }], k, { onRight: () => { A_.szAns[k] = true; } });
         }
         const cfg = CFG[op];
@@ -15744,7 +15744,7 @@ register({
         const [ti, tj] = mp.tg;
         if (id === 'Q') mp.row = i; else if (id === 'P') mp.col = j; else return;
         if (mp.row === null || mp.col === null) {
-          setFb(id === 'Q' ? `Row ${i + 1} (${pr.qRow ? STORES[i] : 'row ' + (i + 1)}) is chosen. Now tap a column of the second matrix.` : `Column ${j + 1} is chosen. Now tap a row of the first matrix.`);
+          setFb(id === 'Q' ? `Row ${i + 1}${pr.qRow ? ' (' + STORES[i] + ')' : ''} is chosen. Now tap a column of the second matrix.` : `Column ${j + 1} is chosen. Now tap a row of the first matrix.`);
           refresh(); return;
         }
         if (mp.row === ti && mp.col === tj) { mp.phase = 'dot'; setFb(`${ok('Yes.')} The entry in row ${ti + 1}, column ${tj + 1} of the result uses row ${ti + 1} of the first matrix and column ${tj + 1} of the second.`); }
@@ -15787,14 +15787,14 @@ register({
           const items = pool({ v, t: `${dotLine(t)} = ${nf(v)}`, why: `Each pair is multiplied: ${dotLine(t)}. Then add the products: ${dotWork(t)} = ${nf(v)}.` }, cands);
           return mkQ(`m-${mp.key}-${ti}${tj}-dot`, `${kk('Row ' + (ti + 1) + ' times column ' + (tj + 1))}<br>The row is <b style="color:var(--green)">(${R.map(nf).join(', ')})</b> and the column is <b style="color:var(--red)">(${Cc.map(nf).join(', ')})</b>. Which line gives the entry for ${pr.what(ti, tj)}?`, items, ti * 2 + tj + 1, { onRight: () => startAnim(mp) });
         }
-        if (mp.phase === 'anim') return { id: `m-${mp.key}-${ti}${tj}-anim`, ask: `Watch the pairs light up. Pair 1 is multiplied, then pair 2, then pair 3, and the products are added.` };
+        if (mp.phase === 'anim') return { id: `m-${mp.key}-${ti}${tj}-anim`, ask: `Watch the pairs light up. Each pair is multiplied in turn, then the products are added.` };
         const rest = remaining(mp);
         if (rest.length) return { id: `m-${mp.key}-${ti}${tj}-done`, ask: `${rest.length} entr${rest.length === 1 ? 'y' : 'ies'} left. Go to the next one, or tap any empty cell of the result.` };
         if (pr.after && mp.ai < pr.after.length) {
           const a = pr.after[mp.ai];
           return mkQ(`m-${mp.key}-after${mp.ai}`, `${kk('Question ' + (mp.ai + 1) + ' of ' + pr.after.length)}<br>${a.q}`, a.items, mp.ai + 1, { onRight: () => { mp.afterDone[mp.ai] = true; } });
         }
-        return { id: `m-${mp.key}-complete`, ask: pr.after ? 'Nice work. The two questions are done.' : (mp.key === 'cost' ? 'All four entries are done. The 2 by 3 orders matrix times the 3 by 2 prices matrix gives a 2 by 2 cost matrix. The two 3s in the middle had to match, and the outer numbers 2 and 2 gave the size.' : '') };
+        return { id: `m-${mp.key}-complete`, ask: pr.after ? (pr.after.length > 1 ? 'Nice work. The two questions are done.' : 'Nice work. The question is done.') : (mp.key === 'cost' ? 'All four entries are done. The 2 by 3 orders matrix times the 3 by 2 prices matrix gives a 2 by 2 cost matrix. The two 3s in the middle had to match, and the outer numbers 2 and 2 gave the size.' : '') };
       };
       const multBtns = mp => {
         const pr = PROBS[mp.key], out = [];
