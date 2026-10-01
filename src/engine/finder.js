@@ -19,6 +19,7 @@ function StdChip(code, link) {
 /* Skill, grades and benchmark chips for a lesson. With `link`, the chips open the filtered lesson list. */
 function LessonTags(v, link, extra) {
   return h('div', { class: 'tags' }, SkillMeter(v.skill), h('span', { class: 'tag' }, gradesLabel(v.grades)),
+    v.enrichment ? h(link ? 'a' : 'span', { class: 'tag enrich', title: KINDS[0].desc, ...(link ? { href: '#find~kind_enrich' } : {}) }, KINDS[0].name) : null,
     v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
@@ -47,7 +48,7 @@ function Finder(F, onChange) {
       const btn = h('button', attrs, h('span', { class: 'lbl' }, o.label), n);
       chips.push({ facet, val: o.val, btn, n }); set.append(btn);
     }
-    return h('fieldset', { class: 'facet' }, h('legend', { class: 'facet-k' }, label), set);
+    return h('fieldset', { class: 'facet ' + facet }, h('legend', { class: 'facet-k' }, label), set);
   };
   const selectBox = (facet, label, anyLabel, groups) => {
     const sel = h('select', { class: 'fsel', id: 'f-' + facet, onchange: () => { F[facet] = sel.value; change(); } }, h('option', { value: '' }, anyLabel));
@@ -66,6 +67,7 @@ function Finder(F, onChange) {
     chipGroup('grade', 'Grade level', GRADES.filter(g => VIZ.some(v => v.grades.includes(g.id))).map(g => ({ val: g.id, label: g.name }))),
     chipGroup('skill', 'Skill level', SKILLS.map(s => ({ val: s.id, label: s.name, title: s.desc }))),
     used.length ? chipGroup('strand', 'Standard strand', STRANDS.map(s => ({ val: s.id, label: s.name, strand: s.id }))) : null,
+    VIZ.some(v => v.enrichment) ? chipGroup('kind', 'Type', KINDS.map(k => ({ val: k.id, label: k.name, title: k.desc }))) : null,
     selectBox('course', 'Course', 'Any course', LEVEL_ORDER.map(l => ({ label: LEVELS[l].name,
       options: COURSES.filter(c => c.level === l && VIZ.some(v => v.course === c.id)).map(c => ({ val: c.id, label: c.name })) })).filter(g => g.options.length)),
     used.length ? selectBox('std', 'Standard (Minnesota 2022)', 'Any standard', STRANDS.map(s => ({ label: `Strand ${s.n}: ${s.name}`,

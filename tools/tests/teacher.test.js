@@ -13,6 +13,7 @@ vm.runInContext(['src/curriculum/standards-mn2022.js', 'src/curriculum/curriculu
 const levelOf = a => dctx.D.COURSES.find(c => c.id === a.course).level;
 const bandsOf = a => { const g = new Set(dctx.D.COURSES.find(c => c.id === a.course).grades); a.standards.forEach(c => g.add(+c[0] >= 9 ? '9-11' : c[0])); return g; };
 const GRADE8_INTRO = dctx.D.ALIGN.filter(a => bandsOf(a).has('8') && a.skill === 'intro').map(a => a.id).sort();
+const ENRICH = dctx.D.ALIGN.filter(a => a.enrichment).map(a => a.id).sort();
 const SCHOOL = dctx.D.ALIGN.filter(a => levelOf(a) === 'school').length, TOTAL = dctx.D.ALIGN.length, fails = [], ok = [];
 const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '' : '   -> ' + (extra ?? ''))); };
 
@@ -36,6 +37,8 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   check('texToText drops tags but keeps decoded inequality symbols', flat === 'Is -8 < -3 true? Yes: -8 < -3 and 5 > 2 & 4 <= 5', flat);
   const flat2 = await page.evaluate(() => texFlat('\\frac{y-y_1}{x-x_1}=m \\Longrightarrow 2^{5+(-3)} \\tfrac1{10^{6}}'));
   check('texFlat writes fractions, exponents and arrows as plain text', flat2 === '(y-y_1)/(x-x_1)=m ⇒ 2^(5+(-3)) 1/(10⁶)', flat2);
+  const flat3 = await page.evaluate(() => texFlat('a \\equiv b \\pmod{5}, -3 \\bmod 5 = 2, \\gcd(a,n)=1'));
+  check('texFlat writes congruences as plain text', flat3 === 'a ≡ b  (mod 5), -3  mod  5 = 2, gcd(a,n)=1', flat3);
   check('plain lesson token opens the lesson', (await page.textContent('h1')) === 'Slope and linear functions' && (await stepText()) === '1 / 4');
   await go(page, '#slope-and-linear-functions.3');
   check('step token opens step 3', (await stepText()) === '3 / 4', await stepText());
@@ -54,6 +57,10 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   await go(page, '#find~grade_8~skill_intro');
   const vis = async () => page.evaluate(() => [...document.querySelectorAll('a.topic')].filter(a => !a.closest('li').hidden && !a.closest('.course').hidden && !a.closest('.level').hidden).map(a => a.getAttribute('href').slice(6)).sort());
   check('find token applies grade and skill filters', JSON.stringify(await vis()) === JSON.stringify(GRADE8_INTRO), JSON.stringify(await vis()));
+  await go(page, '#find~kind_enrich');
+  check('kind token shows only the enrichment lessons', ENRICH.length > 0 && JSON.stringify(await vis()) === JSON.stringify(ENRICH), JSON.stringify(await vis()));
+  await go(page, '#' + ENRICH[0]);
+  check('an enrichment lesson shows the Enrichment tag, linking to the filtered list', (await page.getAttribute('.viz-meta a.tag.enrich', 'href')) === '#find~kind_enrich');
   await go(page, '#find~course_algebra1~std_9.3.6.2');
   check('find token applies course and standard', JSON.stringify(await vis()) === '["quadratics-and-the-parabola"]', JSON.stringify(await vis()));
   await go(page, '#find~grade_6~grade_7');
