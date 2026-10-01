@@ -66,6 +66,7 @@ const ALIGN = [
   { id: 'forms-of-a-linear-equation', course: 'grade8', skill: 'mid', standards: ['8.3.6.5', '8.3.6.6', '8.3.7.1'] },
   { id: 'parallel-and-perpendicular-lines', course: 'grade8', skill: 'mid', standards: ['8.2.4.2'] },
   { id: 'distance-and-the-pythagorean-theorem', course: 'grade8', skill: 'mid', standards: ['8.2.3.2', '8.2.3.3'] },
+  { id: 'solving-equations-with-a-balance', course: 'grade8', skill: 'mid', standards: ['8.3.6.1', '8.3.6.3'] },
 
   /* Algebra 1 */
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },

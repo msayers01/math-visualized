@@ -158,7 +158,7 @@
         why: String.raw`The slope \(-8\) is a rate: the charge falls about 8 points per hour. The intercept \(100\) is the charge at \(0\) hours. At \(x=5\): \(-8(5)+100 = 60\). Leaving out the intercept would give \(-40\), which is not a charge at all.`,
         hint: String.raw`Which number is the slope and which is the intercept? Then put \(x=5\) into \(-8x+100\), adding the \(100\).` }
     ],
-    links: { related: ['slope-and-linear-functions', 'mean-median-and-spread', 'quadratics-and-the-parabola', 'exponential-growth'] },
+    links: { prereq: ['slope-and-linear-functions'], related: ['mean-median-and-spread', 'quadratics-and-the-parabola', 'exponential-growth'] },
 
     mount({ stage, controls: C }) {
       const st = { ds: 'study', m: 0, b: 75, x: 5, line: true, res: true, pred: false, name: false, drop: false };

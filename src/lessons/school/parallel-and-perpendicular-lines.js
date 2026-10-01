@@ -116,7 +116,7 @@
         why: String.raw`A parallel line keeps the slope \(2\). Point-slope form gives \(y-1=2(x-4)\), so \(y=2x-8+1=2x-7\).`,
         hint: String.raw`Keep the slope \(2\), then put \((4,1)\) into \(y-y_1=m(x-x_1)\). Check that your line really passes through \((4,1)\).` }
     ],
-    links: { related: ['slope-and-linear-functions', 'systems-of-equations', 'pythagorean-theorem', 'similarity-and-scaling'] },
+    links: { prereq: ['forms-of-a-linear-equation'], related: ['slope-and-linear-functions', 'systems-of-equations', 'pythagorean-theorem', 'similarity-and-scaling'] },
 
     mount({ stage, controls: C }) {
       /* L: the blue line, through A with direction (dx, dy). P: the point. Q = P + (qx, qy): the ring on your line. rot: quarter turn of the copied triangle, 0 to 1. */

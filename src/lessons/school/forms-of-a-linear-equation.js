@@ -257,7 +257,7 @@
         why: String.raw`\(y\) rises by \(3\) for each step in \(x\), so the points lie on a line with slope \(3\), namely \(y=3x+2\). But it crosses the y-axis at \(2\), not \(0\), and \(y\div x\) changes. Proportional needs a constant ratio, which means a line through the origin. A constant rate alone does not give that, and a changing ratio does not make a line stop being a line.`,
         hint: String.raw`Work out \(y\div x\) for each row. Then ask where the line would cross the y-axis.` }
     ],
-    links: { related: ['slope-and-linear-functions', 'systems-of-equations', 'what-is-a-function', 'scatter-plots-and-lines-of-fit'] },
+    links: { prereq: ['slope-and-linear-functions', 'solving-equations-with-a-balance'], related: ['systems-of-equations', 'what-is-a-function', 'scatter-plots-and-lines-of-fit'] },
 
     mount({ stage, controls: C }) {
       /* mode: how the line is given. x1, y1, dx, dy serve two points, point-slope and slope-intercept

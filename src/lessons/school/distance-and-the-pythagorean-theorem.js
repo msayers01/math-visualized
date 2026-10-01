@@ -399,7 +399,7 @@
         why: String.raw`The base diagonal has \(f^2=4^2+5^2=41\). The rod has \(d^2=41+20^2=441\), so \(d=21\). The answer 29 adds the edges. The answer 20.4 uses only the 4 and the 20, so it ignores the 5. The answer 441 is \(d^2\).`,
         hint: String.raw`Use two right triangles, or \(d=\sqrt{l^2+w^2+h^2}\).` }
     ],
-    links: { related: ['pythagorean-theorem', 'square-roots-and-irrational-numbers', 'slope-and-linear-functions', 'the-unit-circle-and-trig-waves'] },
+    links: { prereq: ['pythagorean-theorem', 'square-roots-and-irrational-numbers'], related: ['slope-and-linear-functions', 'the-unit-circle-and-trig-waves'] },
 
     mount({ stage, controls: C }) {
       const MODES = ['plane', 'box', 'story'];
