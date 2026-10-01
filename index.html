@@ -16048,10 +16048,10 @@ register({
         text: String.raw`<p>This clock has \(12\) positions, \(0\) to \(11\). The hand starts at \(9\). You add \(5\). Click the position where the hand lands.</p><p>Then move the sliders. A negative amount moves the hand backward past \(0\). Switch the question to find the amount that brings the hand back to \(0\).</p>`,
         set: { mode: 'add', qtype: 'land', n: 12, s: 9, a: 5 } },
       { title: 'Same remainder, same spoke',
-        text: String.raw`<p>Now the whole number line is wrapped into a spiral around a clock with \(5\) positions. Every integer sits above its remainder. Drag the number \(x\), the one with the brass ring. Here \(x=-3\) and \(-3 \bmod 5 = 2\).</p><p>All numbers on one spoke have the same remainder. Then use <b>Practice</b>: read the remainder yourself, or decide if \(a \equiv b \pmod{5}\) is true or false.</p>`,
+        text: String.raw`<p>Now a stretch of the number line is wrapped into a spiral around a clock with \(5\) positions. Every integer on the spiral sits above its remainder. Drag the number \(x\), the one with the brass ring. Here \(x=-3\) and \(-3 \bmod 5 = 2\).</p><p>All numbers on one spoke have the same remainder. Then use <b>Practice</b>: read the remainder yourself, or decide if \(a \equiv b \pmod{5}\) is true or false.</p>`,
         set: { mode: 'cong', n: 5, x: -3, practice: 'explore' } },
       { title: 'Tables, inverses and zero divisors',
-        text: String.raw`<p>This table shows \(a \times b\) with the remainder mod \(7\). Row \(a\), column \(b\). Click any cell to see how it is worked out.</p><p>An <b>inverse</b> of \(a\) is a number \(x\) with \(a\times x=1\). Mark every number that has one, then press Check. Then change the modulus to \(6\) and look again. Try the other tasks: zero divisors, and solving \(3x\equiv 1\) or \(4x\equiv 2\) by scanning a row.</p>`,
+        text: String.raw`<p>This table shows \(a \times b\) with the remainder mod \(7\). Row \(a\), column \(b\). Click any cell to see how it is worked out.</p><p>An <b>inverse</b> of \(a\) is a number \(x\) with \(a\times x=1\) (mod \(7\) here). Mark every number that has one, then press Check. Then change the modulus to \(6\) and look again. Try the other tasks: zero divisors, and solving equations by scanning a row, for example \(3x\equiv 1\) at modulus \(7\), and \(4x\equiv 2\) at modulus \(6\), where there are two solutions.</p>`,
         set: { mode: 'tab', n: 7, task: 'inv', op: 'mul', eqA: 3, eqB: 1 } },
       { title: 'Weeks and secret codes',
         text: String.raw`<p>Weeks repeat every \(7\) days. A day of the week is a number mod \(7\). Choose the modulus \(7\) with the slider, then find what day it will be.</p><p>Then switch the activity to the Caesar wheel. A shift of \(3\) turns A into D. When the shift runs past Z, it wraps around, mod \(26\). Encode a word, then decode a message by trying shifts.</p>`,
@@ -16059,7 +16059,7 @@ register({
     ],
     formal: String.raw`
       <h3>Remainders</h3>
-      <p>Divide a whole number \(a\) by a positive whole number \(n\). You get a quotient \(q\) and a remainder \(r\):
+      <p>Divide an integer \(a\) by a positive whole number \(n\). You get a quotient \(q\) and a remainder \(r\):
       \[ a = q\cdot n + r, \qquad 0 \le r &lt; n. \]
       We write \(r = a \bmod n\). For example \(17 = 3\cdot 5 + 2\), so \(17 \bmod 5 = 2\). Negative numbers work the same way: \(-3 = (-1)\cdot 5 + 2\), so \(-3 \bmod 5 = 2\). The remainder is never negative.</p>
       <h3>The clock model</h3>
@@ -16069,7 +16069,7 @@ register({
       <p>We say \(a\) and \(b\) are <em>congruent mod \(n\)</em> and write
       \[ a \equiv b \pmod{n} \]
       when \(n\) divides \(a-b\). This is the same as saying that \(a\) and \(b\) have the same remainder, or lie on the same spoke of the spiral. For example \(-3 \equiv 7 \pmod{5}\) because \(-3-7=-10=5\cdot(-2)\). But \(17 \not\equiv 3 \pmod{5}\) because \(14\) is not a multiple of \(5\).</p>
-      <h3>Adding and multiplying residues</h3>
+      <h3>Adding and multiplying remainders</h3>
       <p>You may reduce before or after. The answer is the same.
       \[ (a+b) \bmod n = \big((a \bmod n) + (b \bmod n)\big) \bmod n, \]
       \[ (a\cdot b) \bmod n = \big((a \bmod n)\cdot(b \bmod n)\big) \bmod n. \]
@@ -16082,7 +16082,7 @@ register({
     check: [
       { q: 'A clock has 8 positions, numbered 0 to 7. The hand starts at 5 and moves forward 6 steps. Where does it land?',
         choices: ['1', '3', '4', '11'], answer: 1,
-        why: String.raw`\(5+6=11\). The clock only has the positions \(0\) to \(7\), so subtract \(8\) once: \(11-8=3\). The remainder of \(11\) divided by \(8\) is \(3\). The answer \(11\) forgets to wrap, and \(4\) comes from treating \(8\) as a position when it is the same spot as \(0\).`,
+        why: String.raw`\(5+6=11\). The clock only has the positions \(0\) to \(7\), so subtract \(8\) once: \(11-8=3\). The remainder of \(11\) divided by \(8\) is \(3\). The answer \(11\) forgets to wrap. The answer \(4\) subtracts \(7\) instead of \(8\): the clock has \(8\) positions, so one lap is \(8\), not \(7\). The answer \(1\) subtracts too much.`,
         hint: String.raw`After \(7\) the hand goes to \(0\), not to \(8\). Count the steps one at a time: \(6, 7, 0, 1, 2, 3\).` },
       { q: 'Numbers are taken mod 12 (remainders after dividing by 12). Which of these numbers has a multiplicative inverse, a number x so that the number times x leaves remainder 1 mod 12?',
         choices: ['2', '3', '4', '5'], answer: 3,
@@ -16202,7 +16202,7 @@ register({
         const n = st.n, s = st.s;
         if (st.qtype === 'zero') {
           const v = s + i;
-          return `${no('Not yet.')} You clicked ${i}. ${s} + ${i} = ${v}. ${reduceText(v, n)} So the hand lands on ${mod(v, n)}, not on 0. You need ${s} + x to be a whole number of laps. How many steps does it take to go from ${s} up to ${n}? Position ${n} is the same spot as 0.`;
+          return `${no('Not yet.')} You clicked ${i}. ${s} + ${i} = ${v}. ${reduceText(v, n)} So the hand lands on ${mod(v, n)}, not on 0. ${s === 0 ? 'The hand starts at 0, so it needs to move a whole number of laps. Moving 0 steps works.' : `You need ${s} + x to be a whole number of laps. How many steps does it take to go from ${s} up to ${n}? Position ${n} is the same spot as 0.`}`;
         }
         const a = st.a, v = s + a, t = mod(v, n), wrapped = v < 0 || v >= n, k = Math.abs(a);
         let why;
@@ -16210,7 +16210,7 @@ register({
         else if (i === s && mod(a, n) !== 0) why = `That is the start position. The hand has to move ${k} steps ${a < 0 ? 'backward' : 'forward'}.`;
         else if (a < 0 && i === mod(s - a, n)) why = `That is where you land by <em>adding</em> ${k}. The amount is negative, so the hand moves backward (counterclockwise).`;
         else if (a > 0 && i === mod(s - a, n)) why = `That is where you land by moving ${a} steps the wrong way. Adding moves the hand clockwise.`;
-        else if (i === mod(k, n) && s !== 0) why = `That counts ${k} steps starting from 0. The count has to start at the hand, at ${s}.`;
+        else if (i === mod(a, n) && s !== 0) why = `That counts ${k} steps ${a < 0 ? 'backward ' : ''}starting from 0. The count has to start at the hand, at ${s}.`;
         else if (i === mod(t + 1, n) || i === mod(t - 1, n)) {
           const over = i === mod(t + 1, n);
           why = `That is one spot ${over ? 'too far' : 'short'}. Count steps, not positions: the first step lands on ${mod(s + (a < 0 ? -1 : 1), n)}.` +
@@ -16296,7 +16296,7 @@ register({
       const clampX = v => clamp(Math.round(v), -st.n, 2 * st.n - 1);
       const setX = v => { st.x = clampX(v); xS.set(st.x); st.cOk = false; st.rimWrong = null; resetFb(); render(); };
       const genStmt = (k, n) => {
-        const r1 = rnd(k * 11 + n), r2 = rnd(k * 13 + n + 3), truth = k % 2 === 1, lo = -n, hi = 2 * n - 1, a = lo + Math.floor(r1 * 3 * n);
+        const r1 = rnd(k * 11 + n), r2 = rnd(k * 13 + n + 3), truth = rnd(k * 17 + n + 5) < .5, lo = -n, hi = 2 * n - 1, a = lo + Math.floor(r1 * 3 * n);
         const cand = truth ? [1, -1, 2, -2].map(m => a + m * n)
           : (n === 2 ? [1, -1] : [1, -1, 2, -2, Math.floor(n / 2)]).flatMap(d => [a + d, a + d + n, a + d - n]).filter(v => mod(v - a, n) !== 0);
         const inside = cand.filter(v => v >= lo && v <= hi), b = inside[Math.floor(r2 * inside.length)];
@@ -16489,7 +16489,7 @@ register({
         } else if (st.task === 'solve') {
           const X = solSet(st.eqA, st.eqB, n); st.checked = true;
           if (!X.length) fb.innerHTML = `${ok('Right, no solution.')} ${solveWhy(st.eqA, st.eqB, n, X)}`;
-          else fb.innerHTML = `${no('Not quite.')} There ${X.length > 1 ? 'are solutions' : 'is a solution'}: x = ${X.join(' and ')}. ${solveWhy(st.eqA, st.eqB, n, X)}`;
+          else fb.innerHTML = `${no('Not quite.')} There ${X.length > 1 ? 'are solutions' : 'is a solution'}: x = ${listJoin(X)}. ${solveWhy(st.eqA, st.eqB, n, X)}`;
         } else if (st.task === 'inv') { st.marks = []; st.checked = false; fb.innerHTML = 'Marks cleared.'; }
         render();
       };
@@ -16510,12 +16510,12 @@ register({
           st.checked = true;
           const miss = X.filter(x => !M.includes(x)), wrong = M.filter(x => !X.includes(x));
           if (!M.length) { fb.innerHTML = `Click the cells in row ${a} that show ${b}, then check. If you think no cell works, press None.`; st.checked = false; render(); return; }
-          if (!miss.length && !wrong.length) fb.innerHTML = `${ok('Yes.')} The solution${X.length > 1 ? 's are' : ' is'} x = ${X.join(' and ')}. ${solveWhy(a, b, n, X)}`;
+          if (!miss.length && !wrong.length) fb.innerHTML = `${ok('Yes.')} The solution${X.length > 1 ? 's are' : ' is'} x = ${listJoin(X)}. ${solveWhy(a, b, n, X)}`;
           else {
             const bits = [];
             if (wrong.length) bits.push(`${a} × ${wrong[0]} = ${a * wrong[0]}, which is ${mod(a * wrong[0], n)} mod ${n}, not ${b}`);
-            if (miss.length) bits.push(`You missed x = ${miss.join(' and ')}`);
-            fb.innerHTML = `${no('Not yet.')} ${bits.join('. ')}. ${X.length ? 'All solutions: x = ' + X.join(' and ') + '.' : 'There is no solution.'} ${solveWhy(a, b, n, X)}`;
+            if (miss.length) bits.push(`You missed x = ${listJoin(miss)}`);
+            fb.innerHTML = `${no('Not yet.')} ${bits.join('. ')}. ${X.length ? 'All solutions: x = ' + listJoin(X) + '.' : 'There is no solution.'} ${solveWhy(a, b, n, X)}`;
           }
           render();
         }
@@ -16694,7 +16694,7 @@ register({
         let m = `${ok('Yes.')} ${ABC[p]} is number ${p}. ${p} + ${k} = ${v}${v >= 26 ? ', past 25, so it wraps: ' + v + ' − 26 = ' + (v - 26) : ''}. Number ${t} is ${ABC[t]}.`;
         if (st.cIdx >= w.length) {
           const wrapL = [...w].find(ch => ABC.indexOf(ch) + k >= 26);
-          m += `<br><b>${w} becomes ${st.eDone.join('')}.</b> Every letter moved ${k} places along the alphabet, and letters past Z wrapped around to A.` + (wrapL ? ` For example ${wrapL} wrapped.` : '') + ' Press New question for another word.';
+          m += `<br><b>${w} becomes ${st.eDone.join('')}.</b> Every letter moved ${k} places along the alphabet.` + (wrapL ? ` Letters past Z wrap around to A. For example ${wrapL} wrapped.` : '') + ' Press New question for another word.';
         }
         fb.innerHTML = m; render();
       };
