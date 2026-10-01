@@ -1,6 +1,7 @@
 {
   "name": "math-visualized",
   "compatibility_date": "2026-10-01",
+  "build": { "command": "mkdir -p public && cp index.html public/index.html" },
   "assets": { "directory": "./public" },
   "previews": {}
 }
