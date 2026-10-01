@@ -2,7 +2,7 @@
 
 Interactive, 3Blue1Brown-style math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
-**Version:** 0.11 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2)
+**Version:** 0.12 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2, Grade 6-7 foundations batch F-A)
 **Last updated:** 2026-10-01
 
 ## 1. Deployment model
@@ -212,6 +212,10 @@ Direction: **precision instruments, modern and sleek**. Midnight ink or cool pap
 | `forms-of-a-linear-equation` | school | Forms of a linear equation | One line defined by two points, a point and a slope, slope-intercept or standard form (integer sliders, ringed handles). Point-slope, slope-intercept and standard forms update together with a graph view (rise-run, intercepts, proportional check). "Convert" walks the student through each algebra move (distribute, combine, clear fractions, make A positive) and explains wrong choices; "Match a line" overlays a dashed target line. |
 | `parallel-and-perpendicular-lines` | school | Parallel and perpendicular lines | A blue line (two rings: one slides it, one tilts it; Horizontal and Vertical buttons) and a point P. The student drags P and a ring on their own line to build the parallel and the perpendicular through P, with slope triangles and the turned triangle shown; "Pick the equation" and a challenge ("Make it parallel / perpendicular", "Show me", "New line and point") give feedback that explains the slope relation (same slope; product of slopes −1). |
 | `distance-and-the-pythagorean-theorem` | school | Distance and the Pythagorean theorem | One canvas, three modes. Plane: drag A and B on an integer grid; legs, squares on the sides, exact simplified radical and decimal; shared row or column shows subtraction. A "place B so that AB = 4, 5, √13, √50, 10" challenge explains too short, too long or right. 3D box: length, width and height sliders (1 to 12) draw the base diagonal and the space diagonal as two right triangles, with presets and a "longest rod exactly 6, 9 or 11" challenge. Stories: ladder, rod in a box, city blocks, TV screen; the student chooses add or subtract squares for each triangle. |
+| `ratios-and-equivalent-ratios` | school | Ratios and equivalent ratios | One canvas, three modes. Tape diagrams (yellow concentrate row over blue water row, one block per cup), a table of equivalent ratios and a double number line. Compare: 6 pairs of mixes, the student picks stronger, weaker or same, and red gap brackets show why subtraction fails (2:3 vs 4:5, 3:7 vs 1:3). Scale: drag the marker, tap a table column or use the slider to choose the multiplier for 5 goals. Change: 7 "add to a mix" cases. |
+| `unit-rates-and-best-buys` | school | Unit rates and best buys | Three modes. Unit rate and Speed: a double number line whose marker the student drags to 1 unit, then picks a ÷ b or b ÷ a (a wrong pick shows the number it gives and a check); two cards show both unit rates; 6 unit-rate and 5 speed questions. Best buy: tap cereal, pencil or strawberry items from best to worst (prices in cents, some half cents); optional "Show unit prices". Strawberries: the lowest unit price is not the sensible buy. |
+| `percents-on-tape-and-number-lines` | school | Percents on tape diagrams | A tape bar with a percent line over a real-unit line (dollars, minutes, points) and a table of equivalent ratios filled by the student's moves. Find the part, the percent or the whole (12 problems): pick a move (cut into equal pieces, find 1%, decimal or fraction, or a wrong move, each explained), place the marker (drag, arrows or keyboard), answer from four choices; discount, tip and markup problems add a total question (bar extends past 100%). Converter mode: fraction, decimal and percent controls with a 0 to 200% bar, one or two 10 by 10 grids and 6 practice questions. |
+| `proportional-relationships` | school | Proportional relationships | Two stacked panes: words, a table (x, y, optional y ÷ x, k × x) and the equation above; a graph with its own axis scales below. Four activities: set k by dragging the ringed point at x = 1 (9 situations; non-proportional ones cannot be matched and the panel says why), fill a table, classify 8 situations as table-only, graph-only or words-only with y ÷ x and "extend to x = 0" switches, and translate between words, table, graph and equation. |
 | `pythagorean-theorem` | school | The Pythagorean theorem | Legs a, b sliders; rearrangement progress; play/reverse. Three triangles translate (no rotation) between the c² and a²+b² arrangements. Full lesson format (hook, 4 steps, formal math, 2 checks, links); reference implementation. |
 | `linear-transformations` | ugrad | Linear transformations and eigenvectors | Matrix entry sliders; drag î/ĵ tips; presets; determinant area; eigenvector lines via `eig2()`. |
 | `conformal-maps` | grad | Conformal maps of the complex plane | Six maps (z², eᶻ, 1/z, sin z, Joukowski, Cayley); rectangular/polar grids; draggable probe showing local scale/rotation from f′(z₀). |
@@ -255,14 +259,14 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
   | Batch | Lesson (proposed id) | Course | Benchmarks | Status |
   |---|---|---|---|---|
-  | F-A | `ratios-and-equivalent-ratios` (tape diagrams, double number lines, mixtures) | Grade 6 | 6.3.6.5, 6.3.6.6 | being built |
-  | F-A | `unit-rates-and-best-buys` | Grade 6 | 6.3.5.10 | being built |
-  | F-A | `percents-on-tape-and-number-lines` | Grade 6 | 6.3.5.11, 6.3.6.2 | being built |
-  | F-A | `proportional-relationships` (tables, graphs, y = kx) | Grade 7 | 7.3.7.1 to 7.3.7.3 | being built |
-  | F-B | `variables-and-relationships` (independent and dependent variable) | Grade 6 | 6.3.7.1 | planned |
-  | F-B | `negative-numbers-and-absolute-value` | Grade 6 | 6.3.5.1 to 6.3.5.3, 6.3.5.6 | planned |
-  | F-B | `scale-drawings-and-proportions` | Grade 7 | 7.2.4.4, 7.3.6.4 | planned |
-  | F-B | `percent-change-and-money` (tax, tips, markups, simple interest) | Grade 7 | 7.3.6.5 | planned |
+  | F-A | `ratios-and-equivalent-ratios` (tape diagrams, double number lines, mixtures) | Grade 6 | 6.3.6.5, 6.3.6.6 | built |
+  | F-A | `unit-rates-and-best-buys` | Grade 6 | 6.3.5.10 | built |
+  | F-A | `percents-on-tape-and-number-lines` | Grade 6 | 6.3.5.11, 6.3.6.2 | built |
+  | F-A | `proportional-relationships` (tables, graphs, y = kx) | Grade 7 | 7.3.7.1 to 7.3.7.3 | built |
+  | F-B | `variables-and-relationships` (independent and dependent variable) | Grade 6 | 6.3.7.1 | being built |
+  | F-B | `negative-numbers-and-absolute-value` | Grade 6 | 6.3.5.1 to 6.3.5.3, 6.3.5.6 | being built |
+  | F-B | `scale-drawings-and-proportions` | Grade 7 | 7.2.4.4, 7.3.6.4 | being built |
+  | F-B | `percent-change-and-money` (tax, tips, markups, simple interest) | Grade 7 | 7.3.6.5 | being built |
 
   Possible later additions (not planned yet): adding and subtracting integers with distance on the number line (7.3.5.2, 7.3.5.4, 7.3.5.6), two-step equations and inequalities (7.3.6.2), unit rates with fractions (7.3.5.7), prisms (6.2.3.1, 6.2.3.2), angle sums (6.2.4.1, 6.2.4.2), coordinates and polygons (6.2.4.3), prime factors, GCF and LCM (6.3.5.4, 6.3.5.5), fraction models (6.3.5.8), sampling and inference (7.1.1.2 to 7.1.1.4), compound events (7.1.2.3 to 7.1.2.6).
 - **Teacher features (done in 0.10, see section 5):** plain-anchor share links to a lesson step, local progress tracking with a copyable summary, and a printable exit ticket per lesson. Not built: a class-wide teacher view (needs a backend), a combined multi-lesson ticket builder.
