@@ -52,6 +52,10 @@ const SKILLS = [
 /* One entry per lesson: its course, skill level and aligned benchmarks.
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
+  /* Grade 6 */
+  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10'] },
+  { id: 'ratios-and-equivalent-ratios', course: 'grade6', skill: 'intro', standards: ['6.3.6.5', '6.3.6.6'] },
+
   /* Grade 7 */
   { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
 

@@ -105,7 +105,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   }
   check('Grade 8 chip still enabled and pressed', (await chip('Grade level', /^Grade 8/).isEnabled()) && (await chip('Grade level', /^Grade 8/).getAttribute('aria-pressed')) === 'true');
   const cnt = await chip('Grade level', /^Grade 7/).locator('.n').textContent();
-  check('Grade 7 chip count reflects other filters (intro only: area-of-a-circle is grade 7 but not grade 8) = 0 -> disabled', (await chip('Grade level', /^Grade 7/).isDisabled()) === (cnt === '0'), cnt);
+  check('Grade 7 chip is disabled exactly when its count (with the other filters applied) is 0', (await chip('Grade level', /^Grade 7/).isDisabled()) === (cnt === '0'), cnt);
   await page.selectOption('#f-course', 'grade8');
   check('course select narrows', JSON.stringify((await visibleIds(page)).sort()) === JSON.stringify(expected({ grade: ['8'], skill: ['intro'], course: 'grade8' })));
   check('std options disabled when impossible', await page.evaluate(() => [...document.querySelectorAll('#f-std option')].filter(o => o.value === '9.2.4.8').every(o => o.disabled)));
@@ -139,7 +139,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   await page.waitForSelector('.finder');
   check('chip link -> filtered list', (await page.evaluate(() => location.hash)) === '#find~std_8.3.7.5' && JSON.stringify(await visibleIds(page)) === '["slope-and-linear-functions"]', await page.evaluate(() => location.hash));
   /* pager across the course boundary */
-  await page.goto('about:blank'); await page.goto(URL + '#/viz/area-of-a-circle'); await page.waitForSelector('.pager');
+  await page.goto('about:blank'); await page.goto(URL + '#/viz/' + seq[0]); await page.waitForSelector('.pager');
   check('first school lesson: no previous', (await page.locator('.pg.prev').count()) === 0);
   check('first school lesson: next follows the computed order', (await page.getAttribute('.pg.next', 'href')) === '#/viz/' + seq[1], await page.getAttribute('.pg.next', 'href'));
   await page.goto('about:blank'); await page.goto(URL + '#/viz/linear-transformations'); await page.waitForSelector('.viz-meta');
