@@ -53,11 +53,16 @@ const SKILLS = [
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
   /* Grade 6 */
-  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10'] },
+  { id: 'negative-numbers-and-absolute-value', course: 'grade6', skill: 'intro', standards: ['6.3.5.1', '6.3.5.2', '6.3.5.3', '6.3.5.6'] },
+  { id: 'variables-and-relationships', course: 'grade6', skill: 'intro', standards: ['6.3.7.1'] },
+  { id: 'percents-on-tape-and-number-lines', course: 'grade6', skill: 'mid', standards: ['6.3.5.11', '6.3.6.2'] },
+  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10', '6.3.6.6'] },
   { id: 'ratios-and-equivalent-ratios', course: 'grade6', skill: 'intro', standards: ['6.3.6.5', '6.3.6.6'] },
 
   /* Grade 7 */
   { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
+  { id: 'percent-change-and-money', course: 'grade7', skill: 'mid', standards: ['7.3.6.5', '6.3.5.11'] },
+  { id: 'scale-drawings-and-proportions', course: 'grade7', skill: 'mid', standards: ['7.2.4.4', '7.3.6.4', '6.3.6.6'] },
   { id: 'proportional-relationships', course: 'grade7', skill: 'mid', standards: ['7.3.7.1', '7.3.7.2', '7.3.7.3'] },
 
   /* Grade 8 */

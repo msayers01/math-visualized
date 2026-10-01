@@ -167,7 +167,7 @@
   ];
   const IDLE = {
     fill: 'Choose an answer. The point you choose appears on the graph, and every choice is explained.',
-    decide: 'Choose an answer. You can test first with the switches below.',
+    decide: 'Choose an answer. If switches appear below, you can test first with them.',
     trans: 'Choose the form that matches. Every choice is explained.'
   };
 
@@ -225,7 +225,7 @@
         text: String.raw`<p>Once you know k, you can fill in any missing entry. Read k from the y ÷ x row, then choose the answer.</p><p>To get y from x, multiply by k. To get x from y, divide by k. Every choice shows where its point lands on the graph.</p>`,
         set: { mode: 'fill', qi: 0, k: 3, ratio: 1, ev: 0, tri: 0 } },
       { title: 'Proportional or not?',
-        text: String.raw`<p>Two tests. <b>Table:</b> y ÷ x is the same number in every column. <b>Graph:</b> the dots lie on a straight line through the origin (0, 0).</p><p>Each question shows only a table, a graph or words. Decide, then read why. The switches let you test it yourself.</p>`,
+        text: String.raw`<p>Two tests. <b>Table:</b> y ÷ x is the same number in every column. <b>Graph:</b> the dots lie on a straight line through the origin (0, 0).</p><p>Most questions show only a table, a graph or words. Decide, then read why. When switches appear, use them to test it yourself.</p>`,
         set: { mode: 'decide', qi: 0, k: 3, ratio: 0, ev: 0, tri: 0 } },
       { title: 'One relationship, four forms',
         text: String.raw`<p>Words, a table, a graph and an equation can describe the same proportional relationship. Each question shows one form. Choose the form that matches.</p><p>Watch the graph when it appears: 1 step right goes up k. That unit rate k is the steepness of a line through the origin. In Grade 8 you will call it the <b>slope</b>.</p>`,
