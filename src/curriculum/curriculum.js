@@ -53,6 +53,7 @@ const SKILLS = [
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
   /* Grade 6 */
+  { id: 'negative-numbers-and-absolute-value', course: 'grade6', skill: 'intro', standards: ['6.3.5.1', '6.3.5.2', '6.3.5.3', '6.3.5.6'] },
   { id: 'variables-and-relationships', course: 'grade6', skill: 'intro', standards: ['6.3.7.1'] },
   { id: 'percents-on-tape-and-number-lines', course: 'grade6', skill: 'mid', standards: ['6.3.5.11', '6.3.6.2'] },
   { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10', '6.3.6.6'] },

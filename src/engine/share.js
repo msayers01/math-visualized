@@ -62,10 +62,10 @@ function CopyButton(label, getText, { cls = 'btn small', title = '' } = {}) {
 /* TeX in quick-check text, flattened for plain-text copies */
 function texToText(s) {
   const sup = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
-  return String(s).replace(/<[^>]+>/g, '').replace(/\\\(|\\\)|\\\[|\\\]/g, '')
+  return String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '').replace(/\\\(|\\\)|\\\[|\\\]/g, '')
     .replace(/\\(?:text|mathrm)\{([^}]*)\}/g, '$1').replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '($1)/($2)').replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
     .replace(/\^\{?(-?\d+)\}?/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
     .replace(/\\pm/g, '±').replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
     .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1')
-    .replace(/[{}]/g, '').replace(/\s+/g, ' ').trim();
+    .replace(/[{}]/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 }
