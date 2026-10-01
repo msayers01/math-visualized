@@ -768,6 +768,8 @@ const SKILLS = [
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
   /* Grade 6 */
+  { id: 'statistical-questions-and-data-displays', course: 'grade6', skill: 'intro', standards: ['6.1.1.1', '6.1.1.4'] },
+  { id: 'sample-spaces-and-probability', course: 'grade6', skill: 'intro', standards: ['6.1.2.1', '6.1.2.2', '7.1.2.1'] },
   { id: 'negative-numbers-and-absolute-value', course: 'grade6', skill: 'intro', standards: ['6.3.5.1', '6.3.5.2', '6.3.5.3', '6.3.5.6'] },
   { id: 'variables-and-relationships', course: 'grade6', skill: 'intro', standards: ['6.3.7.1'] },
   { id: 'percents-on-tape-and-number-lines', course: 'grade6', skill: 'mid', standards: ['6.3.5.11', '6.3.6.2'] },
@@ -776,6 +778,8 @@ const ALIGN = [
 
   /* Grade 7 */
   { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
+  { id: 'samples-and-populations', course: 'grade7', skill: 'mid', standards: ['7.1.1.2', '7.1.1.3'] },
+  { id: 'compound-events-and-tree-diagrams', course: 'grade7', skill: 'mid', standards: ['7.1.2.4'] },
   { id: 'percent-change-and-money', course: 'grade7', skill: 'mid', standards: ['7.3.6.5', '6.3.5.11'] },
   { id: 'scale-drawings-and-proportions', course: 'grade7', skill: 'mid', standards: ['7.2.4.4', '7.3.6.4', '6.3.6.6'] },
   { id: 'proportional-relationships', course: 'grade7', skill: 'mid', standards: ['7.3.7.1', '7.3.7.2', '7.3.7.3'] },
@@ -16891,6 +16895,2379 @@ register({
       };
       modeChanged(); fnChanged(); st.x = 1; sync();
       return { destroy: () => { cancel(); P1.destroy(); P2.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   SCHOOL — Sample spaces and probability
+   ===================================================================== */
+{
+  /* ---------- small helpers ---------- */
+  const SANS = '"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif';
+  const fnt = (size, weight = 600) => `${weight} ${size}px ${SANS}`;
+  const txt = (c, p, s, x, y, { size = 13, color, align = 'center', weight = 600, halo = true } = {}) => {
+    c.font = fnt(size, weight); c.textAlign = align; c.textBaseline = 'middle';
+    if (halo) { c.lineWidth = 4; c.strokeStyle = p.pal.stage; c.lineJoin = 'round'; c.strokeText(s, x, y); }
+    c.fillStyle = color || p.pal.text; c.fillText(s, x, y);
+  };
+  const rr = (c, x, y, w, hh, r) => {
+    r = Math.min(r, w / 2, hh / 2);
+    c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + hh, r); c.arcTo(x + w, y + hh, x, y + hh, r); c.arcTo(x, y + hh, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  };
+  const ln = (c, x0, y0, x1, y1, color, width = 1.5, dash) => {
+    c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.strokeStyle = color; c.lineWidth = width; c.setLineDash(dash || []); c.lineCap = 'round'; c.stroke(); c.setLineDash([]);
+  };
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a || 1; };
+  const okT = t => `<b style="color:var(--green)">${t}</b>`;
+  const noT = t => `<b style="color:var(--red)">${t}</b>`;
+  const kk = (a, b) => `<span class="k">${a}</span> ${b}`;
+  const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const list = a => a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+
+  /* a fraction n/d turned into its forms. term = the decimal ends. */
+  const conv = (n, d) => {
+    const g = gcd(n, d), rn = n / g, rd = d / g, v = n / d;
+    let t = rd; while (t % 2 === 0) t /= 2; while (t % 5 === 0) t /= 5;
+    const term = t === 1;
+    return { rn, rd, v, term, frac: rd === 1 ? String(rn) : `${rn}/${rd}`,
+      decT: term ? String(+v.toFixed(6)) : v.toFixed(3) + '… (about ' + v.toFixed(2) + ')',
+      decS: term ? String(+v.toFixed(6)) : '≈ ' + v.toFixed(2),
+      pctT: term ? String(+(v * 100).toFixed(4)) + '%' : 'about ' + (v * 100).toFixed(1) + '%',
+      pctS: term ? String(+(v * 100).toFixed(4)) + '%' : '≈ ' + (v * 100).toFixed(1) + '%' };
+  };
+  const convLines = (n, d) => {
+    const q = conv(n, d);
+    return [kk('Fraction', `${n}/${d}` + (q.rd !== d ? ` = ${q.frac}` : '')),
+      kk('Decimal', `${n} ÷ ${d} = ${q.decT}`),
+      kk('Percent', `${q.term ? q.decT : q.v.toFixed(3) + '…'} × 100 = ${q.pctT}`)].join('<br>');
+  };
+
+  /* ---------- the experiments ---------- */
+  const mkDie = () => [1, 2, 3, 4, 5, 6].map(v => ({ id: 'd' + v, lab: String(v), name: String(v), pic: 'die', v }));
+  const mkCoin = () => [['H', 'heads'], ['T', 'tails']].map(([s, nm]) => ({ id: s, lab: s, name: nm, pic: 'coin', s }));
+  const mkTwo = () => ['HH', 'HT', 'TH', 'TT'].map(s => ({ id: s, lab: s, name: s, pic: 'two', s, heads: [...s].filter(x => x === 'H').length }));
+  const mkBag = () => ['R1', 'R2', 'R3', 'B1', 'B2', 'G1'].map(s => ({ id: s, lab: s, name: 'marble ' + s, pic: 'marble', col: { R: 'red', B: 'blue', G: 'green' }[s[0]] }));
+  const mkDice = () => { const o = []; for (let x = 1; x <= 6; x++) for (let y = 1; y <= 6; y++) o.push({ id: x + '-' + y, x, y, sum: x + y, name: `(${x}, ${y})` }); return o; };
+
+  const SCN = {
+    coin: { short: 'Flip a coin', title: 'Flip a coin', kind: 'chips', out: mkCoin(), decoys: [],
+      ok: 'A fair coin lands on either side equally often, so the two outcomes are equally likely.' },
+    die: { short: 'Roll a die', title: 'Roll a die', kind: 'chips', out: mkDie(), decoys: [],
+      ok: 'A fair die lands on each face equally often, so the six outcomes are equally likely.' },
+    two: { short: 'Flip two coins', title: 'Flip two coins, one after the other', kind: 'chips', out: mkTwo(),
+      decoys: [{ id: 'one', lab: '1 head', pic: 'txt', why: '"1 head" is not one outcome. It can happen in two ways: the first coin is heads (HT) or the second coin is heads (TH). List those two separately.' }],
+      ok: 'The coins are flipped one after the other, so HT (heads first) and TH (tails first) are different outcomes. All four are equally likely.' },
+    bag: { short: 'Marble bag', title: 'Pick one marble: 3 red, 2 blue, 1 green', kind: 'chips', out: mkBag(),
+      decoys: [
+        { id: 'cR', lab: 'Red', pic: 'txt', why: '"Red" is not one outcome. You could grab R1, R2 or R3. Colors are not equally likely (3 red marbles, 1 green marble), so list each marble.' },
+        { id: 'cB', lab: 'Blue', pic: 'txt', why: '"Blue" is not one outcome. You could grab B1 or B2. List each marble so every outcome has the same chance.' },
+        { id: 'cG', lab: 'Green', pic: 'txt', why: 'Listing "Green" next to "Red" would make them look equally likely, but red can happen 3 ways and green only 1. List each marble.' }],
+      ok: 'Each marble is equally likely to be the one you grab. Red has 3 of the 6 outcomes and green has only 1, so the colors are not equally likely, but the marbles are.' },
+    dice: { short: 'Roll two dice', title: 'Roll two dice, one after the other', kind: 'grid', out: mkDice(), decoys: [],
+      ok: 'There are 6 × 6 = 36 pairs, and each pair is equally likely. The sums are not: a sum of 7 has 6 pairs, a sum of 12 has only 1.' }
+  };
+  const SP = ['coin', 'die', 'two', 'bag', 'dice'];
+
+  /* events for the "choose an event" mode */
+  const EV = [
+    { sc: 'die', label: 'Die: an even number', q: 'You roll a die. What is the probability of rolling an even number?', test: o => o.v % 2 === 0, rule: 'An even number is 2, 4 or 6. The odd numbers are 1, 3 and 5.' },
+    { sc: 'die', label: 'Die: greater than 4', q: 'You roll a die. What is the probability of rolling a number greater than 4?', test: o => o.v > 4, rule: 'Greater than 4 means 5 or 6. The 4 itself is not greater than 4.' },
+    { sc: 'two', label: 'Two coins: exactly one head', q: 'You flip two coins. What is the probability of exactly one head?', test: o => o.heads === 1, rule: 'Exactly one head means HT or TH. HH has two heads and TT has none.' },
+    { sc: 'bag', label: 'Marbles: red or blue', q: 'You pick one marble from a bag of 3 red, 2 blue and 1 green marble. What is the probability that it is red or blue?', test: o => o.col !== 'green', rule: 'Every red marble and every blue marble counts: R1, R2, R3, B1 and B2. Only G1 is left out.' },
+    { sc: 'dice', label: 'Two dice: both the same', q: 'You roll two dice. What is the probability that both show the same number?', test: o => o.x === o.y, rule: 'Both the same means (1, 1), (2, 2), (3, 3), (4, 4), (5, 5) and (6, 6).' },
+    { sc: 'dice', label: 'Two dice: first die 5 or 6', q: 'You roll two dice. What is the probability that the first die shows 5 or 6?', test: o => o.x >= 5, rule: 'The first die is the row. Rows 5 and 6 count, and in each of those rows every second-die number counts.' }
+  ];
+  /* events for the "impossible, certain and opposite" mode */
+  const LM = [
+    { sc: 'die', label: 'Die: rolling a 7', q: 'You roll a die. What is the probability of rolling a 7?', test: () => false, rule: 'A die only shows 1 to 6, so none of the outcomes is a 7. Tap nothing.' },
+    { sc: 'bag', label: 'Marbles: a purple marble', q: 'You pick one marble from a bag of 3 red, 2 blue and 1 green marble. What is the probability that it is purple?', test: () => false, rule: 'There is no purple marble in the bag, so none of the outcomes is purple. Tap nothing.' },
+    { sc: 'die', label: 'Die: a number from 1 to 6', q: 'You roll a die. What is the probability of rolling a number from 1 to 6?', test: () => true, rule: 'Every face shows a number from 1 to 6, so every outcome is in the event. Tap them all.' },
+    { sc: 'two', label: 'Two coins: at least one head', q: 'You flip two coins. What is the probability of at least one head?', test: o => o.heads >= 1, rule: 'At least one head means one head or two heads: HH, HT or TH. Only TT has no head.' },
+    { sc: 'die', label: 'Die: an even number', q: 'You roll a die. What is the probability of rolling an even number?', test: o => o.v % 2 === 0, rule: 'An even number is 2, 4 or 6.' }
+  ];
+  /* the dart board: 10 by 10 squares. x < a is red, the right part is blue above the line b and green below it. */
+  const REG = { red: 'Red', blue: 'Blue', green: 'Green' };
+  const areaOf = (r, a, b) => r === 'red' ? 10 * a : r === 'blue' ? (10 - a) * b : (10 - a) * (10 - b);
+  const AR = [
+    { kind: 'read', label: 'Read the board: green', a: 5, b: 4, region: 'green', q: 'A dart lands at a random spot on a square board. The board is 10 squares wide and 10 squares tall, so it has 100 small squares. What is the probability that the dart lands in the green region?' },
+    { kind: 'read', label: 'Read the board: red', a: 2, b: 5, region: 'red', q: 'A dart lands at a random spot on a square board of 100 small squares (10 by 10). What is the probability that the dart lands in the red region?' },
+    { kind: 'build', label: 'Build: red is 1/4', a: 5, b: 4, region: 'red', target: 25, q: 'Drag the handles so that a dart lands in the red region with probability 1/4 (25 of the 100 squares).' },
+    { kind: 'build', label: 'Build: blue is 20%', a: 5, b: 5, region: 'blue', target: 20, q: 'Drag the handles so that a dart lands in the blue region with probability 20% (20 of the 100 squares).' }
+  ];
+  const MODES = [{ id: 'space', name: '1 Sample space' }, { id: 'event', name: '2 Events' }, { id: 'area', name: '3 Area' }, { id: 'limits', name: '4 Limits' }];
+  const TASKS = { space: SP.map(id => ({ label: SCN[id].short })), event: EV, area: AR, limits: LM };
+
+  /* ---------- the "check my probability" judge ---------- */
+  /* n/d is the student's fraction; K is the right numerator, N the right denominator. */
+  const judge = (n, d, K, N, x = {}) => {
+    if (n * N === K * d) return { right: true };
+    const bad = t => ({ right: false, html: noT('Not yet.') + ' ' + t });
+    if (n > d) return bad(`A probability is never more than 1, so the numerator cannot be bigger than the denominator. The event is only part of the sample space.`);
+    if (K === 0) return bad(`No outcome is in the event, so the numerator is 0. Nothing is shaded, so 0 out of ${N}.`);
+    if (K === N) return bad(`Every outcome is in the event, so the event is certain. The numerator and denominator must be the same number: ${N} out of ${N}.`);
+    if (x.types && d === x.types && N !== x.types) return bad(`You counted the ${x.types} colors, not the ${N} marbles. A color can happen more than one way. The denominator is all ${N} outcomes in the sample space.`);
+    if (d !== N && n === K) {
+      if (d === N - K) return bad(`You divided by ${d}, the number of outcomes that are not in the event. The denominator is the size of the whole sample space: ${N}.`);
+      if (d === K) return bad(`You divided by ${d}, the size of the event itself. The denominator is the size of the whole sample space: ${N}.`);
+      return bad(`The sample space has ${N} outcomes, not ${d}. The denominator is the size of the whole sample space.`);
+    }
+    if (d === N && x.comp && n === x.other) return bad(`That is the probability that the event does happen. Here you need the outcomes that are not in the event: ${K}.`);
+    if (d === N && !x.comp && n === N - K) return bad(`${n} is the number of outcomes that are not in the event. The numerator counts the outcomes that are in the event: ${K}.`);
+    if (d === N && n === K - 1) return bad(`You may have forgotten an outcome. The event has ${K} outcomes, not ${n}.`);
+    if (d === N && n === K + 1) return bad(`You counted one outcome too many. The event has ${K} outcomes, not ${n}.`);
+    if (d === N) return bad(`The denominator ${N} is right. The numerator is the number of outcomes in ${x.comp ? 'the blue group' : 'the event'}: ${K}.`);
+    return bad(`Count again. ${x.comp ? 'The blue group' : 'The event'} has ${K} ${K === 1 ? 'outcome' : 'outcomes'} and the sample space has ${N}. The probability is ${K} out of ${N}.`);
+  };
+
+  register({
+    id: 'sample-spaces-and-probability', level: 'school',
+    title: 'Sample spaces and probability',
+    blurb: 'List every outcome of a chance experiment, pick out an event, and write its probability as a fraction, a decimal and a percent.',
+    thumb(c, p) {
+      const pal = p.pal, W = p.w, H = p.h, s = Math.min(W * .12, H * .26), gap = s * .24, x0 = (W - (6 * s + 5 * gap)) / 2, y0 = H * .2;
+      const PIPS = { 1: [[.5, .5]], 2: [[.28, .28], [.72, .72]], 3: [[.28, .28], [.5, .5], [.72, .72]], 4: [[.28, .28], [.72, .28], [.28, .72], [.72, .72]], 5: [[.28, .28], [.72, .28], [.5, .5], [.28, .72], [.72, .72]], 6: [[.3, .25], [.3, .5], [.3, .75], [.7, .25], [.7, .5], [.7, .75]] };
+      for (let i = 1; i <= 6; i++) {
+        const x = x0 + (i - 1) * (s + gap), hit = i > 4;
+        rr(c, x, y0, s, s, s * .2); c.fillStyle = hit ? alpha(pal.yellow, .6) : alpha(pal.blue, .08); c.fill();
+        c.strokeStyle = hit ? pal.yellow : alpha(pal.blue, .6); c.lineWidth = hit ? 2.5 : 1.5; c.stroke();
+        for (const [px, py] of PIPS[i]) { c.beginPath(); c.arc(x + px * s, y0 + py * s, s * .075, 0, Math.PI * 2); c.fillStyle = pal.text; c.fill(); }
+      }
+      const bx0 = W * .1, bx1 = W * .9, by = H * .72, X = v => bx0 + v * (bx1 - bx0);
+      c.fillStyle = alpha(pal.blue, .14); c.fillRect(bx0, by - 5, bx1 - bx0, 10);
+      c.fillStyle = alpha(pal.yellow, .6); c.fillRect(bx0, by - 5, X(1 / 3) - bx0, 10);
+      c.strokeStyle = pal.blue; c.lineWidth = 2; c.strokeRect(bx0, by - 5, bx1 - bx0, 10);
+      c.beginPath(); c.arc(X(1 / 3), by, 6, 0, Math.PI * 2); c.fillStyle = pal.stage; c.fill(); c.strokeStyle = pal.blue; c.lineWidth = 2.5; c.stroke();
+      const f = Math.max(9, H * .09); c.font = fnt(f, 700); c.textBaseline = 'middle'; c.fillStyle = pal.muted;
+      c.textAlign = 'left'; c.fillText('0', bx0, by + H * .14); c.textAlign = 'right'; c.fillText('1', bx1, by + H * .14);
+      c.textAlign = 'center'; c.fillStyle = pal.text; c.fillText('2/6', X(1 / 3), by + H * .14);
+    },
+    hook: String.raw`Roll two dice and add them. Is a total of 7 as likely as a total of 12? Why would a list of the 11 possible totals fool you?`,
+    steps: [
+      { title: 'List every outcome',
+        text: String.raw`<p>An <b>outcome</b> is one thing that can happen. The <b>sample space</b> is the list of all of them. Here you roll a die.</p><p>Tap each picture in the top row to add it to <b>My sample space</b>, then press Check. Then try the other experiments. Two coins and the bag of marbles need care.</p>`,
+        set: { mode: 'space', task: 1 } },
+      { title: 'Choose an event',
+        text: String.raw`<p>An <b>event</b> is some of the outcomes, such as "an even number". Tap the outcomes that belong to it. They turn yellow.</p><p>The probability is the yellow outcomes over all the outcomes. Pick the numerator and the denominator. The bar at the bottom shows your fraction between 0 and 1.</p>`,
+        set: { mode: 'event', task: 0 } },
+      { title: 'Chance by area',
+        text: String.raw`<p>On a dart board the regions are not the same size. This board has 3 regions, but a dart is not 1/3 likely to land in each one.</p><p>The board has 100 small squares. A dart lands at random, so the chance of a region is its share of the squares. Count the squares in the green region.</p>`,
+        set: { mode: 'area', task: 0 } },
+      { title: 'Never below 0, never above 1',
+        text: String.raw`<p>An event that cannot happen has probability \(0\). An event that always happens has probability \(1\). Every other event is between them.</p><p>Tap the outcomes where you roll a 7. Then find the probability that an event does <em>not</em> happen. It is what is left over.</p>`,
+        set: { mode: 'limits', task: 0 } }
+    ],
+    formal: String.raw`
+      <h3>Outcomes and the sample space</h3>
+      <p>A chance experiment has several possible results. Each result is an <em>outcome</em>. The <em>sample space</em> is the set of all outcomes, listed once each. Flip two coins one after the other and the sample space is HH, HT, TH, TT. You can list it in a table, as a picture, or as a tree (the next lesson draws trees).</p>
+      <p>Choose outcomes that are <em>equally likely</em> when you can. For a bag of 3 red, 2 blue and 1 green marble, the colors are not equally likely, but the 6 marbles are. For two dice, the 11 sums from 2 to 12 are not equally likely, but the 36 ordered pairs are.</p>
+      <h3>Probability of an event</h3>
+      <p>An <em>event</em> is any group of outcomes. When all outcomes are equally likely,
+      \[ P(\text{event}) = \frac{\text{number of outcomes in the event}}{\text{number of outcomes in the sample space}}. \]
+      This is a ratio of the size of the event to the size of the sample space. Rolling an even number on a die gives \(\tfrac{3}{6}=\tfrac12\).</p>
+      <h3>Fractions, decimals and percents</h3>
+      <p>The fraction is a division. \(\tfrac{3}{6}=3\div 6=0.5\), and a percent is the decimal times 100, so \(0.5\times 100 = 50\%\). Some decimals do not end: \(\tfrac{1}{6}=0.1666\ldots\approx 0.17\), which is about \(16.7\%\). Equivalent fractions such as \(\tfrac{3}{6}\) and \(\tfrac{1}{2}\) are the same probability.</p>
+      <h3>Probability as a fraction of area</h3>
+      <p>When a dart lands at a random spot, equal areas are equally likely, but regions are not equal. Then
+      \[ P(\text{region}) = \frac{\text{area of the region}}{\text{area of the whole board}}. \]
+      On a board of 100 squares, a region of 30 squares has probability \(\tfrac{30}{100}=0.3=30\%\). Counting regions would give the wrong answer, because the regions are not the same size. Only the area matters, not the shape.</p>
+      <h3>Impossible, certain and opposite events</h3>
+      <p>No probability is below 0 or above 1. An impossible event has \(P=0\). A certain event has \(P=1\). The opposite of an event is that it does <em>not</em> happen. Together the event and its opposite use every outcome once, so
+      \[ P(\text{event}) + P(\text{not the event}) = 1. \]
+      For two coins, \(P(\text{at least one head})=\tfrac34\) and \(P(\text{no heads})=\tfrac14\), and \(\tfrac34+\tfrac14=1\).</p>`,
+    check: [
+      { q: 'A bag holds 2 red marbles, 3 blue marbles and 5 green marbles. You take one marble without looking. What is the probability that it is blue?',
+        choices: ['1/3', '3/10', '3/7', '3/5'], answer: 1,
+        why: String.raw`There are \(2+3+5=10\) marbles, so the sample space has 10 equally likely outcomes. 3 of them are blue, so the probability is \(\tfrac{3}{10}\). \(\tfrac13\) counts the 3 colors, but the colors are not equally likely. \(\tfrac37\) divides by the marbles that are not blue.`,
+        hint: 'Count all the marbles first. That number is the denominator.' },
+      { q: 'A square dartboard is made of 100 equal small squares. A red region covers 35 small squares, a blue region covers 45 small squares, and a yellow region covers all the rest. A dart lands at a random spot on the board. What is the probability, as a percent, that it lands in the yellow region?',
+        choices: ['33%', '80%', '0.2%', '20%'], answer: 3,
+        why: String.raw`Red and blue cover \(35+45=80\) squares, so yellow covers \(100-80=20\) squares. The probability is \(\tfrac{20}{100}=0.20=20\%\). \(33\%\) counts the 3 regions as equal, but they are not the same size. \(80\%\) is the chance of not landing in yellow.`,
+        hint: 'Find how many squares are yellow, then write that number out of 100.' }
+    ],
+    links: { next: ['compound-events-and-tree-diagrams'], related: ['probability-with-repeated-trials', 'percents-on-tape-and-number-lines', 'pascals-triangle-and-the-galton-board'] },
+
+    mount({ stage, controls: C }) {
+      const P = new Plane(stage, { span: 5 });
+      const cv = P.canvas;
+      if (P.coordEl) P.coordEl.style.display = 'none';
+      cv.setAttribute('role', 'img');
+      cv.setAttribute('aria-label', 'A chance experiment drawn as pictures and tables of outcomes, a probability bar from 0 to 1, or a square dart board. Tap outcomes to choose them. Use the controls beside the picture to answer and check.');
+      const st = { mode: 'space', ti: 1, stage: 0, tray: [], sel: {}, n: null, d: null, fb: '', showSums: false, a: 5, b: 4 };
+      const hits = [];
+      let geo = null, drag = null, modeBtns, taskSel, ro, fbEl = null, liveEl = null, countEl = null, lastLiveBuild = null;
+
+      const cur = () => TASKS[st.mode][st.ti];
+      const scn = () => st.mode === 'space' ? SCN[SP[st.ti]] : st.mode === 'area' ? null : SCN[cur().sc];
+      const outs = () => scn().out;
+      const lastStage = () => st.mode === 'limits' ? 3 : 2;
+      const evTarget = () => outs().filter(o => cur().test(o));
+      const selCount = () => outs().filter(o => st.sel[o.id]).length;
+
+      /* ---------- drawing helpers ---------- */
+      const PIPS = { 1: [[.5, .5]], 2: [[.25, .25], [.75, .75]], 3: [[.25, .25], [.5, .5], [.75, .75]], 4: [[.25, .25], [.75, .25], [.25, .75], [.75, .75]], 5: [[.25, .25], [.75, .25], [.5, .5], [.25, .75], [.75, .75]], 6: [[.27, .22], [.27, .5], [.27, .78], [.73, .22], [.73, .5], [.73, .78]] };
+      const fitGrid = (m, aw, ah, gap, smax) => {
+        let best = { s: 14, cols: Math.max(1, m) };
+        for (let cols = 1; cols <= Math.max(1, m); cols++) {
+          const rows = Math.ceil(m / cols), s = Math.min(smax, (aw - (cols - 1) * gap) / cols, (ah - (rows - 1) * gap) / rows);
+          if (s > best.s || best.s === 14) best = { s, cols };
+        }
+        return best;
+      };
+      const tilePos = (m, i, cols, s, gap, x0, w, y0) => {
+        const rows = Math.ceil(m / cols), r = Math.floor(i / cols), inRow = r === rows - 1 ? m - r * cols : cols;
+        const rowW = inRow * s + (inRow - 1) * gap;
+        return [x0 + (w - rowW) / 2 + (i % cols) * (s + gap), y0 + r * (s + gap)];
+      };
+      const drawOutcome = (c, p, o, x, y, s, style) => {
+        const pal = p.pal;
+        let fill = alpha(pal.blue, .07), stroke = alpha(pal.blue, .55), lw = 1.5;
+        if (style === 'sel') { fill = alpha(pal.yellow, .55); stroke = pal.yellow; lw = 2.8; }
+        else if (style === 'comp') { fill = alpha(pal.blue, .3); stroke = pal.blue; lw = 2.8; }
+        else if (style === 'bad') { fill = alpha(pal.red, .13); stroke = pal.red; lw = 2.8; }
+        rr(c, x, y, s, s, s * .18); c.fillStyle = fill; c.fill(); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+        const cx = x + s / 2, cy = y + s / 2, pic = o.pic;
+        if (pic === 'die') {
+          for (const [px, py] of PIPS[o.v]) { c.beginPath(); c.arc(x + s * (.12 + .76 * px), y + s * (.12 + .76 * py), s * .075, 0, Math.PI * 2); c.fillStyle = pal.text; c.fill(); }
+        } else if (pic === 'coin') {
+          c.beginPath(); c.arc(cx, cy, s * .33, 0, Math.PI * 2); c.fillStyle = alpha(pal.blue, .18); c.fill(); c.strokeStyle = pal.blue; c.lineWidth = 2; c.stroke();
+          txt(c, p, o.lab, cx, cy + 1, { size: s * .32, halo: false });
+        } else if (pic === 'two') {
+          for (const [i, px] of [[0, .3], [1, .7]]) {
+            c.beginPath(); c.arc(x + s * px, cy, s * .2, 0, Math.PI * 2); c.fillStyle = alpha(pal.blue, .18); c.fill(); c.strokeStyle = pal.blue; c.lineWidth = 1.8; c.stroke();
+            txt(c, p, o.lab[i], x + s * px, cy + 1, { size: s * .22, halo: false });
+          }
+        } else if (pic === 'marble') {
+          const col = o.col === 'red' ? pal.red : o.col === 'blue' ? pal.blue : pal.green;
+          c.beginPath(); c.arc(cx, cy, s * .34, 0, Math.PI * 2); c.fillStyle = col; c.fill();
+          txt(c, p, o.lab, cx, cy + 1, { size: s * .27, color: pal.stage, halo: false, weight: 700 });
+        } else {
+          txt(c, p, o.lab, cx, cy, { size: clamp(s * .24, 10, 16), halo: false });
+        }
+      };
+      const drawBar = (c, p, g, v, label, over) => {
+        const pal = p.pal, x0 = g.padB, x1 = g.W - g.padB, y = g.barY, X = t => x0 + t * (x1 - x0), f = g.fs;
+        c.fillStyle = alpha(pal.blue, .12); c.fillRect(x0, y - 8, x1 - x0, 16);
+        if (v != null) { c.fillStyle = alpha(pal.yellow, .6); c.fillRect(x0, y - 8, X(clamp(v, 0, 1)) - x0, 16); }
+        for (const t of [0, .25, .5, .75, 1]) ln(c, X(t), y - 11, X(t), y + 11, t === 0 || t === 1 ? pal['grid-strong'] : pal.muted, t === 0 || t === 1 ? 2 : 1.2);
+        c.strokeStyle = pal.blue; c.lineWidth = 2; c.strokeRect(x0, y - 8, x1 - x0, 16);
+        const lab = (s, t, row, al) => txt(c, p, s, t, y + 24 + row * (f + 3), { size: f - 1, color: pal.muted, align: al, halo: false, weight: 600 });
+        lab('0', X(0), 0, 'left'); lab('0.5', X(.5), 0, 'center'); lab('1', X(1), 0, 'right');
+        lab('0%', X(0), 1, 'left'); lab('50%', X(.5), 1, 'center'); lab('100%', X(1), 1, 'right');
+        txt(c, p, 'impossible', X(0), y - 24, { size: f - 1, color: pal.muted, align: 'left', halo: false });
+        txt(c, p, 'certain', X(1), y - 24, { size: f - 1, color: pal.muted, align: 'right', halo: false });
+        if (v != null) {
+          const vx = X(clamp(v, 0, 1)), col = over ? pal.red : pal.blue;
+          ln(c, vx, y - 14, vx, y + 14, col, 3);
+          c.beginPath(); c.arc(vx, y, 7, 0, Math.PI * 2); c.fillStyle = pal.stage; c.fill(); c.strokeStyle = col; c.lineWidth = 3; c.stroke();
+          if (label) {
+            c.font = fnt(f, 700); const w = c.measureText(label).width + 16, lx = clamp(vx, x0 + w / 2, x1 - w / 2), ly = y - 24 - (f + 8);
+            rr(c, lx - w / 2, ly - (f + 8) / 2, w, f + 8, 6); c.fillStyle = pal.stage; c.fill(); c.strokeStyle = col; c.lineWidth = 1.5; c.stroke();
+            txt(c, p, label, lx, ly, { size: f, color: pal.text, halo: false, weight: 700 });
+          }
+        }
+      };
+
+      P.onDraw = (c, p) => {
+        const pal = p.pal, W = p.w || 400, H = p.h || 400, fs = clamp(W * .036, 11.5, 17), pad = clamp(W * .05, 14, 40);
+        hits.length = 0; geo = null;
+        const m = st.mode, S = scn(), t = cur(), hasBar = m !== 'space';
+        const barH = hasBar ? clamp(H * .24, 98, 128) : 0;
+        const g = { W, fs, padB: pad + 6, barY: H - barH + 56 > H - 44 ? H - 44 : H - barH + 56 };
+        g.barY = H - 58;
+        /* header */
+        txt(c, p, m === 'area' ? 'A dart lands at random on the board' : S.title, W / 2, 22, { size: fs + 2, weight: 700, halo: false });
+        const capt = m === 'space' ? (S.kind === 'grid' ? 'Rows are the first die, columns the second die. Tap a cell, or a row or column number.' : 'Tap a picture to add it to your list. Tap one in your list to remove it.')
+          : m === 'area' ? (t.kind === 'read' ? 'Count the small squares in the ' + t.region + ' region.' : 'Drag the two round handles. Only the ' + t.region + ' region matters.')
+          : st.stage === 0 ? 'Tap the outcomes that belong to the event.' : st.stage === 1 ? 'Yellow: in the event.' + (S.kind === 'grid' ? '' : '') : st.stage === 2 && m === 'limits' ? 'Yellow: the event. Blue: the event does not happen.' : 'Yellow: in the event.';
+        txt(c, p, capt, W / 2, 22 + fs + 9, { size: fs - 1, color: pal.muted, weight: 600, halo: false });
+        const top = 22 + fs + 9 + 22, bottom = H - barH - 6;
+
+        if (m === 'space' && S.kind === 'chips') {
+          const pool = S.out.concat(S.decoys), lh = fs + 8, avail = bottom - top, ph = (avail - 2 * lh - 12) * .46, th = (avail - 2 * lh - 12) * .54;
+          const smax = clamp(Math.min(W, H) * .16, 38, 82), gap = clamp(W * .016, 6, 12);
+          const fp = fitGrid(pool.length, W - 2 * pad, ph, gap, smax), ft = fitGrid(Math.max(pool.length, st.tray.length, 1), W - 2 * pad - 16, th - 14, gap, smax), s = Math.min(fp.s, ft.s);
+          txt(c, p, 'Possible outcomes', pad, top + lh / 2 - 2, { size: fs, align: 'left', color: pal.muted, halo: false });
+          const poolW = W - 2 * pad;
+          pool.forEach((o, i) => {
+            const [x, y] = tilePos(pool.length, i, fp.cols, s, gap, pad, poolW, top + lh);
+            drawOutcome(c, p, o, x, y, s, o.pic === 'txt' ? '' : '');
+            hits.push({ k: 'pool', i, x, y, w: s, h: s });
+          });
+          const ty = top + lh + ph + 14;
+          txt(c, p, 'My sample space', pad, ty + lh / 2 - 2, { size: fs, align: 'left', weight: 700, halo: false });
+          txt(c, p, st.tray.length + (st.tray.length === 1 ? ' outcome' : ' outcomes'), W - pad, ty + lh / 2 - 2, { size: fs, align: 'right', color: pal.muted, halo: false });
+          const by = ty + lh;
+          rr(c, pad, by, W - 2 * pad, th, 10); c.fillStyle = alpha(pal.blue, .04); c.fill(); c.strokeStyle = alpha(pal.blue, .5); c.lineWidth = 1.5; c.setLineDash([6, 5]); c.stroke(); c.setLineDash([]);
+          const counts = {}; st.tray.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
+          st.tray.forEach((id, i) => {
+            const o = pool.find(q => q.id === id), [x, y] = tilePos(st.tray.length, i, ft.cols, s, gap, pad + 8, W - 2 * pad - 16, by + 8);
+            drawOutcome(c, p, o, x, y, s, counts[id] > 1 || S.decoys.some(q => q.id === id) ? 'bad' : '');
+            hits.push({ k: 'tray', i, x, y, w: s, h: s });
+          });
+          if (!st.tray.length) txt(c, p, 'Nothing here yet', W / 2, by + th / 2, { size: fs, color: pal.muted, halo: false });
+        } else if (S && S.kind === 'grid') {
+          /* the 6 by 6 table of pairs, used for the sample space and for events */
+          const hdr = clamp(fs * 1.9, 24, 34), cell = Math.floor(Math.min((W - 2 * pad - hdr) / 6, (bottom - top - hdr - 4) / 6, 74));
+          const gx = Math.round((W - (hdr + 6 * cell)) / 2 + hdr), gy = Math.round(top + hdr + 2);
+          const inSet = o => m === 'space' ? !!st.sel[o.id] : !!st.sel[o.id];
+          for (let j = 0; j < 6; j++) { const x = gx + j * cell + 3, y = gy - hdr + 2; rr(c, x, y, cell - 6, hdr - 6, 6); c.fillStyle = alpha(pal.blue, .1); c.fill(); txt(c, p, String(j + 1), x + (cell - 6) / 2, y + (hdr - 6) / 2, { size: fs, halo: false }); hits.push({ k: 'col', i: j, x, y, w: cell - 6, h: hdr - 6 }); }
+          for (let i = 0; i < 6; i++) { const x = gx - hdr + 2, y = gy + i * cell + 3; rr(c, x, y, hdr - 6, cell - 6, 6); c.fillStyle = alpha(pal.blue, .1); c.fill(); txt(c, p, String(i + 1), x + (hdr - 6) / 2, y + (cell - 6) / 2, { size: fs, halo: false }); hits.push({ k: 'row', i, x, y, w: hdr - 6, h: cell - 6 }); }
+          const target = m === 'limits' || m === 'event' ? null : null;
+          S.out.forEach(o => {
+            const x = gx + (o.y - 1) * cell, y = gy + (o.x - 1) * cell, on = inSet(o);
+            let style = '';
+            if (m === 'space') style = on ? 'sel' : '';
+            else style = on ? 'sel' : '';
+            rr(c, x + 2, y + 2, cell - 4, cell - 4, 5);
+            let fill = alpha(pal.blue, .05), stroke = alpha(pal.blue, .35), lw = 1.2;
+            if (m === 'space') { if (on) { fill = alpha(pal.blue, .22); stroke = pal.blue; lw = 1.8; } if (on && st.showSums && (o.sum === 7 || o.sum === 12)) { fill = alpha(o.sum === 7 ? pal.violet : pal.yellow, .6); stroke = o.sum === 7 ? pal.violet : pal.yellow; lw = 2.2; } }
+            else if (on) { fill = alpha(pal.yellow, .55); stroke = pal.yellow; lw = 2.4; }
+            else if (m === 'limits' && st.stage >= 2) { fill = alpha(pal.blue, .3); stroke = pal.blue; lw = 2.4; }
+            c.fillStyle = fill; c.fill(); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+            if (m !== 'space' || on) txt(c, p, m === 'space' && st.showSums ? String(o.sum) : o.x + ',' + o.y, x + cell / 2, y + cell / 2, { size: clamp(cell * .3, 10, 16), halo: false, weight: m === 'space' && st.showSums ? 700 : 600, color: pal.text });
+            hits.push({ k: 'cell', id: o.id, x, y, w: cell, h: cell });
+          });
+          const cnt = selCount();
+          if (m === 'space') txt(c, p, cnt + ' of 36 pairs in your list', W / 2, Math.min(bottom + 4, gy + 6 * cell + 16), { size: fs, color: pal.muted, halo: false });
+          else txt(c, p, 'In the event: ' + cnt + ' of 36', W / 2, Math.min(bottom + 4, gy + 6 * cell + 16), { size: fs, color: pal.muted, halo: false });
+        } else if (m === 'event' || m === 'limits') {
+          const o = S.out, smax = clamp(Math.min(W, H) * .2, 44, 96), gap = clamp(W * .02, 8, 16);
+          const f = fitGrid(o.length, W - 2 * pad, bottom - top - fs - 14, gap, smax), s = f.s, rows = Math.ceil(o.length / f.cols), blockH = rows * s + (rows - 1) * gap, y0 = top + Math.max(0, (bottom - top - fs - 14 - blockH) / 2);
+          o.forEach((q, i) => {
+            const [x, y] = tilePos(o.length, i, f.cols, s, gap, pad, W - 2 * pad, y0);
+            const on = !!st.sel[q.id];
+            drawOutcome(c, p, q, x, y, s, on ? 'sel' : (m === 'limits' && st.stage >= 2 ? 'comp' : ''));
+            hits.push({ k: 'tile', id: q.id, x, y, w: s, h: s });
+          });
+          txt(c, p, 'In the event: ' + selCount() + ' of ' + o.length, W / 2, y0 + blockH + fs + 2, { size: fs, color: pal.muted, halo: false });
+        } else if (m === 'area') {
+          const side = Math.floor(Math.min(W - 2 * (pad + 18), bottom - top - 24)), bx = Math.round((W - side) / 2), by = Math.round(top + 14), u = side / 10;
+          geo = { bx, by, u };
+          const { a, b } = st, regs = [['red', bx, by, a * u, 10 * u], ['blue', bx + a * u, by, (10 - a) * u, b * u], ['green', bx + a * u, by + b * u, (10 - a) * u, (10 - b) * u]];
+          const colOf = r => r === 'red' ? pal.red : r === 'blue' ? pal.blue : pal.green;
+          for (const [r, x, y, w, hh] of regs) {
+            c.fillStyle = alpha(colOf(r), t.region === r ? .62 : .26); c.fillRect(x, y, w, hh);
+          }
+          for (let i = 1; i < 10; i++) { ln(c, bx + i * u, by, bx + i * u, by + side, alpha(pal.text, .18), 1); ln(c, bx, by + i * u, bx + side, by + i * u, alpha(pal.text, .18), 1); }
+          ln(c, bx + a * u, by, bx + a * u, by + side, pal.text, 2.6); ln(c, bx + a * u, by + b * u, bx + side, by + b * u, pal.text, 2.6);
+          c.strokeStyle = pal.text; c.lineWidth = 2.6; c.strokeRect(bx, by, side, side);
+          for (const [r, x, y, w, hh] of regs) if (w > fs * 3 && hh > fs * 2) txt(c, p, REG[r], x + w / 2, y + hh / 2, { size: fs + 1, weight: 700, halo: false, color: pal.text });
+          if (t.kind === 'build') {
+            const ring = (hx, hy, id) => { c.beginPath(); c.arc(hx, hy, 11, 0, Math.PI * 2); c.fillStyle = pal.stage; c.fill(); c.strokeStyle = pal.brass; c.lineWidth = 3.4; c.stroke(); hits.push({ k: id, x: hx - 20, y: hy - 20, w: 40, h: 40 }); };
+            ring(bx + a * u, by, 'hA'); ring(bx + side, by + b * u, 'hB');
+          }
+        }
+
+        /* the probability bar */
+        if (hasBar) {
+          let v = null, label = '', over = false;
+          if (m === 'area' && t.kind === 'build') { const ar = areaOf(t.region, st.a, st.b), q = conv(Math.round(ar * 4), 400); v = ar / 100; label = `${REG[t.region]}: ${+ar.toFixed(2)}/100 = ${q.decS} = ${q.pctS}`; }
+          else if (st.n != null && st.d != null) { const q = conv(st.n, st.d); v = st.n / st.d; over = st.n > st.d; label = over ? `${st.n}/${st.d} is more than 1` : `${st.n}/${st.d} = ${q.decS} = ${q.pctS}`; }
+          drawBar(c, p, g, v, label, over);
+          if (v == null) txt(c, p, 'Your probability will show here', W / 2, g.barY - 46, { size: fs, color: pal.muted, halo: false });
+        }
+      };
+      const draw = () => P.draw();
+
+      /* ---------- panel pieces ---------- */
+      const para = (html, style = 'margin:0 0 8px') => h('p', { style, html });
+      const btn = (label, fn, primary) => h('button', { type: 'button', class: primary ? 'btn primary' : 'btn', onclick: fn }, label);
+      const btnRow = (...b) => h('div', { class: 'ctl buttons' }, b);
+      const setFb = html => { st.fb = html; if (fbEl) fbEl.innerHTML = html; };
+      const mkSel = (label, lo, hi, key) => {
+        const id = 'sp' + Math.random().toString(36).slice(2, 8), opts = [h('option', { value: '' }, '?')];
+        for (let i = lo; i <= hi; i++) opts.push(h('option', { value: String(i) }, String(i)));
+        const sel = h('select', { id }, opts);
+        sel.value = st[key] == null ? '' : String(st[key]);
+        sel.addEventListener('change', () => { st[key] = sel.value === '' ? null : +sel.value; updLive(); draw(); });
+        return h('div', { class: 'ctl select' }, h('label', { for: id }, label), sel);
+      };
+      const picker = (maxN, maxD) => [mkSel('Numerator (the top number)', 0, maxN, 'n'), mkSel('Denominator (the bottom number)', 1, maxD, 'd')];
+      const updLive = () => {
+        if (countEl) countEl.innerHTML = kk('In the event', `${selCount()} of ${outs().length} tiles`);
+        if (!liveEl) return;
+        if (st.mode === 'area' && cur().kind === 'build') {
+          const t = cur(), ar = areaOf(t.region, st.a, st.b), q = conv(Math.round(ar * 4), 400);
+          liveEl.innerHTML = kk(REG[t.region], `${+ar.toFixed(2)} of 100 squares`) + '<br>' + kk('Probability', `${+ar.toFixed(2)}/100 = ${q.decS} = ${q.pctS}`);
+          return;
+        }
+        if (st.n == null || st.d == null) { liveEl.innerHTML = '<span style="color:var(--muted)">Choose a numerator and a denominator to see the decimal and the percent.</span>'; return; }
+        liveEl.innerHTML = st.n > st.d ? 'The numerator is bigger than the denominator. That is more than 1, which no probability can be.' : convLines(st.n, st.d);
+      };
+
+      const render = () => {
+        const out = [], t = cur(), m = st.mode, N = m === 'area' ? 100 : outs().length;
+        fbEl = null; liveEl = null; countEl = null;
+        const fbBlock = () => { fbEl = h('p', { style: 'margin:6px 0 10px', html: st.fb }); return fbEl; };
+        if (m === 'space') {
+          const S = scn();
+          out.push(para(S.kind === 'grid' ? '<b>List every way two dice can land.</b> The first die and the second die both matter, so (2, 5) and (5, 2) are different outcomes. Fill all the cells.' : '<b>List every outcome of the experiment.</b> Each possible result goes in your list once.'));
+          const row = [btn('Check my list', checkSpace, true), btn('Clear', () => { st.tray = []; st.sel = {}; st.showSums = false; setFb(''); draw(); })];
+          out.push(btnRow(...row));
+          if (S.kind === 'grid') out.push(btnRow(btn('Why not list the sums 2 to 12?', sumsWhy)));
+          out.push(fbBlock());
+        } else if (m === 'area') {
+          out.push(para(`<b>${t.q}</b>`));
+          if (t.kind === 'read') {
+            if (st.stage === 0) { out.push(...picker(100, 100)); liveEl = h('p', { style: 'margin:0 0 8px' }); out.push(liveEl, btnRow(btn('Check my probability', checkFrac, true))); updLive(); }
+            else { out.push(para(convLines(st.n, st.d))); }
+            out.push(fbBlock());
+            if (st.stage > 0) out.push(btnRow(btn('Next question', () => start('area', (st.ti + 1) % AR.length), true)));
+          } else {
+            liveEl = h('p', { style: 'margin:0 0 8px' }); out.push(liveEl);
+            if (st.stage === 0) out.push(btnRow(btn('Check my board', checkBuild, true)));
+            out.push(fbBlock());
+            if (st.stage > 0) out.push(btnRow(btn('Next question', () => start('area', (st.ti + 1) % AR.length), true)));
+            updLive();
+          }
+        } else {
+          /* events and limits */
+          out.push(para(`<b>${t.q}</b>`));
+          const done = st.stage === lastStage();
+          if (st.stage === 0) {
+            out.push(para(t.sc === 'dice' ? 'Tap every cell that belongs to the event. A row or column number fills the whole row or column. If none belong, tap nothing.' : 'Tap every outcome that belongs to the event. If none belong, tap nothing.', 'margin:0 0 6px'));
+            countEl = h('p', { style: 'margin:0 0 8px' }); out.push(countEl);
+            out.push(btnRow(btn('Check my event', checkEvent, true), btn('Clear', () => { st.sel = {}; setFb(''); updLive(); draw(); })));
+            updLive();
+          } else if (!done) {
+            const K = evTarget().length, comp = st.stage === 2;
+            out.push(para(comp ? `Now the opposite. Find the probability that the event does <b>not</b> happen. Those outcomes are blue.` : `The sample space has <b>${N}</b> outcomes. The event has <b>${K}</b>. Write the probability as a fraction.`, 'margin:0 0 6px'));
+            out.push(...picker(N, N));
+            liveEl = h('p', { style: 'margin:0 0 8px' }); out.push(liveEl, btnRow(btn('Check my probability', checkFrac, true))); updLive();
+          } else {
+            const K = evTarget().length, q = conv(K, N);
+            out.push(para(convLines(K, N), 'margin:0 0 8px'));
+            if (m === 'limits') {
+              const q2 = conv(N - K, N);
+              out.push(para(kk('Together', `${K}/${N} + ${N - K}/${N} = ${N}/${N} = 1`) + '<br>' + (K === 0 ? 'The event is impossible. Its probability is 0.' : K === N ? 'The event is certain. Its probability is 1.' : `Event and opposite use every outcome once, so their probabilities add to 1. Here ${q.pctS} + ${q2.pctS} = 100%.`), 'margin:0 0 8px'));
+            }
+          }
+          out.push(fbBlock());
+          if (done) out.push(btnRow(btn('Next question', () => start(m, (st.ti + 1) % TASKS[m].length), true)));
+        }
+        ro.replaceChildren(...out);
+      };
+
+      /* ---------- checks ---------- */
+      const checkSpace = () => {
+        const S = scn();
+        if (S.kind === 'grid') {
+          const miss = S.out.filter(o => !st.sel[o.id]), have = 36 - miss.length;
+          if (!have) return setFb('Your table is empty. Tap the cells, or a row or column number, to fill it.');
+          if (miss.length) {
+            const rows = [...new Set(miss.map(o => o.x))];
+            return setFb(noT('Not yet.') + ` You have ${have} of the 36 pairs. ${rows.length === 1 ? 'Row ' + rows[0] + ' has' : 'Rows ' + list(rows.map(String)) + ' have'} empty cells, for example ${miss.slice(0, 2).map(o => o.name).join(' and ')}. Every pair that can happen must be in the sample space.`);
+          }
+          setFb(okT('Yes.') + ' All 36 pairs are in your sample space. ' + S.ok + ' Press "Why not list the sums" to see the 7s and the 12.');
+          return draw();
+        }
+        const pool = S.out.concat(S.decoys), tray = st.tray;
+        if (!tray.length) return setFb('Your list is empty. Tap the pictures in the top row to add each possible outcome.');
+        const dec = S.decoys.find(q => tray.includes(q.id));
+        if (dec) return setFb(noT('Not yet.') + ' ' + dec.why);
+        const dup = tray.find((id, i) => tray.indexOf(id) !== i);
+        if (dup) return setFb(noT('Not yet.') + ` ${cap1(pool.find(q => q.id === dup).name)} is in your list more than once. A sample space lists each outcome once. Tap an extra copy to remove it.`);
+        const miss = S.out.filter(o => !tray.includes(o.id));
+        if (miss.length) {
+          const nm = miss.slice(0, 3).map(o => o.name);
+          let extra = '';
+          if (S === SCN.two && miss.some(o => o.id === 'HT' || o.id === 'TH')) extra = ' HT and TH are two different outcomes: it matters which coin is heads.';
+          return setFb(noT('Not yet.') + ` You have ${tray.length} of the ${S.out.length} outcomes. Something that can happen is missing: ${miss.length > 3 ? nm.join(', ') + ', and more' : list(nm)}. A sample space must include every outcome.` + extra);
+        }
+        setFb(okT('Yes.') + ` The sample space has ${S.out.length} outcomes. ${S.ok}`);
+      };
+      const sumsWhy = () => {
+        st.showSums = true;
+        setFb('There are 11 possible sums (2 to 12), but they are not equally likely. A sum of 7 can happen 6 ways: (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1). A sum of 12 can happen only 1 way: (6, 6). To get equal chances, list the 36 pairs instead.' + (selCount() ? ' The 7s are violet and the 12 is yellow in your table.' : ' Fill the table first to see the 7s and the 12 colored.'));
+        draw();
+      };
+      const checkEvent = () => {
+        const target = evTarget(), t = cur(), S = scn();
+        const miss = target.filter(o => !st.sel[o.id]), extra = outs().filter(o => st.sel[o.id] && !t.test(o));
+        if (!miss.length && !extra.length) {
+          st.stage = 1; st.n = null; st.d = null;
+          setFb(okT('Yes.') + ` The event has ${target.length} ${target.length === 1 ? 'outcome' : 'outcomes'} out of ${outs().length}. ` + t.rule);
+          render(); draw(); return;
+        }
+        let s = noT('Not yet.');
+        if (extra.length) s += ` ${list(extra.slice(0, 3).map(o => o.name))} ${extra.length === 1 ? 'does' : 'do'} not belong to the event.`;
+        if (miss.length) s += ` ${miss.length} ${miss.length === 1 ? 'outcome belongs' : 'outcomes belong'} to the event but ${miss.length === 1 ? 'is' : 'are'} not yellow yet.`;
+        setFb(s + ' ' + t.rule);
+      };
+      const checkFrac = () => {
+        const m = st.mode, t = cur();
+        if (st.n == null || st.d == null) return setFb('Choose both the numerator and the denominator first.');
+        if (m === 'area') {
+          const K = areaOf(t.region, st.a, st.b), N = 100;
+          if (st.n * N === K * st.d) {
+            const q = conv(K, N);
+            st.stage = 1;
+            setFb(okT('Yes.') + ` The ${t.region} region covers ${K} of the 100 squares. ` + (st.d !== N ? `Your fraction ${st.n}/${st.d} equals ${K}/100. ` : '') + `Chance follows area, so it is ${K}/100 = ${q.frac} = ${q.decS} = ${q.pctS}. The regions are not the same size, so counting them (1 out of 3) would be wrong.`);
+            render(); draw(); return;
+          }
+          let s = noT('Not yet.');
+          const other = ['red', 'blue', 'green'].find(r => r !== t.region && st.n * N === areaOf(r, st.a, st.b) * st.d);
+          if (st.n > st.d) s += ' A probability is never more than 1. The numerator cannot be bigger than the denominator.';
+          else if (st.n * 3 === st.d) s += ' You counted regions: 1 out of 3. A dart does not land in each region equally, because the regions are not the same size. Count small squares instead.';
+          else if (other) s += ` That fraction matches the ${other} region. Check that you counted the squares of the ${t.region} region.`;
+          else if (st.d !== N && st.n === K) s += ` The board has 100 small squares in all, so the denominator is 100, not ${st.d}.`;
+          else if (st.d === N) s += ` The denominator 100 is right, because the board has 100 squares. The ${t.region} region does not have ${st.n} squares. Count them again, row by row.`;
+          else s += ` Count the small squares inside the ${t.region} region. That is the numerator. The whole board has 100 squares, the denominator.`;
+          return setFb(s);
+        }
+        const K0 = evTarget().length, N = outs().length, comp = st.stage === 2, K = comp ? N - K0 : K0;
+        const r = judge(st.n, st.d, K, N, { comp, other: K0, types: scn() === SCN.bag ? 3 : 0 });
+        if (!r.right) return setFb(r.html);
+        const q = conv(K, N);
+        const say = K === 0 ? ' No outcome fits, so the event is impossible: probability 0.' : K === N ? ' Every outcome fits, so the event is certain: probability 1.' : '';
+        const eqv = st.d !== N ? ` Your ${st.n}/${st.d} is the same as ${K}/${N}.` : '';
+        const hold = { n: st.n, d: st.d };
+        st.stage += 1;
+        const forms = [q.frac === `${K}/${N}` ? null : q.frac, q.decS, q.pctS].filter((v, i, a) => v && a.indexOf(v) === i);
+        setFb(okT('Right.') + ` ${K} out of ${N} is ${forms.join(' = ')}. It is between 0 and 1.` + eqv + say);
+        if (st.stage < lastStage()) { st.n = null; st.d = null; } else { st.n = hold.n; st.d = hold.d; }
+        render(); draw();
+      };
+      const checkBuild = () => {
+        const t = cur(), ar = areaOf(t.region, st.a, st.b);
+        const q = conv(Math.round(ar * 4), 400);
+        if (Math.abs(ar - t.target) < 1e-6) {
+          st.stage = 1;
+          const k = Math.round(ar), r2 = conv(k, 100);
+          setFb(okT('Yes.') + ` The ${t.region} region covers ${k} of the 100 squares: ${k}/100 = ${r2.frac} = ${r2.decS} = ${r2.pctS}. ` + (t.region === 'blue' ? 'Many different boards work. Only the blue area matters, not its shape.' : 'The region does not need to be a certain shape. Only its area matters.'));
+          render(); draw(); return;
+        }
+        const bigger = ar < t.target;
+        setFb(noT('Not yet.') + ` The ${t.region} region covers ${+ar.toFixed(2)} of the 100 squares, which is ${q.pctS}. You need ${t.target}%. Make the ${t.region} region ${bigger ? 'bigger' : 'smaller'}` + (t.region === 'red' ? `: drag the top handle ${bigger ? 'right' : 'left'}.` : '. Either handle can do it.'));
+      };
+
+      /* ---------- pointer ---------- */
+      const ptr = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+      const flip = (ids, on) => ids.forEach(id => { if (on) st.sel[id] = true; else delete st.sel[id]; });
+      const selectable = () => st.mode === 'space' || ((st.mode === 'event' || st.mode === 'limits') && st.stage === 0);
+      const click = q => {
+        const m = st.mode, S = scn();
+        if (q.k === 'pool' && m === 'space') {
+          st.tray.push(S.out.concat(S.decoys)[q.i].id); setFb('');
+        } else if (q.k === 'tray' && m === 'space') {
+          st.tray.splice(q.i, 1); setFb('');
+        } else if (selectable() && (q.k === 'cell' || q.k === 'tile')) {
+          if (st.sel[q.id]) delete st.sel[q.id]; else st.sel[q.id] = true;
+          if (m === 'space') st.showSums = st.showSums && selCount() > 0; setFb('');
+        } else if (selectable() && (q.k === 'row' || q.k === 'col')) {
+          const ids = S.out.filter(o => q.k === 'row' ? o.x === q.i + 1 : o.y === q.i + 1).map(o => o.id), all = ids.every(id => st.sel[id]);
+          flip(ids, !all); setFb('');
+        } else return;
+        updLive(); draw();
+      };
+      const dragTo = (x, y) => {
+        if (!geo) return;
+        if (drag === 'hA') st.a = clamp(snap((x - geo.bx) / geo.u, .5), 1, 9);
+        else st.b = clamp(snap((y - geo.by) / geo.u, .5), 1, 9);
+        updLive(); draw();
+      };
+      cv.addEventListener('pointerdown', e => {
+        const [x, y] = ptr(e);
+        for (let i = hits.length - 1; i >= 0; i--) {
+          const q = hits[i];
+          if (x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h) {
+            if (q.k === 'hA' || q.k === 'hB') { if (st.stage > 0) return; drag = q.k; cv.setPointerCapture(e.pointerId); e.preventDefault(); return; }
+            click(q); e.preventDefault(); return;
+          }
+        }
+      });
+      cv.addEventListener('pointermove', e => {
+        const [x, y] = ptr(e);
+        if (drag) { dragTo(x, y); return; }
+        const hit = hits.find(q => x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h);
+        cv.style.cursor = hit && (hit.k === 'hA' || hit.k === 'hB') && st.stage === 0 ? 'grab' : hit && (hit.k === 'pool' || hit.k === 'tray' || selectable()) ? 'pointer' : 'default';
+      });
+      const endDrag = () => { drag = null; };
+      cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
+
+      /* ---------- the side panel ---------- */
+      C.title('Explore');
+      modeBtns = C.buttons(MODES.map(md => ({ label: md.name, onClick: () => start(md.id, 0) })));
+      taskSel = C.select({ label: 'Question', options: [{ value: '0', label: '…' }], value: '0', onChange: v => start(st.mode, +v) });
+      ro = C.readout();
+
+      const syncPanel = () => {
+        modeBtns.forEach((b, i) => { b.className = MODES[i].id === st.mode ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', MODES[i].id === st.mode); });
+        taskSel.replaceChildren(...TASKS[st.mode].map((t, i) => { const o = h('option', { value: String(i) }, t.label); if (i === st.ti) o.selected = true; return o; }));
+        const lab = taskSel.parentElement.querySelector('label'); if (lab) lab.textContent = st.mode === 'space' ? 'Experiment' : 'Question';
+        render(); draw();
+      };
+      const start = (mode, ti) => {
+        drag = null;
+        Object.assign(st, { mode, ti, stage: 0, tray: [], sel: {}, n: null, d: null, fb: '', showSums: false });
+        if (mode === 'area') { st.a = AR[ti].a; st.b = AR[ti].b; }
+        syncPanel();
+      };
+
+      const apply = (patch, immediate) => { if (patch.mode) start(patch.mode, patch.task || 0); };
+      start('space', 1);
+      return { destroy: () => { P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   SCHOOL — Statistical questions and data displays
+   ===================================================================== */
+{
+  /* ---------- small helpers ---------- */
+  const font = (size, weight = 600) => `${weight} ${size}px "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif`;
+  const T = (c, p, str, x, y, { size = 14, color, align = 'center', weight = 600, halo = true } = {}) => {
+    c.save(); c.font = font(size, weight); c.textAlign = align; c.textBaseline = 'middle';
+    if (halo) { c.lineWidth = 4; c.strokeStyle = p.pal.stage; c.lineJoin = 'round'; c.strokeText(str, x, y); }
+    c.fillStyle = color || p.pal.text; c.fillText(str, x, y); c.restore();
+  };
+  const tw = (c, str, size, weight = 600) => { c.save(); c.font = font(size, weight); const w = c.measureText(str).width; c.restore(); return w; };
+  const wrap = (c, str, size, maxW, weight = 600) => {
+    const lines = []; let cur = '';
+    for (const w of str.split(' ')) {
+      const t = cur ? cur + ' ' + w : w;
+      if (cur && tw(c, t, size, weight) > maxW) { lines.push(cur); cur = w; } else cur = t;
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  };
+  const rr = (c, x, y, w, h, r) => {
+    c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  };
+  const seg = (c, x0, y0, x1, y1, col, w = 2, dash) => {
+    c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.strokeStyle = col; c.lineWidth = w; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
+  };
+  const ok = t => `<b style="color:var(--green)">${t}</b>`;
+  const no = t => `<b style="color:var(--red)">${t}</b>`;
+  const kk = t => `<span class="k">${t}</span>`;
+  const sortN = v => [...v].sort((a, b) => a - b);
+  const medOf = s => { const n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+  const five = v => {
+    const s = sortN(v), n = s.length, hf = Math.floor(n / 2);
+    return { min: s[0], q1: medOf(s.slice(0, hf)), med: medOf(s), q3: medOf(s.slice(n - hf)), max: s[n - 1], n };
+  };
+  const countsOf = v => { const t = {}; v.forEach(x => { t[x] = (t[x] || 0) + 1; }); return t; };
+
+  /* ---------- the questions to sort ---------- */
+  const QS = [
+    { q: 'How tall are the students in my class?', stat: true, kind: 'num', groups: false,
+      ans: ['142 cm', '151 cm', '138 cm', '147 cm', '155 cm', '144 cm'],
+      yes: 'Every student has a different height, so you expect different answers. That is variability. You need the heights of many students to answer it.',
+      kindWhy: 'Heights are measured, so the data is numbers: numerical data.' },
+    { q: 'How many students are in my school today?', stat: false, kind: null, groups: false,
+      ans: ['412', '412', '412', '412', '412', '412'],
+      no: 'There is one number to find, and everyone who counts gets the same answer. No variability, so it is not a statistical question. You count once and you are done.' },
+    { q: 'Do more sixth graders than eighth graders walk to school?', stat: true, kind: 'cat', groups: true,
+      ans: ['walk', 'bus', 'walk', 'car', 'walk', 'bike'],
+      yes: 'Students get to school in different ways, so the answers vary. This question also compares two groups, sixth graders and eighth graders.',
+      kindWhy: 'The answers are labels (walk, bus, car, bike). You sort them into groups and count. That is categorical data.' },
+    { q: 'Which pet do sixth graders like best?', stat: true, kind: 'cat', groups: false,
+      ans: ['dog', 'cat', 'dog', 'fish', 'cat', 'dog'],
+      yes: 'Different students like different pets, so the answers vary. You collect many answers and see which pet gets the most.',
+      kindWhy: 'The answers are labels (dog, cat, fish). You count how many students chose each. That is categorical data.' },
+    { q: 'What time does the school day start at my school?', stat: false, kind: null, groups: false,
+      ans: ['8:15', '8:15', '8:15', '8:15', '8:15', '8:15'],
+      no: 'The school has one start time, so every person gives the same answer. No variability, so it is not a statistical question. You look it up.' },
+    { q: 'How many minutes of homework do sixth graders do each night?', stat: true, kind: 'num', groups: false,
+      ans: ['20', '45', '30', '60', '15', '30'],
+      yes: 'Some students do 15 minutes and some do an hour. The answers vary, so you collect many of them and look at all of them together.',
+      kindWhy: 'Minutes are counted numbers, so this is numerical data.' },
+    { q: 'What is the capital of Minnesota?', stat: false, kind: null, groups: false,
+      ans: ['St. Paul', 'St. Paul', 'St. Paul', 'St. Paul', 'St. Paul', 'St. Paul'],
+      no: 'This is a fact with one answer. Ask a hundred people who know it and you always get St. Paul. No variability, so it is not a statistical question.' },
+    { q: 'Who jumps farther, sixth graders or seventh graders?', stat: true, kind: 'num', groups: true,
+      ans: ['1.4 m', '1.9 m', '1.6 m', '1.2 m', '1.7 m', '1.5 m'],
+      yes: 'Every student jumps a different distance, so the data varies. The question compares two groups, so you must compare the whole groups. One long jump does not decide it.',
+      kindWhy: 'Jump lengths are measured, so the data is numerical.' }
+  ];
+
+  /* ---------- the data sets ---------- */
+  const DS = [
+    { name: 'Shoe sizes', who: '16 students in Room 12', unit: 'shoe size', plural: 'students',
+      v: [7, 8, 6, 7, 9, 7, 8, 13, 6, 8, 7, 10, 5, 8, 6, 9],
+      dlo: 4, dhi: 14, step: 1, widths: [1, 2, 4], hlo: 4, boxTick: 1,
+      feat: 'The dots bunch up at 6 to 8, and the dot at 13 sits far from the rest. A value far from the others is called an <b>outlier</b>.',
+      histFeat: ['Width 1 looks like the dot plot. Every size has its own bar, and the outlier at 13 is easy to see.',
+        'Width 2 puts sizes 6 and 7 together and 8 and 9 together. The shape is one hump with a tail to the right.',
+        'Width 4 leaves only three bars. The hump is gone, and you cannot tell where most sizes are.'],
+      boxNote: 'The box covers the middle half of the students. The long whisker to 13 only tells you the largest value. It does not say that just one student has a size that large.' },
+    { name: 'Minutes of reading last night', who: '20 students', unit: 'minutes', plural: 'students',
+      v: [25, 40, 10, 30, 15, 45, 20, 35, 0, 30, 25, 60, 20, 15, 50, 35, 30, 10, 40, 25],
+      dlo: 0, dhi: 60, step: 5, widths: [5, 10, 20], hlo: 0, boxTick: 10,
+      feat: 'The dots spread from 0 to 60 minutes. The tallest stacks are at 25 and 30, with 3 dots each.',
+      histFeat: ['Width 5 gives 13 thin bars. The shape is bumpy because each bar holds only a few students.',
+        'Width 10 shows one clear hump. Most students read 10 to 39 minutes (14 of 20), with a short tail to the right.',
+        'Width 20 leaves four bars. The hump is smoothed away, so you lose the detail.'],
+      boxNote: 'The box says half of the students read between 17.5 and 37.5 minutes. It does not show the stacks at 25 and 30.' },
+    { name: 'Quiz scores out of 20', who: '18 students', unit: 'score', plural: 'students',
+      v: [11, 18, 9, 12, 19, 8, 10, 17, 12, 18, 7, 11, 19, 9, 12, 10, 6, 17],
+      dlo: 4, dhi: 20, step: 1, widths: [2, 4, 8], hlo: 4, boxTick: 2,
+      feat: 'The scores fall in two clumps, 6 to 12 and 17 to 19. There is a <b>gap</b> from 13 to 16, because nobody scored there.',
+      histFeat: ['Width 2 shows two humps with an empty bar between them (14 to 15). The gap is easy to see.',
+        'Width 4 fills the gap a little. The bar for 12 to 15 holds only the three 12s, so the gap looks like a small dip.',
+        'Width 8 gives two equal bars of 9 students. The gap and both humps are hidden.'],
+      boxNote: 'The box runs from 9 to 17 and the median is 11.5. Nothing in the box shows that nobody scored 13 to 16. Turn on the data dots to see what the box hides.' }
+  ];
+  DS.forEach(d => {
+    d.n = d.v.length; d.tc = countsOf(d.v); d.maxc = Math.max(...Object.values(d.tc)); d.f = five(d.v);
+    d.nb = w => Math.ceil((Math.max(...d.v) + 1 - d.hlo) / w);
+    d.bins = w => { const a = Array(d.nb(w)).fill(0); d.v.forEach(x => { a[Math.floor((x - d.hlo) / w)]++; }); return a; };
+    d.ymax = Math.ceil(Math.max(...d.widths.map(w => Math.max(...d.bins(w)))) / 2) * 2;
+  });
+
+  const DISP = {
+    table: { name: 'Table', best: 'A table gives the exact count for each value.', hides: 'It is hard to see the shape or the gaps at a glance.' },
+    dot: { name: 'Dot plot', best: 'A dot plot shows every value, so you can spot gaps, clusters and outliers.', hides: 'It gets crowded when there are many different values.' },
+    stem: { name: 'Stem-and-leaf plot', best: 'A stem-and-leaf plot keeps every value and shows the shape. It works when the values are many different numbers.', hides: 'It is hard to read when the data is huge or when the values have many digits.' },
+    hist: { name: 'Histogram', best: 'A histogram shows the shape of the data, even for hundreds of values.', hides: 'It hides the exact values, and the bin width changes the picture.' },
+    box: { name: 'Box plot', best: 'A box plot shows the median and the quartiles. Two box plots are easy to compare side by side.', hides: 'It hides the individual values, the gaps and the shape.' }
+  };
+  const KINDS = ['table', 'dot', 'stem', 'hist', 'box'];
+
+  /* ---------- choose the display ---------- */
+  const MS = [
+    { text: 'The 18 quiz scores run from 6 to 19. You want one dot for each student so you can see where the scores bunch up and whether any score is missing in between.', best: 'dot',
+      why: { table: 'A table lists counts, but you have to read every row to find a gap. The question asks for one dot per student.',
+        dot: 'A dot plot puts one dot for each student on a number line. Clumps and gaps show up right away.',
+        stem: 'A stem-and-leaf plot also keeps every value, but it is written with digits. The question asks for one dot for each student.',
+        hist: 'A histogram groups the students into bars. You would lose the one dot for each student.',
+        box: 'A box plot hides the individual scores. It cannot show a gap.' },
+      reasons: [
+        { t: 'It shows every value, so gaps and clumps are easy to see.', ok: true, why: 'Because every value is a dot, an empty stretch on the line is a gap.' },
+        { t: 'It always shows the median as a line.', ok: false, why: 'A box plot shows the median. A dot plot does not draw it. The reason for a dot plot is that it shows every value.' },
+        { t: 'It adds up all the scores for you.', ok: false, why: 'No display adds the values. The reason for a dot plot is that every value stays visible.' }] },
+    { text: 'Class A and Class B took the same quiz. You want to compare the middle score of each class and how spread out the middle half of each class is. You want a small picture that can sit right above the other one.', best: 'box',
+      why: { table: 'Two tables would give exact counts, but you would have to work out the middle and the spread yourself.',
+        dot: 'Two dot plots show everything, but the middle and the middle half are not marked. You would have to find them by counting.',
+        stem: 'Two stem-and-leaf plots keep every score, but you would still have to count to find the middle of each class.',
+        hist: 'Histograms show the shape well, but they do not mark the median or the quartiles.',
+        box: 'A box plot marks the median and the quartiles, so you can compare the middle and the spread of two classes at a glance.' },
+      reasons: [
+        { t: 'It shows each class\'s median and middle half, and it is small enough to stack.', ok: true, why: 'The line in the box is the median, and the box holds the middle half of the scores.' },
+        { t: 'It shows every score, so nothing is hidden.', ok: false, why: 'This is backwards. A box plot hides the individual scores. That is what makes it small and easy to compare.' },
+        { t: 'It shows the exact count for each score.', ok: false, why: 'A table shows exact counts. A box plot shows five summary numbers only.' }] },
+    { text: 'A survey asks 300 people their age, from 2 to 85. You want to see the overall shape: where most people are, and whether the data stretches out to one side. There are too many people to plot one by one.', best: 'hist',
+      why: { table: 'A table with 84 different ages would be very long. It would not show the shape.',
+        dot: 'With 300 people you would need 300 dots. It would be crowded and slow to build.',
+        stem: 'A stem-and-leaf plot writes every one of the 300 values. That is far too many to read.',
+        hist: 'A histogram groups ages into bins, so 300 values become a few bars. The bars show where most people are and which side has the tail.',
+        box: 'A box plot shows the middle half, but it does not show the shape, such as humps or a tail.' },
+      reasons: [
+        { t: 'It groups the values into bins, so the shape is clear even with many values.', ok: true, why: 'Bins turn 300 values into a few bars, and the bar heights show the shape.' },
+        { t: 'It shows each person\'s exact age.', ok: false, why: 'A histogram hides exact values. The bars only count how many fall in each bin.' },
+        { t: 'It marks the median with a line.', ok: false, why: 'That is a box plot. A histogram is chosen because it shows the shape.' }] },
+    { text: 'The gym teacher needs the exact number of students for each shoe size, written in a list, so she can order the right number of pairs.', best: 'table',
+      why: { table: 'A table gives an exact count for each shoe size. That is what she needs to read.',
+        dot: 'A dot plot would show the counts as dots. She would have to count dots, and a mistake is easy.',
+        stem: 'A stem-and-leaf plot lists the values, but she would still have to count the leaves.',
+        hist: 'A histogram groups sizes into bins, so she would lose the exact count for each size.',
+        box: 'A box plot does not show how many students wear each size.' },
+      reasons: [
+        { t: 'It lists the exact count for each value.', ok: true, why: 'When you need exact numbers, a table gives them to you directly.' },
+        { t: 'It shows the shape of the data best.', ok: false, why: 'A histogram or a dot plot shows shape better. A table is for exact numbers.' },
+        { t: 'It shows the median and the quartiles.', ok: false, why: 'A table of counts does not mark them. A box plot does.' }] },
+    { text: 'A teacher has 25 test scores between 50 and 99. She wants to show the shape of the scores and still let everyone read each real score. She will write it by hand with no graph paper.', best: 'stem',
+      why: { table: 'A table lists exact counts but it is not a picture of the shape.',
+        dot: 'A dot plot needs a long number line with 50 places, and you cannot read a score off a dot except by its position.',
+        stem: 'In a stem-and-leaf plot each score is written as a stem and a leaf. You can read every score, and the rows make the shape of a sideways histogram.',
+        hist: 'A histogram shows the shape, but the bars hide the real scores.',
+        box: 'A box plot hides the real scores.' },
+      reasons: [
+        { t: 'It keeps every score as digits and the rows also show the shape.', ok: true, why: 'Each leaf is a real digit from a real score, and the row lengths make a shape.' },
+        { t: 'It groups the scores into bins and hides the exact values.', ok: false, why: 'That describes a histogram. A stem-and-leaf plot keeps the exact values.' },
+        { t: 'It only shows the smallest and largest score.', ok: false, why: 'A box plot shows extremes. A stem-and-leaf plot lists all 25 scores.' }] }
+  ];
+
+  /* ---------- read a display ---------- */
+  const RS = [
+    { ds: 0, disp: 'dot', wi: 0, q: 'What shoe size do the sixth graders in Room 12 wear? (16 students)',
+      opts: [
+        { t: 'Every sixth grader in the world wears a size between 6 and 8.', ok: false, why: 'This claims too much. The dots are only 16 students in one room. They cannot tell you about every sixth grader.' },
+        { t: 'Most of these 16 students (11) wear sizes 6 to 8. One student wears size 13, far above the rest.', ok: true, why: 'The stacks at 6, 7 and 8 hold 3 + 4 + 4 = 11 students. The answer talks about these 16 students and mentions the variability, including the outlier at 13.' },
+        { t: 'The most common size is 4, because the tallest stack has 4 dots.', ok: false, why: 'The number of dots tells you how many students, not the size. The tallest stacks are at sizes 7 and 8.' }] },
+    { ds: 1, disp: 'hist', wi: 1, q: 'How long do the students in Ms. Ortiz\'s class read at night? (20 students, bins of width 10 minutes)',
+      opts: [
+        { t: 'Five students read exactly 30 minutes, because the bar from 30 to 39 is 5 tall.', ok: false, why: 'A bar counts everyone in the bin. Those 5 students read between 30 and 39 minutes, and a histogram does not show which exact minute.' },
+        { t: 'All sixth graders read between 20 and 39 minutes a night.', ok: false, why: 'This claims too much. The bars show 20 students in one class, and only 10 of them read 20 to 39 minutes.' },
+        { t: 'Half of these 20 students (10) read 20 to 39 minutes. Only 1 read less than 10 minutes, and only 2 read 50 minutes or more.', ok: true, why: 'The bars for 20 to 29 and 30 to 39 hold 5 + 5 = 10 students. The first bar holds 1 and the last two bars hold 1 + 1 = 2. The answer is about this class and says how the values vary.' }] },
+    { ds: 2, disp: 'hist', wi: 0, q: 'How did the 18 students do on the quiz, scored out of 20? (bins of width 2)',
+      opts: [
+        { t: 'The scores fall in two groups. 12 students scored 12 or less, and 6 scored 17 or more. No one scored 14 or 15. One average would hide that.', ok: true, why: 'The first four bars hold 2 + 3 + 4 + 3 = 12 students, and the last two bars hold 2 + 4 = 6. The bar for 14 to 15 is empty. The answer reports the variability instead of one number.' },
+        { t: 'Everybody in the class scored about the same, near 12.', ok: false, why: 'The scores are spread from 6 to 19 in two groups. Saying everyone is near 12 ignores the variability.' },
+        { t: 'The most common score is 4, because the tallest bars are 4 tall.', ok: false, why: 'A bar\'s height is the number of students, not the score. The tallest bars are the ones for 10 to 11 and 18 to 19 points.' }] }
+  ];
+
+  /* ---------- tiny sketches for the "choose a display" screen ---------- */
+  const mini = (c, p, kind, x, y, w, hh, col) => {
+    const pal = p.pal;
+    c.save(); c.lineWidth = 1.6; c.strokeStyle = col; c.fillStyle = alpha(col, .5);
+    if (kind === 'table') {
+      for (let i = 0; i < 4; i++) seg(c, x, y + hh * i / 3, x + w, y + hh * i / 3, col, 1.6);
+      seg(c, x, y, x, y + hh, col, 1.6); seg(c, x + w * .5, y, x + w * .5, y + hh, col, 1.6); seg(c, x + w, y, x + w, y + hh, col, 1.6);
+    } else if (kind === 'dot') {
+      seg(c, x, y + hh, x + w, y + hh, col, 1.6);
+      [[.2, 2], [.4, 4], [.6, 3], [.8, 1]].forEach(([fx, k]) => { for (let i = 0; i < k; i++) { c.beginPath(); c.arc(x + w * fx, y + hh - 4 - i * 7, 2.8, 0, TAU); c.fillStyle = col; c.fill(); } });
+    } else if (kind === 'stem') {
+      seg(c, x + w * .3, y, x + w * .3, y + hh, col, 1.6);
+      [[.9], [.7], [.5], [.3]].forEach(([f], i) => { const yy = y + 4 + i * (hh - 8) / 3; for (let k = 0; k < [3, 5, 4, 2][i]; k++) { c.beginPath(); c.arc(x + w * .4 + k * 7, yy, 1.8, 0, TAU); c.fillStyle = col; c.fill(); } seg(c, x + 2, yy, x + w * .22, yy, col, 1.6); });
+    } else if (kind === 'hist') {
+      seg(c, x, y + hh, x + w, y + hh, col, 1.6);
+      [.35, .7, 1, .55, .25].forEach((f, i) => { const bw = w / 5; c.fillRect(x + i * bw, y + hh - f * hh, bw, f * hh); c.strokeRect(x + i * bw, y + hh - f * hh, bw, f * hh); });
+    } else {
+      const m = y + hh / 2; seg(c, x + 2, m, x + w - 2, m, col, 1.6); seg(c, x + 2, m - 6, x + 2, m + 6, col, 1.6); seg(c, x + w - 2, m - 6, x + w - 2, m + 6, col, 1.6);
+      c.fillRect(x + w * .25, m - hh * .3, w * .45, hh * .6); c.strokeRect(x + w * .25, m - hh * .3, w * .45, hh * .6); seg(c, x + w * .5, m - hh * .3, x + w * .5, m + hh * .3, pal.violet, 2.4);
+    }
+    c.restore();
+  };
+
+  /* ---------- checks for the built displays ---------- */
+  const keyCount = (o, v) => o[v] || 0;
+
+  register({
+    id: 'statistical-questions-and-data-displays', level: 'school',
+    title: 'Statistical questions and data displays',
+    blurb: 'Sort statistical questions, build a dot plot and a histogram from real-feeling data, and pick the display that answers the question.',
+    thumb(c, p) {
+      const pal = p.pal, cnt = {}; p.cx = 9; p.cy = 2.4; p.span = 5.4;
+      p.path([[4, 0], [14, 0]], { stroke: pal['grid-strong'], width: 1.6 });
+      DS[0].v.forEach(x => { const l = cnt[x] = (cnt[x] || 0) + 1; p.dot(x, .5 + (l - 1) * 1.0, 4.4, alpha(pal.blue, .88), pal.stage, 1); });
+      p.path([[5, -1.3], [13, -1.3]], { stroke: pal.violet, width: 2 });
+      p.path([[6.5, -1.9], [8.5, -1.9], [8.5, -.8], [6.5, -.8]], { stroke: pal.violet, width: 2, close: true });
+      p.path([[7.5, -1.9], [7.5, -.8]], { stroke: pal.violet, width: 2.4 });
+    },
+    hook: 'Twenty students answer "How long do you read at night?" with twenty different numbers. How can one picture tell the story of all of them?',
+    steps: [
+      { title: 'A question that expects variety',
+        text: String.raw`<p>The canvas shows <b>How tall are the students in my class?</b> A <b>statistical question</b> is one you answer with data, and the data will <b>vary</b>: different students give different answers.</p><p>Tap <b>Statistical</b> or <b>Not statistical</b>. Then sort all 8 questions. For each statistical one, say if the data is numbers or categories.</p>`,
+        set: { mode: 'sort', q: 0 } },
+      { title: 'Build a dot plot',
+        text: String.raw`<p>These are the shoe sizes of 16 students, in the order they were collected. Build a <b>dot plot</b>: tap above a size on the number line to add one dot. Tap a stack to remove its top dot.</p><p>When you have 16 dots, press <b>Check my dot plot</b>. It tells you which stacks are wrong and why.</p>`,
+        set: { mode: 'build', ds: 0, disp: 'dot' } },
+      { title: 'Build a histogram',
+        text: String.raw`<p>Now the reading minutes of 20 students. A <b>histogram</b> counts the values in <b>bins</b>. The bin width is 10, so the first bar counts values from 0 up to, but not including, 10.</p><p>Drag the top of each bar to the number of students in its bin. Then change the bin width and try the other displays of the same data.</p>`,
+        set: { mode: 'build', ds: 1, disp: 'hist', bw: 1 } },
+      { title: 'Choose a display, then read it',
+        text: String.raw`<p>Different questions need different displays. The canvas shows a question. Pick the display that helps most, then pick the reason.</p><p>When you are done, press <b>Read</b> at the top of the panel. Choose the one sentence that answers the question without claiming too much.</p>`,
+        set: { mode: 'match', m: 0 } }
+    ],
+    formal: String.raw`
+      <h3>Statistical questions</h3>
+      <p>A <b>statistical question</b> expects the answers to <b>vary</b>, so you need a data set to answer it. "How many students are in my school today?" has one answer. "How tall are the students in my class?" has a different answer for every student.</p>
+      <p>A statistical question can also <b>compare groups</b>, such as sixth graders and seventh graders. The data may be <b>categorical</b> (labels such as dog, cat or bus) or <b>numerical</b> (counts or measurements such as minutes or centimeters). The answer must account for the variability. It can not be one student's number.</p>
+      <h3>Five ways to display data</h3>
+      <p>A <b>table</b> gives exact counts. A <b>dot plot</b> puts one dot per value on a number line, so every value stays visible. A <b>stem-and-leaf plot</b> splits each value into a stem (the leading digits) and a leaf (the last digit), so the rows also show the shape. A <b>histogram</b> counts the values in equal-width bins. A <b>box plot</b> draws five numbers: the minimum, the first quartile \(Q_1\), the median, the third quartile \(Q_3\) and the maximum.</p>
+      <h3>How a histogram counts</h3>
+      <p>A bin from \(a\) to \(b\) holds the values with \(a \le x &lt; b\). A value on the edge goes in the bin to its right. Changing the bin width changes the picture, so try more than one. The bars always add up to the number of values.</p>
+      <h3>The five numbers of a box plot</h3>
+      <p>Sort the values. The median is the middle value, or the mean of the two middle values. \(Q_1\) is the median of the lower half and \(Q_3\) is the median of the upper half. The box runs from \(Q_1\) to \(Q_3\), so it holds about half of the values. The spread of that middle half is
+      \[ \text{IQR} = Q_3 - Q_1. \]
+      For the 16 shoe sizes, the median is \(7.5\), \(Q_1 = 6.5\) and \(Q_3 = 8.5\), so the IQR is \(2\).</p>
+      <h3>Telling the story</h3>
+      <p>Pick the display that fits the question: exact counts need a table, gaps and outliers need a dot plot, shape needs a histogram, and comparing middles needs box plots. Then answer in a sentence that is about <b>your data</b>, mentions the variability, and does not claim more than the data can support. Sixteen students in one room tell you about those 16 students. They do not prove anything about every student.</p>`,
+    check: [
+      { q: 'Which of these is a statistical question?',
+        choices: ['How many minutes did Sam read last night?', 'How long is the lunch period at Oak School?', 'How many minutes do sixth graders at Oak School read each night?', 'How many sixth graders are at Oak School today?'], answer: 2,
+        why: 'Different students read for different lengths of time, so you expect different answers. That variability is what makes it statistical. The other three each have one answer: one person, one lunch period, one count.',
+        hint: 'Ask: would different people give different answers?' },
+      { q: 'A histogram of 20 students\' reading minutes has bins of width 10 minutes. From left to right the bars show: 0 to 9 minutes: 2 students, 10 to 19: 3, 20 to 29: 6, 30 to 39: 5, 40 to 49: 3, 50 to 59: 1. Which statement does the histogram support?',
+        choices: ['Most of these 20 students (14) read 20 to 49 minutes.', 'The most common reading time is 6 minutes, because the tallest bar is 6 tall.', 'Every sixth grader reads 20 to 29 minutes a night.', 'Exactly 6 students read 25 minutes.'], answer: 0,
+        why: String.raw`The bars for 20 to 29, 30 to 39 and 40 to 49 hold \(6+5+3=14\) of the 20 students. The height of a bar is a count of students, not a number of minutes. A bar also hides the exact values, and 20 students cannot speak for every sixth grader.`,
+        hint: 'A bar\'s height counts students. Add the bars you need.' }
+    ],
+    links: { related: ['mean-median-and-spread', 'scatter-plots-and-lines-of-fit', 'samples-and-populations'] },
+
+    mount({ stage, controls: C }) {
+      const st = {
+        mode: 'sort',
+        sq: { i: 0, a1: null, a2: null, first: {}, firstK: {}, fb: '' },
+        ds: 0, disp: 'dot', split: false, showDots: false,
+        bw: [1, 1, 1],
+        dots: DS.map(() => ({})),
+        hb: DS.map(d => d.widths.map(w => Array(d.nb(w)).fill(0))),
+        bfb: '',
+        m: { i: 0, pick: null, stage: 'pick', rpick: null, fb: '', solved: {} },
+        r: { i: 0, pick: null, done: false, fb: '', solved: {} }
+      };
+      const lay = {};
+      const P = new Plane(stage, { span: 6 });
+      const ds = () => DS[st.ds];
+      const cap = () => ds().maxc + 2;
+      const barsNow = () => st.hb[st.ds][st.bw[st.ds]];
+      const dotsOK = i => { const t = DS[i].tc, d = st.dots[i]; return Object.keys(t).every(k => keyCount(d, k) === t[k]) && Object.keys(d).every(k => keyCount(t, k) === d[k] || !d[k]); };
+      const histOK = (i, wi) => { const tr = DS[i].bins(DS[i].widths[wi]), b = st.hb[i][wi]; return tr.every((x, k) => x === b[k]); };
+
+      /* ---------- displays (all draw into a rectangle R) ---------- */
+      const drawDot = (c, p, i, R, counts, o = {}) => {
+        const d = DS[i], pal = p.pal, nc = (d.dhi - d.dlo) / d.step, x0 = R.x + 16, x1 = R.x + R.w - 16, colw = (x1 - x0) / nc;
+        const axY = R.y + R.h - 36, avail = axY - R.y - 6, capn = d.maxc + 2;
+        const r = clamp(Math.min(colw * .42, avail / capn / 2.1), 3, 22), fs = clamp(colw * .5, 10.5, 14);
+        seg(c, x0 - 8, axY, x1 + 8, axY, pal['grid-strong'], 2);
+        const every = colw < 24 ? 2 : 1;
+        for (let k = 0; k <= nc; k++) {
+          const v = d.dlo + k * d.step, x = x0 + k * colw;
+          seg(c, x, axY, x, axY + 5, pal['grid-strong'], 1.5);
+          if (k % every === 0) T(c, p, String(v), x, axY + 17, { size: fs, color: pal.muted, halo: false });
+        }
+        T(c, p, d.unit, (x0 + x1) / 2, axY + 31, { size: 12, color: pal.muted, halo: false, weight: 500 });
+        for (let k = 0; k <= nc; k++) {
+          const v = d.dlo + k * d.step, n = counts[v] || 0;
+          for (let j = 0; j < n; j++) { c.beginPath(); c.arc(x0 + k * colw, axY - r * 1.2 - j * 2.1 * r, r, 0, TAU); c.fillStyle = alpha(pal.blue, .88); c.fill(); c.strokeStyle = pal.stage; c.lineWidth = 1.5; c.stroke(); }
+        }
+        if (o.live) Object.assign(lay, { dot: { x0, x1, colw, nc, axY, r, top: R.y } });
+      };
+
+      const drawHist = (c, p, i, R, wi, bars, o = {}) => {
+        const d = DS[i], pal = p.pal, w = d.widths[wi], nb = d.nb(w), x0 = R.x + 32, x1 = R.x + R.w - 10, bwp = (x1 - x0) / nb;
+        const axY = R.y + R.h - 36, top = R.y + 26, plotH = axY - top, ym = o.ymax || d.ymax, fs = clamp(bwp * .5, 10.5, 13);
+        for (let g = 0; g <= ym; g += 2) {
+          const y = axY - g / ym * plotH;
+          if (g) seg(c, x0, y, x1, y, pal.grid, 1);
+          T(c, p, String(g), x0 - 8, y, { size: 11.5, color: pal.muted, align: 'right', halo: false });
+        }
+        T(c, p, d.plural, x0 - 26, top - 16, { size: 11.5, color: pal.muted, align: 'left', halo: false, weight: 500 });
+        const good = o.good;
+        bars.forEach((n, b) => {
+          if (n > 0) {
+            const hgt = n / ym * plotH;
+            c.fillStyle = alpha(pal.blue, .6); c.fillRect(x0 + b * bwp, axY - hgt, bwp, hgt);
+            c.strokeStyle = good ? pal.green : pal.blue; c.lineWidth = 2; c.strokeRect(x0 + b * bwp, axY - hgt, bwp, hgt);
+            T(c, p, String(n), x0 + (b + .5) * bwp, axY - hgt - (o.live ? 20 : 9), { size: 12.5, color: pal.text, halo: true });
+          }
+        });
+        seg(c, x0, axY, x1, axY, pal['grid-strong'], 2);
+        const every = bwp < 26 ? 2 : 1;
+        for (let b = 0; b <= nb; b++) {
+          const x = x0 + b * bwp; seg(c, x, axY, x, axY + 5, pal['grid-strong'], 1.5);
+          if (b % every === 0) T(c, p, String(d.hlo + b * w), x, axY + 17, { size: fs, color: pal.muted, halo: false });
+        }
+        T(c, p, d.unit + ' (bin width ' + w + ')', (x0 + x1) / 2, axY + 31, { size: 12, color: pal.muted, halo: false, weight: 500 });
+        if (o.live) {
+          bars.forEach((n, b) => {
+            const cx = x0 + (b + .5) * bwp, cy = axY - n / ym * plotH;
+            c.beginPath(); c.arc(cx, cy, 6.5, 0, TAU); c.fillStyle = pal.stage; c.fill(); c.strokeStyle = pal.brass; c.lineWidth = 2.5; c.stroke();
+          });
+          Object.assign(lay, { hist: { x0, x1, bwp, nb, axY, top, plotH, ymax: ym } });
+        }
+      };
+
+      const drawStem = (c, p, i, R, split) => {
+        const d = DS[i], pal = p.pal, s = sortN(d.v), s0 = Math.floor(s[0] / 10), s1 = Math.floor(s[s.length - 1] / 10);
+        const rows = [];
+        for (let k = s0; k <= s1; k++) {
+          if (split) { rows.push({ stem: k, lo: true, ls: s.filter(x => Math.floor(x / 10) === k && x % 10 < 5) }); rows.push({ stem: k, lo: false, ls: s.filter(x => Math.floor(x / 10) === k && x % 10 >= 5) }); }
+          else rows.push({ stem: k, ls: s.filter(x => Math.floor(x / 10) === k) });
+        }
+        const rh = clamp((R.h - 34) / rows.length, 15, 46), fs = clamp(rh * .62, 11, 26), sx = R.x + 40, lw = clamp(fs * 1.05, 11, 30);
+        const y0 = R.y + 8;
+        seg(c, sx, y0, sx, y0 + rows.length * rh, pal['grid-strong'], 2);
+        rows.forEach((r, k) => {
+          const y = y0 + (k + .5) * rh;
+          T(c, p, String(r.stem), sx - 12, y, { size: fs, align: 'right', weight: 700 });
+          if (split) T(c, p, r.lo ? '0-4' : '5-9', sx - 26, y, { size: 10.5, align: 'right', color: pal.muted, halo: false, weight: 500 });
+          r.ls.forEach((x, j) => T(c, p, String(x % 10), sx + 12 + j * lw, y, { size: fs, color: pal.blue, weight: 700, halo: false }));
+        });
+        const ky = y0 + rows.length * rh + 18, ex = s[s.length - 1];
+        T(c, p, `Key: ${Math.floor(ex / 10)} | ${ex % 10} means ${ex}`, R.x + 4, ky, { size: 12.5, align: 'left', color: pal.muted, halo: false });
+      };
+
+      const drawBox = (c, p, i, R, dots) => {
+        const d = DS[i], pal = p.pal, f = d.f, x0 = R.x + 20, x1 = R.x + R.w - 20, ax = v => x0 + (v - d.dlo) / (d.dhi - d.dlo) * (x1 - x0);
+        const axY = R.y + R.h - 36, bh = clamp(R.h * .16, 28, 70), yc = R.y + R.h * .36, fs = 12.5;
+        seg(c, x0 - 8, axY, x1 + 8, axY, pal['grid-strong'], 2);
+        for (let v = d.dlo; v <= d.dhi + 1e-9; v += d.boxTick) { seg(c, ax(v), axY, ax(v), axY + 5, pal['grid-strong'], 1.5); T(c, p, String(v), ax(v), axY + 17, { size: fs, color: pal.muted, halo: false }); }
+        T(c, p, d.unit, (x0 + x1) / 2, axY + 31, { size: 12, color: pal.muted, halo: false, weight: 500 });
+        if (dots) {
+          const cnt = {}, r = 4.6;
+          d.v.forEach(v => { const l = cnt[v] = (cnt[v] || 0) + 1; c.beginPath(); c.arc(ax(v), axY - 8 - (l - 1) * 10, r, 0, TAU); c.fillStyle = alpha(pal.blue, .85); c.fill(); });
+        }
+        seg(c, ax(f.min), yc, ax(f.q1), yc, pal.blue, 2.5); seg(c, ax(f.q3), yc, ax(f.max), yc, pal.blue, 2.5);
+        seg(c, ax(f.min), yc - bh * .3, ax(f.min), yc + bh * .3, pal.blue, 2.5); seg(c, ax(f.max), yc - bh * .3, ax(f.max), yc + bh * .3, pal.blue, 2.5);
+        c.fillStyle = alpha(pal.blue, .22); c.fillRect(ax(f.q1), yc - bh / 2, ax(f.q3) - ax(f.q1), bh);
+        c.strokeStyle = pal.blue; c.lineWidth = 2.5; c.strokeRect(ax(f.q1), yc - bh / 2, ax(f.q3) - ax(f.q1), bh);
+        seg(c, ax(f.med), yc - bh / 2, ax(f.med), yc + bh / 2, pal.violet, 4);
+        T(c, p, String(f.min), ax(f.min), yc + bh / 2 + 12, { size: fs, color: pal.muted });
+        T(c, p, String(f.max), ax(f.max), yc + bh / 2 + 12, { size: fs, color: pal.muted });
+        T(c, p, String(f.q1), ax(f.q1), yc - bh / 2 - 11, { size: fs });
+        T(c, p, String(f.q3), ax(f.q3), yc - bh / 2 - 11, { size: fs });
+        T(c, p, 'median ' + num(f.med), ax(f.med), yc + bh / 2 + 12, { size: fs, color: pal.violet });
+      };
+
+      const drawTable = (c, p, i, R) => {
+        const d = DS[i], pal = p.pal, vals = Object.keys(d.tc).map(Number).sort((a, b) => a - b), rh = clamp((R.h - 50) / (vals.length + 2), 16, 28), fs = clamp(rh * .55, 11, 16);
+        const xV = R.x + 46, xC = R.x + 124, xT = R.x + 166, y0 = R.y + 6;
+        T(c, p, d.unit, xV, y0 + rh / 2, { size: fs, weight: 700, align: 'center' }); T(c, p, 'count', xC, y0 + rh / 2, { size: fs, weight: 700 }); T(c, p, 'tally', xT, y0 + rh / 2, { size: fs, weight: 700, align: 'left' });
+        seg(c, R.x, y0 + rh, R.x + Math.min(R.w, 300), y0 + rh, pal['grid-strong'], 2);
+        vals.forEach((v, k) => {
+          const y = y0 + (k + 1.5) * rh;
+          T(c, p, String(v), xV, y, { size: fs, halo: false }); T(c, p, String(d.tc[v]), xC, y, { size: fs, halo: false, color: pal.blue, weight: 700 });
+          for (let j = 0; j < d.tc[v]; j++) { c.fillStyle = alpha(pal.blue, .8); c.fillRect(xT + j * (fs * .8 + 3), y - fs * .4, fs * .8, fs * .8); }
+          if (k) seg(c, R.x, y - rh / 2, R.x + Math.min(R.w, 300), y - rh / 2, pal.grid, 1);
+        });
+        const yt = y0 + (vals.length + 1.5) * rh + 4;
+        T(c, p, `Total: ${d.n} ${d.plural}`, R.x + 4, yt, { size: fs, align: 'left', color: pal.muted, halo: false });
+      };
+
+      /* ---------- scenes ---------- */
+      const PAD = 14;
+      const sceneSort = (c, p) => {
+        const W = p.w, pal = p.pal, s = st.sq, q = QS[s.i], fs = clamp(W * .036, 13, 16);
+        T(c, p, `Question ${s.i + 1} of ${QS.length}`, PAD, 20, { size: fs, align: 'left', color: pal.muted, halo: false });
+        for (let k = 0; k < QS.length; k++) {
+          const f = s.first[k], col = f === undefined ? pal.grid : f ? pal.green : pal.red;
+          c.beginPath(); c.arc(W - PAD - 6 - (QS.length - 1 - k) * 18, 20, 5.5, 0, TAU); c.fillStyle = k === s.i ? pal.brass : col; c.fill();
+          if (k === s.i && f !== undefined) { c.beginPath(); c.arc(W - PAD - 6 - (QS.length - 1 - k) * 18, 20, 2.5, 0, TAU); c.fillStyle = col; c.fill(); }
+        }
+        const qs = clamp(W * .06, 19, 30), lines = wrap(c, q.q, qs, W - 2 * PAD - 36, 700), ch = lines.length * qs * 1.3 + 36;
+        rr(c, PAD, 40, W - 2 * PAD, ch, 10); c.fillStyle = alpha(pal.blue, .07); c.fill(); c.strokeStyle = pal['grid-strong']; c.lineWidth = 1.5; c.stroke();
+        lines.forEach((l, k) => T(c, p, l, W / 2, 40 + 18 + (k + .5) * qs * 1.3, { size: qs, weight: 700, halo: false }));
+        let y = 40 + ch + 28;
+        if (s.a1 === null) {
+          const hl = wrap(c, 'Would different people give different answers to this question?', fs + 2, W - 2 * PAD, 600);
+          hl.forEach((l, k) => T(c, p, l, W / 2, y + k * (fs + 8), { size: fs + 2, color: pal.muted, halo: false }));
+          return;
+        }
+        T(c, p, 'Imagine asking 6 different people:', PAD, y, { size: fs, align: 'left', color: pal.muted, halo: false });
+        y += 28;
+        const cs = fs + 2; let x = PAD, rowY = y;
+        q.ans.forEach(a => {
+          const w = tw(c, a, cs, 700) + 22;
+          if (x + w > W - PAD) { x = PAD; rowY += cs + 20; }
+          rr(c, x, rowY - (cs + 10) / 2, w, cs + 10, 8); c.fillStyle = alpha(pal.blue, .14); c.fill(); c.strokeStyle = pal.blue; c.lineWidth = 1.5; c.stroke();
+          T(c, p, a, x + w / 2, rowY, { size: cs, weight: 700, halo: false });
+          x += w + 8;
+        });
+        y = rowY + cs + 26;
+        const dist = new Set(q.ans).size;
+        T(c, p, dist === 1 ? 'Everyone gives the same answer.' : `${dist} different answers in 6 tries.`, PAD, y, { size: fs + 1, align: 'left', color: dist === 1 ? pal.red : pal.green, halo: false });
+        y += 30;
+        const tags = [];
+        if (q.stat && s.a1 === true) { if (q.groups) tags.push(['compares two groups', pal.violet]); if (s.a2 === q.kind) tags.push([q.kind === 'num' ? 'numerical data (numbers)' : 'categorical data (labels)', pal.yellow]); }
+        let tx = PAD;
+        tags.forEach(([t, col]) => {
+          const w = tw(c, t, fs, 700) + 20; if (tx + w > W - PAD) { tx = PAD; y += 32; }
+          rr(c, tx, y - 13, w, 26, 13); c.fillStyle = alpha(col, .2); c.fill(); c.strokeStyle = col; c.lineWidth = 1.5; c.stroke();
+          T(c, p, t, tx + w / 2, y, { size: fs, weight: 700, halo: false }); tx += w + 8;
+        });
+      };
+
+      const sceneBuild = (c, p) => {
+        const W = p.w, pal = p.pal, d = ds(), fs = clamp(W * .034, 12, 15);
+        T(c, p, `${d.name}: ${d.who}`, PAD, 18, { size: fs + 2, align: 'left', weight: 700, halo: false });
+        const dl = wrap(c, 'Data as collected: ' + d.v.join(', '), fs - .5, W - 2 * PAD, 500);
+        dl.forEach((l, k) => T(c, p, l, PAD, 38 + k * (fs + 4), { size: fs - .5, align: 'left', color: pal.muted, weight: 500, halo: false }));
+        const hy = 38 + dl.length * (fs + 4) + 4, R = { x: PAD - 4, y: hy, w: W - 2 * PAD + 8, h: p.h - hy - 8 };
+        delete lay.dot; delete lay.hist;
+        if (st.disp === 'dot') {
+          drawDot(c, p, st.ds, R, st.dots[st.ds], { live: true });
+          const placed = Object.values(st.dots[st.ds]).reduce((a, b) => a + b, 0);
+          T(c, p, `${placed} of ${d.n} dots`, W - PAD, hy + 8, { size: fs, align: 'right', color: dotsOK(st.ds) ? pal.green : pal.muted, halo: false });
+        } else if (st.disp === 'hist') drawHist(c, p, st.ds, R, st.bw[st.ds], barsNow(), { live: true, good: histOK(st.ds, st.bw[st.ds]) });
+        else if (st.disp === 'stem') drawStem(c, p, st.ds, R, st.split);
+        else if (st.disp === 'box') drawBox(c, p, st.ds, R, st.showDots);
+        else drawTable(c, p, st.ds, R);
+      };
+
+      const sceneMatch = (c, p) => {
+        const W = p.w, pal = p.pal, m = st.m, sc = MS[m.i], fs = clamp(W * .036, 13, 16);
+        T(c, p, `Question ${m.i + 1} of ${MS.length}`, PAD, 20, { size: fs, align: 'left', color: pal.muted, halo: false });
+        const qs = clamp(W * .042, 15, 20), lines = wrap(c, sc.text, qs, W - 2 * PAD - 28, 600), ch = lines.length * qs * 1.4 + 28;
+        rr(c, PAD, 38, W - 2 * PAD, ch, 10); c.fillStyle = alpha(pal.blue, .07); c.fill(); c.strokeStyle = pal['grid-strong']; c.lineWidth = 1.5; c.stroke();
+        lines.forEach((l, k) => T(c, p, l, PAD + 14, 38 + 14 + (k + .5) * qs * 1.4, { size: qs, align: 'left', weight: 600, halo: false }));
+        const top = 38 + ch + 30, bw = (W - 2 * PAD - 4 * 8) / 5, bh = clamp(bw * .8, 40, 70);
+        T(c, p, 'Which display helps most?', PAD, top - 12, { size: fs + 1, align: 'left', color: pal.muted, halo: false });
+        KINDS.forEach((k, i) => {
+          const x = PAD + i * (bw + 8), y = top + 8;
+          const picked = m.pick === k, right = m.stage !== 'pick' && k === sc.best;
+          const col = right ? pal.green : picked ? pal.red : pal.muted;
+          rr(c, x, y, bw, bh + 28, 8); c.fillStyle = alpha(col, picked || right ? .12 : .04); c.fill(); c.strokeStyle = picked || right ? col : pal['grid-strong']; c.lineWidth = picked || right ? 2.5 : 1.2; c.stroke();
+          mini(c, p, k, x + bw * .14, y + 8, bw * .72, bh - 6, picked || right ? col : pal.text);
+          T(c, p, k === 'stem' ? 'Stem & leaf' : k === 'hist' ? 'Histogram' : k === 'box' ? 'Box plot' : k === 'dot' ? 'Dot plot' : 'Table', x + bw / 2, y + bh + 14, { size: clamp(bw * .17, 10, 13.5), halo: false, color: picked || right ? col : pal.text });
+        });
+      };
+
+      const sceneRead = (c, p) => {
+        const W = p.w, pal = p.pal, r = st.r, sc = RS[r.i], d = DS[sc.ds], fs = clamp(W * .036, 13, 16);
+        T(c, p, `Display ${r.i + 1} of ${RS.length}`, PAD, 20, { size: fs, align: 'left', color: pal.muted, halo: false });
+        const qs = clamp(W * .042, 15, 19), lines = wrap(c, sc.q, qs, W - 2 * PAD, 700);
+        lines.forEach((l, k) => T(c, p, l, PAD, 44 + k * qs * 1.35, { size: qs, align: 'left', weight: 700, halo: false }));
+        const hy = 44 + lines.length * qs * 1.35 + 4, R = { x: PAD - 4, y: hy, w: W - 2 * PAD + 8, h: p.h - hy - 8 };
+        if (sc.disp === 'dot') drawDot(c, p, sc.ds, R, d.tc);
+        else { const bb = d.bins(d.widths[sc.wi]); drawHist(c, p, sc.ds, R, sc.wi, bb, { ymax: Math.max(4, Math.ceil(Math.max(...bb) / 2) * 2 + 2) }); }
+      };
+
+      P.onDraw = (c, p) => { if (st.mode === 'sort') sceneSort(c, p); else if (st.mode === 'build') sceneBuild(c, p); else if (st.mode === 'match') sceneMatch(c, p); else sceneRead(c, p); };
+
+      /* ---------- readouts ---------- */
+      const sortHTML = () => {
+        const s = st.sq, q = QS[s.i], out = [], done = Object.keys(s.first).length, right = Object.values(s.first).filter(Boolean).length;
+        out.push(`${kk('Question')} ${s.i + 1} of ${QS.length}` + (done ? `. Right on the first try: ${right} of ${done}` : ''));
+        if (s.a1 === null) out.push('Does the question expect different answers from different people? If yes, it is statistical.');
+        if (s.fb) out.push(s.fb);
+        return out.join('<br>');
+      };
+      const dotHTML = () => {
+        const d = ds(), placed = Object.values(st.dots[st.ds]).reduce((a, b) => a + b, 0), out = [];
+        out.push(`${kk('Dots placed')} ${placed} of ${d.n}`);
+        if (dotsOK(st.ds)) out.push(`${ok('Every stack matches the data.')} ${d.feat}`);
+        else if (st.bfb) out.push(st.bfb);
+        else out.push('Tap above a value to add a dot. Tap a stack to remove its top dot.');
+        return out.join('<br>');
+      };
+      const histHTML = () => {
+        const d = ds(), wi = st.bw[st.ds], w = d.widths[wi], b = barsNow(), tot = b.reduce((a, x) => a + x, 0), out = [];
+        out.push(`${kk('Bin width')} ${w}. ${kk('Students counted')} ${tot} of ${d.n}`);
+        if (histOK(st.ds, wi)) out.push(`${ok('Every bar is right.')} ${d.histFeat[wi]}`);
+        else if (st.bfb) out.push(st.bfb);
+        else out.push(`Drag the top of each bar. A value on a bin's left edge belongs to that bin, so ${d.hlo + w} goes in the bin that starts at ${d.hlo + w}.`);
+        return out.join('<br>');
+      };
+      const buildHTML = () => {
+        const d = ds(), f = d.f, out = [`${kk('Display')} ${DISP[st.disp].name} of ${d.name.toLowerCase()}`];
+        out.push(`<b>Shows best:</b> ${DISP[st.disp].best}`);
+        out.push(`<b>Hides:</b> ${DISP[st.disp].hides}`);
+        if (st.disp === 'dot') out.push(dotHTML());
+        else if (st.disp === 'hist') out.push(histHTML());
+        else if (st.disp === 'stem') out.push(st.split ? 'Each stem now has two rows: leaves 0 to 4, then leaves 5 to 9. Empty rows show a gap or a thin spot.' : `Each row is a stem (the tens). The leaves are the last digits, in order. There are ${d.n} leaves, one for each student. Try splitting the stems.`);
+        else if (st.disp === 'box') out.push(`${kk('Five numbers')} min ${num(f.min)}, Q1 ${num(f.q1)}, median ${num(f.med)}, Q3 ${num(f.q3)}, max ${num(f.max)}<br>${kk('Middle half')} ${num(f.q1)} to ${num(f.q3)} (IQR ${num(f.q3 - f.q1)})<br>${d.boxNote}`);
+        else out.push(`The counts add up to ${d.n}. This is the same data as the dot plot, written as numbers.`);
+        return out.join('<br>');
+      };
+      const matchHTML = () => {
+        const m = st.m, sc = MS[m.i], out = [];
+        out.push(m.stage === 'pick' ? 'Pick the display that helps most for this question.' : m.stage === 'reason' ? `${kk('Your display')} ${DISP[m.pick].name}. Now pick the best reason.` : `${kk('Your display')} ${DISP[m.pick].name}`);
+        if (m.fb) out.push(m.fb);
+        return out.join('<br>');
+      };
+      const readHTML = () => {
+        const r = st.r, out = [];
+        out.push(r.done ? ok('You chose a sentence that matches the display.') : 'Choose the sentence that answers the question and does not claim more than the display shows.');
+        if (r.fb) out.push(r.fb);
+        return out.join('<br>');
+      };
+      const upd = () => { ro.innerHTML = st.mode === 'sort' ? sortHTML() : st.mode === 'build' ? buildHTML() : st.mode === 'match' ? matchHTML() : readHTML(); };
+
+      /* ---------- controls ---------- */
+      const probe = C.readout(), host = probe.parentElement; probe.remove();
+      const group = build => {
+        const before = new Set(host.children); build();
+        const g = h('div', { style: 'display:flex;flex-direction:column;gap:16px;flex:none' });
+        [...host.children].filter(e => !before.has(e)).forEach(e => g.append(e));
+        host.append(g); return g;
+      };
+      const small = bs => bs.forEach(b => Object.assign(b.style, { padding: '6px 14px', minHeight: '36px', fontSize: '.88rem' }));
+      const longBtn = bs => bs.forEach(b => Object.assign(b.style, { whiteSpace: 'normal', textAlign: 'left', height: 'auto', lineHeight: '1.35', padding: '8px 12px', minHeight: '40px', fontSize: '.88rem' }));
+      let modeBtns, statBtns, kindBtns, nextQ, dsSel, dispBtns, dotBtns, histBtns, bwS, splitT, dotsT, matchBtns, reasonBtns, nextM, readBtns, nextR, ro;
+      const G = {}, MODES = ['sort', 'build', 'match', 'read'];
+
+      const ROT = [0, 1, 2, 1, 2], rsn = (mi, j) => MS[mi].reasons[(j + ROT[mi]) % 3];
+      const sync = () => {
+        modeBtns.forEach((b, i) => { b.className = MODES[i] === st.mode ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', MODES[i] === st.mode); });
+        MODES.forEach(k => { G[k].style.display = st.mode === k ? 'flex' : 'none'; });
+        /* sort */
+        const s = st.sq, q = QS[s.i], statDone = s.a1 === q.stat, done = statDone && (!q.stat || s.a2 === q.kind);
+        statBtns.forEach((b, i) => { const on = s.a1 === (i === 0); b.className = on ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', on); });
+        G.kind.style.display = statDone && q.stat ? 'flex' : 'none';
+        kindBtns.forEach((b, i) => { const on = s.a2 === (i === 0 ? 'num' : 'cat'); b.className = on ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', on); });
+        nextQ.style.display = done ? '' : 'none'; nextQ.textContent = s.i === QS.length - 1 ? 'Start again' : 'Next question';
+        /* build */
+        dsSel.value = String(st.ds);
+        dispBtns.forEach((b, i) => { const on = KINDS[i] === st.disp; b.className = on ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', on); });
+        G.dot.style.display = st.disp === 'dot' ? 'flex' : 'none'; G.hist.style.display = st.disp === 'hist' ? 'flex' : 'none';
+        G.stem.style.display = st.disp === 'stem' ? 'flex' : 'none'; G.box.style.display = st.disp === 'box' ? 'flex' : 'none';
+        bwS.set(st.bw[st.ds]); splitT.checked = st.split; dotsT.checked = st.showDots;
+        /* match */
+        const m = st.m, sc = MS[m.i];
+        matchBtns.forEach((b, i) => { const on = m.pick === KINDS[i]; b.className = on ? 'btn primary' : 'btn'; b.disabled = m.stage !== 'pick'; b.setAttribute('aria-pressed', on); });
+        G.reason.style.display = m.stage === 'reason' || m.stage === 'done' ? 'flex' : 'none';
+        reasonBtns.forEach((b, i) => { b.textContent = rsn(m.i, i).t; const on = m.rpick === i; b.className = on ? 'btn primary' : 'btn'; b.disabled = m.stage === 'done' && !rsn(m.i, i).ok; });
+        nextM.style.display = m.stage === 'done' ? '' : 'none';
+        /* read */
+        const r = st.r, rs = RS[r.i];
+        readBtns.forEach((b, i) => { b.textContent = rs.opts[i].t; const on = r.pick === i; b.className = on ? 'btn primary' : 'btn'; b.disabled = r.done && !rs.opts[i].ok; });
+        nextR.style.display = r.done ? '' : 'none';
+        P.draw(); upd();
+      };
+
+      C.title('Choose an activity');
+      modeBtns = C.buttons([
+        { label: 'Sort', onClick: () => { st.mode = 'sort'; sync(); } },
+        { label: 'Build', onClick: () => { st.mode = 'build'; sync(); } },
+        { label: 'Match', onClick: () => { st.mode = 'match'; sync(); } },
+        { label: 'Read', onClick: () => { st.mode = 'read'; sync(); } }
+      ]);
+      small(modeBtns);
+
+      /* ----- sort ----- */
+      G.sort = group(() => {
+        statBtns = C.buttons([
+          { label: 'Statistical', onClick: () => pickStat(true) },
+          { label: 'Not statistical', onClick: () => pickStat(false) }
+        ]);
+        G.kind = group(() => {
+          C.hint('This one is statistical. What kind of data would you collect?');
+          kindBtns = C.buttons([
+            { label: 'Numbers', onClick: () => pickKind('num') },
+            { label: 'Categories (labels)', onClick: () => pickKind('cat') }
+          ]);
+        });
+        [nextQ] = C.buttons([{ label: 'Next question', primary: true, onClick: () => nextQuestion() }]);
+        C.hint('A statistical question expects different answers, so you need data. Data is numerical (numbers) or categorical (labels).');
+      });
+      const pickStat = v => {
+        const s = st.sq, q = QS[s.i];
+        if (s.first[s.i] === undefined) s.first[s.i] = v === q.stat;
+        s.a1 = v; s.a2 = null;
+        if (v === q.stat) s.fb = ok('Right.') + ' ' + (q.stat ? q.yes + (q.groups ? '' : '') + ' Now choose the kind of data.' : q.no);
+        else s.fb = no('Not quite.') + ' ' + (q.stat ? 'This one is statistical. ' + q.yes : 'This one is not statistical. ' + q.no) + ' Tap the right choice to go on.';
+        sync();
+      };
+      const pickKind = k => {
+        const s = st.sq, q = QS[s.i];
+        if (s.firstK[s.i] === undefined) s.firstK[s.i] = k === q.kind;
+        s.a2 = k;
+        s.fb = k === q.kind ? ok('Right.') + ' ' + q.kindWhy + (q.groups ? ' The question also compares two groups, so you collect data from each group.' : '') : no('Not quite.') + ' ' + q.kindWhy + ' Tap the right choice.';
+        sync();
+      };
+      const nextQuestion = () => {
+        const s = st.sq;
+        if (s.i === QS.length - 1) { st.sq = { i: 0, a1: null, a2: null, first: {}, firstK: {}, fb: '' }; }
+        else { s.i++; s.a1 = null; s.a2 = null; s.fb = ''; }
+        sync();
+      };
+
+      /* ----- build ----- */
+      G.build = group(() => {
+        dsSel = C.select({ label: 'Data set', value: '0', options: DS.map((d, i) => ({ value: String(i), label: d.name })), onChange: v => { st.ds = +v; st.bfb = ''; sync(); } });
+        dispBtns = C.buttons(KINDS.map(k => ({ label: k === 'stem' ? 'Stem and leaf' : DISP[k].name, onClick: () => { st.disp = k; st.bfb = ''; sync(); } })));
+        small(dispBtns);
+        G.dot = group(() => {
+          dotBtns = C.buttons([
+            { label: 'Check my dot plot', primary: true, onClick: () => checkDots() },
+            { label: 'Fill in the dots', onClick: () => { st.dots[st.ds] = { ...ds().tc }; st.bfb = ''; sync(); } },
+            { label: 'Clear', onClick: () => { st.dots[st.ds] = {}; st.bfb = ''; sync(); } }
+          ]);
+          small(dotBtns);
+          C.hint('Tap above a value to add a dot. Tap a stack to remove its top dot. Use the data list above the plot.');
+        });
+        G.hist = group(() => {
+          bwS = C.slider({ label: 'Bin width', min: 0, max: 2, step: 1, value: 1, format: v => String(ds().widths[Math.round(v)]), onInput: v => { st.bw[st.ds] = Math.round(v); st.bfb = ''; sync(); } });
+          histBtns = C.buttons([
+            { label: 'Check my histogram', primary: true, onClick: () => checkHist() },
+            { label: 'Fill in the bars', onClick: () => { st.hb[st.ds][st.bw[st.ds]] = ds().bins(ds().widths[st.bw[st.ds]]); st.bfb = ''; sync(); } },
+            { label: 'Clear', onClick: () => { st.hb[st.ds][st.bw[st.ds]] = barsNow().map(() => 0); st.bfb = ''; sync(); } }
+          ]);
+          small(histBtns);
+          C.hint('Drag the ring at the top of each bar to the number of students in that bin.');
+        });
+        G.stem = group(() => { splitT = C.toggle({ label: 'Split each stem in two', value: false, onChange: v => { st.split = v; sync(); } }); });
+        G.box = group(() => { dotsT = C.toggle({ label: 'Show the data dots (what the box hides)', value: false, onChange: v => { st.showDots = v; sync(); } }); });
+      });
+      const checkDots = () => {
+        const d = ds(), t = d.tc, dd = st.dots[st.ds], placed = Object.values(dd).reduce((a, b) => a + b, 0), bad = [];
+        new Set([...Object.keys(t), ...Object.keys(dd)]).forEach(k => { if (keyCount(t, k) !== keyCount(dd, k) && (keyCount(dd, k) || keyCount(t, k))) bad.push(+k); });
+        bad.sort((a, b) => a - b);
+        if (!bad.length) { st.bfb = ''; sync(); return; }
+        const msgs = bad.slice(0, 2).map(v => keyCount(t, v) === 0 ? `There is no ${d.unit} ${v} in the data, so remove that dot.` : keyCount(dd, v) < keyCount(t, v) ? `At ${v} you have too few dots. Count how many times ${v} appears in the list.` : `At ${v} you have too many dots. Count how many times ${v} appears in the list.`);
+        st.bfb = `${no('Not yet.')} You have ${placed} of ${d.n} dots, and ${bad.length} ${bad.length === 1 ? 'stack is' : 'stacks are'} wrong. ${msgs.join(' ')}`;
+        sync();
+      };
+      const checkHist = () => {
+        const d = ds(), wi = st.bw[st.ds], w = d.widths[wi], tr = d.bins(w), b = barsNow(), bad = [];
+        tr.forEach((x, k) => { if (x !== b[k]) bad.push(k); });
+        if (!bad.length) { st.bfb = ''; sync(); return; }
+        const msgs = bad.slice(0, 2).map(k => { const a = d.hlo + k * w, z = a + w; return `The bar from ${a} up to ${z} is too ${b[k] < tr[k] ? 'short' : 'tall'}. Count the values that are at least ${a} and less than ${z}.`; });
+        st.bfb = `${no('Not yet.')} ${bad.length} ${bad.length === 1 ? 'bar is' : 'bars are'} wrong. ${msgs.join(' ')}`;
+        sync();
+      };
+
+      /* ----- match ----- */
+      G.match = group(() => {
+        matchBtns = C.buttons(KINDS.map(k => ({ label: k === 'stem' ? 'Stem and leaf' : DISP[k].name, onClick: () => pickDisp(k) })));
+        small(matchBtns);
+        G.reason = group(() => {
+          C.hint('Why is that the best display? Pick the reason.');
+          reasonBtns = C.buttons([0, 1, 2].map(i => ({ label: '', onClick: () => pickReason(i) })));
+          longBtn(reasonBtns);
+        });
+        [nextM] = C.buttons([{ label: 'Next question', primary: true, onClick: () => { st.m = { ...st.m, i: (st.m.i + 1) % MS.length, pick: null, stage: 'pick', rpick: null, fb: '' }; sync(); } }]);
+        C.hint('Think about what the question needs: exact counts, every value, the shape, the middle, or comparing groups.');
+      });
+      const pickDisp = k => {
+        const m = st.m, sc = MS[m.i]; if (m.stage === 'done') return;
+        m.pick = k;
+        if (k === sc.best) { m.stage = 'reason'; m.fb = ok('Good choice.') + ' ' + sc.why[k]; }
+        else { m.stage = 'pick'; m.fb = no('Not the best choice.') + ' ' + sc.why[k] + ' Try another display.'; }
+        sync();
+      };
+      const pickReason = i => {
+        const m = st.m, sc = MS[m.i], r = rsn(m.i, i);
+        m.rpick = i;
+        if (r.ok) { m.stage = 'done'; m.solved[m.i] = true; m.fb = ok('Yes.') + ' ' + r.why + ' ' + sc.why[sc.best]; }
+        else m.fb = no('Not that one.') + ' ' + r.why;
+        sync();
+      };
+
+      /* ----- read ----- */
+      G.read = group(() => {
+        readBtns = C.buttons([0, 1, 2].map(i => ({ label: '', onClick: () => pickRead(i) })));
+        longBtn(readBtns);
+        [nextR] = C.buttons([{ label: 'Next display', primary: true, onClick: () => { st.r = { ...st.r, i: (st.r.i + 1) % RS.length, pick: null, done: false, fb: '' }; sync(); } }]);
+        C.hint('Good sentences are about this data, say how the values vary, and do not claim more than the display shows.');
+      });
+      const pickRead = i => {
+        const r = st.r, o = RS[r.i].opts[i]; if (r.done) return;
+        r.pick = i; r.done = o.ok; r.fb = (o.ok ? ok('Yes. ') : no('Not that one. ')) + o.why;
+        sync();
+      };
+
+      ro = C.readout();
+
+      /* ---------- pointer interaction ---------- */
+      const cv = P.canvas;
+      cv.addEventListener('pointerdown', e => {
+        if (st.mode !== 'build' || st.disp !== 'dot' || !lay.dot) return;
+        const r = cv.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top, L = lay.dot;
+        if (py < L.top || py > L.axY + 14 || px < L.x0 - L.colw / 2 || px > L.x1 + L.colw / 2) return;
+        const col = clamp(Math.round((px - L.x0) / L.colw), 0, L.nc), d = ds(), v = d.dlo + col * d.step, dd = st.dots[st.ds], n = keyCount(dd, v);
+        const topY = L.axY - n * 2.1 * L.r - L.r * .1;
+        if (n > 0 && py >= topY) { if (n === 1) delete dd[v]; else dd[v] = n - 1; }
+        else if (n < cap()) dd[v] = n + 1;
+        st.bfb = ''; sync();
+      });
+      draggable(P, {
+        hit: (px, py) => {
+          if (st.mode !== 'build') return null;
+          if (st.disp === 'dot' && lay.dot) { const L = lay.dot; return py >= L.top && py <= L.axY + 14 && px >= L.x0 - L.colw / 2 && px <= L.x1 + L.colw / 2 ? 'dot' : null; }
+          if (st.disp === 'hist' && lay.hist) {
+            const L = lay.hist; if (px < L.x0 || px > L.x1 || py < L.top - 12 || py > L.axY + 10) return null;
+            return clamp(Math.floor((px - L.x0) / L.bwp), 0, L.nb - 1);
+          }
+          return null;
+        },
+        move: (hd, x, y) => {
+          if (hd === 'dot') return;
+          const L = lay.hist, py = P.Y(y), v = clamp(Math.round((L.axY - py) / L.plotH * L.ymax), 0, L.ymax);
+          barsNow()[hd] = v; st.bfb = ''; sync();
+        }
+      });
+
+      sync();
+
+      /* ---------- guided steps ---------- */
+      const apply = (patch, immediate) => {
+        const { mode, q, ds: dsi, disp, bw, m } = patch;
+        if (mode !== undefined) st.mode = mode;
+        if (q !== undefined) { st.sq.i = q; st.sq.a1 = null; st.sq.a2 = null; st.sq.fb = ''; }
+        if (dsi !== undefined) { st.ds = dsi; st.bfb = ''; }
+        if (disp !== undefined) st.disp = disp;
+        if (bw !== undefined) st.bw[st.ds] = bw;
+        if (m !== undefined) { st.m = { ...st.m, i: m, pick: null, stage: 'pick', rpick: null, fb: '' }; }
+        sync();
+      };
+      return { destroy: () => { P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
+   SCHOOL — Compound events and tree diagrams
+   ===================================================================== */
+{
+  /* ---------- small helpers ---------- */
+  const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+  const ok = t => `<b style="color:var(--green)">${t}</b>`;
+  const no = t => `<b style="color:var(--red)">${t}</b>`;
+  const kk = t => `<span class="k">${t}</span>`;
+  const key = (i, j) => i + ',' + j;
+  const lc = s => s.charAt(0).toLowerCase() + s.slice(1);
+  const names = (arr, max = 8) => arr.slice(0, max).join(', ') + (arr.length > max ? ` and ${arr.length - max} more` : '');
+  /* "= 0.5 = 50%" when exact, "≈ 0.167 ≈ 16.7%" when rounded */
+  const rnd = (v, max, fall) => { for (let d = 0; d <= max; d++) { const r = +v.toFixed(d); if (Math.abs(r - v) < 1e-9) return [String(r), true]; } return [String(+v.toFixed(fall)), false]; };
+  const dp = v => { const [a, ea] = rnd(v, 4, 3), [b, eb] = rnd(v * 100, 2, 1); return `${ea ? '=' : '≈'} ${a} ${eb ? '=' : '≈'} ${b}%`; };
+  const fracS = (a, b) => { const g = gcd(a, b) || 1; return a === 0 ? '0' : a === b ? '1' : (a / g) + '/' + (b / g); };
+
+  /* ---------- the experiments ---------- */
+  const O = (k, nm, c, w) => ({ k, nm, c, w: w || 1 });
+  const COIN = () => [O('H', 'Heads', 'blue'), O('T', 'Tails', 'violet')];
+  const DIE = () => [1, 2, 3, 4, 5, 6].map(n => O(String(n), String(n), 'text'));
+  const BAG = () => [O('R', 'Red', 'red'), O('B', 'Blue', 'blue'), O('G', 'Green', 'green')];
+  const heads = (a, b) => (a === 'H' ? 1 : 0) + (b === 'H' ? 1 : 0);
+  const hw = n => n + (n === 1 ? ' head' : ' heads');
+  const SC = [
+    { id: 'coins', name: 'Flip a coin twice', n1: 'First flip', n2: 'Second flip', A: COIN(), B: COIN(), sym: true, reps: ['list', 'table', 'tree'],
+      key: 'H = heads, T = tails. HT means heads on the first flip and tails on the second.',
+      events: [
+        { name: 'At least one head', test: (a, b) => heads(a, b) >= 1, r: (a, b) => hw(heads(a, b)), note: 'Only TT has no head, so it is the one outcome left out.' },
+        { name: 'Exactly one head', test: (a, b) => heads(a, b) === 1, r: (a, b) => hw(heads(a, b)), note: 'HT and TH are different outcomes, so both count. That is why one head and one tail is more likely than two heads.' },
+        { name: 'Both flips land the same way', test: (a, b) => a === b, r: (a, b) => a === b ? 'both ' + (a === 'H' ? 'heads' : 'tails') : 'the flips differ', note: '' }
+      ] },
+    { id: 'coindie', name: 'Flip a coin and roll a die', n1: 'Coin', n2: 'Die', A: COIN(), B: DIE(), sym: false, reps: ['list', 'table', 'tree'],
+      key: 'H = heads, T = tails. H3 means heads on the coin and a 3 on the die.',
+      events: [
+        { name: 'Heads and an even number', test: (a, b) => a === 'H' && +b % 2 === 0, r: (a, b) => (a === 'H' ? 'heads' : 'tails') + ', die shows ' + b, note: 'Heads goes with 2, 4 or 6.' },
+        { name: 'Tails, or a number greater than 4', test: (a, b) => a === 'T' || +b > 4, r: (a, b) => (a === 'H' ? 'heads' : 'tails') + ', die shows ' + b, note: '"Or" means at least one of the two things is true. All 6 tails outcomes fit, and so do H5 and H6.' },
+        { name: 'The die shows a 6', test: (a, b) => b === '6', r: (a, b) => 'die shows ' + b, note: 'The coin can be anything, so both H6 and T6 fit.' }
+      ] },
+    { id: 'outfit', name: 'Choose an outfit', n1: 'Shirt', n2: 'Pants', A: [O('R', 'Red', 'red'), O('B', 'Blue', 'blue'), O('G', 'Green', 'green')], B: [O('J', 'Jeans', 'violet'), O('S', 'Shorts', 'yellow')], sym: false, reps: ['list', 'table', 'tree'],
+      key: 'R, B, G = red, blue, green shirt. J, S = jeans, shorts. RS means the red shirt with shorts.',
+      events: [
+        { name: 'You wear the blue shirt', test: (a, b) => a === 'B', r: (a, b) => (a === 'B' ? 'blue shirt' : (a === 'R' ? 'red' : 'green') + ' shirt'), note: 'The pants can be anything, so both BJ and BS fit.' },
+        { name: 'Shorts with a shirt that is not green', test: (a, b) => b === 'S' && a !== 'G', r: (a, b) => (b === 'S' ? 'shorts' : 'jeans') + ', ' + (a === 'R' ? 'red' : a === 'B' ? 'blue' : 'green') + ' shirt', note: 'Both parts must be true: shorts and a red or blue shirt.' },
+        { name: 'You wear jeans or the green shirt', test: (a, b) => b === 'J' || a === 'G', r: (a, b) => (b === 'S' ? 'shorts' : 'jeans') + ', ' + (a === 'R' ? 'red' : a === 'B' ? 'blue' : 'green') + ' shirt', note: 'All 3 jeans outcomes fit, and so do GS (green shirt with shorts).' }
+      ] },
+    { id: 'dice', name: 'Roll two dice', n1: 'Die 1', n2: 'Die 2', A: DIE(), B: DIE(), sym: true, sep: ',', reps: ['table'],
+      key: '4,2 means a 4 on die 1 and a 2 on die 2. These are different from 2,4.',
+      events: [
+        { name: 'The sum is 7', test: (a, b) => +a + +b === 7, r: (a, b) => a + ' + ' + b + ' = ' + (+a + +b), note: 'The sum 7 can be made 6 ways: 1+6, 2+5, 3+4, 4+3, 5+2, 6+1. The sums 2 to 12 are 11 different totals, but they are not 11 equally likely outcomes. The sum 2 has only 1 cell (1+1), while 7 has 6.' },
+        { name: 'The sum is 10 or more', test: (a, b) => +a + +b >= 10, r: (a, b) => a + ' + ' + b + ' = ' + (+a + +b), note: 'Sum 10 has 3 cells, sum 11 has 2 and sum 12 has 1.' },
+        { name: 'Doubles (both dice match)', test: (a, b) => a === b, r: (a, b) => a + ' and ' + b, note: 'The matches run down the diagonal of the table.' },
+        { name: 'At least one die shows a 6', test: (a, b) => a === '6' || b === '6', r: (a, b) => a + ' and ' + b, note: 'Row 6 and column 6 together have 6 + 6 - 1 = 11 cells, because 6,6 is in both.' }
+      ] },
+    { id: 'bag', name: 'Two marbles, put back', n1: 'First marble', n2: 'Second marble', A: BAG(), B: BAG(), sym: true, reps: ['list', 'table', 'tree'],
+      key: 'A bag holds one red (R), one blue (B) and one green (G) marble. You draw one, look, and put it back. Then you draw again. RB means red first, blue second.',
+      events: [
+        { name: 'Both marbles are the same color', test: (a, b) => a === b, r: (a, b) => a === b ? 'both ' + a : 'two colors', note: 'Because the first marble goes back, the same marble can come out twice.' },
+        { name: 'Exactly one marble is red', test: (a, b) => (a === 'R') !== (b === 'R'), r: (a, b) => (a === 'R' ? 1 : 0) + (b === 'R' ? 1 : 0) + ' red', note: 'RB, RG, BR and GR. Red first and red second are different outcomes.' },
+        { name: 'Neither marble is blue', test: (a, b) => a !== 'B' && b !== 'B', r: (a, b) => (a === 'B' || b === 'B' ? 'has blue' : 'no blue'), note: 'Only R and G are allowed in both draws: RR, RG, GR, GG.' }
+      ] },
+    { id: 'bag2', name: 'Two marbles, not put back', n1: 'First marble', n2: 'Second marble', A: BAG(), B: BAG(), sym: true, norep: true, reps: ['list', 'table', 'tree'],
+      key: 'The bag holds one red (R), one blue (B) and one green (G) marble. You keep the first marble out. RB means red first, blue second.',
+      events: [
+        { name: 'Both marbles are the same color', test: (a, b) => a === b, r: (a, b) => 'two colors', note: 'No outcome fits, because each color is in the bag only once and the first marble stays out. An impossible event has 0 outcomes, so its probability is 0.' },
+        { name: 'Exactly one marble is red', test: (a, b) => (a === 'R') !== (b === 'R'), r: (a, b) => (a === 'R' ? 1 : 0) + (b === 'R' ? 1 : 0) + ' red', note: 'RB, RG, BR and GR. Compare this with the bag where the marble is put back.' },
+        { name: 'Neither marble is blue', test: (a, b) => a !== 'B' && b !== 'B', r: (a, b) => (a === 'B' || b === 'B' ? 'has blue' : 'no blue'), note: 'Only RG and GR, because RR and GG cannot happen here.' }
+      ] },
+    { id: 'spin', name: 'A weighted spinner, spun twice', n1: 'First spin', n2: 'Second spin', A: [O('R', 'Red', 'red', 3), O('B', 'Blue', 'blue', 1)], B: [O('R', 'Red', 'red', 3), O('B', 'Blue', 'blue', 1)], sym: true, weighted: true, reps: ['list', 'table', 'tree'],
+      key: 'The spinner is red on 3 of 4 equal parts and blue on 1 of 4. RB means red first, blue second.',
+      wnote: 'The leaves are not equally likely. RR has chance 3/4 × 3/4 = 9/16, but BB has only 1/4 × 1/4 = 1/16. Counting leaves treats all four as 1/4 each, so it gives the wrong answer here.',
+      events: [
+        { name: 'Both spins match', test: (a, b) => a === b, r: (a, b) => a === b ? 'both ' + (a === 'R' ? 'red' : 'blue') : 'two colors', note: 'RR and BB fit.' },
+        { name: 'At least one spin is blue', test: (a, b) => a === 'B' || b === 'B', r: (a, b) => (a === 'B' ? 1 : 0) + (b === 'B' ? 1 : 0) + ' blue', note: 'RB, BR and BB fit. Only RR has no blue.' },
+        { name: 'Both spins are red', test: (a, b) => a === 'R' && b === 'R', r: (a, b) => (a === 'R' ? 1 : 0) + (b === 'R' ? 1 : 0) + ' red', note: 'Only RR fits.' }
+      ] }
+  ];
+  const outs = s => { const o = []; s.A.forEach((a, i) => s.B.forEach((b, j) => { if (!(s.norep && i === j)) o.push([i, j]); })); return o; };
+  const valid = (s, i, j) => !(s.norep && i === j);
+  const lab = (s, i, j) => s.A[i].k + (s.sep || '') + s.B[j].k;
+  const wt = (s, i, j) => s.A[i].w * s.B[j].w;
+  const sumW = a => a.reduce((t, o) => t + o.w, 0);
+  const totalW = s => outs(s).reduce((t, [i, j]) => t + wt(s, i, j), 0);
+  const describe = (s, i, j) => `${lc(s.n1)}: ${s.A[i].nm.toLowerCase()}, ${lc(s.n2)}: ${s.B[j].nm.toLowerCase()}`;
+  const countLine = s => {
+    const nA = s.A.length, nB = s.B.length, N = outs(s).length;
+    return s.norep
+      ? `${nA} choices for the ${lc(s.n1)}, then only ${nB - 1} left for the ${lc(s.n2)}: ${nA} × ${nB - 1} = ${N} outcomes.`
+      : `${nA} results for the ${lc(s.n1)} and ${nB} for the ${lc(s.n2)}: ${nA} × ${nB} = ${N} outcomes.`;
+  };
+
+  /* ---------- canvas helpers (pixel space) ---------- */
+  const font = (size, weight = 600) => `${weight} ${size}px "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif`;
+  const T = (c, p, str, x, y, { size = 14, color, align = 'center', weight = 600, a = 1, halo = true } = {}) => {
+    if (a <= .01) return;
+    c.save(); c.globalAlpha *= a; c.font = font(size, weight); c.textAlign = align; c.textBaseline = 'middle';
+    if (halo) { c.lineWidth = 4; c.strokeStyle = p.pal.stage; c.lineJoin = 'round'; c.strokeText(str, x, y); }
+    c.fillStyle = color || p.pal.text; c.fillText(str, x, y); c.restore();
+  };
+  const tw = (c, str, size, weight = 600) => { c.save(); c.font = font(size, weight); const w = c.measureText(str).width; c.restore(); return w; };
+  const Tfit = (c, p, str, x, y, maxW, o = {}) => {
+    let size = o.size || 13;
+    while (size > 9 && tw(c, str, size, o.weight || 600) > maxW) size -= .5;
+    T(c, p, str, x, y, { ...o, size });
+  };
+  const seg = (c, x1, y1, x2, y2, color, w = 1.5, dash) => {
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.strokeStyle = color; c.lineWidth = w;
+    c.setLineDash(dash || []); c.lineCap = 'round'; c.stroke(); c.setLineDash([]);
+  };
+  const rr = (c, x, y, w, h, r) => {
+    c.beginPath();
+    if (w <= 0 || h <= 0) return;
+    r = Math.min(r, w / 2, h / 2);
+    c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+  };
+  /* a rounded tag: fill color, outline color, optional label */
+  const tag = (c, p, x, y, w, h, label, o = {}) => {
+    const pal = p.pal;
+    rr(c, x, y, w, h, Math.min(8, h / 2));
+    c.fillStyle = pal.stage; c.fill(); c.fillStyle = o.fill || alpha(pal.blue, .12); c.fill();
+    c.strokeStyle = o.stroke || pal['grid-strong']; c.lineWidth = o.lw || 1.5; c.setLineDash(o.dash || []); c.stroke(); c.setLineDash([]);
+    if (label) Tfit(c, p, label, x + w / 2, y + h / 2 + .5, w - 6, { size: o.size || 14, color: o.color, weight: o.weight || 700, halo: false });
+    if (o.cross) { seg(c, x + 6, y + 6, x + w - 6, y + h - 6, pal.red, 2); seg(c, x + w - 6, y + 6, x + 6, y + h - 6, pal.red, 2); }
+  };
+
+  /* ---------- the lesson ---------- */
+  register({
+    id: 'compound-events-and-tree-diagrams', level: 'school',
+    title: 'Compound events and tree diagrams',
+    blurb: 'Build the sample space for two-step chance experiments as a list, a table and a tree, then tap the outcomes that match an event described in words.',
+    thumb(c, p) {
+      const pal = p.pal, W = p.w, H = p.h, x0 = W * .1, x1 = W * .46, x2 = W * .82;
+      const rootY = H * .5, l1 = [H * .27, H * .73], l2 = [H * .15, H * .39, H * .61, H * .85];
+      const cols = [pal.blue, pal.violet];
+      l1.forEach((y, i) => {
+        seg(c, x0, rootY, x1, y, cols[i], 2.4);
+        [0, 1].forEach(k => seg(c, x1, y, x2, l2[i * 2 + k], cols[k], 2));
+      });
+      const dotR = Math.max(4, W * .028);
+      const dot = (x, y, col, r) => { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fillStyle = col; c.fill(); };
+      dot(x0, rootY, pal.text, dotR * 1.1); l1.forEach((y, i) => dot(x1, y, cols[i], dotR * 1.2));
+      l2.forEach((y, i) => { const hit = i !== 3; dot(x2, y, hit ? pal.yellow : pal.muted, dotR * 1.5); });
+    },
+    hook: String.raw`You flip a coin twice. Is it just as likely to get one head and one tail as it is to get two heads?`,
+    steps: [
+      { title: 'List every outcome',
+        text: String.raw`<p>Flip a coin twice. An <b>outcome</b> is one complete result, such as heads on the first flip and tails on the second, written HT. The list of all possible outcomes is the <b>sample space</b>.</p><p>Build an organized list. Tap a first result, then tap a second result to add that outcome. Order matters: HT and TH are different outcomes. Press <b>Check</b> and the lesson tells you what is missing or repeated. Then try the <b>Table</b> and <b>Tree</b> buttons to build the same sample space two more ways.</p>`,
+        set: { scn: 0, rep: 'list', task: 'build', ev: 0, fill: 'none' } },
+      { title: 'Trees and the counting principle',
+        text: String.raw`<p>Now flip a coin and roll a die. The tree starts with the 2 coin results. Tap the H or T node, then add a branch for each die result. Each path from the start to the end is one outcome. The end of a path is a <b>leaf</b>.</p><p>There are 2 choices for the coin and 6 for the die, so the tree has \(2\times 6=12\) leaves. This is the <b>counting principle</b>: multiply the number of choices at each stage. Next, open the experiment menu and pick <b>Two marbles, not put back</b>. After the first marble is out, the second stage has fewer branches.</p>`,
+        set: { scn: 1, rep: 'tree', task: 'build', ev: 0, fill: 'tree1' } },
+      { title: 'From words to outcomes',
+        text: String.raw`<p>Roll two dice. The table has 6 rows for die 1 and 6 columns for die 2, so there are \(6\times 6=36\) cells. Each cell is one outcome, and all 36 are equally likely.</p><p>The event is "the sum is 7". Tap every cell where the two dice add to 7, then press <b>Check my event</b>. The lesson shows the number of marked cells over 36 as a fraction, a decimal and a percent. Do not count sums: the 11 sums from 2 to 12 are not equally likely.</p>`,
+        set: { scn: 3, rep: 'table', task: 'event', ev: 0, fill: 'none' } },
+      { title: 'When leaves are not equally likely',
+        text: String.raw`<p>This spinner is red on 3 of 4 equal parts and blue on 1 of 4. Spin it twice. The tree has 4 leaves, but they are not equally likely. Each branch shows its own chance.</p><p>Tap the leaves for "at least one spin is blue" and check. Counting leaves gives 3 of 4. Using the leaf chances gives 7/16, which is 43.75%. A leaf's chance is its two branch chances multiplied. Counting leaves only works when every leaf is equally likely.</p>`,
+        set: { scn: 6, rep: 'tree', task: 'event', ev: 1, fill: 'none' } }
+    ],
+    formal: String.raw`
+      <p>A chance experiment with two or more stages is a <em>compound event</em> experiment: two coin flips, a coin and a die, two marbles from a bag. To study it, split it into its stages and list what can happen at each stage.</p>
+      <h3>Outcomes, sample space and events</h3>
+      <p>An <em>outcome</em> is one complete result of the whole experiment, with every stage included. The <em>sample space</em> is the set of all outcomes. For two coin flips it is \(\{HH,\,HT,\,TH,\,TT\}\). HT and TH are different outcomes because the order tells you which flip gave which result.</p>
+      <p>An <em>event</em> is a set of outcomes picked out by a description in everyday words. "At least one head" is the event \(\{HH,\,HT,\,TH\}\). To find an event, test every outcome in the sample space against the words and keep the ones that fit. An event can contain every outcome, only one, or none at all.</p>
+      <h3>Three ways to show a sample space</h3>
+      <p>An <em>organized list</em> goes through the first results in order and, for each one, through every second result in order. The pattern makes missing or repeated outcomes easy to spot. A <em>table</em> puts the first stage down the side and the second stage across the top, so each cell is one outcome. A <em>tree diagram</em> puts the first stage's results as branches from a start point. From the end of each branch it draws the second stage's branches. Each path from the start to the end is one outcome.</p>
+      <h3>The counting principle</h3>
+      <p>If stage 1 has \(m\) results and every one of them leaves \(n\) results for stage 2, there are
+      \[ m\times n \]
+      outcomes. A coin and a die give \(2\times 6=12\). Two dice give \(6\times 6=36\). If a marble is not put back, stage 2 has fewer branches. Three different marbles, drawn twice without putting back, give \(3\times 2=6\). With putting back they give \(3\times 3=9\).</p>
+      <h3>Counting an event</h3>
+      <p>When every outcome is equally likely, the chance of an event is
+      \[ P(\text{event})=\frac{\text{number of outcomes in the event}}{\text{number of outcomes in the sample space}}. \]
+      For "the sum is 7" with two dice this is \(\tfrac{6}{36}=\tfrac16\approx 0.167\approx 16.7\%\). The 11 possible sums are not equally likely, so the sums themselves are not the outcomes. The pairs of dice are.</p>
+      <h3>When the branches are not equally likely</h3>
+      <p>Counting leaves works only if every leaf is equally likely. Take a spinner that is red \(\tfrac34\) of the time and blue \(\tfrac14\). Two spins give four leaves, but RR has chance \(\tfrac34\times\tfrac34=\tfrac{9}{16}\) and BB has chance \(\tfrac14\times\tfrac14=\tfrac{1}{16}\). The chance of a leaf is its branch chances multiplied. The chance of an event is the sum of the chances of its leaves. For "at least one blue" that is \(\tfrac{3}{16}+\tfrac{3}{16}+\tfrac{1}{16}=\tfrac{7}{16}\), not \(\tfrac34\).</p>`,
+    check: [
+      { q: 'A bag holds 3 marbles: one red, one blue and one green. You pull out one marble, do not put it back, and then pull out a second marble. Write each outcome as two letters, such as RB for red first and blue second. How many outcomes are in the sample space?',
+        choices: ['9', '6', '3', '4'], answer: 1,
+        why: String.raw`There are 3 choices for the first marble. The first marble is not put back, so only 2 are left for the second. By the counting principle there are \(3\times 2=6\) outcomes: RB, RG, BR, BG, GR, GB. The answer 9 is for putting the marble back, which also allows RR, BB and GG.`,
+        hint: 'How many marbles are in the bag when you pull the second one?' },
+      { q: 'Two fair dice are rolled, one red and one blue. The sample space has 36 equally likely outcomes, one for each pair (red die, blue die). What is the probability that the sum is 7?',
+        choices: ['1/11', '1/12', '1/6', '7/36'], answer: 2,
+        why: String.raw`A sum of 7 comes from (1,6), (2,5), (3,4), (4,3), (5,2) and (6,1). That is 6 outcomes out of 36, so the probability is \(6/36=1/6\). The answer 1/11 counts the 11 possible sums as if they were equally likely, and 1/12 counts (1,6) and (6,1) as the same outcome.`,
+        hint: 'Count the pairs of dice that add to 7. Then divide by 36, not by the number of different sums.' }
+    ],
+    links: { prereq: ['sample-spaces-and-probability'], related: ['probability-with-repeated-trials', 'pascals-triangle-and-the-galton-board', 'mean-median-and-spread'] },
+
+    mount({ stage, controls: C }) {
+      delete stage.dataset.coords;
+      const P = new Plane(stage, { span: 5 });
+      let hits = [];
+      const st = { scn: 0, rep: 'list', task: 'build', ev: 0, pend: null, sel: 'root', list: [], table: new Set(), tree: [], evSel: new Set(), msg: '' };
+      const sc = () => SC[st.scn];
+      const treeHas1 = i => st.tree.includes(String(i));
+      const treeHas2 = (i, j) => st.tree.includes(key(i, j));
+      const fresh = () => { st.pend = null; st.sel = 'root'; st.list = []; st.table = new Set(); st.tree = []; st.evSel = new Set(); st.msg = ''; };
+      const hit = (x, y, w, h, fn) => hits.push({ x, y, w, h, fn });
+      const colOf = (p, o) => p.pal[o.c] || p.pal.text;
+
+      /* ---------- tree geometry ---------- */
+      const treeLayout = (s, W, H, tb, bh) => {
+        const o = outs(s), N = o.length, top = tb + 14, avail = H - top - bh - 8, dy = Math.min(avail / N, 46);
+        const y0 = top + (avail - dy * N) / 2, leaf = {}, l1 = [];
+        o.forEach(([i, j], n) => { leaf[key(i, j)] = y0 + (n + .5) * dy; });
+        s.A.forEach((a, i) => { const ys = o.filter(q => q[0] === i).map(q => leaf[key(q[0], q[1])]); l1[i] = ys.reduce((t, v) => t + v, 0) / ys.length; });
+        const x2 = Math.min(s.weighted ? W - 100 : W - 34, 440);
+        return { dy, leaf, l1, ry: l1.reduce((t, v) => t + v, 0) / l1.length, x0: 36, x1: (36 + x2) / 2, x2 };
+      };
+
+      /* ---------- drawing ---------- */
+      const chip = (c, p, x, y, w, h, label, color, on, fn) => {
+        tag(c, p, x, y, w, h, label, { fill: alpha(color, on ? .34 : .13), stroke: on ? p.pal.brass : color, lw: on ? 3 : 1.5, color: p.pal.text, size: 14 });
+        if (fn) hit(x, y, w, h, fn);
+      };
+      const chipRow = (c, p, x, y, opts, labelOf, onOf, fnOf, extra) => {
+        const W = p.w - 12;
+        let labs = opts.map(labelOf);
+        let ws = labs.map(l => Math.max(40, tw(c, l, 14, 700) + 22));
+        const tot = () => ws.reduce((t, v) => t + v, 0) + (ws.length - 1) * 6 + (extra ? 52 : 0);
+        if (x + tot() > W) { labs = opts.map(o => o.k); ws = labs.map(l => Math.max(40, tw(c, l, 14, 700) + 22)); }
+        opts.forEach((o, i) => { chip(c, p, x, y, ws[i], 36, labs[i], colOf(p, o), onOf(i), fnOf(i)); x += ws[i] + 6; });
+        if (extra) { tag(c, p, x, y, 46, 36, extra.label, { fill: alpha(p.pal.brass, .18), stroke: p.pal.brass, lw: 2, color: p.pal.text, size: 13 }); hit(x, y, 46, 36, extra.fn); }
+      };
+
+      const drawList = (c, p, tb) => {
+        const s = sc(), W = p.w, H = p.h, build = st.task === 'build', pal = p.pal;
+        if (build) {
+          let y = tb + 2;
+          T(c, p, s.n1 + ': tap one', 12, y + 8, { size: 12, color: pal.muted, align: 'left', halo: false }); y += 18;
+          chipRow(c, p, 12, y, s.A, o => o.nm, i => st.pend === i, i => () => { st.pend = i; st.msg = ''; });
+          y += 46;
+          T(c, p, s.n2 + ': then tap one (this adds the outcome)', 12, y + 8, { size: 12, color: pal.muted, align: 'left', halo: false }); y += 18;
+          chipRow(c, p, 12, y, s.B, o => o.nm, () => false, j => () => listAdd(j));
+          y += 50;
+          seg(c, 12, y - 6, W - 12, y - 6, pal.grid, 1.5);
+          T(c, p, 'Your list: ' + st.list.length + (st.list.length === 1 ? ' outcome' : ' outcomes'), 12, y + 8, { size: 13, align: 'left', halo: false });
+          y += 24;
+          const pw = 58, ph = 32, gap = 8, cols = Math.max(1, Math.floor((W - 24 + gap) / (pw + gap)));
+          const seen = {};
+          st.list.forEach(([i, j], n) => {
+            const k = key(i, j), dup = seen[k]; seen[k] = true;
+            const x = 12 + (n % cols) * (pw + gap), yy = y + Math.floor(n / cols) * (ph + gap), bad = dup || !valid(s, i, j);
+            tag(c, p, x, yy, pw, ph, lab(s, i, j), { fill: alpha(bad ? pal.red : pal.blue, .16), stroke: bad ? pal.red : pal.blue, lw: bad ? 2.5 : 1.5, color: pal.text, size: 14, cross: !valid(s, i, j) });
+            hit(x, yy, pw, ph, () => { st.list.splice(n, 1); st.msg = 'Removed ' + lab(s, i, j) + '.'; });
+          });
+          if (!st.list.length) T(c, p, 'Nothing here yet. Tap a first result, then a second result.', 12, y + 14, { size: 13, color: pal.muted, align: 'left', halo: false });
+        } else {
+          const nB = s.B.length, lw = 28, pw = Math.min(58, (W - 24 - lw) / nB - 6), ph = 32;
+          const rows = s.A.length, avail = H - tb - 10, rh = Math.min(46, avail / rows);
+          const y0 = tb + 6 + (avail - rh * rows) / 2;
+          s.A.forEach((a, i) => {
+            const yy = y0 + i * rh + (rh - ph) / 2;
+            T(c, p, a.k + ':', 12, yy + ph / 2, { size: 14, color: colOf(p, a), align: 'left', halo: false });
+            s.B.forEach((b, j) => {
+              if (!valid(s, i, j)) return;
+              const x = 12 + lw + j * (pw + 6), on = st.evSel.has(key(i, j));
+              tag(c, p, x, yy, pw, ph, lab(s, i, j), { fill: on ? alpha(pal.yellow, .6) : alpha(pal.blue, .08), stroke: on ? pal.yellow : pal['grid-strong'], lw: on ? 3 : 1.5, color: pal.text, size: 14 });
+              hit(x, yy, pw, ph, () => evToggle(i, j));
+            });
+          });
+        }
+      };
+
+      const drawTable = (c, p, tb) => {
+        const s = sc(), W = p.w, H = p.h, build = st.task === 'build', pal = p.pal, nA = s.A.length, nB = s.B.length;
+        const left = 34, top = tb + 50, availW = W - left - 14, availH = H - top - 12;
+        let cw, chh, gx, gy, cwj = [], chi = [];
+        if (s.weighted) {
+          const side = Math.min(availW, availH, 330), wa = sumW(s.A), wb = sumW(s.B);
+          s.B.forEach((b, j) => cwj[j] = side * b.w / wb); s.A.forEach((a, i) => chi[i] = side * a.w / wa);
+          gx = left + (availW - side) / 2; gy = top;
+        } else {
+          const cell = Math.min(availW / nB, availH / nA, 64);
+          s.B.forEach((b, j) => cwj[j] = cell); s.A.forEach((a, i) => chi[i] = cell);
+          gx = left + (availW - cell * nB) / 2; gy = top + Math.min(20, (availH - cell * nA) / 2);
+        }
+        const xs = [], ys = []; let ax = gx, ay = gy;
+        cwj.forEach((w, j) => { xs[j] = ax; ax += w; }); chi.forEach((h, i) => { ys[i] = ay; ay += h; });
+        s.B.forEach((b, j) => T(c, p, b.k, xs[j] + cwj[j] / 2, gy - 12, { size: 15, color: colOf(p, b), weight: 700, halo: false }));
+        s.A.forEach((a, i) => T(c, p, a.k, gx - 14, ys[i] + chi[i] / 2, { size: 15, color: colOf(p, a), weight: 700, halo: false }));
+        T(c, p, 'rows: ' + lc(s.n1) + ', columns: ' + lc(s.n2), 18, gy - 36, { size: 12, color: pal.muted, align: 'left', halo: false });
+        const tot = totalW(s);
+        s.A.forEach((a, i) => s.B.forEach((b, j) => {
+          const x = xs[j], y = ys[i], w = cwj[j] - 3, hh = chi[i] - 3, k = key(i, j), ok0 = valid(s, i, j);
+          let fill = alpha(pal.text, .04), stroke = pal['grid-strong'], lw = 1.5, text = '', tc = pal.text, cross = false;
+          if (build) {
+            if (st.table.has(k)) { const bad = !ok0; fill = alpha(bad ? pal.red : pal.blue, .2); stroke = bad ? pal.red : pal.blue; text = lab(s, i, j); cross = bad; }
+          } else if (!ok0) { fill = alpha(pal.muted, .12); stroke = pal.grid; text = ''; cross = true; }
+          else {
+            const on = st.evSel.has(k); text = lab(s, i, j);
+            if (on) { fill = alpha(pal.yellow, .6); stroke = pal.yellow; lw = 3; } else tc = pal.muted;
+          }
+          rr(c, x + 1.5, y + 1.5, w, hh, 5); c.fillStyle = fill; c.fill(); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+          if (cross && !build) { seg(c, x + 10, y + 10, x + w - 7, y + hh - 7, pal.muted, 1.5); }
+          if (cross && build) { seg(c, x + 8, y + 8, x + w - 5, y + hh - 5, pal.red, 2); }
+          if (text) Tfit(c, p, text, x + 1.5 + w / 2, y + 1.5 + hh / 2 - (s.weighted && !build ? 7 : 0), w - 6, { size: clamp(Math.min(w, hh) * .3, 11, 16), color: tc, weight: 700, halo: false });
+          if (s.weighted && !build && ok0) Tfit(c, p, fracS(wt(s, i, j), tot), x + 1.5 + w / 2, y + 1.5 + hh / 2 + 9, w - 6, { size: 12, color: pal.muted, weight: 600, halo: false });
+          hit(x, y, cwj[j], chi[i], () => build ? tableToggle(i, j) : evToggle(i, j));
+        }));
+        if (s.weighted) T(c, p, 'Bigger cell = bigger chance', W / 2, ay + 14, { size: 12, color: pal.muted, halo: false });
+      };
+
+      const drawTree = (c, p, tb) => {
+        const s = sc(), W = p.w, H = p.h, build = st.task === 'build', pal = p.pal, bh = build ? 78 : 0;
+        const L = treeLayout(s, W, H, tb, bh), TA = sumW(s.A), TB = sumW(s.B), tot = totalW(s);
+        const lw2 = 40, lh = Math.min(26, L.dy - 4);
+        T(c, p, s.n1.toLowerCase(), L.x1, tb + 6, { size: 12, color: pal.muted, halo: false });
+        T(c, p, s.n2.toLowerCase(), Math.min(L.x2, W - 12 - tw(c, s.n2.toLowerCase(), 12) / 2), tb + 6, { size: 12, color: pal.muted, halo: false });
+        if (s.weighted) T(c, p, 'chance', L.x2 + 38, tb + 6, { size: 12, color: pal.muted, align: 'left', halo: false });
+        const showAll = !build;
+        
+        const grown1 = i => showAll || treeHas1(i);
+        /* branches first, nodes on top */
+        s.A.forEach((a, i) => {
+          if (!grown1(i)) return;
+          const col = colOf(p, a);
+          seg(c, L.x0, L.ry, L.x1, L.l1[i], alpha(col, .9), 3);
+          if (s.weighted) T(c, p, a.w + '/' + TA, (L.x0 + L.x1) / 2 - 2, (L.ry + L.l1[i]) / 2 - 10 * Math.sign(L.l1[i] - L.ry || 1) * 1, { size: 12, color: col, halo: true });
+          s.B.forEach((b, j) => {
+            if (!valid(s, i, j) || !(showAll || treeHas2(i, j))) return;
+            const on = !build && st.evSel.has(key(i, j));
+            seg(c, L.x1, L.l1[i], L.x2, L.leaf[key(i, j)], on ? pal.yellow : alpha(colOf(p, b), .9), on ? 4 : 3);
+            if (s.weighted) T(c, p, b.w + '/' + TB, (L.x1 + L.x2) / 2, (L.l1[i] + L.leaf[key(i, j)]) / 2 - 9, { size: 12, color: colOf(p, b), halo: true });
+          });
+        });
+        /* root */
+        const rootSel = build && st.sel === 'root';
+        tag(c, p, L.x0 - 24, L.ry - 13, 48, 26, 'start', { fill: alpha(pal.text, .1), stroke: rootSel ? pal.brass : pal['grid-strong'], lw: rootSel ? 3 : 1.5, color: pal.text, size: 12 });
+        if (build) hit(L.x0 - 26, L.ry - 20, 52, 40, () => { st.sel = 'root'; st.msg = ''; });
+        s.A.forEach((a, i) => {
+          if (!grown1(i)) return;
+          const col = colOf(p, a), sel = build && st.sel === i;
+          tag(c, p, L.x1 - 18, L.l1[i] - 14, 36, 28, a.k, { fill: alpha(col, .2), stroke: sel ? pal.brass : col, lw: sel ? 3 : 1.5, color: pal.text, size: 14 });
+          if (build) hit(L.x1 - 22, L.l1[i] - 20, 44, 40, () => { st.sel = i; st.msg = ''; });
+          s.B.forEach((b, j) => {
+            if (!valid(s, i, j) || !(showAll || treeHas2(i, j))) return;
+            const k = key(i, j), y = L.leaf[k], on = !build && st.evSel.has(k);
+            tag(c, p, L.x2 - lw2 / 2, y - lh / 2, lw2, lh, lab(s, i, j), { fill: on ? alpha(pal.yellow, .65) : alpha(pal.blue, .1), stroke: on ? pal.yellow : colOf(p, b), lw: on ? 3 : 1.5, color: pal.text, size: 13 });
+            hit(L.x2 - lw2 / 2 - 4, y - Math.max(lh / 2, 15), lw2 + 8 + (s.weighted ? 56 : 0), Math.max(lh, 30), () => build ? treeLeafTap(i, j) : evToggle(i, j));
+            if (s.weighted) T(c, p, fracS(wt(s, i, j), tot), L.x2 + 30, y, { size: 13, color: on ? pal.text : pal.muted, align: 'left', halo: false });
+          });
+        });
+        if (build) {
+          const y = H - bh + 2;
+          seg(c, 12, y - 4, W - 12, y - 4, pal.grid, 1.5);
+          const sel = st.sel;
+          const opts = sel === 'root' ? s.A : s.B;
+          const who = sel === 'root' ? 'the start' : 'the ' + s.A[sel].nm.toLowerCase() + ' (' + s.A[sel].k + ') node';
+          T(c, p, 'Add a branch to ' + who + ':', 12, y + 10, { size: 12, color: pal.muted, align: 'left', halo: false });
+          chipRow(c, p, 12, y + 24, opts, o => o.nm, () => false, idx => () => treeAdd(sel, idx), { label: 'All', fn: () => treeAddAll(sel) });
+        }
+      };
+
+      P.onDraw = (c, p) => {
+        hits = [];
+        const s = sc(), W = p.w, pal = p.pal, build = st.task === 'build';
+        const title = s.name;
+        Tfit(c, p, title, 18, 18, W - 36, { size: 16, align: 'left', weight: 700, halo: false });
+        const sub = build
+          ? (st.rep === 'list' ? 'Make an organized list of every outcome.' : st.rep === 'table' ? 'Tap a cell to fill it with its outcome.' : 'Grow a branch for every choice.')
+          : 'Tap every outcome that fits: "' + s.events[st.ev].name + '"';
+        Tfit(c, p, sub, 18, 40, W - 36, { size: 13, align: 'left', color: pal.muted, weight: 600, halo: false });
+        const tb = 50;
+        if (st.rep === 'list') drawList(c, p, tb); else if (st.rep === 'table') drawTable(c, p, tb); else drawTree(c, p, tb);
+      };
+
+      /* ---------- actions ---------- */
+      const invalidMsg = (s, i, j) => `${lab(s, i, j)} cannot happen. The ${s.A[i].nm.toLowerCase()} marble was not put back, so it is not in the bag for the second draw.`;
+      const listAdd = j => {
+        const s = sc(), i = st.pend;
+        if (i === null) { st.msg = `First tap a ${lc(s.n1)} result, then a ${lc(s.n2)} result.`; return; }
+        const dup = st.list.some(q => q[0] === i && q[1] === j);
+        st.list.push([i, j]);
+        st.msg = !valid(s, i, j) ? no('Not possible.') + ' ' + invalidMsg(s, i, j)
+          : dup ? no('Repeat.') + ` ${lab(s, i, j)} is already in your list. A repeat is not a new outcome. Tap it to remove it.` : '';
+      };
+      const tableToggle = (i, j) => {
+        const s = sc(), k = key(i, j);
+        if (st.table.has(k)) { st.table.delete(k); st.msg = ''; return; }
+        st.table.add(k);
+        st.msg = valid(s, i, j) ? '' : no('Not possible.') + ' ' + invalidMsg(s, i, j);
+      };
+      const missingChildren = i => { const s = sc(); return s.B.map((b, j) => j).filter(j => valid(s, i, j) && !treeHas2(i, j)); };
+      const advance = () => {
+        const s = sc();
+        if (st.sel === 'root') { if (s.A.every((a, i) => treeHas1(i))) { const n = s.A.findIndex((a, i) => missingChildren(i).length); st.sel = n >= 0 ? n : 'root'; } return; }
+        if (!missingChildren(st.sel).length) { const n = s.A.findIndex((a, i) => treeHas1(i) && missingChildren(i).length); if (n >= 0) st.sel = n; }
+      };
+      const treeAdd = (sel, idx) => {
+        const s = sc();
+        if (sel === 'root') {
+          if (treeHas1(idx)) { st.msg = `The start already has a ${s.A[idx].nm.toLowerCase()} branch.`; return; }
+          st.tree.push(String(idx)); st.msg = ''; advance(); return;
+        }
+        if (!valid(s, sel, idx)) { st.msg = no('No branch there.') + ' ' + invalidMsg(s, sel, idx); return; }
+        if (treeHas2(sel, idx)) { st.msg = `This node already has a ${s.B[idx].nm.toLowerCase()} branch.`; return; }
+        st.tree.push(key(sel, idx)); st.msg = ''; advance();
+      };
+      const treeAddAll = sel => {
+        const s = sc();
+        if (sel === 'root') { s.A.forEach((a, i) => { if (!treeHas1(i)) st.tree.push(String(i)); }); st.msg = ''; advance(); return; }
+        const m = missingChildren(sel); m.forEach(j => st.tree.push(key(sel, j)));
+        st.msg = s.norep ? `After the ${s.A[sel].nm.toLowerCase()} marble is out, only ${s.B.length - 1} marbles are left, so this node gets ${s.B.length - 1} branches.` : '';
+        advance();
+      };
+      const treeLeafTap = (i, j) => { const s = sc(); st.msg = `${lab(s, i, j)} is a leaf: one complete outcome (${describe(s, i, j)}).`; };
+      const evToggle = (i, j) => {
+        const s = sc(), k = key(i, j);
+        if (!valid(s, i, j)) { st.msg = invalidMsg(s, i, j); return; }
+        if (st.evSel.has(k)) st.evSel.delete(k); else st.evSel.add(k);
+        st.msg = '';
+      };
+
+      /* ---------- feedback ---------- */
+      const buildCheck = () => {
+        const s = sc(), o = outs(s), parts = [];
+        let have = new Set(), dups = [], bad = [];
+        if (st.rep === 'list') {
+          const seen = new Set();
+          st.list.forEach(([i, j]) => { const k = key(i, j); if (!valid(s, i, j)) bad.push(lab(s, i, j)); else { if (seen.has(k)) dups.push(lab(s, i, j)); seen.add(k); have.add(k); } });
+        } else if (st.rep === 'table') {
+          st.table.forEach(k => { const [i, j] = k.split(',').map(Number); if (!valid(s, i, j)) bad.push(lab(s, i, j)); else have.add(k); });
+        } else o.forEach(([i, j]) => { if (treeHas2(i, j)) have.add(key(i, j)); });
+        const miss = o.filter(([i, j]) => !have.has(key(i, j)));
+        if (!miss.length && !dups.length && !bad.length) {
+          const thing = st.rep === 'list' ? 'list' : st.rep === 'table' ? 'table' : 'tree';
+          parts.push(ok('Complete.') + ` Your ${thing} has all ${o.length} outcomes, with none missing and none repeated.`);
+          parts.push(countLine(s));
+          if (st.rep === 'list') {
+            const inOrder = st.list.every(([i, j], n) => i === o[n][0] && j === o[n][1]);
+            parts.push(inOrder ? 'Your list is organized: you went through every second result for each first result, in the same order each time. That is what makes a missing outcome easy to spot.'
+              : 'Your list is complete but not in order. Next time go through the first results one at a time and use every second result each time. Then a missing outcome shows up as a gap.');
+          } else if (st.rep === 'table') parts.push('Every cell is one outcome, so the number of cells is the number of rows times the number of columns.');
+          else parts.push('Each leaf is one outcome. The number of leaves is the number of branches at the first stage times the number at the second.');
+          if (s.norep) parts.push('Compare with the bag where the marble is put back. There the second stage has 3 branches, not 2, and the sample space has 9 outcomes.');
+          if (s.weighted) parts.push('Here the four outcomes are not equally likely. Switch to "Find an event" to see why that matters.');
+          if (s.id === 'coins') parts.push('Try the other two ways to show it. Each gives the same 4 outcomes.');
+        } else {
+          parts.push(no('Not yet.'));
+          if (miss.length) {
+            const nm = miss.map(([i, j]) => lab(s, i, j));
+            parts.push(`Missing: ${names(nm)}.` + (st.rep === 'tree' ? ' ' + (() => { const no1 = s.A.filter((a, i) => !treeHas1(i)).map(a => a.nm.toLowerCase()); return no1.length ? 'The start has no ' + names(no1) + ' branch yet.' : ''; })() : ''));
+            const mir = miss.find(([i, j]) => s.sym && i !== j && have.has(key(j, i)));
+            if (mir) parts.push(`You have ${lab(s, mir[1], mir[0])} but not ${lab(s, mir[0], mir[1])}. They are different outcomes. ${lab(s, mir[0], mir[1])} means ${describe(s, mir[0], mir[1])}. ${lab(s, mir[1], mir[0])} means ${describe(s, mir[1], mir[0])}.`);
+          }
+          if (dups.length) parts.push(`Repeated: ${names(dups)}. Each outcome should appear once.`);
+          if (bad.length) parts.push(`Not possible: ${names(bad)}. ${s.norep ? 'The first marble is not put back, so the second marble cannot be the same one.' : ''}`);
+        }
+        st.msg = parts.join('<br>');
+      };
+
+      const evInfo = () => {
+        const s = sc(), ev = s.events[st.ev], o = outs(s), tot = totalW(s);
+        const truth = o.filter(([i, j]) => ev.test(s.A[i].k, s.B[j].k));
+        const marked = o.filter(([i, j]) => st.evSel.has(key(i, j)));
+        return { s, ev, o, tot, truth, marked, N: o.length, k: marked.length, W: marked.reduce((t, [i, j]) => t + wt(s, i, j), 0) };
+      };
+      const evCheck = () => {
+        const { s, ev, o, tot, truth, marked, N } = evInfo(), parts = [];
+        const tk = new Set(truth.map(([i, j]) => key(i, j))), mk = new Set(marked.map(([i, j]) => key(i, j)));
+        const miss = truth.filter(([i, j]) => !mk.has(key(i, j))), extra = marked.filter(([i, j]) => !tk.has(key(i, j)));
+        const say = ([i, j]) => `${lab(s, i, j)} (${ev.r(s.A[i].k, s.B[j].k)})`;
+        if (!miss.length && !extra.length) {
+          parts.push(ok('Right.') + (truth.length ? ` You marked all ${truth.length} outcome${truth.length === 1 ? '' : 's'} that fit and no others: ${names(truth.map(([i, j]) => lab(s, i, j)), 12)}.` : ' No outcome fits, so you marked none.'));
+          if (ev.note) parts.push(ev.note);
+          if (s.weighted) parts.push(s.wnote);
+        } else {
+          parts.push(no('Not yet.'));
+          if (extra.length) parts.push(`These do not fit "${lc(ev.name)}": ${names(extra.map(say), 5)}.`);
+          if (miss.length) {
+            const ord = miss.find(([i, j]) => s.sym && i !== j && mk.has(key(j, i)));
+            parts.push(`You left out: ${names(miss.map(say), 5)}.`);
+            if (ord) parts.push(`${lab(s, ord[0], ord[1])} and ${lab(s, ord[1], ord[0])} are different outcomes, so you count both. ${lab(s, ord[0], ord[1])} means ${describe(s, ord[0], ord[1])}.`);
+            else if (marked.length && marked.length < truth.length) parts.push('Check every cell, leaf or row. More than one outcome can fit.');
+          }
+          if (s.id === 'dice' && st.ev === 0 && marked.length === 1) parts.push('Do not look for one "7". Each different pair of dice that adds to 7 is its own outcome.');
+        }
+        st.msg = parts.join('<br>');
+      };
+
+      /* ---------- readout ---------- */
+      let ro;
+      const upd = () => {
+        const s = sc(), out = [];
+        if (st.task === 'build') {
+          out.push(`${kk('Counting principle')} ${countLine(s)}`);
+          const n = st.rep === 'list' ? st.list.length : st.rep === 'table' ? st.table.size : st.tree.filter(k => k.includes(',')).length;
+          out.push(`${kk('So far')} ${n} ${st.rep === 'tree' ? (n === 1 ? 'leaf' : 'leaves') : (n === 1 ? 'outcome' : 'outcomes')} in your ${st.rep}${st.rep === 'tree' ? '' : ''}`);
+        } else {
+          const { ev, tot, N, k, W, marked } = evInfo();
+          out.push(`${kk('Event')} “${ev.name}”`);
+          out.push(`${kk('Marked')} ${k} of ${N} outcomes` + (k ? ': ' + names(marked.map(([i, j]) => lab(s, i, j)), 10) : ''));
+          const v = k / N, f = k + '/' + N, sf = fracS(k, N);
+          out.push(`${kk(s.weighted ? 'Counting leaves' : 'Event over sample space')} ${f}${sf !== f ? ' = ' + sf : ''} ${dp(v)}`);
+          if (s.weighted) {
+            const wv = W / tot;
+            out.push(`${kk('Using leaf chances')} ${W}/${tot}${fracS(W, tot) !== W + '/' + tot ? ' = ' + fracS(W, tot) : ''} ${dp(wv)}`);
+          }
+        }
+        if (st.msg) out.push(st.msg);
+        out.push(`${kk('Key')} ${s.key}`);
+        ro.innerHTML = out.join('<br>');
+      };
+      const draw = () => { P.draw(); upd(); };
+
+      /* ---------- controls ---------- */
+      C.title('Experiment');
+      const scnSel = C.select({ label: 'Choose an experiment', value: '0', options: SC.map((s, i) => ({ value: String(i), label: s.name })), onChange: v => { st.scn = +v; st.ev = 0; fresh(); sync(); } });
+      C.title('Show the sample space as');
+      const repBtns = C.buttons([
+        { label: 'List', onClick: () => setRep('list') }, { label: 'Table', onClick: () => setRep('table') }, { label: 'Tree', onClick: () => setRep('tree') }]);
+      const REPS = ['list', 'table', 'tree'];
+      C.title('Task');
+      const taskBtns = C.buttons([
+        { label: 'Build it', onClick: () => setTask('build') }, { label: 'Find an event', onClick: () => setTask('event') }]);
+      const evSel = C.select({ label: 'Event in words', value: '0', options: [{ value: '0', label: '-' }], onChange: v => { st.ev = +v; st.evSel = new Set(); st.msg = ''; sync(); } });
+      const evWrap = evSel.parentElement;
+      const act = C.buttons([
+        { label: 'Check', primary: true, onClick: () => { st.task === 'build' ? buildCheck() : evCheck(); draw(); } },
+        { label: 'Undo', onClick: () => { undo(); draw(); } },
+        { label: 'Start over', onClick: () => { if (st.task === 'build') { st.list = []; st.table = new Set(); st.tree = []; st.pend = null; st.sel = 'root'; } else st.evSel = new Set(); st.msg = ''; draw(); } }]);
+      const undo = () => {
+        if (st.task !== 'build') { st.evSel = new Set(); st.msg = ''; return; }
+        if (st.rep === 'list') st.list.pop();
+        else if (st.rep === 'tree') { const k = st.tree.pop(); if (k !== undefined) st.sel = k.includes(',') ? +k.split(',')[0] : 'root'; }
+        else { const a = [...st.table]; a.pop(); st.table = new Set(a); }
+        st.msg = '';
+      };
+      C.hint('Tap the picture to build it. Press Check and the lesson explains what is missing or repeated.');
+      ro = C.readout();
+
+      const setRep = r => { if (!sc().reps.includes(r)) return; st.rep = r; st.msg = ''; sync(); };
+      const setTask = t => { st.task = t; st.msg = ''; sync(); };
+      const sync = () => {
+        const s = sc();
+        if (!s.reps.includes(st.rep)) st.rep = s.reps[0];
+        scnSel.value = String(st.scn);
+        repBtns.forEach((b, i) => { const on = REPS[i] === st.rep, avail = s.reps.includes(REPS[i]); b.className = on ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', on); b.disabled = !avail; });
+        taskBtns.forEach((b, i) => { const on = (i === 0) === (st.task === 'build'); b.className = on ? 'btn primary' : 'btn'; b.setAttribute('aria-pressed', on); });
+        evSel.innerHTML = ''; s.events.forEach((e, i) => { const op = h('option', { value: String(i) }, e.name); if (i === st.ev) op.selected = true; evSel.append(op); });
+        evWrap.style.display = st.task === 'event' ? '' : 'none';
+        act[0].textContent = st.task === 'build' ? 'Check' : 'Check my event';
+        act[1].style.display = st.task === 'build' ? '' : 'none';
+        act[2].textContent = st.task === 'build' ? 'Start over' : 'Clear marks';
+        draw();
+      };
+
+      /* ---------- taps ---------- */
+      const cv = P.canvas;
+      const at = e => { const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; for (let n = hits.length - 1; n >= 0; n--) { const q = hits[n]; if (x >= q.x && x <= q.x + q.w && y >= q.y && y <= q.y + q.h) return q; } return null; };
+      cv.addEventListener('pointerdown', e => { const q = at(e); if (!q) return; e.preventDefault(); q.fn(); draw(); });
+      cv.addEventListener('pointermove', e => { cv.style.cursor = at(e) ? 'pointer' : 'default'; });
+
+      sync();
+
+      /* ---------- guided steps ---------- */
+      const apply = (patch, immediate) => {
+        const { scn, rep, task, ev, fill } = patch;
+        if (scn !== undefined) st.scn = scn;
+        if (rep !== undefined) st.rep = rep;
+        if (task !== undefined) st.task = task;
+        st.ev = ev !== undefined ? ev : 0;
+        fresh();
+        if (fill === 'tree1') { const s = sc(); s.A.forEach((a, i) => st.tree.push(String(i))); st.sel = 0; }
+        sync();
+      };
+      return { destroy: () => P.destroy(), apply };
+    }
+  });
+}
+
+/* =====================================================================
+   SCHOOL — Samples and populations
+   ===================================================================== */
+{
+  /* ---------- the population: 200 students in four groups, 90 of them walk ---------- */
+  const ZONES = [
+    { name: 'Front door', a: 15, b: 23, cx: 1.4, ly: 16.9, y0: 16.0 },
+    { name: 'Library', a: 12, b: 14, cx: 11.4, ly: 16.9, y0: 16.0 },
+    { name: 'Gym', a: 6, b: 10, cx: 1.4, ly: 11.7, y0: 10.8 },
+    { name: 'Bus lot', a: 4, b: 6, cx: 11.4, ly: 11.7, y0: 10.8 }
+  ];
+  const TRUTH = 45, N_POP = 200, SP = .8;
+  const mulberry = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const shuffle = (arr, r) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  const POP = (() => {
+    const r = mulberry(2024), out = [];
+    ZONES.forEach((z, zi) => {
+      const A = shuffle(Array.from({ length: 20 }, (_, i) => i < z.a ? 1 : 0), r), B = shuffle(Array.from({ length: 30 }, (_, i) => i < z.b ? 1 : 0), r);
+      [...A, ...B].forEach((w, i) => out.push({ zone: zi, walk: w, x: z.cx + (i % 10) * SP, y: z.y0 - Math.floor(i / 10) * SP }));
+    });
+    return out;
+  })();
+  const pctOf = (k, n) => Math.round(k / n * 1000) / 10;
+  const sx = v => 1 + v * .18;                       /* percent -> x on the strip */
+  const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+  const rule = n => Math.round(100 / Math.sqrt(n));  /* rule-of-thumb "give or take" in points */
+
+  /* ---------- compare step: four surveys about a new gym (school of 600, 54% really say yes) ---------- */
+  const SURVEYS = [
+    { name: 'Basketball game', short: 'Basketball game', n: 40, yes: 34, fair: false,
+      how: 'You asked 40 students at the basketball game. 34 said yes.',
+      why: 'Students at a game like sports, so they are more likely to want a new gym. This sample leans toward one kind of student. It is biased, and 85% is probably too high.' },
+    { name: 'Online vote', short: 'Online vote', n: 60, yes: 51, fair: false,
+      how: 'The school website let anyone vote. 60 students voted and 51 said yes.',
+      why: 'Students chose to vote themselves, and people who care a lot are the ones who vote. This is a volunteer group, not a random one. 60 votes sounds like a lot, but a big biased sample is still biased.' },
+    { name: 'Random, 40 students', short: 'Random, 40', n: 40, yes: 22, fair: true,
+      how: 'You picked 40 names at random from the whole school list. 22 said yes.',
+      why: 'Every student had the same chance to be picked, so no group is favored. The sample is likely to be representative. Its 55% is a believable estimate.' },
+    { name: 'Random, 10 students', short: 'Random, 10', n: 10, yes: 7, fair: true,
+      how: 'You picked 10 names at random from the whole school list. 7 said yes.',
+      why: 'The method is fair because every student had the same chance. But 10 students is a small sample, so the estimate can miss by a lot. It is a valid method that is not very precise.' }
+  ];
+  const CMP_TRUTH = 54;
+
+  register({
+    id: 'samples-and-populations', level: 'school',
+    title: 'Samples and populations',
+    blurb: 'Ask a few to learn about many: see why a random sample can be trusted and a convenient one cannot.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 5; p.cy = 4.6; p.span = 5.2;
+      const gx = [0.6, 5.4], gy = [8.4, 5.6];
+      for (let z = 0; z < 4; z++) {
+        const x0 = gx[z % 2], y0 = gy[Math.floor(z / 2)];
+        for (let i = 0; i < 20; i++) {
+          const x = x0 + (i % 5) * .75, y = y0 - Math.floor(i / 5) * .62, walk = ((i * 7 + z * 3) % 10) < [8, 5, 3, 2][z];
+          p.dot(x, y, 9, walk ? alpha(pal.blue, .55) : alpha(pal.muted, .3));
+        }
+      }
+      p.path([[.5, 1.8], [9.5, 1.8]], { stroke: pal['grid-strong'], width: 2 });
+      p.path([[4.5, 1.8], [4.5, 3.6]], { stroke: pal.text, width: 1.5, dash: [4, 4] });
+      [[3.2, 1], [3.8, 1], [3.8, 2], [4.4, 1], [4.4, 2], [4.4, 3], [5, 1], [5, 2], [5, 3], [5.6, 1], [5.6, 2], [6.2, 1], [2.6, 1], [6.8, 1]].forEach(([x, k]) =>
+        p.dot(x, 1.8 + k * .5, 9, pal.blue, pal.stage, 1.5));
+    },
+    hook: 'You cannot ask all 200 students a question. Which 20 should you ask so that their answers tell you about everyone?',
+    steps: [
+      { title: 'A sample can mislead',
+        text: String.raw`<p>The 200 students wait before the bell in four groups. We want the <b>percent who walk to school</b>. Asking everyone takes too long, so we ask a <b>sample</b> of 20.</p><p>The first 20 students at the front door: 15 walk, which is 75%. The whole school is 45%. The sample is 30 points too high.</p><p>Now try the gym group and the random sample. Switch on "Show every student" to see why.</p>`,
+        set: { mode: 'pick', method: 'front' } },
+      { title: 'Many random samples',
+        text: String.raw`<p>The <b>population</b> is all 200 students. Each dot below the crowd is the result of one random sample of 10: its percent who walk. The dashed line is the true 45%.</p><p>40 samples of size 10 gave answers from 20% to 80%. Only 18 of the 40 landed within 10 points of 45%.</p><p>Now drag the size slider up to 80 and draw samples again. The dots squeeze toward the dashed line.</p>`,
+        set: { mode: 'many', n: 10, reset: true, draws: 40 } },
+      { title: 'Estimate the whole school',
+        text: String.raw`<p>A random sample of 40 students from a school of 600: 14 walk. That is \(14\div 40=0.35\), so about 35% of the sample walks.</p><p>Choose the best estimate for all 600 students. Then set how far off you think you could be. A different random sample would give a different answer, so one number is not enough.</p>`,
+        set: { mode: 'infer', ss: 40, reset: true } },
+      { title: 'Which survey can you trust?',
+        text: String.raw`<p>The school wants to know if students want a new gym. Four surveys gave these answers: 85%, 85%, 55% and 70%.</p><p>Only two used random sampling. Pick each survey and decide if its sample is representative or biased.</p>`,
+        set: { mode: 'compare', reset: true } }
+    ],
+    formal: String.raw`
+      <h3>Population and sample</h3>
+      <p>The <em>population</em> is the whole group you want to know about, such as all 600 students in a school. A <em>sample</em> is a smaller part of it that you actually measure. Statistics lets you use the sample to learn about the population, because measuring everyone is often too slow or too costly.</p>
+      <p>A number that describes the whole population, like "45% of students walk", is a <em>population value</em>. The same number found in a sample is a <em>sample value</em>. We use the sample value to estimate the population value.</p>
+      <h3>Representative samples and bias</h3>
+      <p>A sample is <em>representative</em> if it looks like the population: the same mix of groups in about the same amounts. A generalization about a population is valid only when the sample is representative. A sample that favors one group is <em>biased</em>. Common causes are a <em>convenience sample</em> (whoever is easy to reach, like the front-door crowd) and a <em>volunteer sample</em> (people who choose to answer, like an online vote).</p>
+      <p>Making a biased sample bigger does not fix it. Asking 1,000 fans at a game still leaves out everyone who is not at the game.</p>
+      <h3>Random sampling</h3>
+      <p>In a <em>random sample</em> every member of the population has the same chance of being picked, like drawing names from a hat. Nobody chooses who is in, so no group is favored. Random sampling <em>tends to</em> give representative samples. It does not promise a perfect one. A single random sample can still land above or below the true value, as the dot plot of many samples showed.</p>
+      <h3>Sample size and the believable range</h3>
+      <p>Bigger random samples give estimates that bunch more tightly around the true value. A rough rule for a percent: about 95 of 100 random samples of size \(n\) land within
+      \[ \frac{1}{\sqrt{n}} \]
+      of the true value, written as a fraction of 1. For \(n=40\) that is about \(0.16\), or 16 points. For \(n=160\) it is about \(0.08\), or 8 points. To cut the range in half you need four times as many students.</p>
+      <h3>Making an inference</h3>
+      <p>Say a random sample of \(n=40\) students from a school of 600 has 14 walkers.</p>
+      <p>Sample percent: \(\dfrac{14}{40}=0.35=35\%\).</p>
+      <p>Estimate for the school: \(0.35\times 600=210\) students.</p>
+      <p>Believable range: \(35\% \pm 16\) points is 19% to 51%, which is about 114 to 306 students.</p>
+      <p>Write the answer as "about 210, probably between about 114 and 306". It is an estimate, not an exact count. Also remember that this works only for a random sample. For a biased sample the range can miss the true value completely.</p>`,
+    check: [
+      { q: 'A school has 800 students. Maya wants to know what percent come to school by bike. She asks the first 25 students she sees at the school bike rack. Why might her sample be a poor one?',
+        choices: [
+          'Twenty-five students is too few for any sample to work',
+          'She should have asked the same number of boys and girls',
+          'Students at the bike rack are more likely to bike, so the sample does not represent all 800 students',
+          'A sample can never tell you anything about a school'],
+        answer: 2,
+        why: 'Students at the bike rack are the ones most likely to bike. Her sample leans toward one group, so it is biased. A random sample, where every student has the same chance, would be a better plan.',
+        hint: 'Think about who is standing at the bike rack.' },
+      { q: 'A school has 900 students. A random sample of 50 students is chosen, and 20 of them play a sport. What is the best estimate of how many of the 900 students play a sport?',
+        choices: ['About 360 students', 'About 20 students', 'About 450 students', 'Exactly 360 students'],
+        answer: 0,
+        why: String.raw`In the sample, \(20\div 50=0.40=40\%\) play a sport. Then \(0.40\times 900=360\). Because a random sample can be a little off, the honest answer is "about 360", not exactly 360.`,
+        hint: 'Find the percent in the sample first, then use that percent of 900.' }
+    ],
+    links: { prereq: ['statistical-questions-and-data-displays'], related: ['mean-median-and-spread', 'probability-with-repeated-trials', 'percents-on-tape-and-number-lines'] },
+
+    mount({ stage, controls: C }) {
+      const st = {
+        mode: 'pick', method: null, sample: [], showAll: false,
+        n: 10, many: [], latest: null,
+        ss: 40, est: null, margin: 10,
+        sel: null, ans: [null, null, null, null], wrongTry: false
+      };
+      let rng = mulberry(3);
+      const P = new Plane(stage, { span: 8 });
+
+      const draw1 = k => {
+        const idx = Array.from({ length: N_POP }, (_, i) => i);
+        for (let i = 0; i < k; i++) { const j = i + Math.floor(rng() * (N_POP - i)); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+        return idx.slice(0, k);
+      };
+      const walkers = ids => ids.reduce((t, i) => t + POP[i].walk, 0);
+      const zoneCounts = ids => { const z = [0, 0, 0, 0]; ids.forEach(i => z[POP[i].zone]++); return z; };
+
+      /* ---------- drawing ---------- */
+      const legend = (p, a, b) => {
+        const fs = clamp(p.scale * .42, 11, 15), r = clamp(p.scale * .22, 4, 8);
+        p.dot(1.4, 17.9, r, p.pal.blue, p.pal.blue, 2); p.label(a, 1.75, 17.9, { size: fs, italic: false, color: p.pal.muted, align: 'left', dx: 4 });
+        p.dot(9.4, 17.9, r, p.pal.stage, p.pal.blue, 2); p.label(b, 9.75, 17.9, { size: fs, italic: false, color: p.pal.muted, align: 'left', dx: 4 });
+      };
+      const strip = (p, title) => {
+        const pal = p.pal, fs = clamp(p.scale * .42, 11, 15);
+        for (let v = 0; v <= 100; v += 10) p.path([[sx(v), 2.2], [sx(v), 2.0]], { stroke: pal['grid-strong'], width: 1.5 });
+        p.path([[sx(0), 2.2], [sx(100), 2.2]], { stroke: pal['grid-strong'], width: 2 });
+        for (let v = 0; v <= 100; v += 20) p.label(v + '%', sx(v), 1.5, { size: fs + 1, italic: false, color: pal.muted, halo: false });
+        p.label(title, 10, .6, { size: fs, italic: false, color: pal.muted, halo: false });
+      };
+      const truthLine = (p, label, col, tv = TRUTH) => {
+        const fs = clamp(p.scale * .42, 11, 15);
+        p.path([[sx(tv), 2.2], [sx(tv), 5.5]], { stroke: col || p.pal.text, width: 2, dash: [7, 5] });
+        p.label(label, sx(tv), 5.9, { size: fs + 1, italic: false, color: p.pal.text });
+      };
+      const popDots = (p, sampled, reveal) => {
+        const pal = p.pal, r = clamp(p.scale * .3, 4, 13), set = new Set(sampled);
+        ZONES.forEach(z => p.label(z.name, z.cx - .3, z.ly, { size: clamp(p.scale * .5, 12, 17), italic: false, color: pal.text, align: 'left', halo: false }));
+        POP.forEach((d, i) => {
+          const on = set.has(i), show = on || reveal;
+          if (!show) { p.dot(d.x, d.y, r * .7, alpha(pal['grid-strong'], .55)); return; }
+          const a = on ? 1 : .35;
+          if (d.walk) p.dot(d.x, d.y, r, alpha(pal.blue, a), alpha(pal.blue, a), 2);
+          else p.dot(d.x, d.y, r, pal.stage, alpha(pal.blue, a), 2);
+          if (on) p.dot(d.x, d.y, r + 3.5, null, alpha(pal.yellow, .9), 2);
+        });
+      };
+      const gridDots = (p, ids, x0, y0, cols, s, r, yes) => {
+        ids.forEach((v, i) => {
+          const x = x0 + (i % cols) * s, y = y0 - Math.floor(i / cols) * s;
+          if (v) p.dot(x, y, r, p.pal.blue, p.pal.blue, 2); else p.dot(x, y, r, p.pal.stage, p.pal.blue, 2);
+        });
+      };
+      const flags = (k, n, seed) => shuffle(Array.from({ length: n }, (_, i) => i < k ? 1 : 0), mulberry(seed));
+
+      P.onDraw = (c, p) => {
+        p.fit(20, 18.6, { l: .2, r: .2, t: .2, b: .2 });
+        const pal = p.pal, fs = clamp(p.scale * .42, 11, 15);
+
+        if (st.mode === 'pick') {
+          legend(p, 'walks to school', 'does not walk');
+          popDots(p, st.sample, st.showAll);
+          strip(p, 'percent who walk to school');
+          if (st.sample.length) {
+            truthLine(p, 'whole school: ' + TRUTH + '%', pal.text);
+            const k = walkers(st.sample), pc = pctOf(k, st.sample.length), right = pc > 60;
+            p.path([[sx(pc), 2.2], [sx(pc) - .45, 3.3], [sx(pc) + .45, 3.3]], { fill: pal.yellow, stroke: pal.yellow, width: 1, close: true });
+            p.label('this sample: ' + pc + '%', sx(pc), 4.1, { size: fs + 1, italic: false, color: pal.text, align: right ? 'right' : pc < 30 ? 'left' : 'center', dx: right ? 10 : pc < 30 ? -10 : 0 });
+          }
+        }
+
+        if (st.mode === 'many') {
+          legend(p, 'walks to school', 'does not walk');
+          popDots(p, st.latest || [], false);
+          strip(p, 'percent who walk in each random sample');
+          c.fillStyle = alpha(pal.green, .15); c.fillRect(p.X(sx(TRUTH - 10)), p.Y(5.5), p.X(sx(TRUTH + 10)) - p.X(sx(TRUTH - 10)), p.Y(2.2) - p.Y(5.5));
+          truthLine(p, 'whole school: ' + TRUTH + '%', pal.text);
+          const bins = {}; let mx = 1;
+          st.many.forEach(m => { const b = Math.round(m.pct / 5); bins[b] = (bins[b] || 0) + 1; mx = Math.max(mx, bins[b]); });
+          const dd = Math.min(.8, 3.0 / mx), rr = Math.max(1.5, dd * p.scale * .45), used = {};
+          st.many.forEach((m, i) => {
+            const b = Math.round(m.pct / 5), j = used[b] = (used[b] || 0) + 1, last = i === st.many.length - 1;
+            p.dot(sx(b * 5), 2.2 + dd * (j - .5) + .05, rr, last ? pal.yellow : alpha(pal.blue, .9), last ? pal.text : pal.stage, last ? 1.5 : 1);
+          });
+        }
+
+        if (st.mode === 'infer') {
+          const n = st.ss, k = Math.round(n * .35), rows = n === 160 ? 5 : 2, cols = n / rows, s = Math.min(.8, 17 / cols), r = clamp(s * p.scale * .38, 3, 12);
+          const fl = flags(k, n, 11 + n);
+          p.label('Random sample: ' + plural(n, 'student', 'students') + ', ' + k + ' walk (' + pctOf(k, n) + '%)', 1.4, 16.9, { size: clamp(p.scale * .5, 12, 17), italic: false, align: 'left', halo: false });
+          gridDots(p, fl, 1.6, 16.0, cols, s, r);
+          legend(p, 'walks to school', 'does not walk');
+          const bx0 = 1.5, bx1 = 18.5, by0 = 8.6, by1 = 9.8, X = v => bx0 + v / 100 * (bx1 - bx0);
+          p.label('The whole school: 600 students', 1.4, 11.9, { size: clamp(p.scale * .5, 12, 17), italic: false, align: 'left', halo: false });
+          c.strokeStyle = pal['grid-strong']; c.lineWidth = 2; c.strokeRect(p.X(bx0), p.Y(by1), p.X(bx1) - p.X(bx0), p.Y(by0) - p.Y(by1));
+          if (st.est !== null) {
+            const e = st.est, lo = Math.max(0, e - st.margin), hi = Math.min(100, e + st.margin);
+            c.fillStyle = alpha(pal.blue, .22); c.fillRect(p.X(X(lo)), p.Y(by1), p.X(X(hi)) - p.X(X(lo)), p.Y(by0) - p.Y(by1));
+            c.fillStyle = alpha(pal.blue, .7); c.fillRect(p.X(bx0), p.Y(by1), p.X(X(e)) - p.X(bx0), p.Y(by0) - p.Y(by1));
+            p.path([[X(e), by0 - .2], [X(e), by1 + .2]], { stroke: pal.text, width: 2 });
+            p.label('walkers: about ' + Math.round(600 * e / 100), X(e / 2), 7.7, { size: fs + 1, italic: false, color: pal.text, halo: false });
+          } else p.label('choose an estimate below', 10, 9.2, { size: fs + 1, italic: false, color: pal.muted, halo: false });
+          strip(p, 'percent of all students who walk');
+          p.path([[sx(35), 2.2], [sx(35), 3.4]], { stroke: pal.yellow, width: 3 });
+          p.path([[sx(35), 3.6], [sx(35) - .4, 4.4], [sx(35) + .4, 4.4]], { fill: pal.yellow, stroke: pal.yellow, width: 1, close: true });
+          p.label('sample: 35%', sx(35), 5.1, { size: fs + 1, italic: false, color: pal.text, align: 'right', dx: 12 });
+          if (st.est !== null) {
+            const e = st.est, lo = Math.max(0, e - st.margin), hi = Math.min(100, e + st.margin), y = 3.4;
+            p.path([[sx(lo), y], [sx(hi), y]], { stroke: pal.blue, width: 5 });
+            p.path([[sx(lo), y - .35], [sx(lo), y + .35]], { stroke: pal.blue, width: 3 }); p.path([[sx(hi), y - .35], [sx(hi), y + .35]], { stroke: pal.blue, width: 3 });
+            p.label(Math.round(lo) + '% to ' + Math.round(hi) + '%', sx(hi), 4.3, { size: fs + 1, italic: false, color: pal.blue, align: hi > 80 ? 'right' : 'left', dx: hi > 80 ? 4 : 12 });
+          }
+        }
+
+        if (st.mode === 'compare') {
+          p.label('solid dot: says yes   hollow dot: says no', 1.4, 17.9, { size: fs, italic: false, color: pal.muted, align: 'left', halo: false });
+          SURVEYS.forEach((sv, i) => {
+            const x0 = [1.4, 11.4][i % 2], ytop = [17.0, 10.9][Math.floor(i / 2)], s = .7, r = clamp(s * p.scale * .38, 3, 11);
+            const sel = st.sel === i, a = st.ans[i];
+            if (sel) { c.strokeStyle = pal.yellow; c.lineWidth = 3; c.strokeRect(p.X(x0 - .5), p.Y(ytop + .55), p.X(x0 + 8.2) - p.X(x0 - .5), p.Y(ytop - 5.4) - p.Y(ytop + .55)); }
+            p.label((i + 1) + '  ' + sv.short, x0 - .3, ytop, { size: clamp(p.scale * .46, 11, 16), italic: false, align: 'left', halo: false });
+            p.label(sv.yes + ' of ' + sv.n + ' = ' + pctOf(sv.yes, sv.n) + '%', x0 - .3, ytop - .75, { size: clamp(p.scale * .46, 11, 16), italic: false, color: pal.muted, align: 'left', halo: false });
+            gridDots(p, flags(sv.yes, sv.n, 40 + i), x0, ytop - 1.6, 10, s, r);
+            if (a !== null) {
+              const ok = (a === 'fair') === sv.fair;
+              p.label(sv.fair ? 'representative' : 'biased', x0 + 7.7, ytop, { size: clamp(p.scale * .42, 10, 14), italic: false, color: ok ? pal.green : pal.red, align: 'right', halo: false });
+            }
+          });
+          strip(p, 'percent who say yes to a new gym');
+          if (st.ans.every(a => a !== null)) truthLine(p, 'whole school: ' + CMP_TRUTH + '%', pal.text, CMP_TRUTH);
+          SURVEYS.forEach((sv, i) => {
+            const pc = pctOf(sv.yes, sv.n), y = 3.1 + (pc === 85 ? (i === 1 ? .9 : 0) : 0);
+            p.dot(sx(pc), y, clamp(p.scale * .3, 7, 11), pal.blue, pal.stage, 2);
+            p.label(String(i + 1), sx(pc), y, { size: clamp(p.scale * .38, 10, 13), italic: false, color: pal.stage, halo: false });
+          });
+        }
+      };
+
+      /* ---------- control groups ---------- */
+      const probe = C.readout(), host = probe.parentElement; probe.remove();
+      const group = fn => {
+        const before = new Set(host.children); fn();
+        const w = h('div', { class: 'grp' }, [...host.children].filter(e => !before.has(e))); host.append(w); return w;
+      };
+      let roA, fb, drawn;
+      const fbHtml = (title, body) => `<span class="k">${title}</span><br>${body}`;
+
+      /* pick */
+      const takeSample = m => {
+        st.method = m;
+        if (m === 'front') st.sample = Array.from({ length: 20 }, (_, i) => i);
+        else if (m === 'gym') st.sample = Array.from({ length: 20 }, (_, i) => 100 + i);
+        else st.sample = draw1(20);
+        draw();
+      };
+      let fbPick, roPick;
+      const gPick = group(() => {
+        roPick = C.readout(); fbPick = C.readout();
+        C.title('Choose how to sample 20 students');
+        C.buttons([
+          { label: 'First 20 at the front door', onClick: () => takeSample('front') },
+          { label: '20 at the gym doors', onClick: () => takeSample('gym') },
+          { label: '20 chosen at random', primary: true, onClick: () => takeSample('random') }
+        ]);
+        C.toggle({ label: 'Show every student', value: false, onChange: v => { st.showAll = v; draw(); } });
+        C.hint('Each press of "chosen at random" draws a new random sample. Dots with a yellow ring are in your sample.');
+      });
+      const updPick = () => {
+        if (!st.sample.length) { roPick.innerHTML = '<span class="k">Pick a method to take a sample.</span>'; fbPick.innerHTML = ''; return; }
+        const n = 20, k = walkers(st.sample), pc = pctOf(k, n), d = Math.round((pc - TRUTH) * 10) / 10, z = zoneCounts(st.sample);
+        roPick.innerHTML = `<span class="k">Sample</span> ${k} of ${n} walk = ${pc}%<br><span class="k">Whole school</span> 90 of 200 walk = ${TRUTH}%<br><span class="k">Miss</span> ${d > 0 ? '+' : d < 0 ? '−' : ''}${Math.abs(d)} points<br><span class="k">Picked from</span> front ${z[0]}, library ${z[1]}, gym ${z[2]}, bus ${z[3]}`;
+        const side = d > 0 ? 'above' : 'below';
+        if (st.method === 'front') fbPick.innerHTML = fbHtml('Why it missed', `All 20 stand at the front door. Many of them live close to school, so many walk. One group is overrepresented, so the sample is <b>biased</b>: it is ${Math.abs(d)} points ${side} the whole school. It was easy to get, but it is not representative.`);
+        else if (st.method === 'gym') fbPick.innerHTML = fbHtml('Why it missed', `All 20 stand at the gym doors, where fewer students walk. The sample leaves out the other three groups, so it is <b>biased</b>: it is ${Math.abs(d)} points ${side} the whole school. Two biased samples can miss in opposite directions.`);
+        else fbPick.innerHTML = fbHtml('Why it is better', `Every student had the same chance to be picked, so the sample is spread over all four groups. This one is ${d === 0 ? 'right on the whole school value' : Math.abs(d) + ' points ' + side + ' it'}. A random sample is not perfect, but it is not tilted toward any group. Press again: the miss changes, and it can be high or low.`);
+      };
+
+      /* many */
+      const addSamples = q => {
+        for (let i = 0; i < q; i++) {
+          const ids = draw1(st.n), k = walkers(ids);
+          st.many.push({ k, n: st.n, pct: pctOf(k, st.n) }); st.latest = ids;
+        }
+        draw();
+      };
+      let sizeS, roMany, fbMany;
+      const gMany = group(() => {
+        roMany = C.readout(); fbMany = C.readout();
+        C.title('Draw random samples');
+        sizeS = C.slider({ label: 'Sample size', min: 5, max: 100, step: 5, value: st.n, format: v => String(Math.round(v)) + ' students',
+          onInput: v => { st.n = Math.round(v); st.many = []; st.latest = null; draw(); } });
+        C.buttons([
+          { label: 'Draw 1 sample', primary: true, onClick: () => addSamples(1) },
+          { label: 'Draw 20 samples', onClick: () => addSamples(20) },
+          { label: 'Clear', onClick: () => { st.many = []; st.latest = null; draw(); } }
+        ]);
+        C.hint('Moving the size slider clears the dots, so you can compare one size at a time. The green band is within 10 points of the truth.');
+      });
+      const updMany = () => {
+        const m = st.many, cnt = m.length;
+        if (!cnt) { roMany.innerHTML = `<span class="k">Sample size</span> ${st.n}<br><span class="k">Samples drawn</span> 0`; fbMany.innerHTML = fbHtml('Try it', 'Press "Draw 20 samples". Each sample is a random group of ' + st.n + ' students out of the 200.'); return; }
+        const lo = Math.min(...m.map(x => x.pct)), hi = Math.max(...m.map(x => x.pct)), within = m.filter(x => Math.abs(x.pct - TRUTH) <= 10).length, l = m[cnt - 1];
+        roMany.innerHTML = `<span class="k">Sample size</span> ${st.n}<br><span class="k">Samples drawn</span> ${cnt}<br><span class="k">Lowest to highest</span> ${lo}% to ${hi}%<br><span class="k">Within 10 points of 45%</span> ${within} of ${cnt}`;
+        const d = Math.round((l.pct - TRUTH) * 10) / 10;
+        let msg = `Latest sample: ${l.k} of ${l.n} walk = ${l.pct}%, which is ${d === 0 ? 'exactly right' : Math.abs(d) + ' points ' + (d > 0 ? 'above' : 'below') + ' 45%'}. `;
+        if (cnt < 10) msg += 'Keep drawing to see where the answers pile up.';
+        else if (st.n <= 20) msg += 'With few students per sample the answers are spread out. Any one small sample can be far off.';
+        else if (st.n >= 60) msg += 'With many students per sample the answers bunch close to 45%. A bigger random sample is more likely to be close, but one can still miss a little.';
+        else msg += 'The answers pile up around 45%. Bigger samples bunch closer, and any single sample can still be off.';
+        fbMany.innerHTML = fbHtml('What you see', msg);
+      };
+
+      /* infer */
+      const CHOICES = [
+        { label: 'About 14 students', ok: false, why: 'That is the number of walkers in the sample, not in the school. The school is 15 times bigger than the sample of 40, so the count must grow.' },
+        { label: 'About 35 students', ok: false, why: 'The 35 is a percent, not a count. 35% of 600 students is much more than 35 students.' },
+        { label: 'About 210 students', ok: true, why: '35% of 600 is 0.35 times 600, which is 210. We say "about" because a random sample estimates the school, it does not measure it.' },
+        { label: 'Exactly 210 students', ok: false, why: '210 is the right center, but "exactly" claims too much. Another random sample of 40 would give another answer, so the true number can be a bit higher or lower.' },
+        { label: 'About 390 students', ok: false, why: '390 is the number who do not walk (65% of 600). The question asks about those who walk.' }
+      ];
+      const VARIANTS = [[7, 20], [14, 40], [56, 160]];
+      let roInfer, fbEst, fbRange, estBtns, varBtns, marS;
+      const gInfer = group(() => {
+        roInfer = C.readout(); fbEst = C.readout(); fbRange = C.readout();
+        C.title('Best estimate for all 600 students');
+        estBtns = C.buttons(CHOICES.map((o, i) => ({ label: o.label, onClick: () => { st.est = o.ok ? 35 : null; st.estPick = i; draw(); } })));
+        C.title('How far off could it be?');
+        marS = C.slider({ label: 'Give or take', min: 0, max: 40, step: 1, value: st.margin, format: v => '± ' + Math.round(v) + ' points', onInput: v => { st.margin = Math.round(v); draw(); } });
+        C.title('Same 35%, different sample size');
+        varBtns = C.buttons(VARIANTS.map(([k, n]) => ({ label: k + ' of ' + n, onClick: () => { st.ss = n; draw(); } })));
+        C.hint('The range is only about samples that are random. Pick an estimate first, then move the slider.');
+      });
+      const updInfer = () => {
+        const n = st.ss, R = rule(n), m = st.margin, e = st.est;
+        estBtns.forEach((b, i) => b.classList.toggle('primary', st.estPick === i));
+        varBtns.forEach((b, i) => b.classList.toggle('primary', VARIANTS[i][1] === n));
+        if (e === null) {
+          roInfer.innerHTML = `<span class="k">Sample</span> ${Math.round(n * .35)} of ${n} walk = 35%<br><span class="k">Range you set</span> ± ${m} points`;
+          fbEst.innerHTML = st.estPick === undefined || st.estPick === null ? fbHtml('Estimate', 'Pick the best estimate of how many of the 600 students walk.') : fbHtml('Not quite', CHOICES[st.estPick].why + ' Try again.');
+        } else {
+          const lo = Math.max(0, e - m), hi = Math.min(100, e + m);
+          roInfer.innerHTML = `<span class="k">Sample</span> ${Math.round(n * .35)} of ${n} walk = 35%<br><span class="k">Estimate</span> 35% of 600 = 210 students<br><span class="k">Your range</span> ${lo}% to ${hi}%, about ${Math.round(6 * lo)} to ${Math.round(6 * hi)} students`;
+          fbEst.innerHTML = fbHtml('Good estimate', CHOICES[2].why);
+        }
+        let r;
+        if (m === 0) r = 'A range of zero claims the school is exactly 35%. A random sample of ' + n + ' is very unlikely to be that exact. That is overclaiming.';
+        else if (m < R * .75) r = `Too narrow for ${n} students. Another random sample of ${n} could easily land outside this range. A believable range is about ± ${R} points. Narrow ranges need bigger samples.`;
+        else if (m > R * 1.5) r = `Safe, but too wide. A range this big (${Math.max(0, 35 - m)}% to ${Math.min(100, 35 + m)}%) tells you very little. With ${n} students you can say about ± ${R} points.`;
+        else r = `A believable range. With ${n} random students, estimates usually land within about ${R} points of the truth. ${n === 160 ? 'The bigger sample lets you give a tighter range.' : n === 20 ? 'The small sample forces a wider range.' : 'A bigger sample would let you give a tighter range.'}`;
+        fbRange.innerHTML = fbHtml('Your range', r);
+      };
+
+      /* compare */
+      let roCmp, fbCmp, selBtns, ansBtns;
+      const pickSurvey = i => { st.sel = i; draw(); };
+      const answer = a => {
+        const i = st.sel; if (i === null) return;
+        const sv = SURVEYS[i], ok = (a === 'fair') === sv.fair;
+        st.lastAns = { i, ok };
+        st.ans[i] = ok ? a : null;
+        if (!ok) st.wrongTry = i;
+        else if (st.wrongTry === i) st.wrongTry = null;
+        draw();
+      };
+      const gCmp = group(() => {
+        roCmp = C.readout(); fbCmp = C.readout();
+        C.title('Pick a survey');
+        selBtns = C.buttons(SURVEYS.map((s, i) => ({ label: String(i + 1) + ' ' + s.short, onClick: () => pickSurvey(i) })));
+        C.title('Is its sample representative?');
+        ansBtns = C.buttons([
+          { label: 'Representative (fair)', onClick: () => answer('fair') },
+          { label: 'Biased', onClick: () => answer('biased') }
+        ]);
+        C.hint('The first number under each survey is its answer. The numbered dots on the line show the four answers.');
+      });
+      const updCmp = () => {
+        const done = st.ans.filter(a => a !== null).length;
+        selBtns.forEach((b, i) => { b.classList.toggle('primary', st.sel === i); });
+        roCmp.innerHTML = `<span class="k">Decided</span> ${done} of 4 surveys` + (st.sel !== null ? `<br><span class="k">Selected</span> ${SURVEYS[st.sel].name}` : '');
+        if (st.sel === null) { fbCmp.innerHTML = fbHtml('Start', 'Choose survey 1, 2, 3 or 4, then say if its sample is representative or biased.'); return; }
+        const sv = SURVEYS[st.sel], a = st.ans[st.sel];
+        if (a !== null) fbCmp.innerHTML = fbHtml('Right', sv.how + ' ' + sv.why) + (done === 4 ? '<br><br>' + fbHtml('All four decided', 'Only surveys 3 and 4 used random sampling. Survey 3 supports a valid generalization: about 55%. The whole school value is 54%, which is 324 of 600. Survey 4 is a fair method but a small sample, so its 70% is 16 points off. Surveys 1 and 2 say 85%, far from 54%, and asking more students the same way would not fix that.') : '');
+        else if (st.wrongTry === st.sel) fbCmp.innerHTML = fbHtml('Look again', sv.how + ' ' + (sv.fair ? 'Think about how the 10 or 40 students were chosen: did every student have the same chance? Then read the other button.' : 'Ask who is in this sample, and who is left out. Then read the other button.'));
+        else fbCmp.innerHTML = fbHtml('Your call', sv.how + ' Is this sample representative of all 600 students, or biased?');
+      };
+
+      const showGroup = () => {
+        gPick.style.display = st.mode === 'pick' ? '' : 'none';
+        gMany.style.display = st.mode === 'many' ? '' : 'none';
+        gInfer.style.display = st.mode === 'infer' ? '' : 'none';
+        gCmp.style.display = st.mode === 'compare' ? '' : 'none';
+      };
+      const upd = () => { showGroup(); if (st.mode === 'pick') updPick(); if (st.mode === 'many') updMany(); if (st.mode === 'infer') updInfer(); if (st.mode === 'compare') updCmp(); };
+      function draw() { P.draw(); upd(); }
+
+      const apply = (patch, immediate) => {
+        if (patch.mode) st.mode = patch.mode;
+        if (patch.mode === 'pick') { rng = mulberry(3); st.showAll = false; st.method = null; st.sample = []; gPick.querySelector('input[type=checkbox]').checked = false; if (patch.method) takeSample(patch.method); }
+        if (patch.mode === 'many') {
+          rng = mulberry(7); st.many = []; st.latest = null; st.n = patch.n; sizeS.set(patch.n);
+          for (let i = 0; i < (patch.draws || 0); i++) { const ids = draw1(st.n), k = walkers(ids); st.many.push({ k, n: st.n, pct: pctOf(k, st.n) }); st.latest = ids; }
+        }
+        if (patch.mode === 'infer') { st.ss = patch.ss; st.est = null; st.estPick = null; st.margin = 10; marS.set(10); }
+        if (patch.mode === 'compare') { st.sel = null; st.ans = [null, null, null, null]; st.wrongTry = null; }
+        draw();
+      };
+      draw();
+      return { destroy: () => P.destroy(), apply };
     }
   });
 }
