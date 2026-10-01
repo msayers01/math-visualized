@@ -15,8 +15,8 @@ Instructions for any AI working on this project (including in a new chat):
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
 ## Where things live
-- **Repo:** https://github.com/msayers01/math-visualized (default branch `main`). Work happens on the session's designated branch (this session: `claude/dreamy-dirac-b8r5nd`); PRs #1, #2 and #3 are merged into `main` as regular merges. PR #4 (courses, standards, filters; v0.9) is also merged into `main` (regular merge, 2026-10-01). The repo has no CI checks configured. After a merge, restart the branch from `main` (`git checkout -B <branch> origin/main`, force-with-lease push) before doing more work.
-- **Artifact (published site):** https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV, still version 7 (republished 2026-10-01 from ARCHITECTURE v0.8, so it does **not** yet show v0.9). PR #4 is merged, so v0.9 is ready to publish: earlier phases were republished after the merge, so ask the owner to confirm, then republish `index.html` from `main`. Private: only the owner can open it until shared from the Share menu.
+- **Repo:** https://github.com/msayers01/math-visualized (default branch `main`). Work happens on the session's designated branch (this session: `claude/dreamy-dirac-b8r5nd`); PRs #1, #2 and #3 are merged into `main` as regular merges. PR #4 (courses, standards, filters; v0.9) is also merged into `main` (regular merge, 2026-10-01). The repo has no CI checks configured. The branch is two commits ahead of `main` (a CONTEXT.md update and the finder fail-safe); open a PR when ready. After a merge, restart the branch from `main` (`git checkout -B <branch> origin/main`, force-with-lease push) before doing more work.
+- **Artifact (published site):** https://claude.ai/artifact/GKZsE5yY5QkwNiqJh8AFJV, version 8, republished 2026-10-01 at the owner's request from ARCHITECTURE v0.9 (courses, standards, filters). It was built from this branch's tip: `main` (PR #4) plus one small unmerged commit that makes the finder's URL update fail-safe. Private: only the owner can open it until shared from the Share menu.
 - **Files:** `index.html` (generated website), `src/` (sources), `tools/build.js` (build and curriculum checks), `ARCHITECTURE.md` (structure, contracts, design system, change log), `CONTEXT.md` (this file).
 
 ## Tech
@@ -73,7 +73,7 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - Build `index.html`, then produce a copy without the `<!doctype>`, `<html>`, `<head>`, `<body>` wrappers (keep `<title>`, fonts, scripts, `<style>`, and the body contents); the publish step wraps the page itself. Do not include the `<meta>` tags.
 - Publish with the `Artifact` tool using the artifact URL above. If it refuses because the live version was not viewed, read it with `action: "read"` and, if asked, Read the saved copy in full. The live page has only ever been published from this repo's `index.html`.
 - Static `<title>` is "Continuum: mathematics you can move"; the page also sets `document.title` at runtime. The `description` used is "Interactive, 3Blue1Brown-style math visualizations with guided lessons, from middle school through graduate study."
-- Last published: version 7 from ARCHITECTURE v0.8. v0.9 (merged in PR #4) is not published yet; awaiting the owner's go-ahead.
+- Last published: version 8 (2026-10-01) from v0.9 plus the fail-safe commit. Not opened in the live viewer from the sandbox, so confirm it there. Only a plain `#anchor` from an artifact link reaches the page's `location.hash` inside the viewer, so shareable filter links (`#/?...`) are reliable in the standalone `index.html` and when clicked inside the page, but may not carry over when shared as an artifact link.
 
 ## Standing rules
 1. Update the context window every turn and provide it (kept in `CONTEXT.md`).
