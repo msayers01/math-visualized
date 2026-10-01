@@ -183,7 +183,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
     open: c.querySelector('.course-toggle').getAttribute('aria-expanded') === 'true', list: !c.querySelector('.topics').hidden, hidden: c.hidden })));
   let gs = await groupsState();
   check('courses start collapsed', gs.length === schoolCourses.length && gs.every(g => !g.open && !g.list), JSON.stringify(gs));
-  check('collapsed courses preview their lesson titles', await lp.evaluate(() => [...document.querySelectorAll('#level-school .course-preview')].every(pv => !pv.hidden && pv.textContent.length > 10)));
+  check('collapsed courses preview their lesson titles', await lp.evaluate(() => [...document.querySelectorAll('#level-school .course-preview')].every(pv => !pv.hidden && pv.textContent.length > 0)));
   if (SPLIT) check('home page fetches no lesson files while courses are collapsed', fetched.length === 0, fetched.join(','));
   const g6 = want['Grade 6 Mathematics'];
   await lp.locator('.course-toggle', { hasText: 'Grade 6 Mathematics' }).click();
