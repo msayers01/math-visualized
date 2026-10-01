@@ -595,6 +595,8 @@ function linEq(m, b) {
   return s;
 }
 
+const TAU = Math.PI * 2;
+
 /* =====================================================================
    REGISTRY
    ===================================================================== */
@@ -952,6 +954,145 @@ register({
 });
 
 /* =====================================================================
+   SCHOOL — Functions as transformations
+   ===================================================================== */
+{
+  const FN = {
+    abs:  { label: '|x|',   f: Math.abs,           wrap: v => `|${v}|` },
+    sq:   { label: 'x²',    f: x => x * x,         wrap: v => v === 'x' ? 'x²' : `(${v})²` },
+    cube: { label: 'x³',    f: x => x * x * x,     wrap: v => v === 'x' ? 'x³' : `(${v})³` },
+    sqrt: { label: '√x',    f: Math.sqrt,          wrap: v => `√(${v})` },
+    sin:  { label: 'sin x', f: Math.sin,           wrap: v => `sin(${v})` }
+  };
+
+  register({
+    id: 'functions-as-transformations', level: 'school',
+    title: 'Functions as transformations',
+    blurb: 'Shift, stretch, squeeze and flip a graph, and follow one point as it moves.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 0; p.cy = 1; p.span = 4;
+      p.grid(1);
+      const A = [], B = [];
+      for (let x = -4.5; x <= 4.5; x += .1) { A.push([x, Math.abs(x)]); B.push([x, -Math.abs(x - 1) + 3]); }
+      p.curve(A, { stroke: pal['grid-strong'], width: 2.4 });
+      p.curve(B, { stroke: pal.blue, width: 2.8 });
+      p.dot(0, 0, 4.5, pal.stage, pal.brass, 2); p.dot(1, 3, 4.5, pal.red, pal.stage, 1.5);
+    },
+    hook: String.raw`Every graph you will meet is a copy of a simpler one that has been moved, stretched or flipped. Can you tell which moves, just from the formula?`,
+    steps: [
+      { title: 'Two graphs, one tracked point',
+        text: String.raw`<p>The grey curve is the base function \(f\). The blue curve is the transformed one, \(g\). Right now they are the same.</p><p>The ringed point \(P\) sits on \(f\). Its red twin \(P'\) shows where \(P\) lands on \(g\). Drag \(P\) along the curve.</p>`,
+        set: { fn: 'abs', a: 1, b: 1, h: 0, k: 0, xp: 1 } },
+      { title: 'Shift: h and k',
+        text: String.raw`<p>Here \(g(x)=f(x-2)+1\). The \(+1\) outside lifts every point up by \(1\).</p><p>The \(-2\) inside moves the graph <em>right</em> by \(2\), the opposite of what the sign suggests. \(g\) needs \(x-2\) to equal the old \(x\), so it must go \(2\) further.</p>`,
+        set: { fn: 'abs', a: 1, b: 1, h: 2, k: 1, xp: 1 } },
+      { title: 'Stretch and flip: a',
+        text: String.raw`<p>Now \(g(x)=-2f(x-2)+1\). Every height is multiplied by \(-2\): twice as tall, and the minus sign flips the graph over.</p><p>Watch \(P'\): its height is \(-2\) times the height of \(P\), then \(+1\).</p>`,
+        set: { fn: 'abs', a: -2, b: 1, h: 2, k: 1, xp: 1 } },
+      { title: 'Squeeze: b',
+        text: String.raw`<p>The base is now \(\sin x\), with \(b=2\). So \(g(x)=\sin(2x)\): the wave repeats twice as fast.</p><p>A number inside <em>divides</em> every x-coordinate: \(P'\) sits at half the distance from the y-axis.</p>`,
+        set: { fn: 'sin', a: 1, b: 2, h: 0, k: 0, xp: 1 } }
+    ],
+    formal: String.raw`
+      <p>Start from any function \(f\). The transformed function is
+      \[ g(x) = a\,f\big(b\,(x-h)\big) + k. \]</p>
+      <h3>What each number does</h3>
+      <p>
+      <b>\(k\)</b> shifts the graph up (down if negative).<br>
+      <b>\(h\)</b> shifts it right (left if negative).<br>
+      <b>\(a\)</b> stretches it vertically by \(|a|\), and flips it over the x-axis if \(a<0\).<br>
+      <b>\(b\)</b> squeezes it horizontally by \(1/|b|\), and flips it over the y-axis if \(b<0\).</p>
+      <h3>Following one point</h3>
+      <p>If \((x,y)\) is on the graph of \(f\), then \(g\) is at height \(a y + k\) when \(x\) is replaced by \(h + x/b\), because
+      \[ g\!\left(h+\tfrac{x}{b}\right) = a\,f(x) + k = a y + k. \]
+      So \((x,y)\mapsto\left(h+\tfrac{x}{b},\; a y+k\right)\). Changes to the output (\(a\), \(k\)) act the way they look. Changes to the input (\(b\), \(h\)) act in reverse.</p>
+      <h3>You have seen this before</h3>
+      <p>The vertex form \(y=a(x-h)^2+k\) is just \(f(x)=x^2\) moved to the vertex \((h,k)\) and stretched by \(a\).</p>`,
+    check: [
+      { q: String.raw`How does the graph of \(y=f(x+3)-2\) compare with the graph of \(y=f(x)\)?`,
+        choices: ['Left 3, down 2', 'Right 3, down 2', 'Left 3, up 2', 'Right 3, up 2'], answer: 0,
+        why: String.raw`The \(-2\) outside moves it down \(2\). The \(+3\) inside works in reverse: \(x+3\) reaches the old value \(3\) units sooner, so the graph moves left \(3\).`,
+        hint: String.raw`Outside changes act as they look. Inside changes act in reverse.` },
+      { q: 'Which function is the graph of f squeezed horizontally to half its width?',
+        choices: ['y = f(x/2)', 'y = f(2x)', 'y = 2f(x)', 'y = f(x)/2'], answer: 1,
+        why: String.raw`In \(f(2x)\) the input is doubled, so every feature of the graph happens at half the original \(x\). Compare \(P'\) in the last step.`,
+        hint: 'A number multiplying x inside the brackets divides every x-coordinate.' }
+    ],
+    links: { prereq: ['slope-and-linear-functions'], next: ['quadratics-and-the-parabola'], related: ['the-unit-circle-and-trig-waves', 'exponential-growth'] },
+
+    mount({ stage, controls: C }) {
+      const st = { fn: 'abs', a: 1, b: 1, h: 0, k: 0, xp: 1 };
+      let cancel = () => {};
+      const P = new Plane(stage, { span: 6 });
+      const F = () => FN[st.fn].f;
+      const g = x => st.a * F()(st.b * (x - st.h)) + st.k;
+      const z = v => Math.abs(v) < .005;
+
+      const eqStr = () => {
+        const { a, b, h, k } = st, hs = z(h) ? '' : ` ${h < 0 ? '+' : '−'} ${num(Math.abs(h))}`;
+        const bs = z(b - 1) ? '' : z(b + 1) ? '−' : num(b);
+        const inner = bs === '' ? (hs ? 'x' + hs : 'x') : hs ? `${bs}(x${hs})` : `${bs}x`;
+        const pre = z(a - 1) ? '' : z(a + 1) ? '−' : num(a);
+        return 'y = ' + pre + FN[st.fn].wrap(inner) + (z(k) ? '' : (k < 0 ? ' − ' : ' + ') + num(Math.abs(k)));
+      };
+
+      P.onDraw = (c, p) => {
+        const pal = p.pal, bd = p.bounds(), f = F(), base = [], img = [], n = 320;
+        p.grid(1); p.ticks(1);
+        for (let i = 0; i <= n; i++) { const x = bd.x0 + (bd.x1 - bd.x0) * i / n; base.push([x, f(x)]); img.push([x, g(x)]); }
+        p.curve(base, { stroke: pal['grid-strong'], width: 3 });
+        p.curve(img, { stroke: pal.blue, width: 3.5 });
+        const y = f(st.xp);
+        if (isFinite(y) && Math.abs(st.b) > .01) {
+          const qx = st.h + st.xp / st.b, qy = st.a * y + st.k;
+          p.path([[st.xp, y], [qx, qy]], { stroke: alpha(pal.red, .8), width: 2, dash: [6, 6] });
+          p.dot(qx, qy, 8, pal.red, pal.stage, 2.5);
+          p.label('P′', qx, qy, { size: 20, color: pal.red, dx: 16, dy: -14 });
+        }
+        if (isFinite(y)) {
+          p.dot(st.xp, y, 8, pal.stage, pal.brass, 3);
+          p.label('P', st.xp, y, { size: 20, dx: -16, dy: -14 });
+        }
+      };
+
+      const upd = () => {
+        const y = F()(st.xp);
+        let pt = '';
+        if (isFinite(y) && Math.abs(st.b) > .01)
+          pt = `<br><span class="k">P</span> (${num(st.xp)}, ${num(y)}) <span class="k">→ P′</span> (${num(st.h + st.xp / st.b)}, ${num(st.a * y + st.k)})`;
+        ro.innerHTML = `<span class="k">g</span> ${eqStr()}${pt}`;
+      };
+      const sync = () => { [aS, bS, hS, kS].forEach((s, i) => s.set(st['abhk'[i]])); P.draw(); upd(); };
+      const edit = key => v => { cancel(); st[key] = v; P.requestDraw(); upd(); };
+
+      const sel = C.select({ label: 'Base function f', value: st.fn, options: Object.entries(FN).map(([value, o]) => ({ value, label: 'f(x) = ' + o.label })),
+        onChange: v => { cancel(); st.fn = v; st.xp = 1; sync(); } });
+      C.title('g(x) = a·f(b(x − h)) + k');
+      const hS = C.slider({ label: 'h  (shift right)', min: -4, max: 4, step: .5, value: st.h, onInput: edit('h') });
+      const kS = C.slider({ label: 'k  (shift up)', min: -4, max: 4, step: .5, value: st.k, onInput: edit('k') });
+      const aS = C.slider({ label: 'a  (stretch, flip)', min: -3, max: 3, step: .25, value: st.a, onInput: edit('a') });
+      const bS = C.slider({ label: 'b  (squeeze, flip)', min: -3, max: 3, step: .25, value: st.b, onInput: edit('b') });
+      C.buttons([{ label: 'Reset transformation', onClick: () => { cancel(); Object.assign(st, { a: 1, b: 1, h: 0, k: 0 }); sync(); } }]);
+      const ro = C.readout(); upd();
+      C.hint('Drag P along the grey curve to see where it lands.');
+
+      draggable(P, {
+        hit: (px, py) => { const y = F()(st.xp); return isFinite(y) && near(P, st.xp, y, px, py) ? 'p' : null; },
+        move: (_, x) => { cancel(); const v = clamp(snap(x, .25), -5, 5); if (isFinite(F()(v))) { st.xp = v; P.requestDraw(); upd(); } }
+      });
+
+      const apply = (patch, immediate) => {
+        cancel();
+        const { fn, ...rest } = patch;
+        if (fn !== undefined) { st.fn = fn; sel.value = fn; }
+        if (immediate) { Object.assign(st, rest); sync(); } else cancel = animateTo(st, rest, 900, sync);
+      };
+      return { destroy: () => { cancel(); P.destroy(); }, apply };
+    }
+  });
+}
+
+/* =====================================================================
    SCHOOL — Quadratics and the parabola
    ===================================================================== */
 register({
@@ -1009,7 +1150,7 @@ register({
       why: String.raw`Factor: \(x^2-6x+5=(x-1)(x-5)\), which is zero at \(x=1\) and \(x=5\). The quadratic formula gives the same.`,
       hint: String.raw`Find two numbers that multiply to \(5\) and add to \(-6\).` }
   ],
-  links: { prereq: ['slope-and-linear-functions'], next: ['exponential-growth', 'functions-as-transformations'], related: ['derivatives-as-tangent-slopes'] },
+  links: { prereq: ['slope-and-linear-functions', 'functions-as-transformations'], next: ['exponential-growth'], related: ['derivatives-as-tangent-slopes'] },
 
   mount({ stage, controls: C }) {
     const st = { a: 1, h: 0, k: 0 };
@@ -1085,6 +1226,150 @@ register({
     return { destroy: () => { cancel(); P.destroy(); }, apply };
   }
 });
+
+/* =====================================================================
+   SCHOOL — Exponential growth
+   ===================================================================== */
+{
+  const compact = v => new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: v < 10 ? 2 : 1 }).format(v);
+  const niceStep = v => { const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; };
+  const pct = v => (v < 0 ? '−' : '+') + Math.round(Math.abs(v) * 100) + '%';
+  const amt = v => v >= 1e9 ? compact(v) : Number(v.toFixed(v < 100 ? 2 : 0)).toLocaleString('en');
+
+  register({
+    id: 'exponential-growth', level: 'school',
+    title: 'Exponential growth',
+    blurb: 'Compare adding with multiplying, and see why a small growth rate eventually wins.',
+    thumb(c, p) {
+      const pal = p.pal; p.cx = 5; p.cy = 3; p.span = 4.2;
+      p.grid(1, { axes: false });
+      p.path([[0, 0], [10, 0]], { stroke: pal['grid-strong'], width: 1.5 }); p.path([[0, 0], [0, 6.2]], { stroke: pal['grid-strong'], width: 1.5 });
+      p.path([[0, .4], [10, 3.2]], { stroke: pal.red, width: 2.4 });
+      const pts = []; for (let t = 0; t <= 10; t += .2) pts.push([t, .4 * Math.pow(1.36, t)]);
+      p.curve(pts, { stroke: pal.blue, width: 2.8 });
+    },
+    hook: String.raw`One germ splits in two every hour. For the first few hours there is nothing to worry about, and then suddenly there is no room left. Why?`,
+    steps: [
+      { title: 'Adding versus multiplying',
+        text: String.raw`<p>Start with \(1\). The <b>red</b> line <em>adds</em> \(1\) each period: \(1, 2, 3, 4\ldots\). The <b>blue</b> curve <em>doubles</em> each period: \(1, 2, 4, 8\ldots\).</p><p>After 6 periods: \(7\) against \(64\). Drag <b>Time</b> to read off values.</p>`,
+        set: { p0: 1, r: 1, T: 6, t: 6, showLin: true } },
+      { title: 'Let it run',
+        text: String.raw`<p>Stretch the timeline to 20 periods. Doubling reaches \(1{,}048{,}576\). Adding \(1\) a period reaches \(21\).</p><p>The red line is now flat against the axis. Nothing about the rule changed, only how long we waited.</p>`,
+        set: { p0: 1, r: 1, T: 20, t: 20, showLin: true } },
+      { title: 'Even 10% wins',
+        text: String.raw`<p>Start at \(100\) and grow \(10\%\) each period. The line adds \(10\) a period.</p><p>For a while the line keeps up. After 30 periods the curve is near \(1{,}745\) and the line is at \(400\). The doubling time here is about 7 periods.</p>`,
+        set: { p0: 100, r: .1, T: 30, t: 30, showLin: true } },
+      { title: 'Negative rates: decay',
+        text: String.raw`<p>Now lose \(30\%\) each period. The amount keeps shrinking by the same <em>fraction</em>, so it falls fast at first, then slowly, and never reaches \(0\).</p><p>The line adds \(-30\) each period, so it hits \(0\) at period 3.3 and would go negative. Real quantities like this follow the curve.</p>`,
+        set: { p0: 100, r: -.3, T: 15, t: 15, showLin: true } }
+    ],
+    formal: String.raw`
+      <p>A quantity grows <em>linearly</em> if it gains the same <em>amount</em> each period, and <em>exponentially</em> if it gains the same <em>fraction</em> each period.
+      With start value \(P_0\) and growth rate \(r\) per period:
+      \[ \text{linear: } L(t)=P_0(1+rt), \qquad \text{exponential: } P(t)=P_0(1+r)^t. \]</p>
+      <h3>The growth factor</h3>
+      <p>Write \(b=1+r\). Each period multiplies the amount by \(b\), so \(P(t+1)/P(t)=b\) for every \(t\). Growth has \(b>1\). Decay has \(0<b<1\). A rate of \(-30\%\) means \(b=0.7\).</p>
+      <h3>Doubling time and half-life</h3>
+      <p>Solving \(P_0 b^t = 2P_0\) gives
+      \[ t_{\text{double}} = \frac{\ln 2}{\ln(1+r)} \approx \frac{70}{100\,r}, \]
+      the "rule of 70". At \(r=10\%\) that is about \(7\) periods. For decay the same idea gives the half-life \(\ln(1/2)/\ln b\).</p>
+      <h3>Why exponentials always win</h3>
+      <p>Any exponential with \(b>1\) eventually passes any straight line, however steep. A line adds a fixed amount, but the exponential adds an amount that is itself growing.</p>
+      <h3>Compound interest</h3>
+      <p>Money earning interest rate \(r\) per year is exactly this: after \(t\) years \(\$P_0\) becomes \(P_0(1+r)^t\).</p>`,
+    check: [
+      { q: String.raw`\(\$200\) earns \(5\%\) interest per year, compounded yearly. How much is it worth after 2 years?`,
+        choices: ['$220.00', '$220.50', '$210.00', '$222.00'], answer: 1,
+        why: String.raw`Each year multiplies by \(1.05\): \(200\times1.05^2 = 200\times1.1025 = 220.50\). Adding \(5\%\) of \(200\) twice would give only \(220\).`,
+        hint: String.raw`The second year's interest is earned on the new, larger amount.` },
+      { q: 'A quantity shrinks by 20% each period. Which formula gives its value after t periods?',
+        choices: [String.raw`\(P_0(0.2)^t\)`, String.raw`\(P_0(0.8)^t\)`, String.raw`\(P_0-0.2t\)`, String.raw`\(P_0(1.2)^t\)`], answer: 1,
+        why: String.raw`Losing \(20\%\) leaves \(80\%\), so each period multiplies by \(0.8\).`,
+        hint: 'What fraction of the amount is left after one period?' }
+    ],
+    links: { prereq: ['slope-and-linear-functions'], next: ['probability-with-repeated-trials'], related: ['functions-as-transformations', 'derivatives-as-tangent-slopes'] },
+
+    mount({ stage, controls: C }) {
+      const st = { p0: 1, r: 1, T: 6, t: 6 };
+      let cancel = () => {}, showLin = true;
+      const P = new Plane(stage, { span: 5 });
+      const E = t => st.p0 * Math.pow(1 + st.r, t), L = t => st.p0 * (1 + st.r * t);
+      const W = 10, H = 6.2;
+
+      P.onDraw = (c, p) => {
+        const pal = p.pal, T = Math.max(st.T, 1), tm = Math.min(st.t, T);
+        const ymax = Math.max(E(0), E(T), showLin ? Math.max(L(0), L(T)) : 0), top = ymax * 1.08;
+        const ux = t => t / T * W, vy = v => v / top * H;
+        const sc = Math.min(p.w / (W + 2.6), p.h / (H + 2.2));
+        p.span = Math.min(p.w, p.h) / (2 * sc); p.cx = W / 2 - .5; p.cy = H / 2 - .05;
+        const fs = clamp(sc * .3, 12, 15);
+
+        const vs = niceStep(top / 5), ts = T <= 12 ? 1 : T <= 24 ? 2 : 5;
+        for (let v = 0; v <= top + 1e-9; v += vs) {
+          p.path([[0, vy(v)], [W, vy(v)]], { stroke: pal.grid, width: 1.5 });
+          p.label(compact(v), 0, vy(v), { size: fs + 2, italic: false, color: pal.muted, align: 'right', dx: -10 });
+        }
+        for (let t = 0; t <= T + 1e-9; t += ts) {
+          p.path([[ux(t), 0], [ux(t), H]], { stroke: pal.grid, width: 1.5 });
+          p.label(String(Math.round(t)), ux(t), 0, { size: fs + 2, italic: false, color: pal.muted, dy: 16 });
+        }
+        p.path([[0, 0], [W, 0]], { stroke: pal['grid-strong'], width: 2 }); p.path([[0, 0], [0, H]], { stroke: pal['grid-strong'], width: 2 });
+        p.label('time t', W, 0, { size: fs + 3, italic: false, color: pal.muted, align: 'right', dy: 36 });
+        p.label('amount', 0, H, { size: fs + 3, italic: false, color: pal.muted, align: 'left', dy: -16 });
+
+        const N = 240, ec = [], lc = [], tl = st.r < 0 ? Math.min(T, -1 / st.r) : T;
+        for (let i = 0; i <= N; i++) { const t = T * i / N; ec.push([ux(t), vy(E(t))]); if (t <= tl) lc.push([ux(t), vy(Math.max(L(t), 0))]); }
+        if (showLin) p.path(lc, { stroke: pal.red, width: 3.5 });
+        p.path(ec, { stroke: pal.blue, width: 3.5 });
+
+        const ey = vy(E(tm)), ly = vy(L(tm)), showL = showLin && tm <= tl;
+        p.path([[ux(tm), 0], [ux(tm), Math.max(ey, showL ? ly : 0)]], { stroke: pal['grid-strong'], width: 1.5, dash: [5, 6] });
+        if (showL) { p.dot(ux(tm), ly, 7, pal.red, pal.stage, 2); p.label(compact(L(tm)), ux(tm), ly, { size: fs + 3, italic: false, color: pal.red, align: 'right', dx: -12, dy: 14 }); }
+        p.dot(ux(tm), ey, 7, pal.blue, pal.stage, 2); p.label(compact(E(tm)), ux(tm), ey, { size: fs + 3, italic: false, color: pal.blue, align: 'right', dx: -12, dy: -14 });
+        p.label('exponential: multiply by ' + num(1 + st.r) + ' each period', .3, H - .1, { size: fs + 3, italic: false, color: pal.blue, align: 'left' });
+        if (showLin) p.label('linear: add ' + amt(st.p0 * st.r) + ' each period', .3, H - .65, { size: fs + 3, italic: false, color: pal.red, align: 'left' });
+      };
+
+      const upd = () => {
+        const tm = Math.min(st.t, st.T), r = st.r;
+        let extra = '';
+        const per = v => num(v) + (Math.abs(v - 1) < .005 ? ' period' : ' periods');
+        if (r > 0) extra = `<br><span class="k">Doubling time</span> ${per(Math.log(2) / Math.log(1 + r))}`;
+        else if (r < 0) extra = `<br><span class="k">Half-life</span> ${per(Math.log(.5) / Math.log(1 + r))}`;
+        ro.innerHTML = `<span class="k">At t =</span> ${num(tm)}<br><span class="k">Exponential</span> ${amt(E(tm))}` +
+          (showLin ? `<br><span class="k">Linear</span> ${amt(Math.max(L(tm), 0))}${L(tm) < 0 ? ' (would be negative)' : ''}` : '') + extra;
+      };
+      const sync = () => { [p0S, rS, TS, tS].forEach((s, i) => s.set(st[['p0', 'r', 'T', 't'][i]])); P.draw(); upd(); };
+      const edit = key => v => {
+        cancel(); st[key] = key === 'r' ? Math.round(v * 100) / 100 : v;
+        if (st.t > st.T) { st.t = st.T; tS.set(st.t); }
+        P.requestDraw(); upd();
+      };
+
+      C.title('Amount');
+      const p0S = C.slider({ label: 'Start amount', min: 1, max: 500, step: 1, value: st.p0, format: v => String(Math.round(v)), onInput: edit('p0') });
+      const rS = C.slider({ label: 'Growth per period', min: -.5, max: 1, step: .05, value: st.r, format: pct, onInput: edit('r') });
+      C.title('Time');
+      const TS = C.slider({ label: 'Periods shown', min: 5, max: 30, step: 1, value: st.T, format: v => String(Math.round(v)), onInput: edit('T') });
+      const tS = C.slider({ label: 'Read at time t', min: 0, max: 30, step: .1, value: st.t, format: v => v.toFixed(1), onInput: edit('t') });
+      const linT = C.toggle({ label: 'Compare with linear growth', value: true, onChange: v => { showLin = v; P.draw(); upd(); } });
+      C.buttons([
+        { label: 'Doubling', onClick: () => apply({ p0: 1, r: 1, T: 10, t: 10 }) },
+        { label: '10% growth', onClick: () => apply({ p0: 100, r: .1, T: 30, t: 30 }) },
+        { label: '30% decay', onClick: () => apply({ p0: 100, r: -.3, T: 15, t: 15 }) }
+      ]);
+      const ro = C.readout(); upd();
+
+      function apply(patch, immediate) {
+        cancel();
+        const { showLin: sl, ...rest } = patch;
+        if (sl !== undefined) { showLin = sl; linT.checked = sl; }
+        if (immediate) { Object.assign(st, rest); sync(); } else cancel = animateTo(st, rest, 1100, sync);
+      }
+      return { destroy: () => { cancel(); P.destroy(); }, apply };
+    }
+  });
+}
 
 /* =====================================================================
    VISUALIZATION 1 — Pythagorean theorem (middle & high school)
@@ -1213,10 +1498,270 @@ register({
 });
 
 /* =====================================================================
+   SCHOOL — Area of a circle
+   ===================================================================== */
+register({
+  id: 'area-of-a-circle', level: 'school',
+  title: 'Area of a circle',
+  blurb: 'Cut a circle into slices, interlock them, and watch a rectangle appear.',
+  thumb(c, p) {
+    const pal = p.pal, n = 12, a = TAU / n, r = 1.4; p.cx = 0; p.cy = 0; p.span = 2.2;
+    for (let k = 0; k < n; k++) {
+      const pts = [[0, 0]]; for (let i = 0; i <= 6; i++) { const th = (k + i / 6) * a; pts.push([r * Math.cos(th), r * Math.sin(th)]); }
+      p.path(pts, { fill: alpha(k % 2 ? pal.yellow : pal.blue, .5), stroke: pal.stage, width: 1.5, close: true });
+    }
+  },
+  hook: String.raw`A circle has no straight edges. How can we measure the space inside it using nothing but a rectangle?`,
+  steps: [
+    { title: 'Cut it into slices',
+      text: String.raw`<p>Cut the circle of radius \(r\) into \(8\) equal slices, like a pizza. Colors alternate so you can follow them.</p><p>Each slice has two straight sides of length \(r\) and a curved edge. Nothing has been removed.</p>`,
+      set: { n: 8, t: 0, r: 2 } },
+    { title: 'Interlock the slices',
+      text: String.raw`<p>Turn every other slice upside down and fit them together. The result is a bumpy, lopsided rectangle, but it is made of exactly the same pieces.</p><p>So its area equals the circle's area.</p>`,
+      set: { n: 8, t: 1, r: 2 } },
+    { title: 'Cut thinner',
+      text: String.raw`<p>With \(32\) slices the bumps are much smaller, and the long edges look almost straight.</p><p>The thinner the slices, the closer the shape gets to a true rectangle.</p>`,
+      set: { n: 32, t: 1, r: 2 } },
+    { title: 'Read off the sides',
+      text: String.raw`<p>The height is a slice's length: \(r\). The long side is made of half the slices' curved edges, so it is half the circumference: \(\tfrac12\cdot 2\pi r=\pi r\).</p><p>Area = width × height \(=\pi r\cdot r=\pi r^2\).</p>`,
+      set: { n: 64, t: 1, r: 2 } }
+  ],
+  formal: String.raw`
+    <p><b>Theorem.</b> A circle of radius \(r\) has area
+    \[ A = \pi r^2. \]</p>
+    <h3>Where \(\pi\) comes from</h3>
+    <p>\(\pi\) is defined as the ratio of any circle's circumference to its diameter, so the circumference is \(C=2\pi r\).</p>
+    <h3>The rearrangement argument</h3>
+    <p>Cut the disk into \(n\) equal sectors (\(n\) even) and interlock them as in the picture. Each sector has radius \(r\), and the curved edges of half of them lie along the top while the other half lie along the bottom. Each long side therefore has length close to \(\tfrac12 C=\pi r\), and the height is close to \(r\). Rearranging does not change area, so
+    \[ A \approx \pi r \cdot r = \pi r^2, \]
+    and the approximation becomes exact as \(n\to\infty\).</p>
+    <h3>How close is the rectangle?</h3>
+    <p>The base of the shape is exactly \(n\,r\sin(\pi/n)\). Dividing by \(r\) gives \(n\sin(\pi/n)\), which is \(2.83\) for \(n=4\), \(3.06\) for \(n=8\), and \(3.14\) for \(n=64\). These numbers approach \(\pi\).</p>
+    <h3>Scaling</h3>
+    <p>Because \(A\) has \(r^2\) in it, doubling the radius makes the area \(4\) times as large, not \(2\) times.</p>`,
+  check: [
+    { q: 'A circle has its radius doubled. What happens to its area?',
+      choices: ['It doubles', 'It becomes 3 times as large', 'It becomes 4 times as large', 'It becomes 8 times as large'], answer: 2,
+      why: String.raw`\(A=\pi r^2\). Replacing \(r\) by \(2r\) gives \(\pi(2r)^2 = 4\pi r^2\), which is \(4\) times as large.`,
+      hint: String.raw`Area uses \(r^2\), so a factor of \(2\) in \(r\) is squared.` },
+    { q: String.raw`What is the area of a circle of radius \(5\), to the nearest whole number?`,
+      choices: ['31', '79', '157', '25'], answer: 1,
+      why: String.raw`\(A=\pi\cdot 5^2 = 25\pi \approx 78.5\), which rounds to \(79\). (\(31\) is the circumference \(10\pi\) and \(157\) is \(50\pi\).)`,
+      hint: String.raw`Use \(A=\pi r^2\), not \(2\pi r\).` }
+  ],
+  links: { prereq: ['pythagorean-theorem'], next: ['similarity-and-scaling'], related: ['riemann-sums-and-the-integral', 'inscribed-angles'] },
+
+  mount({ stage, controls: C }) {
+    const st = { n: 8, t: 0, r: 2 };
+    let cancel = () => {};
+    const P = new Plane(stage, { span: 4.7 });
+    const wrap = x => Math.atan2(Math.sin(x), Math.cos(x));
+
+    P.onDraw = (c, p) => {
+      const pal = p.pal, { n, r, t } = st, a = TAU / n, chord = 2 * r * Math.sin(a / 2), m = Math.max(3, Math.ceil(24 / n * 2));
+      for (let k = 0; k < n; k++) {
+        const up = k % 2 === 0, cdir = (k + .5) * a, rot = wrap((up ? Math.PI / 2 : -Math.PI / 2) - cdir);
+        const ax = (k - (n - 1) / 2) * chord / 2, ay = -r / 2 + (up ? 0 : r * Math.cos(a / 2));
+        const e = ease(clamp((t - k / n * .35) / .65, 0, 1)), th = rot * e, cs = Math.cos(th), sn = Math.sin(th), px = ax * e, py = ay * e;
+        const pts = [[px, py]];
+        for (let i = 0; i <= m; i++) {
+          const phi = (k + i / m) * a, x = r * Math.cos(phi), y = r * Math.sin(phi);
+          pts.push([px + x * cs - y * sn, py + x * sn + y * cs]);
+        }
+        p.path(pts, { fill: alpha(k % 2 ? pal.yellow : pal.blue, .5), stroke: alpha(pal.text, .55), width: 1.4, close: true });
+      }
+      const fs = clamp(p.scale * .5, 16, 26), fin = clamp((t - .75) * 4, 0, 1), fout = 1 - clamp(t * 4, 0, 1);
+      if (fout > .01) {
+        c.globalAlpha = fout; p.path([[0, 0], [r, 0]], { stroke: pal.text, width: 2.5 }); c.globalAlpha = 1;
+        p.label('r', r / 2, 0, { size: fs, alpha: fout, dy: -16 });
+      }
+      if (fin > .01) {
+        const w = Math.PI * r, yb = -r / 2 - r * .35, xr = w / 2 + r * .35;
+        c.globalAlpha = fin;
+        p.path([[-w / 2, yb], [w / 2, yb]], { stroke: pal.text, width: 2 });
+        p.path([[-w / 2, yb - .08], [-w / 2, yb + .08]], { stroke: pal.text, width: 2 }); p.path([[w / 2, yb - .08], [w / 2, yb + .08]], { stroke: pal.text, width: 2 });
+        p.path([[xr, -r / 2], [xr, r / 2]], { stroke: pal.text, width: 2 });
+        p.path([[xr - .08, -r / 2], [xr + .08, -r / 2]], { stroke: pal.text, width: 2 }); p.path([[xr - .08, r / 2], [xr + .08, r / 2]], { stroke: pal.text, width: 2 });
+        c.globalAlpha = 1;
+        p.label('πr', 0, yb, { size: fs * 1.1, alpha: fin, dy: 22 });
+        p.label('r', xr, 0, { size: fs, alpha: fin, align: 'left', dx: 12 });
+      }
+    };
+
+    const upd = () => {
+      const { n, r } = st, ratio = n * Math.sin(Math.PI / n);
+      ro.innerHTML = `<span class="k">Slices</span> n = ${n}<br><span class="k">Base ÷ r</span> = n·sin(π/n) = ${ratio.toFixed(4)}<br>` +
+        `<span class="k">π</span> = ${Math.PI.toFixed(4)}<br><span class="k">Area</span> πr² = ${(Math.PI * r * r).toFixed(2)} (r = ${r.toFixed(1)})`;
+    };
+    const setBtn = () => { play.textContent = st.t > .5 ? 'Put them back' : 'Rearrange slices'; };
+    const sync = () => { nS.set(st.n); rS.set(st.r); tS.set(st.t); P.draw(); upd(); setBtn(); };
+
+    C.title('Circle');
+    const nS = C.slider({ label: 'Slices', min: 4, max: 64, step: 2, value: st.n, format: v => String(Math.round(v)),
+      onInput: v => { cancel(); st.n = v; P.requestDraw(); upd(); } });
+    const rS = C.slider({ label: 'Radius r', min: 1, max: 2.5, step: .1, value: st.r, format: v => v.toFixed(1),
+      onInput: v => { cancel(); st.r = v; P.requestDraw(); upd(); } });
+    C.title('Rearrangement');
+    const tS = C.slider({ label: 'Progress', min: 0, max: 1, step: .001, value: st.t, format: v => Math.round(v * 100) + '%',
+      onInput: v => { cancel(); st.t = v; setBtn(); P.requestDraw(); } });
+    const [play] = C.buttons([{ label: 'Rearrange slices', primary: true, onClick: () => {
+      cancel(); const from = st.t, to = st.t < .5 ? 1 : 0;
+      cancel = tween(2600 * Math.abs(to - from), q => { st.t = lerp(from, to, q); tS.set(st.t); P.draw(); }, setBtn);
+    } }]);
+    const ro = C.readout(); upd();
+
+    const apply = (patch, immediate) => {
+      cancel();
+      const { n, ...rest } = patch;
+      if (n !== undefined) st.n = n;  /* slice count is an integer: change it at once, animate the rest */
+      if (immediate) { Object.assign(st, rest); sync(); } else cancel = animateTo(st, rest, 1100, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
+
+/* =====================================================================
+   SCHOOL — Similarity and scaling
+   ===================================================================== */
+register({
+  id: 'similarity-and-scaling', level: 'school',
+  title: 'Similarity and scaling',
+  blurb: 'Zoom a shape from a point and see lengths scale by k while areas scale by k².',
+  thumb(c, p) {
+    const pal = p.pal; p.cx = 2.5; p.cy = 2; p.span = 4.4;
+    p.grid(1, { axes: false });
+    const T = [[1, .5], [2.5, .5], [1, 2.5]], k = 2, im = T.map(([x, y]) => [k * x, k * y]);
+    for (let i = 0; i < 3; i++) p.path([[0, 0], im[i]], { stroke: pal['grid-strong'], width: 1.2, dash: [4, 4] });
+    p.path(im, { fill: alpha(pal.yellow, .25), stroke: pal.yellow, width: 2, close: true });
+    p.path(T, { fill: alpha(pal.blue, .35), stroke: pal.blue, width: 2, close: true });
+    p.dot(0, 0, 4.5, pal.stage, pal.brass, 2);
+  },
+  hook: String.raw`Double every length of a photo and its area does not double. It quadruples. Why, and what stays the same when a shape is scaled?`,
+  steps: [
+    { title: 'Zoom from a point',
+      text: String.raw`<p>Point \(O\) is the center. Every point of the blue triangle moves along a ray from \(O\), to \(k\) times its distance. With \(k=1.5\) we get the yellow triangle.</p><p>Drag \(O\) or the triangle's corners, and try the <b>Scale factor</b> slider.</p>`,
+      set: { shape: 'tri', k: 1.5, ox: 0, oy: 0 } },
+    { title: 'Lengths scale by k',
+      text: String.raw`<p>With \(k=2\), every side of the yellow triangle is exactly twice as long as its partner. The readout lists all three.</p><p>The angles do not change at all. Same angles with proportional sides is what <b>similar</b> means.</p>`,
+      set: { shape: 'tri', k: 2, ox: 0, oy: 0 } },
+    { title: 'Areas scale by k²',
+      text: String.raw`<p>Switch to a square and set \(k=3\). Each side is \(3\) times as long, and the big square holds \(3\times3=9\) copies of the small one.</p><p>Area scales by \(k^2\), not \(k\).</p>`,
+      set: { shape: 'sq', k: 3, ox: 0, oy: 0 } },
+    { title: 'Shrinking, and flipping',
+      text: String.raw`<p>A factor between \(0\) and \(1\) shrinks the shape, like a model or a map. Try \(k=0.5\): lengths halve, area drops to a quarter.</p><p>A negative \(k\) puts the image on the other side of \(O\), turned upside down.</p>`,
+      set: { shape: 'tri', k: .5, ox: 0, oy: 0 } }
+  ],
+  formal: String.raw`
+    <p>A <em>dilation</em> with center \(O\) and scale factor \(k\) sends each point \(P\) to
+    \[ P' = O + k\,(P-O). \]
+    Two figures are <em>similar</em> if one is a dilation of the other, possibly after moving or turning it.</p>
+    <h3>What scales by what</h3>
+    <p>
+    <b>Angles</b> stay the same.<br>
+    <b>Lengths</b> are multiplied by \(|k|\).<br>
+    <b>Areas</b> are multiplied by \(k^2\).<br>
+    <b>Volumes</b> are multiplied by \(|k|^3\).</p>
+    <p>For a square with side \(s\): the area goes from \(s^2\) to \((ks)^2=k^2s^2\). Similarly doubling every edge of a cube gives \(2^3=8\) times the volume.</p>
+    <h3>Similar triangles</h3>
+    <p>Two triangles are similar if two of their angles match (the third then matches too). Then all three side ratios are equal:
+    \[ \frac{A'B'}{AB}=\frac{B'C'}{BC}=\frac{C'A'}{CA}=|k|. \]
+    This lets you find a height you cannot measure directly: a tree's shadow and a stick's shadow, taken at the same time of day, form similar triangles.</p>`,
+  check: [
+    { q: 'A photo is enlarged with scale factor 3. The original has area 10 cm². What is the area of the enlargement?',
+      choices: ['30 cm²', '60 cm²', '90 cm²', '1000 cm²'], answer: 2,
+      why: String.raw`Area scales by \(k^2 = 9\), so the new area is \(10\times9=90\ \text{cm}^2\).`,
+      hint: String.raw`Lengths scale by \(k\), but area scales by \(k^2\).` },
+    { q: 'Two triangles have the same three angles. The first has sides 4, 6 and 8. The shortest side of the second is 6. How long is its longest side?',
+      choices: ['9', '12', '14', '8'], answer: 1,
+      why: String.raw`The scale factor is \(6/4=1.5\), so the longest side is \(8\times1.5=12\).`,
+      hint: 'Find the scale factor from the two shortest sides first.' }
+  ],
+  links: { prereq: ['pythagorean-theorem'], next: ['inscribed-angles', 'the-unit-circle-and-trig-waves'], related: ['area-of-a-circle', 'linear-transformations'] },
+
+  mount({ stage, controls: C }) {
+    const st = { k: 1.5, ox: 0, oy: 0 };
+    let cancel = () => {}, shape = 'tri';
+    const V = [[1, .5], [2.5, .5], [1, 2.5]], SQ = [[1, .5], [2.5, .5], [2.5, 2], [1, 2]], NAMES = ['A', 'B', 'C', 'D'];
+    const P = new Plane(stage, { cx: 1, cy: 1, span: 9 });
+    const pts = () => shape === 'tri' ? V : SQ;
+    const img = ([x, y]) => [st.ox + st.k * (x - st.ox), st.oy + st.k * (y - st.oy)];
+    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const area = q => Math.abs(q.reduce((s, [x, y], i) => s + x * q[(i + 1) % q.length][1] - q[(i + 1) % q.length][0] * y, 0)) / 2;
+    const angleAt = (q, i) => {
+      const a = q[i], b = q[(i + 1) % q.length], d = q[(i + q.length - 1) % q.length];
+      const u = [b[0] - a[0], b[1] - a[1]], w = [d[0] - a[0], d[1] - a[1]], m = Math.hypot(...u) * Math.hypot(...w);
+      return m < 1e-9 ? 0 : Math.acos(clamp((u[0] * w[0] + u[1] * w[1]) / m, -1, 1)) * 180 / Math.PI;
+    };
+
+    P.onDraw = (c, p) => {
+      const pal = p.pal, q = pts(), im = q.map(img), O = [st.ox, st.oy];
+      p.grid(1); p.ticks(2);
+      for (let i = 0; i < q.length; i++) p.path([O, im[i]], { stroke: pal['grid-strong'], width: 1.4, dash: [5, 6] });
+      p.path(im, { fill: alpha(pal.yellow, .22), stroke: pal.yellow, width: 3, close: true });
+      if (shape === 'sq' && Math.abs(st.k) >= 2 && Math.abs(Math.abs(st.k) - Math.round(Math.abs(st.k))) < .01) {
+        const xs = im.map(v => v[0]), ys = im.map(v => v[1]), x0 = Math.min(...xs), y0 = Math.min(...ys), s = 1.5, K = Math.round(Math.abs(st.k));
+        for (let j = 1; j < K; j++) {
+          p.path([[x0 + j * s, y0], [x0 + j * s, y0 + K * s]], { stroke: alpha(pal.yellow, .85), width: 1.5 });
+          p.path([[x0, y0 + j * s], [x0 + K * s, y0 + j * s]], { stroke: alpha(pal.yellow, .85), width: 1.5 });
+        }
+      }
+      p.path(q, { fill: alpha(pal.blue, .32), stroke: pal.blue, width: 3, close: true });
+      const cen = q.reduce((s, v) => [s[0] + v[0] / q.length, s[1] + v[1] / q.length], [0, 0]);
+      const cim = img(cen), lab = (pt, text, col, ctr) => {
+        const dx = pt[0] - ctr[0], dy = pt[1] - ctr[1], m = Math.hypot(dx, dy) || 1;
+        p.label(text, pt[0], pt[1], { size: 20, color: col, dx: dx / m * 20, dy: -dy / m * 20 });
+      };
+      q.forEach((v, i) => { lab(v, NAMES[i], pal.blue, cen); lab(im[i], NAMES[i] + '′', pal.yellow, cim); });
+      if (shape === 'tri') q.forEach(v => p.dot(v[0], v[1], 7, pal.stage, pal.brass, 3));
+      p.dot(O[0], O[1], 8, pal.brass, pal.stage, 2.5);
+      p.label('O', O[0], O[1], { size: 20, dx: -16, dy: 16 });
+    };
+
+    const upd = () => {
+      const q = pts(), im = q.map(img), k = Math.abs(st.k), n = q.length, f = v => v.toFixed(2);
+      const sides = q.map((v, i) => `${f(dist(v, q[(i + 1) % n]))} → ${f(dist(im[i], im[(i + 1) % n]))}`).join(' · ');
+      const a0 = area(q), a1 = area(im);
+      ro.innerHTML = `<span class="k">Scale factor</span> k = ${num(st.k)} &nbsp; <span class="k">Center O</span> (${num(st.ox)}, ${num(st.oy)})<br><span class="k">Sides</span> ${shape === 'tri' ? sides : sides.split(' · ')[0] + ' (all four)'}<br>` +
+        (shape === 'tri' ? `<span class="k">Angles</span> ${[0, 1, 2].map(i => Math.round(angleAt(q, i)) + '°').join(' · ')} (same on both)<br>` : '') +
+        `<span class="k">Lengths</span> × ${num(k)}<br><span class="k">Area</span> ${f(a0)} → ${f(a1)} (× ${num(k * k)} = k²)`;
+    };
+    const sync = () => { kS.set(st.k); P.draw(); upd(); };
+
+    const sel = C.select({ label: 'Shape', value: shape, options: [{ value: 'tri', label: 'Triangle' }, { value: 'sq', label: 'Square' }],
+      onChange: v => { cancel(); shape = v; sync(); } });
+    C.title('Dilation');
+    const kS = C.slider({ label: 'Scale factor k', min: -3, max: 3, step: .25, value: st.k, format: v => num(v), onInput: v => { cancel(); st.k = v; P.requestDraw(); upd(); } });
+    const ro = C.readout(); upd();
+    C.hint('Drag O, or (for the triangle) its blue corners.');
+
+    draggable(P, {
+      hit: (px, py) => {
+        let best = null, bd = 18;
+        const cand = [['o', st.ox, st.oy], ...(shape === 'tri' ? V.map((v, i) => ['v' + i, v[0], v[1]]) : [])];
+        for (const [id, x, y] of cand) { const d = Math.hypot(P.X(x) - px, P.Y(y) - py); if (d < bd) { bd = d; best = id; } }
+        return best;
+      },
+      move: (hd, x, y) => {
+        cancel();
+        const sx = clamp(snap(x, .25), -5, 5), sy = clamp(snap(y, .25), -5, 5);
+        if (hd === 'o') { st.ox = sx; st.oy = sy; } else V[+hd[1]] = [sx, sy];
+        sync();
+      }
+    });
+
+    const apply = (patch, immediate) => {
+      cancel();
+      const { shape: sh, ...rest } = patch;
+      if (sh !== undefined) { shape = sh; sel.value = sh; }
+      if (immediate) { Object.assign(st, rest); sync(); } else cancel = animateTo(st, rest, 900, sync);
+    };
+    return { destroy: () => { cancel(); P.destroy(); }, apply };
+  }
+});
+
+/* =====================================================================
    SCHOOL — The unit circle and trig waves
    ===================================================================== */
-const TAU = Math.PI * 2;
-
 /* angle as a multiple of pi when it is a simple one, e.g. "π/3", "2π/3"; otherwise null */
 function piFrac(th) {
   const x = th / Math.PI;

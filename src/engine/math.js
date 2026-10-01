@@ -23,3 +23,5 @@ function linEq(m, b) {
   if (!z(b)) s += (b < 0 ? ' − ' : ' + ') + num(Math.abs(b));
   return s;
 }
+
+const TAU = Math.PI * 2;
