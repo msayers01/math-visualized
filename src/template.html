@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Continuum: mathematics you can move</title>
+<meta name="description" content="Interactive, 3Blue1Brown-style math visualizations with guided lessons, from middle school through graduate study.">
+<meta property="og:title" content="Continuum: mathematics you can move">
+<meta property="og:description" content="Interactive math visualizations with guided lessons and exit tickets, aligned to the Minnesota 2022 standards.">
+<meta name="theme-color" content="#F1F3F6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1524" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1524'/%3E%3Cpath d='M22 10.5A8 8 0 1 0 22 21.5' fill='none' stroke='%23D4B26A' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;1,400&family=STIX+Two+Text:ital@1&display=swap" rel="stylesheet">
@@ -14,7 +20,7 @@
     startup: { typeset: false }
   };
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" defer onerror="window.__mjFail = true"></script>
 <style>
 /*@STYLES*/
 </style>
@@ -30,7 +36,8 @@
   </div>
 </header>
 <main id="app"></main>
-<footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#progress">My progress</a></div></footer>
+<noscript><p style="max-width:40em;margin:4em auto;padding:0 1em;font:17px sans-serif">Continuum needs JavaScript to draw its interactive lessons. Please turn JavaScript on and reload.</p></noscript>
+<footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#progress">My progress</a></div><p class="credit">By Michael Sayers</p></footer>
 
 <script>
 /*@SCRIPTS*/

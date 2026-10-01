@@ -59,13 +59,19 @@ function CopyButton(label, getText, { cls = 'btn small', title = '' } = {}) {
   return h('span', { class: 'copy' }, btn, box);
 }
 
-/* TeX in quick-check text, flattened for plain-text copies */
-function texToText(s) {
+/* TeX flattened to readable plain text (used for plain-text copies and when MathJax cannot load) */
+function texFlat(s) {
   const sup = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
-  return String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '').replace(/\\\(|\\\)|\\\[|\\\]/g, '')
-    .replace(/\\(?:text|mathrm)\{([^}]*)\}/g, '$1').replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '($1)/($2)').replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
-    .replace(/\^\{?(-?\d+)\}?/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
+  const arg = t => t.replace(/^\{|\}$/g, ''), part = t => (/^[-−]?[A-Za-z0-9._]+$/.test(t) ? t : '(' + t + ')');
+  return String(s).replace(/\\\(|\\\)|\\\[|\\\]/g, '')
+    .replace(/\\(?:text|mathrm|mathbf|operatorname)\{([^}]*)\}/g, '$1').replace(/\\[td]?frac\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])/g, (_, a, b) => part(arg(a)) + '/' + part(arg(b)))
+    .replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
+    .replace(/\^\{(-?\d+)\}/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\^\{([^{}]+)\}/g, '^($1)').replace(/\^(\d)/g, (_, d) => sup[d]).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
     .replace(/\\pm/g, '±').replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
-    .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1')
-    .replace(/[{}]/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+    .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\(?:Longrightarrow|Rightarrow|implies)\b/g, '⇒').replace(/\\(?:Leftrightarrow|iff)\b/g, '⇔').replace(/\\(?:rightarrow|to)\b/g, '→').replace(/\\left|\\right/g, '')
+    .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '');
+}
+/* TeX in quick-check text (an HTML string), flattened for plain-text copies */
+function texToText(s) {
+  return texFlat(String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '')).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 }

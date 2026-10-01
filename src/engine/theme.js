@@ -21,5 +21,13 @@ sysDark.addEventListener('change', () => { syncThemeBtn(); dispatchEvent(new Eve
 function typeset(el, tries = 0) {
   if (window.MathJax && MathJax.typesetPromise) {
     MathJax.startup.promise.then(() => MathJax.typesetPromise([el])).catch(() => {});
-  } else if (tries < 50) setTimeout(() => typeset(el, tries + 1), 150);
+  } else if (!window.__mjFail && tries < 50) setTimeout(() => typeset(el, tries + 1), 150);
+  else texFallback(el);
+}
+/* MathJax comes from a CDN that a school network may block. Rather than leave raw \( ... \) in the text,
+   show the math as readable plain text (2/3, x², ×). */
+function texFallback(el) {
+  const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
+  while (w.nextNode()) nodes.push(w.currentNode);
+  for (const n of nodes) if (/\\[(\[]/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\\\((.*?)\\\)|\\\[(.*?)\\\]/gs, (m, a, b) => texFlat(a ?? b).replace(/\s+/g, ' ').trim());
 }
