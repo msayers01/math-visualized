@@ -128,14 +128,14 @@
         text: String.raw`<p>Before you look, predict. Does the left sum come out too big or too small? What about the right sum? It depends on whether the curve is rising or falling.</p><p>Answer each case in Challenge 2. The rectangles stay hidden until you do. Each answer explains why, and the case with \(\sin x\) breaks the simple rule.</p>`,
         set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 1 } },
       { title: 'Velocity: area is distance',
-        text: String.raw`<p>The graph now shows a car's velocity. Speed times time is distance, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
+        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
         set: { fn: 5, a: 0, b: 5, n: 20, rule: 'mid', ch: 2 } },
       { title: 'The limit',
         text: String.raw`<p>Back to \(x^2\), now on \([0,1]\). Drag \(n\) up to 100. The left sum is \(0.285\) at \(n=10\) and the right sum is \(0.385\); at \(n=100\) they are \(0.328\) and \(0.338\).</p><p>The integral is the number all the sums close in on as \(n\to\infty\). Challenge 4 asks which number, and whether the rule matters.</p>`,
         set: { fn: 0, a: 0, b: 1, n: 10, rule: 'left', ch: 3 } }
     ],
     formal: String.raw`
-      <p>Let \(f\) be defined on \([a,b]\). The definite integral is built in three moves: cut, sum, take a limit.</p>
+      <p>Let \(f\) be a bounded function on \([a,b]\) (every function in this lesson is). The definite integral is built in three moves: cut, sum, take a limit.</p>
       <h3>The Riemann sum</h3>
       <p>Cut \([a,b]\) into \(n\) strips of equal width \(\Delta x = \dfrac{b-a}{n}\), with edges \(x_i = a+i\,\Delta x\) for \(i = 0,\dots,n\). In strip \(i\) (from \(x_{i-1}\) to \(x_i\)) pick a <em>sample point</em> \(x_i^*\). The strip contributes a rectangle of height \(f(x_i^*)\) and width \(\Delta x\), so
       \[ S_n = \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
@@ -166,7 +166,7 @@
         why: String.raw`The right endpoints are \(0.5,1,1.5,2\), so the heights are \(0.25,1,2.25,4\). The sum is \((0.25+1+2.25+4)\times 0.5=3.75\). Since \(x^2\) is rising, the right edge is the highest point of each strip, so every rectangle sticks out above the curve and the sum is an overestimate. (The value 1.75 is the left sum, and 2.75 is the trapezoid sum.)`,
         hint: String.raw`Compute \(f\) at \(0.5, 1, 1.5, 2\), add, and multiply by the width. For a rising curve, is the right edge the highest or lowest point of a strip?` }
     ],
-    links: { prereq: ['limits-and-epsilon-delta'], next: ['the-fundamental-theorem-of-calculus'], related: ['area-of-a-circle', 'derivatives-as-tangent-slopes', 'mean-median-and-spread'] },
+    links: { prereq: ['limits-and-epsilon-delta'], next: ['the-fundamental-theorem-of-calculus'], related: ['area-of-a-circle', 'derivatives-as-tangent-slopes'] },
 
     mount({ stage, controls: C }) {
       const st = { fn: 0, a: 0, b: 2, n: 4, rule: 'left' };

@@ -15185,14 +15185,14 @@ register({
         text: String.raw`<p>Before you look, predict. Does the left sum come out too big or too small? What about the right sum? It depends on whether the curve is rising or falling.</p><p>Answer each case in Challenge 2. The rectangles stay hidden until you do. Each answer explains why, and the case with \(\sin x\) breaks the simple rule.</p>`,
         set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 1 } },
       { title: 'Velocity: area is distance',
-        text: String.raw`<p>The graph now shows a car's velocity. Speed times time is distance, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
+        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
         set: { fn: 5, a: 0, b: 5, n: 20, rule: 'mid', ch: 2 } },
       { title: 'The limit',
         text: String.raw`<p>Back to \(x^2\), now on \([0,1]\). Drag \(n\) up to 100. The left sum is \(0.285\) at \(n=10\) and the right sum is \(0.385\); at \(n=100\) they are \(0.328\) and \(0.338\).</p><p>The integral is the number all the sums close in on as \(n\to\infty\). Challenge 4 asks which number, and whether the rule matters.</p>`,
         set: { fn: 0, a: 0, b: 1, n: 10, rule: 'left', ch: 3 } }
     ],
     formal: String.raw`
-      <p>Let \(f\) be defined on \([a,b]\). The definite integral is built in three moves: cut, sum, take a limit.</p>
+      <p>Let \(f\) be a bounded function on \([a,b]\) (every function in this lesson is). The definite integral is built in three moves: cut, sum, take a limit.</p>
       <h3>The Riemann sum</h3>
       <p>Cut \([a,b]\) into \(n\) strips of equal width \(\Delta x = \dfrac{b-a}{n}\), with edges \(x_i = a+i\,\Delta x\) for \(i = 0,\dots,n\). In strip \(i\) (from \(x_{i-1}\) to \(x_i\)) pick a <em>sample point</em> \(x_i^*\). The strip contributes a rectangle of height \(f(x_i^*)\) and width \(\Delta x\), so
       \[ S_n = \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
@@ -15223,7 +15223,7 @@ register({
         why: String.raw`The right endpoints are \(0.5,1,1.5,2\), so the heights are \(0.25,1,2.25,4\). The sum is \((0.25+1+2.25+4)\times 0.5=3.75\). Since \(x^2\) is rising, the right edge is the highest point of each strip, so every rectangle sticks out above the curve and the sum is an overestimate. (The value 1.75 is the left sum, and 2.75 is the trapezoid sum.)`,
         hint: String.raw`Compute \(f\) at \(0.5, 1, 1.5, 2\), add, and multiply by the width. For a rising curve, is the right edge the highest or lowest point of a strip?` }
     ],
-    links: { prereq: ['limits-and-epsilon-delta'], next: ['the-fundamental-theorem-of-calculus'], related: ['area-of-a-circle', 'derivatives-as-tangent-slopes', 'mean-median-and-spread'] },
+    links: { prereq: ['limits-and-epsilon-delta'], next: ['the-fundamental-theorem-of-calculus'], related: ['area-of-a-circle', 'derivatives-as-tangent-slopes'] },
 
     mount({ stage, controls: C }) {
       const st = { fn: 0, a: 0, b: 2, n: 4, rule: 'left' };
@@ -15508,7 +15508,7 @@ register({
   /* per-function facts shown after a sketch is checked */
   const WHY = {
     sq: `The parabola is flat at its bottom, x = 0, so f′ = 0 there. To the left it falls (negative slope) and to the right it rises (positive slope), and it gets steeper the farther you go from 0. That is the straight line f′(x) = 2x. The slope keeps growing, so the steepest points in this window are its two ends.`,
-    cu: `The curve flattens for an instant at x = 0, so f′(0) = 0. But it never turns around: it rises on both sides, so f′ touches 0 and stays positive. It is steepest at the ends of the window. That is f′(x) = 3x², a parabola that never goes below the axis.`,
+    cu: `The curve flattens for an instant at x = 0, so f′(0) = 0. But it never turns around: it rises on both sides, so f′ touches 0 at x = 0 and is positive everywhere else. It is steepest at the ends of the window. That is f′(x) = 3x², a parabola that never goes below the axis.`,
     sin: `The slope is 0 at the peak and trough of the wave (x ≈ ±1.57) and largest, 1, where the wave crosses zero going up (x = 0). Where sin falls it is steepest downhill, slope −1, at x ≈ ±3.14. The slope graph has the same wave shape, shifted: it is cos x.`,
     abs: `Left of 0 the graph falls at a constant rate, slope −1. Right of 0 it rises at slope +1. At the corner x = 0 there is no slope at all, so the true derivative is two flat pieces with a jump and no value at 0. A single connected line is not right here.`,
     cbrt: `The graph always rises, so f′ is positive everywhere it exists. Near 0 the curve is almost vertical, so the slope is huge there, and it flattens as you move away. At x = 0 the slope grows without limit and there is no value.`,
@@ -15541,7 +15541,7 @@ register({
         text: String.raw`<p>Your turn, with \(f(x)=x^3\). P is at \(x=-1\) and the slope there is about \(2.97\), close to \(3\). Drag P, read each slope, and use <b>Pin slope</b> or drag across the lower graph to sketch \(f'\).</p><p>When you are done, press <b>Check my sketch</b>. The lesson overlays the true derivative and explains where yours differs.</p>`,
         set: { x: -1, h: .01, fn: 'cu', mode: 'sketch', mirror: false, tangent: false, reveal: false } },
       { title: 'Where slope fails',
-        text: String.raw`<p>The graph is \(|x|\), and P is at its corner, \(x=0\). With \(h=0.5\) the right secant has slope \(1\) and the left secant (the dashed one) has slope \(-1\).</p><p>Shrinking \(h\) does not help: the table stays at \(1\) and \(-1\). When the two sides disagree there is no tangent. Try the cube root and the jump, then press <b>Mark this x as bad</b> where you find one.</p>`,
+        text: String.raw`<p>The graph is \(|x|\), and P is at its corner, \(x=0\). With \(h=0.5\) the right secant has slope \(1\) and the left secant (the dashed one) has slope \(-1\).</p><p>Shrinking \(h\) does not help: the table stays at \(1\) and \(-1\). When the two sides disagree there is no tangent. Try the cube root and the jump (move P to \(0\) each time), then press <b>Mark this x as bad</b> where you find one.</p>`,
         set: { x: 0, h: .5, fn: 'abs', mode: 'explore', mirror: true, tangent: false, reveal: false } }
     ],
     formal: String.raw`
@@ -15568,7 +15568,7 @@ register({
       <h3>Differentiable implies continuous, not the reverse</h3>
       <p>If \(f'(a)\) exists, write
       \[ f(a+h)-f(a)=\frac{f(a+h)-f(a)}{h}\cdot h \;\longrightarrow\; f'(a)\cdot 0=0 \quad (h\to 0), \]
-      so \(f(a+h)\to f(a)\): \(f\) is continuous at \(a\). Therefore a jump (a discontinuity) can never have a derivative. The converse is false: \(|x|\) is continuous at \(0\) but not differentiable there. Differentiable means "smooth with a tangent"; continuous only means "no break".</p>
+      so \(f(a+h)\to f(a)\): \(f\) is continuous at \(a\). Therefore a jump (a discontinuity) can never have a derivative. The converse is false: \(|x|\) is continuous at \(0\) but not differentiable there. Differentiable means "a non-vertical tangent line exists"; continuous only means "no break".</p>
       <h3>What the numbers do and do not show</h3>
       <p>A table of quotients suggests a limit but does not prove one. The algebra above (cancel \(h\), then let \(h\to 0\)) is what proves it.</p>`,
     check: [
@@ -15953,7 +15953,7 @@ register({
       p.path(inn, { stroke: pal.blue, width: 4 });
       p.dot(0, 0, 6, pal.yellow, pal.stage, 2);
     },
-    hook: String.raw`Near a point, a function can be undefined, jump, or swing wildly, and still "head toward" a number. What does that sentence mean, exactly enough to prove?`,
+    hook: String.raw`Near a point, a function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
     steps: [
       { title: 'Getting close',
         text: String.raw`<p>The limit \(\lim_{x\to a} f(x) = L\) says: as \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). Here \(f(x)=x^2\) and \(a=2\).</p><p>Drag the point, or press <b>Step closer</b>. Read the table: from both sides the values of \(f(x)\) head for \(4\). At \(x=2.001\) we get \(4.004\), and at \(x=1.999\) we get \(3.996\).</p>`,
@@ -15980,7 +15980,7 @@ register({
       \[ |(3x-1)-5| = 3|x-2| &lt; 3\delta = \varepsilon. \qquad \blacksquare \]
       The same argument shows that for \(f(x)=mx+b\) with \(m\neq 0\), the choice \(\delta=\varepsilon/|m|\) works, and it is the largest possible. This is why a smaller \(\varepsilon\) forces a smaller \(\delta\), in proportion: a steeper line turns a small change in \(x\) into a bigger change in \(f(x)\).</p>
       <h3>Curves: the same game, no formula for delta</h3>
-      <p>For \(f(x)=x^2\) near \(2\), \(|x^2-4| = |x-2|\,|x+2|\). If \(|x-2|&lt;1\) then \(|x+2|&lt;5\), so \(\delta=\min(1,\varepsilon/5)\) works. The challenge shows the best \(\delta\) is a little larger and tends to \(\varepsilon/4\) as \(\varepsilon\to0\), where \(4=f'(2)\) is the slope of the tangent line. Near a point, a smooth curve behaves like its tangent line.</p>
+      <p>For \(f(x)=x^2\) near \(2\), \(|x^2-4| = |x-2|\,|x+2|\). If \(|x-2|&lt;1\) then \(|x+2|&lt;5\), so \(\delta=\min(1,\varepsilon/5)\) works. The challenge shows the best \(\delta\) is a little larger than that and tends to \(\varepsilon/4\) from below as \(\varepsilon\to0\), where \(4=f'(2)\) is the slope of the tangent line. Near a point, a smooth curve behaves like its tangent line.</p>
       <h3>One-sided limits</h3>
       <p>The <em>left limit</em> \(\lim_{x\to a^-}f(x)=L\) uses only \(a-\delta &lt; x &lt; a\). The <em>right limit</em> \(\lim_{x\to a^+}f(x)=L\) uses only \(a &lt; x &lt; a+\delta\). The two-sided limit exists exactly when both one-sided limits exist and are equal.</p>
       <p>For the jump \(f(x)=x\) (\(x&lt;1\)), \(f(x)=x+2\) (\(x\ge1\)), the left limit is \(1\) and the right limit is \(3\). Suppose some \(L\) worked for \(\varepsilon=1\). Points just left and just right of \(1\) have values about \(2\) apart, yet each would be within \(1\) of \(L\). The values differ by \(2+2r\) at distance \(r\) from \(1\), and two numbers within \(1\) of \(L\) differ by less than \(2\). Contradiction, so no limit exists.</p>
@@ -16084,7 +16084,7 @@ register({
         let why;
         if (anyNone) why = 'When no δ works for some ε, the limit is not L, or there is no limit there at all.';
         else if (f.slope) why = `As ε shrinks, the best δ shrinks with it. The ratio δ/ε settles near ${N(1 / f.slope, 3)}, which is 1 divided by the slope ${f.slope}. A steeper graph needs a narrower δ, and for a straight line δ = ε/|slope| is exact.`;
-        else why = 'As ε shrinks, the best δ shrinks too, but more slowly than ε, because this graph is flat at a.';
+        else why = 'As ε shrinks, the best δ shrinks too. How fast depends on how steeply the graph rises or falls near a: the ratio δ/ε is large where the graph is nearly flat and small where it is steep.';
         return `<b>All done.</b><br>${rows}<br>${why}`;
       }
       function chCheck() {
@@ -16549,7 +16549,7 @@ register({
       <h3>Worked examples</h3>
       <p>With \(F(x)=x^3/3\):
       \[ \int_1^3 x^2\,dx=\Big[\tfrac{x^3}{3}\Big]_1^3=9-\tfrac13=\tfrac{26}{3}. \]
-      With \(F(x)=\sin x\), the signed area of \(\cos x\) over a full wave is zero, because the parts above and below the axis cancel:
+      With \(F(x)=\sin x\), the signed area of \(\cos x\) over \([0,\pi]\) is zero, because the part above the axis cancels the part below:
       \[ \int_0^{\pi}\cos x\,dx=\sin\pi-\sin0=0, \qquad \int_{\pi/2}^{3\pi/2}\cos x\,dx=\sin\tfrac{3\pi}{2}-\sin\tfrac{\pi}{2}=-2. \]
       With \(F(x)=e^x\): \(\int_0^1 e^x\,dx=e-1\approx1.72\). Part 1 also handles functions with no elementary antiderivative: \(\frac{d}{dx}\int_0^x e^{-t^2}dt=e^{-x^2}\), and with the chain rule \(\frac{d}{dx}\int_0^{x^2}\cos t\,dt=2x\cos(x^2)\).</p>
       <h3>Jumps and corners</h3>
@@ -16557,7 +16557,7 @@ register({
       <h3>Common errors</h3>
       <p><b>Wrong order or sign.</b> It is \(F(b)-F(a)\), end minus start. Area below the axis is negative, so an integral can be negative or zero while the shaded region is not empty.</p>
       <p><b>Chasing the constant.</b> Adding \(+C\) to \(F\) changes \(F(b)\) and \(F(a)\) by the same amount, so the difference is unchanged. You need \(+C\) only for an indefinite integral.</p>
-      <p><b>Integrating across a discontinuity.</b> Part 2 needs \(f\) continuous on all of \([a,b]\). Taking \(F(x)=-1/x\) on \([-1,1]\) for \(f=1/x^2\) gives \(F(1)-F(-1)=-2\), but \(f>0\) everywhere, so no integral over \([-1,1]\) can be negative. The function blows up at \(0\) and the theorem does not apply. For a step function, split at the jump and integrate each piece.</p>`,
+      <p><b>Integrating across a discontinuity.</b> The proof of Part 2 given here needs \(f\) continuous on all of \([a,b]\) (a continuous \(F\) with \(F'=f\) except at a few points also works, as the Steps function shows). Taking \(F(x)=-1/x\) on \([-1,1]\) for \(f=1/x^2\) gives \(F(1)-F(-1)=-2\), but \(f>0\) everywhere it is defined, so no integral over \([-1,1]\) can be negative. The function blows up at \(0\) and the theorem does not apply. For a step function, split at the jump and integrate each piece.</p>`,
     check: [
       { q: String.raw`Let \(A(x)=\int_0^x (t^2-4)\,dt\), the signed area between the graph of \(t^2-4\) and the t-axis from \(0\) to \(x\). What is \(A'(1)\)?`,
         choices: [String.raw`\(-\tfrac{11}{3}\)`, String.raw`\(3\)`, String.raw`\(-3\)`, String.raw`\(-4\)`], answer: 2,
@@ -16790,7 +16790,7 @@ register({
         const fn = cur(), ar = Aat(fn, st.a, st.b), neg = ar < -.005;
         if (o.kind === 'right') {
           S.solved = true;
-          S.msg = 'Correct. F(b) − F(a) = ' + n2(ar) + ' matches the shaded area.' + (neg ? ' It is negative because most of the region lies below the axis.' : '') + ' Now pick a different F (one with another constant) and watch F(b) and F(a) both move while the difference stays put.';
+          S.msg = 'Correct. F(b) − F(a) = ' + n2(ar) + ' matches the shaded area.' + (neg ? ' It is negative because the region lies below the axis.' : '') + ' Now pick a different F (one with another constant) and watch F(b) and F(a) both move while the difference stays put.';
         } else {
           S.msg = {
             nosub: 'That is just F(b). The area starts at a, not at 0, so subtract the value of F at the start: F(b) − F(a).',

@@ -34,7 +34,7 @@
   /* per-function facts shown after a sketch is checked */
   const WHY = {
     sq: `The parabola is flat at its bottom, x = 0, so f′ = 0 there. To the left it falls (negative slope) and to the right it rises (positive slope), and it gets steeper the farther you go from 0. That is the straight line f′(x) = 2x. The slope keeps growing, so the steepest points in this window are its two ends.`,
-    cu: `The curve flattens for an instant at x = 0, so f′(0) = 0. But it never turns around: it rises on both sides, so f′ touches 0 and stays positive. It is steepest at the ends of the window. That is f′(x) = 3x², a parabola that never goes below the axis.`,
+    cu: `The curve flattens for an instant at x = 0, so f′(0) = 0. But it never turns around: it rises on both sides, so f′ touches 0 at x = 0 and is positive everywhere else. It is steepest at the ends of the window. That is f′(x) = 3x², a parabola that never goes below the axis.`,
     sin: `The slope is 0 at the peak and trough of the wave (x ≈ ±1.57) and largest, 1, where the wave crosses zero going up (x = 0). Where sin falls it is steepest downhill, slope −1, at x ≈ ±3.14. The slope graph has the same wave shape, shifted: it is cos x.`,
     abs: `Left of 0 the graph falls at a constant rate, slope −1. Right of 0 it rises at slope +1. At the corner x = 0 there is no slope at all, so the true derivative is two flat pieces with a jump and no value at 0. A single connected line is not right here.`,
     cbrt: `The graph always rises, so f′ is positive everywhere it exists. Near 0 the curve is almost vertical, so the slope is huge there, and it flattens as you move away. At x = 0 the slope grows without limit and there is no value.`,
@@ -67,7 +67,7 @@
         text: String.raw`<p>Your turn, with \(f(x)=x^3\). P is at \(x=-1\) and the slope there is about \(2.97\), close to \(3\). Drag P, read each slope, and use <b>Pin slope</b> or drag across the lower graph to sketch \(f'\).</p><p>When you are done, press <b>Check my sketch</b>. The lesson overlays the true derivative and explains where yours differs.</p>`,
         set: { x: -1, h: .01, fn: 'cu', mode: 'sketch', mirror: false, tangent: false, reveal: false } },
       { title: 'Where slope fails',
-        text: String.raw`<p>The graph is \(|x|\), and P is at its corner, \(x=0\). With \(h=0.5\) the right secant has slope \(1\) and the left secant (the dashed one) has slope \(-1\).</p><p>Shrinking \(h\) does not help: the table stays at \(1\) and \(-1\). When the two sides disagree there is no tangent. Try the cube root and the jump, then press <b>Mark this x as bad</b> where you find one.</p>`,
+        text: String.raw`<p>The graph is \(|x|\), and P is at its corner, \(x=0\). With \(h=0.5\) the right secant has slope \(1\) and the left secant (the dashed one) has slope \(-1\).</p><p>Shrinking \(h\) does not help: the table stays at \(1\) and \(-1\). When the two sides disagree there is no tangent. Try the cube root and the jump (move P to \(0\) each time), then press <b>Mark this x as bad</b> where you find one.</p>`,
         set: { x: 0, h: .5, fn: 'abs', mode: 'explore', mirror: true, tangent: false, reveal: false } }
     ],
     formal: String.raw`
@@ -94,7 +94,7 @@
       <h3>Differentiable implies continuous, not the reverse</h3>
       <p>If \(f'(a)\) exists, write
       \[ f(a+h)-f(a)=\frac{f(a+h)-f(a)}{h}\cdot h \;\longrightarrow\; f'(a)\cdot 0=0 \quad (h\to 0), \]
-      so \(f(a+h)\to f(a)\): \(f\) is continuous at \(a\). Therefore a jump (a discontinuity) can never have a derivative. The converse is false: \(|x|\) is continuous at \(0\) but not differentiable there. Differentiable means "smooth with a tangent"; continuous only means "no break".</p>
+      so \(f(a+h)\to f(a)\): \(f\) is continuous at \(a\). Therefore a jump (a discontinuity) can never have a derivative. The converse is false: \(|x|\) is continuous at \(0\) but not differentiable there. Differentiable means "a non-vertical tangent line exists"; continuous only means "no break".</p>
       <h3>What the numbers do and do not show</h3>
       <p>A table of quotients suggests a limit but does not prove one. The algebra above (cancel \(h\), then let \(h\to 0\)) is what proves it.</p>`,
     check: [

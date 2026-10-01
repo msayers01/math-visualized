@@ -184,7 +184,7 @@
       <h3>Worked examples</h3>
       <p>With \(F(x)=x^3/3\):
       \[ \int_1^3 x^2\,dx=\Big[\tfrac{x^3}{3}\Big]_1^3=9-\tfrac13=\tfrac{26}{3}. \]
-      With \(F(x)=\sin x\), the signed area of \(\cos x\) over a full wave is zero, because the parts above and below the axis cancel:
+      With \(F(x)=\sin x\), the signed area of \(\cos x\) over \([0,\pi]\) is zero, because the part above the axis cancels the part below:
       \[ \int_0^{\pi}\cos x\,dx=\sin\pi-\sin0=0, \qquad \int_{\pi/2}^{3\pi/2}\cos x\,dx=\sin\tfrac{3\pi}{2}-\sin\tfrac{\pi}{2}=-2. \]
       With \(F(x)=e^x\): \(\int_0^1 e^x\,dx=e-1\approx1.72\). Part 1 also handles functions with no elementary antiderivative: \(\frac{d}{dx}\int_0^x e^{-t^2}dt=e^{-x^2}\), and with the chain rule \(\frac{d}{dx}\int_0^{x^2}\cos t\,dt=2x\cos(x^2)\).</p>
       <h3>Jumps and corners</h3>
@@ -192,7 +192,7 @@
       <h3>Common errors</h3>
       <p><b>Wrong order or sign.</b> It is \(F(b)-F(a)\), end minus start. Area below the axis is negative, so an integral can be negative or zero while the shaded region is not empty.</p>
       <p><b>Chasing the constant.</b> Adding \(+C\) to \(F\) changes \(F(b)\) and \(F(a)\) by the same amount, so the difference is unchanged. You need \(+C\) only for an indefinite integral.</p>
-      <p><b>Integrating across a discontinuity.</b> Part 2 needs \(f\) continuous on all of \([a,b]\). Taking \(F(x)=-1/x\) on \([-1,1]\) for \(f=1/x^2\) gives \(F(1)-F(-1)=-2\), but \(f>0\) everywhere, so no integral over \([-1,1]\) can be negative. The function blows up at \(0\) and the theorem does not apply. For a step function, split at the jump and integrate each piece.</p>`,
+      <p><b>Integrating across a discontinuity.</b> The proof of Part 2 given here needs \(f\) continuous on all of \([a,b]\) (a continuous \(F\) with \(F'=f\) except at a few points also works, as the Steps function shows). Taking \(F(x)=-1/x\) on \([-1,1]\) for \(f=1/x^2\) gives \(F(1)-F(-1)=-2\), but \(f>0\) everywhere it is defined, so no integral over \([-1,1]\) can be negative. The function blows up at \(0\) and the theorem does not apply. For a step function, split at the jump and integrate each piece.</p>`,
     check: [
       { q: String.raw`Let \(A(x)=\int_0^x (t^2-4)\,dt\), the signed area between the graph of \(t^2-4\) and the t-axis from \(0\) to \(x\). What is \(A'(1)\)?`,
         choices: [String.raw`\(-\tfrac{11}{3}\)`, String.raw`\(3\)`, String.raw`\(-3\)`, String.raw`\(-4\)`], answer: 2,
@@ -425,7 +425,7 @@
         const fn = cur(), ar = Aat(fn, st.a, st.b), neg = ar < -.005;
         if (o.kind === 'right') {
           S.solved = true;
-          S.msg = 'Correct. F(b) − F(a) = ' + n2(ar) + ' matches the shaded area.' + (neg ? ' It is negative because most of the region lies below the axis.' : '') + ' Now pick a different F (one with another constant) and watch F(b) and F(a) both move while the difference stays put.';
+          S.msg = 'Correct. F(b) − F(a) = ' + n2(ar) + ' matches the shaded area.' + (neg ? ' It is negative because the region lies below the axis.' : '') + ' Now pick a different F (one with another constant) and watch F(b) and F(a) both move while the difference stays put.';
         } else {
           S.msg = {
             nosub: 'That is just F(b). The area starts at a, not at 0, so subtract the value of F at the start: F(b) − F(a).',

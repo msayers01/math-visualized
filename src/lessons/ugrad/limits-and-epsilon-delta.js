@@ -52,7 +52,7 @@
       p.path(inn, { stroke: pal.blue, width: 4 });
       p.dot(0, 0, 6, pal.yellow, pal.stage, 2);
     },
-    hook: String.raw`Near a point, a function can be undefined, jump, or swing wildly, and still "head toward" a number. What does that sentence mean, exactly enough to prove?`,
+    hook: String.raw`Near a point, a function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
     steps: [
       { title: 'Getting close',
         text: String.raw`<p>The limit \(\lim_{x\to a} f(x) = L\) says: as \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). Here \(f(x)=x^2\) and \(a=2\).</p><p>Drag the point, or press <b>Step closer</b>. Read the table: from both sides the values of \(f(x)\) head for \(4\). At \(x=2.001\) we get \(4.004\), and at \(x=1.999\) we get \(3.996\).</p>`,
@@ -79,7 +79,7 @@
       \[ |(3x-1)-5| = 3|x-2| &lt; 3\delta = \varepsilon. \qquad \blacksquare \]
       The same argument shows that for \(f(x)=mx+b\) with \(m\neq 0\), the choice \(\delta=\varepsilon/|m|\) works, and it is the largest possible. This is why a smaller \(\varepsilon\) forces a smaller \(\delta\), in proportion: a steeper line turns a small change in \(x\) into a bigger change in \(f(x)\).</p>
       <h3>Curves: the same game, no formula for delta</h3>
-      <p>For \(f(x)=x^2\) near \(2\), \(|x^2-4| = |x-2|\,|x+2|\). If \(|x-2|&lt;1\) then \(|x+2|&lt;5\), so \(\delta=\min(1,\varepsilon/5)\) works. The challenge shows the best \(\delta\) is a little larger and tends to \(\varepsilon/4\) as \(\varepsilon\to0\), where \(4=f'(2)\) is the slope of the tangent line. Near a point, a smooth curve behaves like its tangent line.</p>
+      <p>For \(f(x)=x^2\) near \(2\), \(|x^2-4| = |x-2|\,|x+2|\). If \(|x-2|&lt;1\) then \(|x+2|&lt;5\), so \(\delta=\min(1,\varepsilon/5)\) works. The challenge shows the best \(\delta\) is a little larger than that and tends to \(\varepsilon/4\) from below as \(\varepsilon\to0\), where \(4=f'(2)\) is the slope of the tangent line. Near a point, a smooth curve behaves like its tangent line.</p>
       <h3>One-sided limits</h3>
       <p>The <em>left limit</em> \(\lim_{x\to a^-}f(x)=L\) uses only \(a-\delta &lt; x &lt; a\). The <em>right limit</em> \(\lim_{x\to a^+}f(x)=L\) uses only \(a &lt; x &lt; a+\delta\). The two-sided limit exists exactly when both one-sided limits exist and are equal.</p>
       <p>For the jump \(f(x)=x\) (\(x&lt;1\)), \(f(x)=x+2\) (\(x\ge1\)), the left limit is \(1\) and the right limit is \(3\). Suppose some \(L\) worked for \(\varepsilon=1\). Points just left and just right of \(1\) have values about \(2\) apart, yet each would be within \(1\) of \(L\). The values differ by \(2+2r\) at distance \(r\) from \(1\), and two numbers within \(1\) of \(L\) differ by less than \(2\). Contradiction, so no limit exists.</p>
@@ -183,7 +183,7 @@
         let why;
         if (anyNone) why = 'When no δ works for some ε, the limit is not L, or there is no limit there at all.';
         else if (f.slope) why = `As ε shrinks, the best δ shrinks with it. The ratio δ/ε settles near ${N(1 / f.slope, 3)}, which is 1 divided by the slope ${f.slope}. A steeper graph needs a narrower δ, and for a straight line δ = ε/|slope| is exact.`;
-        else why = 'As ε shrinks, the best δ shrinks too, but more slowly than ε, because this graph is flat at a.';
+        else why = 'As ε shrinks, the best δ shrinks too. How fast depends on how steeply the graph rises or falls near a: the ratio δ/ε is large where the graph is nearly flat and small where it is steep.';
         return `<b>All done.</b><br>${rows}<br>${why}`;
       }
       function chCheck() {
