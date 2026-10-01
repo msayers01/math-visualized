@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v22
+**Version:** v23
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -97,9 +97,9 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - **Done:** Teacher tools (v0.10): plain-anchor share links, step deep links, copy-link buttons, local progress with copyable summary, printable exit tickets (see Teacher tools below)
 - **Done:** Course plan for Grade 8 and Algebra 1 and its batch 1: what-is-a-function, scatter-plots-and-lines-of-fit, square-roots-and-irrational-numbers, exponents-and-scientific-notation (Grade 8 coverage 11 to 22 of 38 benchmarks)
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
-- **In progress (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (four lessons, builders running): ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7); batch F-B (planned, ask the owner first): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
+- **In progress (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (four lessons, builders running): ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7); batch F-B (approved by the owner 2026-10-01 to start after F-A is integrated): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
-- **Next:** finish batch F-A (integrate, test, tag audit, docs), then ask the owner about batch F-B and about republishing the artifact (version 10 does not have F-A).
+- **Next:** finish batch F-A (integrate, test, tag audit, docs), then start batch F-B (approved) and ask the owner about republishing the artifact (version 10 does not have F-A).
 
 ## Curriculum (school level approved and built; undergraduate and graduate are DRAFT, ON HOLD)
 The original draft was 42 lessons (15 built then, 27 not built); the school part has since grown (23 built in all, 21 of them school). ✓ = built. School lessons are listed by course in display order.
