@@ -43,7 +43,7 @@
   const T = (s, col) => ({ s, col });
   const U = (s, col) => ({ s, col, up: true });
   const sci = (ms, n, cm, cn, ct) => [T(ms, cm), T(' ' + TIMES + ' ', ct), T('10', ct), U(sg(n), cn)];
-  function rich(c, items, x, y, size, o = {}) {
+  const rich = (c, items, x, y, size, o = {}) => {
     const { align = 'center', color = '#888', weight = 600, maxW = 1e9, halo, fam = FONT } = o;
     const its = items.map(it => (typeof it === 'string' ? { s: it } : { ...it }));
     const fnt = (it, z) => `${weight} ${(it.up ? z * .64 : z).toFixed(1)}px ${fam}`;
@@ -62,7 +62,7 @@
       px += it.w;
     }
     return { left, w: tw, size: z };
-  }
+  };
   const txt = (c, s, x, y, size, color, o = {}) => rich(c, [s], x, y, size, { ...o, color });
   const line = (c, x0, y0, x1, y1, col, w = 1.5, dash) => {
     c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.strokeStyle = col; c.lineWidth = w; c.lineCap = 'round'; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
@@ -72,7 +72,7 @@
   };
 
   /* ---------- the standard decimal form of m x 10^n, cell by cell ---------- */
-  function decim(m, n) {
+  const decim = (m, n) => {
     const ms = String(+clamp(m, 1, 9.9).toFixed(1)), D = ms.replace('.', '').split(''), len = D.length, pn = 1 + n;
     let cells, off = 0, pt;
     if (pn <= 0) { off = 1 - pn; cells = ['0', ...Array(-pn).fill('0'), ...D]; pt = 1; }
@@ -81,10 +81,10 @@
     const kinds = cells.map((_, i) => (i >= off && i < off + len ? 'sig' : i === 0 && pn <= 0 ? 'lead' : 'pad'));
     const ip = cells.slice(0, pt).join(''), fp = cells.slice(pt).join('');
     return { ms, cells, kinds, pt, ob: off + 1, text: commas(ip) + (fp ? '.' + fp : '') };
-  }
+  };
 
   /* ---------- axis of powers of ten between exponents lo and hi ---------- */
-  function ruler(c, p, lo, hi, units) {
+  const ruler = (c, p, lo, hi, units) => {
     const pal = p.pal, W = p.w, H = p.h, x0 = 18, x1 = W - 18, pxd = (x1 - x0) / (hi - lo);
     const X = e => x0 + (e - lo) * pxd, ay = H - clamp(H * .17, 40, 50), top = 44;
     const e0 = Math.ceil(lo - 1e-9), e1 = Math.floor(hi + 1e-9);
@@ -107,10 +107,10 @@
       }
     }
     return { X, ay, x0, x1, pxd };
-  }
+  };
 
   /* greedy label lanes: labels never overlap; stems avoid running through labels when there is room */
-  function lanes(items, maxLane) {
+  const lanes = (items, maxLane) => {
     const done = [];
     for (const strict of [true, false]) {
       for (const it of items) {
@@ -128,7 +128,7 @@
         }
       }
     }
-  }
+  };
 
   register({
     id: 'exponents-and-scientific-notation', level: 'school',
@@ -149,7 +149,7 @@
       const xm = d * 1.505;
       p.path([[xm, ay], [xm, .75]], { stroke: alpha(pal.yellow, .85), width: 1.8, dash: [4, 4] });
       p.dot(xm, ay, 5, pal.yellow, pal.stage, 1.5);
-      rich(c, sci('3.2', 5, pal.green, pal.red, pal.text), p.X(0), p.Y(1.45), Math.max(12, p.scale * .72), { maxW: p.w - 14 });
+      rich(c, sci('3.2', 5, pal.green, pal.red, pal.text), p.X(0), p.Y(1.45), Math.max(13, p.scale * .9), { maxW: p.w - 14 });
     },
     hook: String.raw`The Sun is about 1,400,000,000 meters across and a virus is about 0.0000001 meters. How can you write numbers like these without counting zeros, and still multiply them?`,
     steps: [
@@ -551,7 +551,7 @@
       };
 
       /* ---------- controls ---------- */
-      const ro = C.readout(), host = ro.parentElement;
+      const ro = C.readout(), host = ro.parentElement;      /* ro sits below the controls; roMid repeats it right under the number sliders */
       const grab = fn => { const n0 = host.children.length; fn(); return [...host.children].slice(n0); };
       const showEls = (els, on) => els.forEach(e => { e.style.display = on ? '' : 'none'; });
       const iFmt = v => sg(Math.round(v));
@@ -598,6 +598,14 @@
       const gPat = grab(() => {
         pnS = C.slider({ label: 'Exponent n', min: -6, max: 6, step: 1, value: st.pn, format: iFmt, onInput: editInt('pn') });
       });
+      const gNum = grab(() => {
+        C.title('Your number');
+        mS = C.slider({ label: 'Coefficient a', min: 1, max: 9.9, step: .1, value: st.m, format: v => v.toFixed(1), onInput: editNum('m') });
+        nS = C.slider({ label: 'Exponent n', min: -9, max: 9, step: 1, value: st.n, format: iFmt, onInput: editInt('n') });
+        pick = C.select({ label: 'Or load an object\'s size', value: '', onChange: v => { if (v !== '') loadObj(+v); } , options: [{ value: '', label: 'Choose an object' }, ...OBJ.map((o, i) => ({ value: String(i), label: o.name }))] });
+        C.hint('You can also tap an object on the ruler. Drag the ruler to slide it.');
+      });
+      const roMid = C.readout();
       const gWin = grab(() => {
         C.title('Window on the ruler');
         zoomS = C.slider({ label: 'Zoom: powers of ten in view', min: 4, max: 24, step: 1, value: st.w, format: v => String(Math.round(v)), onInput: editNum('w') });
@@ -605,13 +613,6 @@
         C.buttons([
           { label: 'Tiny', onClick: () => goWin(-5, 8) }, { label: 'Everyday', onClick: () => goWin(1, 8) },
           { label: 'Huge', onClick: () => goWin(7, 8) }, { label: 'All', onClick: () => goWin(1, 20) }]);
-      });
-      const gNum = grab(() => {
-        C.title('Your number');
-        mS = C.slider({ label: 'Coefficient a', min: 1, max: 9.9, step: .1, value: st.m, format: v => v.toFixed(1), onInput: editNum('m') });
-        nS = C.slider({ label: 'Exponent n', min: -9, max: 9, step: 1, value: st.n, format: iFmt, onInput: editInt('n') });
-        pick = C.select({ label: 'Or load an object\'s size', value: '', onChange: v => { if (v !== '') loadObj(+v); } , options: [{ value: '', label: 'Choose an object' }, ...OBJ.map((o, i) => ({ value: String(i), label: o.name }))] });
-        C.hint('You can also tap an object on the ruler. Drag the ruler to slide it.');
       });
       const gOps = grab(() => {
         opBtns = C.buttons([
@@ -628,7 +629,7 @@
       const ctl = () => {
         const v = st.view, md = st.rule === 'mul' || st.rule === 'div';
         showEls(gRule, v === 'props'); showEls(gAB, v === 'props' && md); showEls(gPow, v === 'props' && st.rule === 'pow'); showEls(gPat, v === 'props' && st.rule === 'pat');
-        showEls(gWin, v === 'sci'); showEls(gNum, v === 'sci'); showEls(gOps, v === 'ops');
+        showEls(gWin, v === 'sci'); showEls(gNum, v === 'sci'); showEls(gOps, v === 'ops'); showEls([roMid], v === 'sci'); showEls([ro], v !== 'sci');
         ruleBtns.forEach((b, i) => b.classList.toggle('primary', RULES[i] === st.rule));
         opBtns.forEach((b, i) => b.classList.toggle('primary', OPS[i] === st.op));
       };
@@ -684,7 +685,7 @@
             s += `${K('Answer')} ${sciH(csN(M.m), M.nn)}`;
           }
         }
-        ro.innerHTML = s;
+        ro.innerHTML = s; roMid.innerHTML = s;
       }
 
       /* ---------- dragging the ruler ---------- */
@@ -705,10 +706,7 @@
           return o >= 0 ? o : 'pan';
         },
         move: (hd, x) => {
-          if (!drag) {
-            drag = { x0: x, c0: st.c, moved: false };
-            if (typeof hd === 'number') { loadObj(hd); return; }
-          }
+          if (!drag) drag = { x0: x, c0: st.c, moved: false, obj: typeof hd === 'number' ? hd : -1 };
           if (!drag.moved && Math.abs(x - drag.x0) < 6) return;
           drag.moved = true; cancel();
           const pxd = (P1.w - 36) / st.w;
@@ -716,6 +714,12 @@
           cenS.set(st.c); P1.requestDraw();
         }
       });
+
+      P1.canvas.addEventListener('pointerup', () => {          /* a tap on an object loads its size; a drag slides the ruler */
+        if (drag && drag.obj >= 0 && !drag.moved) loadObj(drag.obj);
+        drag = null;
+      });
+      P1.canvas.addEventListener('pointercancel', () => { drag = null; });
 
       /* ---------- scene ---------- */
       P1.onDraw = (c, p) => {

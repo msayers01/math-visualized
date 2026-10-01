@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v16
+**Version:** v17
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -9,7 +9,7 @@ Instructions for any AI working on this project (including in a new chat):
 - Do **not** build, draft, prototype, or code any undergraduate or graduate lessons, even if they appear in the curriculum or roadmap below. They are listed for planning only.
 - Engine and lesson-format work is allowed, since the school lessons need it. When touching the existing undergraduate and graduate lessons, change only what an engine update requires; do not extend them (this includes their "planned" lists).
 - If a request is ambiguous about level, assume middle & high school and ask before touching upper-level content.
-- **Status: the school level is complete (13 of 13 lessons), organized by course, aligned to the 2022 Minnesota math standards, and filterable (v0.9).** Nothing is queued. Ask the owner what to do next before starting new work (see Open items).
+- **Status: the original 13 school lessons are complete; at the owner's request (2026-10-01) school work now continues as a complete Grade 8 and Algebra 1 sequence (course plan in ARCHITECTURE.md section 9) plus teacher tools. 17 school lessons are built (batch 1 of the plan is done); batches 2 to 5 are planned, not started.** Ask the owner before starting each next batch (see Open items).
 
 ## Project
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
@@ -50,10 +50,17 @@ Adding a lesson = one new file in `src/lessons/<level>/`, one line in `src/manif
 - **Updating the standards:** `education.mn.gov` blocks scripted downloads (a browser check page), so the owner must supply any new PDF as a file (upload failed for PDFs once; pasting the text or committing the PDF to the branch also works). Extraction method used: `pdfplumber` table rows, every code cross-checked against `pdftotext`, lossy benchmarks (superscripts, fractions) checked against rendered pages.
 - **Judgment calls to confirm with the owner:** the course placement and skill level of each lesson; the tags (an independent review of the first 34 rated 10 direct and 23 partial, and the tags were adjusted; see section 5 of ARCHITECTURE.md); the unit circle lesson goes beyond the 9-11 benchmarks (only 9.2.3.8, acute-angle trigonometric ratios, is nearby).
 
-## Lessons built (15)
-School (13), in computed display order:
+## Teacher tools (new in v0.10; details in ARCHITECTURE.md sections 3 and 5)
+- **Share links** are plain tokens (letters, digits, `. _ ~ -` only), the only hash form a link to the artifact viewer can deliver: `#<lesson-id>`, `#<lesson-id>.3` (step 3), `#<lesson-id>.ticket` / `.key`, `#find~grade_8~skill_intro~std_8.2.4.1`, `#progress`. Old `#/viz/...` forms still parse.
+- **Progress** is stored per browser (`continuum-progress-v1`); `#progress` shows it with a copyable plain-text summary, optional name, print and a two-step reset. No accounts, no server.
+- **Exit tickets** (`#<lesson-id>.ticket`, `.key`): the lesson's two quick-check questions as a printable handout, copy as text.
+- In the artifact viewer (frame), copy-link buttons copy only the token and the print button is hidden; on its own address they copy full links.
+- Lessons by parallel builders: `src/lessons/school/<id>.js` must keep ALL helpers inside one `{ }` block (everything is one script), and TeX must not contain `<` before a letter.
+
+## Lessons built (19)
+School (17), in computed display order:
 - Grade 7: area-of-a-circle
-- Grade 8: pythagorean-theorem, slope-and-linear-functions, systems-of-equations
+- Grade 8: pythagorean-theorem, slope-and-linear-functions, what-is-a-function, scatter-plots-and-lines-of-fit, systems-of-equations, square-roots-and-irrational-numbers, exponents-and-scientific-notation
 - Algebra 1: exponential-growth, functions-as-transformations, quadratics-and-the-parabola
 - Geometry: similarity-and-scaling, inscribed-angles
 - Precalculus & Trigonometry: the-unit-circle-and-trig-waves
@@ -65,7 +72,7 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 ## How lessons are authored and checked
 1. Write `src/lessons/<level>/<id>.js` modeled on an existing lesson (for example `slope-and-linear-functions.js`). Keep default state free of overlapping drag handles. Snap dragged values so readouts stay clean.
 2. Add it to `src/manifest.json` and add its `ALIGN` entry (course, skill, benchmarks; read the benchmark wording in `standards-mn2022.js` before tagging), then run `node tools/build.js` (it checks the curriculum and prerequisite order; `--order` prints the sequence).
-3. Test in headless Chromium (Playwright is installed in `/opt/node-tools`; MathJax's CDN is blocked in the sandbox, so abort external requests or serve a local copy of MathJax 3.2.2 through request routing). Step through every lesson step and compare the readouts with the text, drag every handle, use sliders and buttons, screenshot desktop light, dark and 390px mobile, and check for `pageerror` and horizontal scroll. A check script that loops over lesson ids must slice hrefs correctly (`#/viz/` is 6 characters) or it silently tests the home page. For curriculum changes, compare the visible rows for each filter state against an independent model of the data (the v0.9 suite ran 237 checks, all passing; its model is rebuilt from `src/curriculum/` each run).
+3. Test in headless Chromium (Playwright is installed in `/opt/node-tools`; MathJax's CDN is blocked in the sandbox, so abort external requests or serve a local copy of MathJax 3.2.2 through request routing). Step through every lesson step and compare the readouts with the text, drag every handle, use sliders and buttons, screenshot desktop light, dark and 390px mobile, and check for `pageerror` and horizontal scroll. A check script that loops over lesson ids must slice hrefs correctly (`#/viz/` is 6 characters) or it silently tests the home page. For curriculum changes, compare the visible rows for each filter state against an independent model of the data The suites live in the repo: `node tools/tests/finder.test.js` (245 checks) and `node tools/tests/teacher.test.js` (55 checks); both take their expectations from the data, so adding lessons needs no test edits. Also read each lesson's text for TeX like `\(a<b\)`: the build now rejects `<` directly before a letter inside TeX (write `&lt;`).
 4. Update `ARCHITECTURE.md` (visualizations table, alignment table, change log) and this file, commit, push.
 5. Pitfalls met so far: `$` is fine in plain text, but inside math use `\$`; step `set` patches must stay numeric unless `apply` splits the flag off; angles that animate should avoid wrapping through 0/360; links to lessons not in `PLANNED` render nothing; a top-level `const` name that two source files share breaks the whole bundle (everything is one script), so grep before adding globals; `display` rules override the `hidden` attribute (`styles/curriculum.css` forces `[hidden]` to hide).
 
@@ -87,14 +94,16 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - **Done:** Phase 4 (v0.7): Functions as transformations; Exponential growth; Area of a circle; Similarity and scaling
 - **Done:** Phase 5 (v0.8): Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board
 - **Done:** Curriculum pass (v0.9): courses and computed order; Minnesota 2022 standards catalog and per-lesson tags; skill levels; color-coded standard chips; lesson finder (grade, course, skill, standard, strand); build-time checks
-- **Next:** nothing queued (see Open items).
+- **Done:** Teacher tools (v0.10): plain-anchor share links, step deep links, copy-link buttons, local progress with copyable summary, printable exit tickets (see Teacher tools below)
+- **Done:** Course plan for Grade 8 and Algebra 1 and its batch 1: what-is-a-function, scatter-plots-and-lines-of-fit, square-roots-and-irrational-numbers, exponents-and-scientific-notation (Grade 8 coverage 11 to 22 of 38 benchmarks)
+- **Next:** batch 2 of the plan (see Open items); nothing in progress.
 
 ## Curriculum (school level approved and built; undergraduate and graduate are DRAFT, ON HOLD)
-42 lessons total (15 built, 27 not built). ✓ = built. School lessons are listed by course in display order.
+The original draft was 42 lessons (15 built then, 27 not built); the school part has since grown (19 built in all). ✓ = built. School lessons are listed by course in display order.
 
-**Middle & high school (13), all built**
+**Middle & high school (17 built; 15 more planned for Grade 8 and Algebra 1, see ARCHITECTURE.md section 9)**
 - Grade 7: Area of a circle ✓
-- Grade 8: The Pythagorean theorem ✓; Slope and linear functions ✓; Systems of equations ✓
+- Grade 8: The Pythagorean theorem ✓; Slope and linear functions ✓; What is a function? ✓; Scatter plots and lines of fit ✓; Systems of equations ✓; Square roots and irrational numbers ✓; Exponents and scientific notation ✓
 - Algebra 1: Exponential growth ✓; Functions as transformations ✓; Quadratics and the parabola ✓
 - Geometry: Similarity and scaling ✓; Inscribed angles ✓
 - Precalculus & Trigonometry: The unit circle and trig waves ✓
@@ -118,12 +127,14 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 Hook question → interactive canvas → guided "Try this" steps that drive the canvas → the formal math → quick check (2 multiple-choice questions) → connections (builds on / leads to / related) → standards alignment (v0.9).
 
 ## Roadmap
-- Phases 1–5: done (engine, lesson format, all 13 school lessons). v0.9: courses, standards, filters.
+- Phases 1–5: done (engine, lesson format, the first 13 school lessons). v0.9: courses, standards, filters. v0.10: teacher tools and batch 1 of the Grade 8 and Algebra 1 plan.
 - Phases 6+: undergraduate and graduate lessons (ON HOLD until the owner lifts the school-only priority).
 - Final phase: search, progress tracking, polish (the owner may want parts of this for the school level first).
 
 ## Open items
-- **Decision needed:** what comes next. Options: (a) lift the school-only priority and start the undergraduate level (suggest first batch of about 4, plus retrofitting Linear transformations to the lesson format); (b) polish the school level: progress tracking for quick checks, search, a school-first home page; (c) fill the empty courses (Grade 6 and Algebra 2 have no lessons; most benchmarks are untagged, 35 of 185 so far); (d) something else.
+- **Decision needed:** approve the next batch of the Grade 8 and Algebra 1 plan (ARCHITECTURE.md section 9): batch 2 is solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem (plane and 3D). Method that worked for batch 1: parallel builders (one per lesson) each following a shared brief and testing in a scratch copy, then integration, tests, an independent tag audit, and screenshots here. Other options: lift the school-only priority; fill Grade 6 and Algebra 2; a class-wide teacher view (needs a backend or hosting decision).
+- **Hosting:** the artifact viewer cannot give a page its own address, so copy-link buttons there copy only the end of the link. Putting the site on its own address (for example GitHub Pages) makes share links, printing and a future class view work properly. The owner's call; not done.
+- **Batch 1 tags are builder-reported** (each builder listed what its lesson does and does not cover) and an independent audit was run; see ARCHITECTURE.md section 5 for the rule that a tag means "addresses a substantial part".
 - **Review the v0.9 judgment calls** (course placement, skill levels, benchmark tags) and say what to change; each is one line in `ALIGN`. Consider a two-tier "direct / partial" marker on tags if a stricter mapping is wanted.
 - **Lesson-content observations from the tag review (not changed, lesson content is the owner's call):** the Functions-as-transformations squeeze step uses sin x (a Precalculus function) in an Algebra 1 lesson; the Pythagorean lesson has no check on the converse or on coordinate distance (8.2.3.1 and 8.2.3.3 are partial); the Slope lesson never says "similar triangles" or mentions the x-intercept (8.2.4.1 and 8.3.7.6 are partial); the "Builds on" links Mean-median to Slope, Similarity to Pythagorean theorem and Inscribed angles to Area of a circle look weak.
 - The home hero still links to the undergraduate "Start with linear maps"; consider pointing it at a school lesson.
