@@ -98,8 +98,11 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   check('grade 8 + intro -> hash', (await page.evaluate(() => location.hash)) === '#find~grade_8~skill_intro');
   check('grade 8 + intro -> rows', JSON.stringify((await visibleIds(page)).sort()) === JSON.stringify(expected({ grade: ['8'], skill: ['intro'] })));
   check('Advanced disabled (no grade-8 advanced lesson)', await chip('Skill level', /^Advanced/).isDisabled());
-  check('Grades 9-11 chip disabled (no introductory lesson has a 9-11 benchmark)', await chip('Grade level', /^Grades 9/).isDisabled());
-  check('Grade 6 chip disabled', await chip('Grade level', /^Grade 6/).isDisabled());
+  /* with Introductory chosen, a grade chip is disabled exactly when no introductory lesson carries that grade */
+  for (const [lbl, id] of [['Grades 9', '9-11'], ['Grade 6', '6']]) {
+    const n = model.filter(m => m.skill === 'intro' && m.grades.includes(id)).length;
+    check(`${lbl} chip disabled iff no introductory lesson has it (model: ${n})`, (await chip('Grade level', new RegExp('^' + lbl)).isDisabled()) === (n === 0));
+  }
   check('Grade 8 chip still enabled and pressed', (await chip('Grade level', /^Grade 8/).isEnabled()) && (await chip('Grade level', /^Grade 8/).getAttribute('aria-pressed')) === 'true');
   const cnt = await chip('Grade level', /^Grade 7/).locator('.n').textContent();
   check('Grade 7 chip count reflects other filters (intro only: area-of-a-circle is grade 7 but not grade 8) = 0 -> disabled', (await chip('Grade level', /^Grade 7/).isDisabled()) === (cnt === '0'), cnt);

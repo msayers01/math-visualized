@@ -59,8 +59,8 @@ const ALIGN = [
   { id: 'pythagorean-theorem',         course: 'grade8', skill: 'intro', standards: ['8.2.3.1', '8.2.3.3'] },
   { id: 'slope-and-linear-functions',  course: 'grade8', skill: 'intro', standards: ['8.2.4.1', '8.3.7.5', '8.3.7.6'] },
   { id: 'systems-of-equations',        course: 'grade8', skill: 'mid',   standards: ['8.2.4.3', '8.3.6.9'] },
-  { id: 'what-is-a-function',          course: 'grade8', skill: 'intro', standards: ['8.3.7.3', '8.3.7.4'] },
-  { id: 'scatter-plots-and-lines-of-fit', course: 'grade8', skill: 'mid', standards: ['8.1.1.2', '8.1.1.3', '8.1.1.4'] },
+  { id: 'what-is-a-function',          course: 'grade8', skill: 'intro', standards: ['8.3.7.3', '8.3.7.4', '9.3.7.10'] },
+  { id: 'scatter-plots-and-lines-of-fit', course: 'grade8', skill: 'mid', standards: ['8.1.1.2', '8.1.1.3', '8.1.1.4', '8.1.1.6'] },
   { id: 'square-roots-and-irrational-numbers', course: 'grade8', skill: 'mid', standards: ['8.3.5.1', '8.3.5.2', '8.3.6.4'] },
   { id: 'exponents-and-scientific-notation', course: 'grade8', skill: 'mid', standards: ['8.3.5.3', '8.3.5.4', '8.3.5.5'] },
 
