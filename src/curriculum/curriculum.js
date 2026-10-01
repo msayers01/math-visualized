@@ -58,6 +58,7 @@ const ALIGN = [
 
   /* Grade 7 */
   { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
+  { id: 'proportional-relationships', course: 'grade7', skill: 'mid', standards: ['7.3.7.1', '7.3.7.2', '7.3.7.3'] },
 
   /* Grade 8 */
   { id: 'pythagorean-theorem',         course: 'grade8', skill: 'intro', standards: ['8.2.3.1', '8.2.3.3'] },
