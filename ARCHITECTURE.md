@@ -251,6 +251,20 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | 5 (Algebra 1) | `linear-and-exponential-models` (regression, residuals) | 9.1.1.6, 9.1.1.10, 9.1.1.11 | planned |
 
   Left out on purpose (not a good fit for an interactive canvas, or better as a calculator or a teacher-led task): 8.1.1.1, 8.1.1.5, 8.1.1.6 (designing investigations, building and explaining displays), 8.3.5.7, 8.3.5.8, 9.3.5.5, 9.3.5.6, 9.3.5.10 to 9.3.5.12 (finance reasoning and loan or retirement comparisons; a loan calculator tool could cover some), 9.3.5.3 (complex numbers), 9.3.5.4 (matrices), 9.3.6.6 (circle equation, Geometry), 9.3.6.7 (inverse proportion). Batches are built and reviewed one at a time so that every lesson gets the same testing as the first thirteen.
+- **Course plan: Grade 6 and 7 foundations (started 2026-10-01; Grade 8 and Algebra 1 batches 3 to 5 paused at the owner's request).** Not a full Grade 6 or Grade 7 course: a focused set of lessons that lead into Grade 8 (ratios, rates, percent, proportional relationships, and the number and variable ideas under slope and linear equations). Courses will be filled out later, when the site is near production level. Audience: students working alone and teachers assigning lessons, so every lesson gives feedback that explains why, the text is pitched at ages 11 to 13, and the two quick-check questions must work as a printed exit ticket (readable and answerable on paper, without the canvas). Starting point: Grade 6 has 2 of 34 benchmarks tagged and Grade 7 has 8 of 35.
+
+  | Batch | Lesson (proposed id) | Course | Benchmarks | Status |
+  |---|---|---|---|---|
+  | F-A | `ratios-and-equivalent-ratios` (tape diagrams, double number lines, mixtures) | Grade 6 | 6.3.6.5, 6.3.6.6 | being built |
+  | F-A | `unit-rates-and-best-buys` | Grade 6 | 6.3.5.10 | being built |
+  | F-A | `percents-on-tape-and-number-lines` | Grade 6 | 6.3.5.11, 6.3.6.2 | being built |
+  | F-A | `proportional-relationships` (tables, graphs, y = kx) | Grade 7 | 7.3.7.1 to 7.3.7.3 | being built |
+  | F-B | `variables-and-relationships` (independent and dependent variable) | Grade 6 | 6.3.7.1 | planned |
+  | F-B | `negative-numbers-and-absolute-value` | Grade 6 | 6.3.5.1 to 6.3.5.3, 6.3.5.6 | planned |
+  | F-B | `scale-drawings-and-proportions` | Grade 7 | 7.2.4.4, 7.3.6.4 | planned |
+  | F-B | `percent-change-and-money` (tax, tips, markups, simple interest) | Grade 7 | 7.3.6.5 | planned |
+
+  Possible later additions (not planned yet): adding and subtracting integers with distance on the number line (7.3.5.2, 7.3.5.4, 7.3.5.6), two-step equations and inequalities (7.3.6.2), unit rates with fractions (7.3.5.7), prisms (6.2.3.1, 6.2.3.2), angle sums (6.2.4.1, 6.2.4.2), coordinates and polygons (6.2.4.3), prime factors, GCF and LCM (6.3.5.4, 6.3.5.5), fraction models (6.3.5.8), sampling and inference (7.1.1.2 to 7.1.1.4), compound events (7.1.2.3 to 7.1.2.6).
 - **Teacher features (done in 0.10, see section 5):** plain-anchor share links to a lesson step, local progress tracking with a copyable summary, and a printable exit ticket per lesson. Not built: a class-wide teacher view (needs a backend), a combined multi-lesson ticket builder.
 - **Final:** search and polish (progress tracking and teacher tools moved up, see above). (The lesson finder and standards alignment arrived early, in 0.9.)
 
