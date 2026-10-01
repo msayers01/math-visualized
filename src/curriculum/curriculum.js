@@ -89,6 +89,7 @@ const ALIGN = [
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
   { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
   { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
+  { id: 'modular-arithmetic', course: 'algebra1', skill: 'intro', standards: [], enrichment: true },
 
   /* Geometry */
   { id: 'similarity-and-scaling',      course: 'geometry', skill: 'mid', standards: ['7.2.4.2', '7.2.4.3', '9.2.3.9'] },

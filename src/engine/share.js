@@ -67,7 +67,7 @@ function texFlat(s) {
     .replace(/\\(?:text|mathrm|mathbf|operatorname)\{([^}]*)\}/g, '$1').replace(/\\[td]?frac\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])\s*(\{(?:[^{}]|\{[^{}]*\})*\}|[^\s{}])/g, (_, a, b) => part(arg(a)) + '/' + part(arg(b)))
     .replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
     .replace(/\^\{(-?\d+)\}/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\^\{([^{}]+)\}/g, '^($1)').replace(/\^(\d)/g, (_, d) => sup[d]).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
-    .replace(/\\pm/g, '±').replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
+    .replace(/\\pmod\s*\{([^{}]*)\}|\\pmod\s*(\w+)/g, (_, a, b) => ' (mod ' + (a ?? b) + ')').replace(/\\bmod\b/g, ' mod ').replace(/\\not\s*\\equiv/g, '≢').replace(/\\equiv\b/g, '≡').replace(/\\(?:ne|neq)\b/g, '≠').replace(/\\mid\b/g, '|').replace(/\\gcd\b/g, 'gcd').replace(/\\(?:dots|ldots|cdots)\b/g, '...').replace(/\\big[lr]?\b/g, '').replace(/\\pm(?![a-zA-Z])/g, '±').replace(/\\pi(?![a-zA-Z])/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
     .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\(?:Longrightarrow|Rightarrow|implies)\b/g, '⇒').replace(/\\(?:Leftrightarrow|iff)\b/g, '⇔').replace(/\\(?:rightarrow|to)\b/g, '→').replace(/\\left|\\right/g, '')
     .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '');
 }

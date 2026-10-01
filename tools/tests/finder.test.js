@@ -15,12 +15,12 @@ const D = ctx.D, STR = { 1: 'dp', 2: 'sr', 3: 'pr' };
 const model = D.ALIGN.map(a => {
   const course = D.COURSES.find(c => c.id === a.course), g = new Set(course.grades);
   a.standards.forEach(c => g.add(+c[0] >= 9 ? '9-11' : c[0]));
-  return { id: a.id, course: a.course, skill: a.skill, std: a.standards, grades: [...g], strands: [...new Set(a.standards.map(c => STR[c.split('.')[1]]))] };
+  return { id: a.id, course: a.course, skill: a.skill, enrich: !!a.enrichment, std: a.standards, grades: [...g], strands: [...new Set(a.standards.map(c => STR[c.split('.')[1]]))] };
 });
 const expected = F => model.filter(m =>
   (!F.grade?.length || m.grades.some(g => F.grade.includes(g))) && (!F.skill?.length || F.skill.includes(m.skill)) &&
-  (!F.strand?.length || m.strands.some(s => F.strand.includes(s))) && (!F.course || m.course === F.course) && (!F.std || m.std.includes(F.std))).map(m => m.id).sort();
-const toHash = F => { const q = []; for (const k of ['grade', 'skill', 'strand']) if (F[k]?.length) q.push(k + '=' + F[k].join(',')); if (F.course) q.push('course=' + F.course); if (F.std) q.push('std=' + F.std); return q.length ? '#/?' + q.join('&') : '#/'; };
+  (!F.strand?.length || m.strands.some(s => F.strand.includes(s))) && (!F.kind?.length || m.enrich) && (!F.course || m.course === F.course) && (!F.std || m.std.includes(F.std))).map(m => m.id).sort();
+const toHash = F => { const q = []; for (const k of ['grade', 'skill', 'strand', 'kind']) if (F[k]?.length) q.push(k + '=' + F[k].join(',')); if (F.course) q.push('course=' + F.course); if (F.std) q.push('std=' + F.std); return q.length ? '#/?' + q.join('&') : '#/'; };
 
 const TOTAL = model.length, fails = [], ok = [];
 const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '' : '   -> ' + (extra ?? ''))); };
@@ -74,6 +74,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
     { course: 'algebra1' }, { course: 'stats' }, { course: 'linear-algebra' }, { course: 'grade6' },
     { std: '9.2.4.8' }, { std: '8.2.4.1' }, { std: '7.1.2.2' }, { std: '9.1.1.9' },
     { grade: ['8'], skill: ['intro'] }, { grade: ['9-11'], strand: ['dp'] }, { grade: ['7'], strand: ['sr'], skill: ['mid'] },
+    { kind: ['enrich'] }, { kind: ['enrich'], grade: ['9-11'] }, { kind: ['enrich'], skill: ['adv'] },
     { course: 'geometry', strand: ['sr'] }, { grade: ['9-11'], skill: ['intro'] }, { course: 'stats', std: '9.1.2.6' }, { course: 'stats', std: '9.2.4.8' },
     { grade: ['6', '8'], skill: ['mid'], strand: ['dp', 'pr'], course: 'stats' }
   ];
