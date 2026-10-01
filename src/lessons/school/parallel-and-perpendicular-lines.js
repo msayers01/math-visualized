@@ -85,7 +85,7 @@
       <p>Two lines that are neither horizontal nor vertical are perpendicular exactly when
       \[ m_1m_2=-1, \qquad\text{that is,}\qquad m_2=-\frac{1}{m_1}. \]
       To get the new slope, flip the fraction (swap rise and run) and change the sign. The slope \(\tfrac{2}{3}\) becomes \(-\tfrac{3}{2}\).</p>
-      <p><b>Why.</b> Draw a slope triangle on a line, with run \(a\) and rise \(b\), so the slope is \(m=\tfrac{b}{a}\). Turn the whole picture, triangle and line, a quarter turn counterclockwise about a point on the line. The step "\(a\) right, \(b\) up" becomes "\(b\) left, \(a\) up": a run of \(-b\) and a rise of \(a\). A turn keeps lengths and angles, so the turned line makes a \(90^\circ\) angle with the original. Its slope is
+      <p><b>Why.</b> Draw a slope triangle on a line, with run \(a\) and rise \(b\), so the slope is \(m=\tfrac{b}{a}\). Turn the whole picture, triangle and line, a quarter turn counterclockwise about a point on the line. The step "\(a\) right, \(b\) up" becomes "\(b\) left, \(a\) up": a run of \(-b\) and a rise of \(a\). A quarter turn rotates every direction by exactly \(90^\circ\), so the turned line makes a \(90^\circ\) angle with the original. Its slope is
       \[ \frac{a}{-b}=-\frac{a}{b}=-\frac{1}{m}, \qquad\text{and}\qquad \frac{b}{a}\cdot\left(-\frac{a}{b}\right)=-1. \]
       Any line with slope \(-\tfrac{a}{b}\) is parallel to the turned line, so it is perpendicular to the original as well.</p>
       <h3>The line through a given point</h3>

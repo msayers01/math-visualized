@@ -754,10 +754,10 @@ const ALIGN = [
   { id: 'scatter-plots-and-lines-of-fit', course: 'grade8', skill: 'mid', standards: ['8.1.1.2', '8.1.1.3', '8.1.1.4', '8.1.1.6'] },
   { id: 'square-roots-and-irrational-numbers', course: 'grade8', skill: 'mid', standards: ['8.3.5.1', '8.3.5.2', '8.3.6.4'] },
   { id: 'exponents-and-scientific-notation', course: 'grade8', skill: 'mid', standards: ['8.3.5.3', '8.3.5.4', '8.3.5.5'] },
-  { id: 'forms-of-a-linear-equation', course: 'grade8', skill: 'mid', standards: ['8.3.6.5', '8.3.6.6', '8.3.7.1'] },
+  { id: 'forms-of-a-linear-equation', course: 'grade8', skill: 'mid', standards: ['8.3.6.5', '8.3.6.6', '8.3.7.1', '8.3.7.6'] },
   { id: 'parallel-and-perpendicular-lines', course: 'grade8', skill: 'mid', standards: ['8.2.4.2'] },
   { id: 'distance-and-the-pythagorean-theorem', course: 'grade8', skill: 'mid', standards: ['8.2.3.2', '8.2.3.3'] },
-  { id: 'solving-equations-with-a-balance', course: 'grade8', skill: 'mid', standards: ['8.3.6.1', '8.3.6.3'] },
+  { id: 'solving-equations-with-a-balance', course: 'grade8', skill: 'mid', standards: ['8.3.6.1', '8.3.6.3', '9.3.5.7'] },
 
   /* Algebra 1 */
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
@@ -6096,7 +6096,7 @@ register({
       <p>Two lines that are neither horizontal nor vertical are perpendicular exactly when
       \[ m_1m_2=-1, \qquad\text{that is,}\qquad m_2=-\frac{1}{m_1}. \]
       To get the new slope, flip the fraction (swap rise and run) and change the sign. The slope \(\tfrac{2}{3}\) becomes \(-\tfrac{3}{2}\).</p>
-      <p><b>Why.</b> Draw a slope triangle on a line, with run \(a\) and rise \(b\), so the slope is \(m=\tfrac{b}{a}\). Turn the whole picture, triangle and line, a quarter turn counterclockwise about a point on the line. The step "\(a\) right, \(b\) up" becomes "\(b\) left, \(a\) up": a run of \(-b\) and a rise of \(a\). A turn keeps lengths and angles, so the turned line makes a \(90^\circ\) angle with the original. Its slope is
+      <p><b>Why.</b> Draw a slope triangle on a line, with run \(a\) and rise \(b\), so the slope is \(m=\tfrac{b}{a}\). Turn the whole picture, triangle and line, a quarter turn counterclockwise about a point on the line. The step "\(a\) right, \(b\) up" becomes "\(b\) left, \(a\) up": a run of \(-b\) and a rise of \(a\). A quarter turn rotates every direction by exactly \(90^\circ\), so the turned line makes a \(90^\circ\) angle with the original. Its slope is
       \[ \frac{a}{-b}=-\frac{a}{b}=-\frac{1}{m}, \qquad\text{and}\qquad \frac{b}{a}\cdot\left(-\frac{a}{b}\right)=-1. \]
       Any line with slope \(-\tfrac{a}{b}\) is parallel to the turned line, so it is perpendicular to the original as well.</p>
       <h3>The line through a given point</h3>
