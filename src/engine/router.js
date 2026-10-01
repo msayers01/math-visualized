@@ -5,10 +5,11 @@ const app = $('#app'); let teardown = null;
 function route() {
   if (teardown) teardown(); teardown = null;
   app.innerHTML = '';
-  const m = location.hash.match(/^#\/viz\/([\w-]+)/), v = m && VIZ.find(x => x.id === m[1]);
-  const lv = location.hash.match(/^#\/level\/(\w+)/);
-  teardown = v ? renderViz(app, v) : renderHome(app);
-  const target = lv ? document.getElementById('level-' + lv[1]) : (!v && /^#\/\?/.test(location.hash) ? document.getElementById('finder') : null);
+  const r = parseRoute(location.hash), v = r.id && VIZ.find(x => x.id === r.id);
+  teardown = r.page === 'viz' && v ? renderViz(app, v, r.step) : r.page === 'ticket' && v ? renderTicket(app, v, r.key)
+           : r.page === 'progress' ? renderProgress(app) : renderHome(app);
+  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress';
+  const target = home && r.level ? document.getElementById('level-' + r.level) : home && r.filters ? document.getElementById('finder') : null;
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
   else window.scrollTo(0, 0);
 }

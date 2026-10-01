@@ -38,7 +38,7 @@ function renderHome(app) {
         const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
         if (v.thumb) thumbs.push([th, v.thumb]);
         const li = h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
-          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v)),
+          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v, false, ProgressChip(v).el)),
           h('span', { class: 'go' }, 'Open')));
         rows.set(v.id, li); list.append(li);
       }
@@ -78,8 +78,8 @@ function renderHome(app) {
       S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
     }
     empty.hidden = !on || shown > 0;
-    const hash = filterToHash(F);
-    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) history.replaceState(null, '', hash);
+    const hash = on ? filterToken(F) : '#/';
+    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
   };
   const finder = Finder(F, apply);
   app.append(finder.el, levels);
@@ -135,7 +135,7 @@ function Alignment(v) {
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
    legacy `explain` prose; every part is optional. mount() may return a teardown function
    (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
-function renderViz(app, v) {
+function renderViz(app, v, startStep = 0) {
   document.title = v.title + ' | Continuum';
   const sib = VIZ.filter(x => x.level === v.level), i = sib.indexOf(v), prev = sib[i - 1], next = sib[i + 1];
   const stage = h('div', { class: 'stage', 'data-coords': '', role: 'img', 'aria-label': 'Interactive visualization: ' + v.title },
@@ -144,12 +144,18 @@ function renderViz(app, v) {
   const body = v.formal != null ? h('div', { class: 'prose' }, h('h2', {}, 'The math'), h('div', { html: v.formal }))
                                 : h('div', { class: 'prose', html: v.explain || '' });
   const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
-  const check = v.check && v.check.length ? QuickCheck(v.check) : null;
+  Progress.open(v.id);
+  const chip = ProgressChip(v);
+  const check = v.check && v.check.length ? QuickCheck(v.check, (n, right) => { Progress.answer(v.id, n, right); chip.update(); }) : null;
+  const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'with answer key')) : null;
   const conn = v.links ? Connections(v.links, v.id) : null;
   const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
-    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
+    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }, {
+        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
+        tools: [CopyButton('Copy link to this step', () => shareUrl(lessonToken(v.id, stepper.index())), { title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' })]
+      }) : null;
   if (stepper) panel.append(stepper.el);
   const pg = (x, cls, k) => h('a', { class: 'pg ' + cls, href: '#/viz/' + x.id }, h('span', { class: 'k' }, k), h('span', { class: 't' }, x.title));
   app.append(h('article', { class: 'wrap viz lvl-' + v.level },
@@ -157,15 +163,15 @@ function renderViz(app, v) {
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
     h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede,
-      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#/?course=' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true))),
+      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#find~course_' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true, chip.el))),
     h('div', { class: 'workbench' }, stage, panel),
-    body, check, conn, align,
+    body, check, tickets, conn, align,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
   typeset(body); if (v.hook) typeset(lede);
   const ret = v.mount({ stage, controls: Controls(panel) });
   scene = typeof ret === 'function' ? { destroy: ret } : (ret || {});
-  if (stepper) stepper.start();
+  if (stepper) stepper.start(clamp(startStep, 0, v.steps.length - 1));
   return () => scene.destroy && scene.destroy();
 }
 

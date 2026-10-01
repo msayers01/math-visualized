@@ -12,14 +12,14 @@ function SkillMeter(id) {
 /* A benchmark code colored by its strand (shape too, so color is never the only cue). A link when `link` is set. */
 function StdChip(code, link) {
   const attrs = { class: 'std', 'data-strand': strandOf(code).id, title: code + ': ' + STANDARDS[code] };
-  if (link) attrs.href = '#/?std=' + code;
+  if (link) attrs.href = '#find~std_' + code;
   return h(link ? 'a' : 'span', attrs, code);
 }
 
 /* Skill, grades and benchmark chips for a lesson. With `link`, the chips open the filtered lesson list. */
-function LessonTags(v, link) {
+function LessonTags(v, link, extra) {
   return h('div', { class: 'tags' }, SkillMeter(v.skill), h('span', { class: 'tag' }, gradesLabel(v.grades)),
-    v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null);
+    v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
 /* The filter bar. F is the live filter state (mutated); onChange(F) runs after every user change.
@@ -31,6 +31,7 @@ function Finder(F, onChange) {
   const badge = h('span', { class: 'badge' });
   const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter()); change(); } }, 'Clear filters');
   const grid = h('div', { class: 'finder-grid', id: 'finder-grid' });
+  const copyView = CopyButton('Copy link to this view', () => shareUrl(filterToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
   const toggle = h('button', { type: 'button', class: 'finder-toggle', 'aria-expanded': 'false', 'aria-controls': 'finder-grid',
     onclick: () => { const o = root.classList.toggle('open'); toggle.setAttribute('aria-expanded', o); } }, 'Filters', badge);
 
@@ -81,13 +82,13 @@ function Finder(F, onChange) {
     }
     const shown = VIZ.filter(v => matches(v, F)).length, on = filterActive(F);
     sum.textContent = on ? `${shown} of ${VIZ.length} lessons match` : `${VIZ.length} lessons`;
-    clear.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
+    clear.hidden = !on; copyView.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
   }
   function change() { refresh(); onChange(F); }
 
   const root = h('section', { class: 'wrap finder', id: 'finder', 'aria-label': 'Find lessons' },
     h('div', { class: 'finder-box' },
-      h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, clear),
+      h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, copyView, clear),
       grid));
   refresh();
   return { el: root, refresh };

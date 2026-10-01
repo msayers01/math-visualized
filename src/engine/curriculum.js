@@ -74,19 +74,28 @@ function matches(v, F, skip) {
 /* how many of `items` pass F if `facet` were set to just `val` */
 const facetCount = (items, F, facet, val) => items.filter(v => matches(v, F, facet) && optionMatch(v, facet, val)).length;
 
-/* shareable state: #/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1 */
+/* shareable state: #find~grade_8~skill_intro~strand_pr~course_grade8~std_8.2.4.1 (see share.js); the older
+   #/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1 form is still read */
 function filterFromHash(hash) {
+  if (hash.startsWith('#find')) {            /* plain token form: #find~grade_8~grade_9-11~course_algebra1~std_8.2.4.1 */
+    const F = emptyFilter();
+    for (const seg of hash.split('~').slice(1)) {
+      const i = seg.indexOf('_'), k = seg.slice(0, i), v = seg.slice(i + 1);
+      if (i < 0) continue;
+      if (k === 'grade' && GRADE[v] && !F.grade.includes(v)) F.grade.push(v);
+      else if (k === 'skill' && SKILL[v] && !F.skill.includes(v)) F.skill.push(v);
+      else if (k === 'strand' && STRAND[v] && !F.strand.includes(v)) F.strand.push(v);
+      else if (k === 'course' && COURSE[v]) F.course = v;
+      else if (k === 'std' && hasStandard(v)) F.std = v;
+    }
+    return F;
+  }
   const p = new URLSearchParams(hash.split('?')[1] || ''), list = k => (p.get(k) || '').split(',').filter(Boolean);
   const course = p.get('course'), std = p.get('std');
   return {
     grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]),
     course: course && COURSE[course] ? course : '', std: std && hasStandard(std) ? std : ''
   };
-}
-function filterToHash(F) {
-  const q = [];
-  for (const f of FACETS) if (Array.isArray(F[f]) ? F[f].length : F[f]) q.push(f + '=' + (Array.isArray(F[f]) ? F[f].join(',') : F[f]));
-  return q.length ? '#/?' + q.join('&') : '#/';
 }
 
 /* ---------- labels ---------- */

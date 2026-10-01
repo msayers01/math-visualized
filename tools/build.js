@@ -72,6 +72,20 @@ function checkCurriculum() {
   const tagged = new Set(C.ALIGN.flatMap(a => a.standards));
   return `${lessons.length} lessons aligned, ${tagged.size} of ${Object.keys(C.STANDARDS).length} benchmarks tagged`;
 }
+/* TeX lives inside HTML strings, where "<" followed by a letter starts a tag and swallows the text after it
+   (for example \(0<b<1\)). Write &lt; instead. */
+function checkTex() {
+  const bad = [];
+  for (const f of man.lessons) {
+    const s = fs.readFileSync(path.join(src, f), 'utf8');
+    for (const m of s.matchAll(/\\\((.*?)\\\)|\\\[(.*?)\\\]/gs)) {
+      const t = m[1] ?? m[2], x = t.search(/<(?=[A-Za-z\/!])/);
+      if (x >= 0) bad.push(`${f}: TeX contains "<" before a letter, write &lt; instead: ...${t.slice(Math.max(0, x - 20), x + 20).replace(/\s+/g, ' ')}...`);
+    }
+  }
+  if (bad.length) throw new Error('TeX problems:\n  ' + bad.join('\n  '));
+}
+checkTex();
 const curSummary = checkCurriculum();
 
 const scripts = [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n');
