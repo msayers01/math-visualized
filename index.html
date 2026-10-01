@@ -745,7 +745,7 @@ const SKILLS = [
 const ALIGN = [
   /* Grade 6 */
   { id: 'percents-on-tape-and-number-lines', course: 'grade6', skill: 'mid', standards: ['6.3.5.11', '6.3.6.2'] },
-  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10'] },
+  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10', '6.3.6.6'] },
   { id: 'ratios-and-equivalent-ratios', course: 'grade6', skill: 'intro', standards: ['6.3.6.5', '6.3.6.6'] },
 
   /* Grade 7 */
@@ -8526,7 +8526,7 @@ register({
         text: String.raw`<p>Orange drink is made from <b>concentrate</b> (yellow) and <b>water</b> (blue). Each block is one cup. One batch uses 2 cups of concentrate and 3 cups of water.</p><p>We say the ratio of concentrate to water is \(2:3\), read "2 to 3". The order matters: \(3:2\) would be a different drink.</p>`,
         set: { mode: 'scale', ch: 0, n: 1 } },
       { title: 'Equivalent ratios',
-        text: String.raw`<p>Make 3 batches. Multiply both amounts by 3: 6 cups of concentrate and 9 cups of water. The ratio \(6:9\) is <b>equivalent</b> to \(2:3\). The drink tastes the same. There is just more of it.</p><p>The table and the double number line list every equivalent ratio. Drag the marker or use <b>Batches</b>. Then open the <b>Challenge</b> menu and make 20 cups in all.</p>`,
+        text: String.raw`<p>Make 3 batches. Multiply both amounts by 3: 6 cups of concentrate and 9 cups of water. The ratio \(6:9\) is <b>equivalent</b> to \(2:3\). The drink tastes the same. There is just more of it.</p><p>The table and the double number line show equivalent ratios. Drag the marker or use <b>Batches</b>. Then open the <b>Challenge</b> menu and make 20 cups in all.</p>`,
         set: { mode: 'scale', ch: 0, n: 3 } },
       { title: 'A gap does not measure taste',
         text: String.raw`<p>Mix A is \(2:3\) and mix B is \(4:5\). Each has exactly 1 more cup of water than concentrate. The red brackets show that gap.</p><p>Subtracting says they match. Do they? Choose <b>A is stronger</b>, <b>B is stronger</b> or <b>Same strength</b>, then read why. You can use the batch sliders first to line the mixes up.</p>`,
@@ -9287,9 +9287,9 @@ register({
         hint: String.raw`First find how far the cyclist rides in 1 hour. Then ask how many of those hours make 60 km.` },
       { q: String.raw`A store sells sports drink in two sizes. A 12 ounce bottle costs $1.80. A 48 ounce jug costs $6.00. Ana will drink only about 12 ounces before the rest goes flat. Which should she buy?`,
         choices: ['The jug, because it costs less per ounce', 'The jug, because bigger sizes are always the better buy',
-                  'The bottle, because 15 cents per ounce is less than 12.5 cents per ounce',
-                  'The bottle, because she will use all of it. The jug costs $6.00 and she would use only a quarter of it'], answer: 3,
-        why: String.raw`The jug costs \(6.00\div 48=0.125\) dollars, which is 12.5 cents, per ounce. The bottle costs \(1.80\div 12=0.15\) dollars, which is 15 cents, per ounce. So the jug has the lower unit price. But Ana drinks only 12 ounces. She would pay $6.00 for the jug and use a quarter of it, or pay $1.80 for the bottle and use all of it. A low unit price only helps if you use the amount. (And 15 cents is more than 12.5 cents, so the bottle does not have the lower unit price.)`,
+                  'The bottle, because $1.80 is less than $6.00 and only the total price matters',
+                  'The bottle, because she will use all of it but only a quarter of the jug'], answer: 3,
+        why: String.raw`The jug costs \(6.00\div 48=0.125\) dollars, which is 12.5 cents, per ounce. The bottle costs \(1.80\div 12=0.15\) dollars, which is 15 cents, per ounce. So the jug has the lower unit price. But Ana drinks only 12 ounces. She would pay $6.00 for the jug and use a quarter of it, or pay $1.80 for the bottle and use all of it. A low unit price only helps if you use the amount. The answer that says only the total price matters has the right winner for the wrong reason: if Ana planned to drink 48 ounces, the jug would be the better buy even though it costs more in total.`,
         hint: String.raw`Find both unit prices first. Then ask how much of the drink Ana will really use, and what she pays for it.` }
     ],
     links: { prereq: ['ratios-and-equivalent-ratios'], next: ['proportional-relationships'], related: ['percents-on-tape-and-number-lines', 'slope-and-linear-functions'] },
@@ -9838,7 +9838,7 @@ register({
   ];
   const IDLE = {
     fill: 'Choose an answer. The point you choose appears on the graph, and every choice is explained.',
-    decide: 'Choose an answer. You can test first with the switches below.',
+    decide: 'Choose an answer. If switches appear below, you can test first with them.',
     trans: 'Choose the form that matches. Every choice is explained.'
   };
 
@@ -9896,7 +9896,7 @@ register({
         text: String.raw`<p>Once you know k, you can fill in any missing entry. Read k from the y ÷ x row, then choose the answer.</p><p>To get y from x, multiply by k. To get x from y, divide by k. Every choice shows where its point lands on the graph.</p>`,
         set: { mode: 'fill', qi: 0, k: 3, ratio: 1, ev: 0, tri: 0 } },
       { title: 'Proportional or not?',
-        text: String.raw`<p>Two tests. <b>Table:</b> y ÷ x is the same number in every column. <b>Graph:</b> the dots lie on a straight line through the origin (0, 0).</p><p>Each question shows only a table, a graph or words. Decide, then read why. The switches let you test it yourself.</p>`,
+        text: String.raw`<p>Two tests. <b>Table:</b> y ÷ x is the same number in every column. <b>Graph:</b> the dots lie on a straight line through the origin (0, 0).</p><p>Most questions show only a table, a graph or words. Decide, then read why. When switches appear, use them to test it yourself.</p>`,
         set: { mode: 'decide', qi: 0, k: 3, ratio: 0, ev: 0, tri: 0 } },
       { title: 'One relationship, four forms',
         text: String.raw`<p>Words, a table, a graph and an equation can describe the same proportional relationship. Each question shows one form. Choose the form that matches.</p><p>Watch the graph when it appears: 1 step right goes up k. That unit rate k is the steepness of a line through the origin. In Grade 8 you will call it the <b>slope</b>.</p>`,
@@ -10462,7 +10462,7 @@ register({
         } else if (isHalf(k)) { kind = 'ok';
           text = `${ok('That works, with one extra step.')} Each piece is ${pc(pieceP)} = ${A(piece)}. But ${pc(p)} is ${kt} pieces, so the marker lands in the middle of a piece. Half a piece is ${pc(pieceP / 2)} = ${A(piece / 2)}. A different cut makes this easier.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece would be ${pc(pieceP)} = ${A(piece)}, but ${pc(p)} is ${kt} pieces. The marker would land part of the way inside a piece, and the cuts would not give you the amount. Choose a cut that makes ${pc(p)} a whole number of pieces.`;
+          text = `${no('Not a clean fit.')} Each piece would be ${pc(pieceP)} = ${A(piece)}, but ${pc(p)} is ${kt} pieces. The marker would land part of the way inside a piece, so these cuts alone do not give the amount. You could add some smaller pieces to the big ones, but one cut that fits is quicker: choose a cut that makes ${pc(p)} a whole number of pieces.`;
         }
       } else if (mode === 'pct') {
         if (n === 100) {
@@ -10473,7 +10473,7 @@ register({
         } else if (isHalf(k)) { kind = 'ok';
           text = `${ok('That works, with one extra step.')} Each piece is ${A(piece)}, and ${A(part)} is ${kt} pieces: whole pieces plus half of the next one. Half a piece is ${A(piece / 2)}. A different cut makes this easier.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece would be ${A(piece)}, but ${A(part)} is ${kt} pieces. The marker would land part of the way inside a piece. Choose a piece size that fits into ${A(part)} a whole number of times.`;
+          text = `${no('Not a clean fit.')} Each piece would be ${A(piece)}, but ${A(part)} is ${kt} pieces. The marker would land part of the way inside a piece. Choose a piece size that fits into ${A(part)} a whole number of times.`;
         }
       } else {
         if (n === 100 && isInt(k)) {
@@ -10485,7 +10485,7 @@ register({
             ? `${ok('Good move.')} Each piece is ${pc(pieceP)} of the bar, and ${pc(p)} is exactly 1 piece. So one piece is ${A(part)}, and the whole bar has ${n} pieces.`
             : `${ok('Good move.')} Each piece is ${pc(pieceP)}, so ${pc(p)} is ${kt} pieces. Those ${kt} pieces are ${A(part)}, so one piece is ${A(part)} ÷ ${kt} = ${A(piece)}. The whole bar has ${n} pieces.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece is ${pc(pieceP)}, but ${pc(p)} is ${kt} pieces. The part you know ends part of the way through a piece, so you cannot tell how big one piece is. Choose a cut where ${pc(p)} is a whole number of pieces.`;
+          text = `${no('Not a clean fit.')} Each piece is ${pc(pieceP)}, but ${pc(p)} is ${kt} pieces. The part you know ends part of the way through a piece, so you cannot tell how big one piece is. Choose a cut where ${pc(p)} is a whole number of pieces.`;
         }
       }
       return { label, kind, cut: n, text };

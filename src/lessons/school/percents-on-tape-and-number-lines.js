@@ -94,7 +94,7 @@
         } else if (isHalf(k)) { kind = 'ok';
           text = `${ok('That works, with one extra step.')} Each piece is ${pc(pieceP)} = ${A(piece)}. But ${pc(p)} is ${kt} pieces, so the marker lands in the middle of a piece. Half a piece is ${pc(pieceP / 2)} = ${A(piece / 2)}. A different cut makes this easier.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece would be ${pc(pieceP)} = ${A(piece)}, but ${pc(p)} is ${kt} pieces. The marker would land part of the way inside a piece, and the cuts would not give you the amount. Choose a cut that makes ${pc(p)} a whole number of pieces.`;
+          text = `${no('Not a clean fit.')} Each piece would be ${pc(pieceP)} = ${A(piece)}, but ${pc(p)} is ${kt} pieces. The marker would land part of the way inside a piece, so these cuts alone do not give the amount. You could add some smaller pieces to the big ones, but one cut that fits is quicker: choose a cut that makes ${pc(p)} a whole number of pieces.`;
         }
       } else if (mode === 'pct') {
         if (n === 100) {
@@ -105,7 +105,7 @@
         } else if (isHalf(k)) { kind = 'ok';
           text = `${ok('That works, with one extra step.')} Each piece is ${A(piece)}, and ${A(part)} is ${kt} pieces: whole pieces plus half of the next one. Half a piece is ${A(piece / 2)}. A different cut makes this easier.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece would be ${A(piece)}, but ${A(part)} is ${kt} pieces. The marker would land part of the way inside a piece. Choose a piece size that fits into ${A(part)} a whole number of times.`;
+          text = `${no('Not a clean fit.')} Each piece would be ${A(piece)}, but ${A(part)} is ${kt} pieces. The marker would land part of the way inside a piece. Choose a piece size that fits into ${A(part)} a whole number of times.`;
         }
       } else {
         if (n === 100 && isInt(k)) {
@@ -117,7 +117,7 @@
             ? `${ok('Good move.')} Each piece is ${pc(pieceP)} of the bar, and ${pc(p)} is exactly 1 piece. So one piece is ${A(part)}, and the whole bar has ${n} pieces.`
             : `${ok('Good move.')} Each piece is ${pc(pieceP)}, so ${pc(p)} is ${kt} pieces. Those ${kt} pieces are ${A(part)}, so one piece is ${A(part)} ÷ ${kt} = ${A(piece)}. The whole bar has ${n} pieces.`;
         } else { kind = 'bad';
-          text = `${no('Not quite.')} Each piece is ${pc(pieceP)}, but ${pc(p)} is ${kt} pieces. The part you know ends part of the way through a piece, so you cannot tell how big one piece is. Choose a cut where ${pc(p)} is a whole number of pieces.`;
+          text = `${no('Not a clean fit.')} Each piece is ${pc(pieceP)}, but ${pc(p)} is ${kt} pieces. The part you know ends part of the way through a piece, so you cannot tell how big one piece is. Choose a cut where ${pc(p)} is a whole number of pieces.`;
         }
       }
       return { label, kind, cut: n, text };

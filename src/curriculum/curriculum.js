@@ -54,7 +54,7 @@ const SKILLS = [
 const ALIGN = [
   /* Grade 6 */
   { id: 'percents-on-tape-and-number-lines', course: 'grade6', skill: 'mid', standards: ['6.3.5.11', '6.3.6.2'] },
-  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10'] },
+  { id: 'unit-rates-and-best-buys', course: 'grade6', skill: 'mid', standards: ['6.3.5.10', '6.3.6.6'] },
   { id: 'ratios-and-equivalent-ratios', course: 'grade6', skill: 'intro', standards: ['6.3.6.5', '6.3.6.6'] },
 
   /* Grade 7 */

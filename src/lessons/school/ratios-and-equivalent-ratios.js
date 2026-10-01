@@ -190,7 +190,7 @@
         text: String.raw`<p>Orange drink is made from <b>concentrate</b> (yellow) and <b>water</b> (blue). Each block is one cup. One batch uses 2 cups of concentrate and 3 cups of water.</p><p>We say the ratio of concentrate to water is \(2:3\), read "2 to 3". The order matters: \(3:2\) would be a different drink.</p>`,
         set: { mode: 'scale', ch: 0, n: 1 } },
       { title: 'Equivalent ratios',
-        text: String.raw`<p>Make 3 batches. Multiply both amounts by 3: 6 cups of concentrate and 9 cups of water. The ratio \(6:9\) is <b>equivalent</b> to \(2:3\). The drink tastes the same. There is just more of it.</p><p>The table and the double number line list every equivalent ratio. Drag the marker or use <b>Batches</b>. Then open the <b>Challenge</b> menu and make 20 cups in all.</p>`,
+        text: String.raw`<p>Make 3 batches. Multiply both amounts by 3: 6 cups of concentrate and 9 cups of water. The ratio \(6:9\) is <b>equivalent</b> to \(2:3\). The drink tastes the same. There is just more of it.</p><p>The table and the double number line show equivalent ratios. Drag the marker or use <b>Batches</b>. Then open the <b>Challenge</b> menu and make 20 cups in all.</p>`,
         set: { mode: 'scale', ch: 0, n: 3 } },
       { title: 'A gap does not measure taste',
         text: String.raw`<p>Mix A is \(2:3\) and mix B is \(4:5\). Each has exactly 1 more cup of water than concentrate. The red brackets show that gap.</p><p>Subtracting says they match. Do they? Choose <b>A is stronger</b>, <b>B is stronger</b> or <b>Same strength</b>, then read why. You can use the batch sliders first to line the mixes up.</p>`,

@@ -303,9 +303,9 @@
         hint: String.raw`First find how far the cyclist rides in 1 hour. Then ask how many of those hours make 60 km.` },
       { q: String.raw`A store sells sports drink in two sizes. A 12 ounce bottle costs $1.80. A 48 ounce jug costs $6.00. Ana will drink only about 12 ounces before the rest goes flat. Which should she buy?`,
         choices: ['The jug, because it costs less per ounce', 'The jug, because bigger sizes are always the better buy',
-                  'The bottle, because 15 cents per ounce is less than 12.5 cents per ounce',
-                  'The bottle, because she will use all of it. The jug costs $6.00 and she would use only a quarter of it'], answer: 3,
-        why: String.raw`The jug costs \(6.00\div 48=0.125\) dollars, which is 12.5 cents, per ounce. The bottle costs \(1.80\div 12=0.15\) dollars, which is 15 cents, per ounce. So the jug has the lower unit price. But Ana drinks only 12 ounces. She would pay $6.00 for the jug and use a quarter of it, or pay $1.80 for the bottle and use all of it. A low unit price only helps if you use the amount. (And 15 cents is more than 12.5 cents, so the bottle does not have the lower unit price.)`,
+                  'The bottle, because $1.80 is less than $6.00 and only the total price matters',
+                  'The bottle, because she will use all of it but only a quarter of the jug'], answer: 3,
+        why: String.raw`The jug costs \(6.00\div 48=0.125\) dollars, which is 12.5 cents, per ounce. The bottle costs \(1.80\div 12=0.15\) dollars, which is 15 cents, per ounce. So the jug has the lower unit price. But Ana drinks only 12 ounces. She would pay $6.00 for the jug and use a quarter of it, or pay $1.80 for the bottle and use all of it. A low unit price only helps if you use the amount. The answer that says only the total price matters has the right winner for the wrong reason: if Ana planned to drink 48 ounces, the jug would be the better buy even though it costs more in total.`,
         hint: String.raw`Find both unit prices first. Then ask how much of the drink Ana will really use, and what she pays for it.` }
     ],
     links: { prereq: ['ratios-and-equivalent-ratios'], next: ['proportional-relationships'], related: ['percents-on-tape-and-number-lines', 'slope-and-linear-functions'] },
