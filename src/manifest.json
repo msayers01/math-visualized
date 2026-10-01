@@ -20,8 +20,12 @@
   "lessons": [
     "lessons/school/slope-and-linear-functions.js",
     "lessons/school/systems-of-equations.js",
+    "lessons/school/functions-as-transformations.js",
     "lessons/school/quadratics-and-the-parabola.js",
+    "lessons/school/exponential-growth.js",
     "lessons/school/pythagorean-theorem.js",
+    "lessons/school/area-of-a-circle.js",
+    "lessons/school/similarity-and-scaling.js",
     "lessons/school/the-unit-circle-and-trig-waves.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"

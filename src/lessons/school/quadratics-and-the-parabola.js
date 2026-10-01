@@ -56,7 +56,7 @@ register({
       why: String.raw`Factor: \(x^2-6x+5=(x-1)(x-5)\), which is zero at \(x=1\) and \(x=5\). The quadratic formula gives the same.`,
       hint: String.raw`Find two numbers that multiply to \(5\) and add to \(-6\).` }
   ],
-  links: { prereq: ['slope-and-linear-functions'], next: ['exponential-growth', 'functions-as-transformations'], related: ['derivatives-as-tangent-slopes'] },
+  links: { prereq: ['slope-and-linear-functions', 'functions-as-transformations'], next: ['exponential-growth'], related: ['derivatives-as-tangent-slopes'] },
 
   mount({ stage, controls: C }) {
     const st = { a: 1, h: 0, k: 0 };

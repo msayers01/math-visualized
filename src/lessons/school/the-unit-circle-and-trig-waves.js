@@ -1,8 +1,6 @@
 /* =====================================================================
    SCHOOL — The unit circle and trig waves
    ===================================================================== */
-const TAU = Math.PI * 2;
-
 /* angle as a multiple of pi when it is a simple one, e.g. "π/3", "2π/3"; otherwise null */
 function piFrac(th) {
   const x = th / Math.PI;
