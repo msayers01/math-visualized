@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v26
+**Version:** v27
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -100,7 +100,7 @@ Undergraduate (1): linear-transformations. Graduate (1): conformal-maps. Both ar
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **In progress (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (four lessons, all integrated and tested: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7); tag audit running); batch F-B (approved by the owner; four parallel builders running): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
-- **Next:** apply the batch F-A tag audit; integrate, test and audit batch F-B when its builders report; then ask the owner about republishing the artifact (version 10 has neither F-A nor F-B) and about the next area.
+- **Next:** apply the batch F-A tag audit; integrate, test and audit batch F-B when its builders report; then **republish the artifact once F-B is done (approved by the owner 2026-10-01; version 10 has neither F-A nor F-B)**, and ask the owner about the next area.
 
 ## Curriculum (school level approved and built; undergraduate and graduate are DRAFT, ON HOLD)
 The original draft was 42 lessons (15 built then, 27 not built); the school part has since grown (27 built in all, 25 of them school). ✓ = built. School lessons are listed by course in display order.
