@@ -193,7 +193,33 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 - **Phase 4 (done in 0.7):** Functions as transformations, Exponential growth, Area of a circle, Similarity and scaling.
 - **Phase 5 (done in 0.8):** Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board. The school level (13 lessons) is complete.
 - **Phases 6+:** undergraduate and graduate lessons (on hold until the owner lifts the school-only priority).
-- **Final:** search, progress tracking, polish. (The lesson finder and standards alignment arrived early, in 0.9.)
+- **Course plan: Grade 8 and Algebra 1 (started 2026-10-01).** Goal: a complete, standards-aligned sequence for these two courses, then teacher features around it. Only 12 of the 41 Grade 8 benchmarks were covered when the plan began (the whole Data Sciences anchor was untouched). A lesson is planned only for benchmarks an interactive visual can actually teach.
+
+  | Batch | Lesson (proposed id) | Benchmarks | Status |
+  |---|---|---|---|
+  | 1 (Grade 8) | `what-is-a-function` | 8.3.7.3, 8.3.7.4 | being built |
+  | 1 (Grade 8) | `scatter-plots-and-lines-of-fit` | 8.1.1.2 to 8.1.1.4 | being built |
+  | 1 (Grade 8) | `square-roots-and-irrational-numbers` | 8.3.5.1, 8.3.5.2, 8.3.6.4 | being built |
+  | 1 (Grade 8) | `exponents-and-scientific-notation` | 8.3.5.3 to 8.3.5.5 | being built |
+  | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1 to 8.3.6.3 | planned |
+  | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | planned |
+  | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | planned |
+  | 2 (Grade 8) | `distance-and-the-pythagorean-theorem` (plane and 3D) | 8.2.3.2, 8.2.3.3 | planned |
+  | 3 (Grade 8) | `inequalities-and-absolute-value` | 8.3.6.7, 8.3.6.8 | planned |
+  | 3 (Grade 8) | `patterns-and-the-nth-term` | 8.3.7.2 | planned |
+  | 4 (Algebra 1) | `domain-range-and-key-features` | 9.3.7.6, 9.3.7.7, 9.3.7.10 | planned |
+  | 4 (Algebra 1) | `inverse-functions-and-composition` | 9.3.7.9, 9.3.5.9 | planned |
+  | 4 (Algebra 1) | `polynomials-and-factoring` (area models) | 9.3.6.1, 9.3.6.4, 9.3.5.8 | planned |
+  | 4 (Algebra 1) | `completing-the-square` | 9.3.6.5 (deeper), 9.3.6.2, 9.3.6.3 | planned |
+  | 5 (Algebra 1) | `linear-inequalities-and-systems` | 9.3.7.1 | planned |
+  | 5 (Algebra 1) | `radicals-and-rational-exponents` | 9.3.5.2, 9.3.6.8 | planned |
+  | 5 (Algebra 1) | `sequences-recursive-and-explicit` | 9.3.7.4, 9.3.7.5 | planned |
+  | 5 (Algebra 1) | `compound-interest` | 9.3.7.8 | planned |
+  | 5 (Algebra 1) | `linear-and-exponential-models` (regression, residuals) | 9.1.1.6, 9.1.1.10, 9.1.1.11 | planned |
+
+  Left out on purpose (not a good fit for an interactive canvas, or better as a calculator or a teacher-led task): 8.1.1.1, 8.1.1.5, 8.1.1.6 (designing investigations, building and explaining displays), 8.3.5.7, 8.3.5.8, 9.3.5.5, 9.3.5.6, 9.3.5.10 to 9.3.5.12 (finance reasoning and loan or retirement comparisons; a loan calculator tool could cover some), 9.3.5.3 (complex numbers), 9.3.5.4 (matrices), 9.3.6.6 (circle equation, Geometry), 9.3.6.7 (inverse proportion). Batches are built and reviewed one at a time so that every lesson gets the same testing as the first thirteen.
+- **Teacher features (in progress):** share links to a lesson step that also work inside the artifact viewer (plain-anchor form), local progress tracking with a copyable summary, and a printable exit ticket per lesson with an answer key.
+- **Final:** search and polish (progress tracking and teacher tools moved up, see above). (The lesson finder and standards alignment arrived early, in 0.9.)
 
 ## 10. Change log
 

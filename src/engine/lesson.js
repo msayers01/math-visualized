@@ -5,7 +5,7 @@
 /* Guided "Try this" steps. Each step is { title, text (HTML with TeX), set? }.
    Entering a step calls onEnter(step, index, first); `set` is a state patch that the
    lesson's mount() applies through the scene it returns (see ARCHITECTURE.md). */
-function Stepper(steps, onEnter) {
+function Stepper(steps, onEnter, { onStep, tools } = {}) {
   let i = 0;
   const count = h('span', { class: 'steps-n' }), title = h('h3', { class: 'step-title' });
   const text = h('div', { class: 'step-text', 'aria-live': 'polite' });
@@ -14,7 +14,7 @@ function Stepper(steps, onEnter) {
   const next = h('button', { type: 'button', class: 'btn primary', onclick: () => go(i + 1) }, 'Next');
   const el = h('section', { class: 'steps', 'aria-label': 'Guided steps' },
     h('div', { class: 'steps-head' }, h('span', { class: 'steps-k' }, 'Try this'), count),
-    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next));
+    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next), tools && tools.length ? h('div', { class: 'steps-tools' }, tools) : null);
   function go(k, first) {
     i = clamp(k, 0, steps.length - 1);
     const s = steps[i];
@@ -23,19 +23,21 @@ function Stepper(steps, onEnter) {
     dots.forEach((d, j) => { d.classList.toggle('on', j === i); d.classList.toggle('done', j < i); j === i ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
     back.disabled = i === 0; next.disabled = i === steps.length - 1;
     onEnter(s, i, !!first);
+    if (onStep) onStep(i, !!first);
   }
-  return { el, start: () => go(0, true) };
+  return { el, start: (k = 0) => go(k, true), index: () => i };
 }
 
 /* Multiple-choice quick check. Each question is { q, choices: [html], answer: index, why, hint? }.
    A wrong pick is marked and can be retried; the right pick locks the question and shows `why`. */
-function QuickCheck(questions) {
+function QuickCheck(questions, onResult) {
   const root = h('section', { class: 'check', 'aria-label': 'Quick check' }, h('h2', {}, 'Quick check'));
   questions.forEach((Q, n) => {
     const fb = h('div', { class: 'q-fb', 'aria-live': 'polite' });
     const btns = Q.choices.map((c, k) => h('button', { type: 'button', class: 'choice', html: c, onclick: () => pick(k) }));
     function pick(k) {
       if (btns[Q.answer].classList.contains('right')) return;
+      if (onResult) onResult(n, k === Q.answer);
       if (k === Q.answer) {
         btns[k].classList.add('right'); btns.forEach(b => { b.disabled = true; });
         fb.className = 'q-fb ok'; fb.innerHTML = '<b>Right.</b> ' + Q.why;

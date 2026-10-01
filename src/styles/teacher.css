@@ -1,0 +1,74 @@
+/* ---------- Teacher tools: progress, copy links, exit tickets, print ---------- */
+.btn.small { min-height: 34px; padding: 5px 14px; font-size: .86rem; }
+.copy { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.copy-fallback { font: inherit; font-size: .82rem; padding: 6px 10px; min-width: 0; width: min(100%, 360px); border: 1px solid var(--line-strong); border-radius: 4px;
+  background: var(--stage); color: var(--text); }
+.steps-tools { padding-top: 2px; }
+.finder-head .copy { margin-left: auto; }
+.finder-copy { font: inherit; font-size: .88rem; color: var(--brass); background: none; border: 0; padding: 4px 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.finder-head .finder-clear { margin-left: 0; }
+@media (max-width: 700px) { .finder-head .copy { margin-left: 0; } }
+.n { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* progress chip (lesson rows, lesson header) */
+.prog { display: inline-flex; align-items: center; font-size: .76rem; line-height: 1.6; padding: 1px 9px; border-radius: 999px; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--line-strong); color: var(--muted); }
+.prog.done { color: var(--text); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
+.prog.done::before { content: "✓"; margin-right: 5px; color: var(--green); font-weight: 700; }
+
+/* progress page */
+.prog-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 28px; padding: 6px 0 20px; }
+.name-in { width: min(100%, 280px); cursor: text; background-image: none; padding-right: 12px; }
+.prog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sure { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .88rem; color: var(--muted); }
+.prog-total { margin: 4px 0 22px; font-family: var(--display); font-size: 1.25rem; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.prog-body .course { max-width: 760px; }
+.prog-list { list-style: none; margin: 0; padding: 0; }
+.prog-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 18px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.prog-row a { text-decoration: none; font-family: var(--display); letter-spacing: -.02em; }
+.prog-row a:hover { color: var(--brass); }
+.prog-row .prog { justify-self: end; min-width: 6.5em; justify-content: center; }
+@media (max-width: 560px) { .prog-row { grid-template-columns: minmax(0, 1fr) auto; } .prog-row .n { grid-row: 2; } }
+.ticket-links { margin: -6px 0 24px; font-size: .9rem; color: var(--muted); }
+.ticket-links a { color: var(--text); text-underline-offset: 3px; }
+.ticket-links a:hover { color: var(--brass); }
+
+/* exit ticket */
+.ticket-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 22px 0 18px; }
+.ticket-tools a[aria-current="page"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.ticket-sheet { max-width: 760px; margin-bottom: 56px; padding: 34px 40px 40px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); }
+.ticket-k { margin: 0 0 4px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ticket-head h1 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); line-height: 1.1; font-weight: 300; margin: 0 0 8px; }
+.ticket-meta { margin: 0; color: var(--muted); font-size: .92rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.ticket-who { display: flex; align-items: end; gap: 10px; margin: 26px 0 8px; font-size: .92rem; color: var(--muted); }
+.ticket-who .line { flex: 1 1 200px; border-bottom: 1px solid var(--text); height: 1.2em; }
+.ticket-who .line.short { flex: 0 1 140px; }
+.ticket-qs { margin: 0; padding: 0; list-style: none; counter-reset: q; display: flex; flex-direction: column; gap: 26px; }
+.ticket-qs > li { counter-increment: q; break-inside: avoid; }
+.tq { margin: 0 0 10px; font-size: 1.05rem; }
+.tq::before { content: counter(q) ". "; font-weight: 600; }
+.tc { list-style: none; margin: 0; padding: 0 0 0 1.4rem; display: flex; flex-direction: column; gap: 8px; }
+.tc li { display: flex; align-items: center; gap: 12px; }
+.bub { display: inline-grid; place-items: center; flex: none; width: 1.7em; height: 1.7em; border: 1.5px solid var(--text); border-radius: 50%; font-size: .8rem; }
+.ticket-key { margin-top: 36px; padding-top: 18px; border-top: 2px solid var(--text); break-inside: avoid; }
+.ticket-key h2 { margin: 0 0 10px; font-family: var(--display); font-weight: 400; font-size: 1.2rem; letter-spacing: -.03em; }
+.ticket-key ol { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 8px; font-size: .95rem; }
+@media (max-width: 560px) { .ticket-sheet { padding: 22px 18px 26px; } }
+
+@media print {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  :root { padding: 0 !important; }
+  body { background: #fff !important; color: #000 !important; font-size: 12pt; }
+  body { background-image: none !important; }
+  .topbar, footer, .no-print, .pager { display: none !important; }
+  .wrap { max-width: none; padding: 0; }
+  .viz { padding-top: 0; }
+  .ticket-sheet { border: 0; padding: 0; background: #fff !important; color: #000 !important; max-width: none; margin: 0; }
+  .ticket-sheet * { color: #000 !important; }
+  .std { border-color: #666 !important; background: none !important; }
+  .ticket-who .line { border-bottom-color: #000; }
+  .bub { border-color: #000; }
+  .prog-row { break-inside: avoid; }
+}
+.foot-link { color: var(--muted); text-underline-offset: 3px; }
+.foot-link:hover { color: var(--text); }

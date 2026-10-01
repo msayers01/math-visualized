@@ -379,6 +379,80 @@ label.facet .facet-k { margin-bottom: 0; }
 .align-item .bench { font-size: .95rem; line-height: 1.55; }
 .align-item .anc { margin-top: 4px; font-size: .8rem; color: var(--muted); }
 @media (max-width: 560px) { .align-item { grid-template-columns: 1fr; } }
+/* ---------- Teacher tools: progress, copy links, exit tickets, print ---------- */
+.btn.small { min-height: 34px; padding: 5px 14px; font-size: .86rem; }
+.copy { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.copy-fallback { font: inherit; font-size: .82rem; padding: 6px 10px; min-width: 0; width: min(100%, 360px); border: 1px solid var(--line-strong); border-radius: 4px;
+  background: var(--stage); color: var(--text); }
+.steps-tools { padding-top: 2px; }
+.finder-head .copy { margin-left: auto; }
+.finder-copy { font: inherit; font-size: .88rem; color: var(--brass); background: none; border: 0; padding: 4px 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.finder-head .finder-clear { margin-left: 0; }
+@media (max-width: 700px) { .finder-head .copy { margin-left: 0; } }
+.n { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* progress chip (lesson rows, lesson header) */
+.prog { display: inline-flex; align-items: center; font-size: .76rem; line-height: 1.6; padding: 1px 9px; border-radius: 999px; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--line-strong); color: var(--muted); }
+.prog.done { color: var(--text); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
+.prog.done::before { content: "✓"; margin-right: 5px; color: var(--green); font-weight: 700; }
+
+/* progress page */
+.prog-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 28px; padding: 6px 0 20px; }
+.name-in { width: min(100%, 280px); cursor: text; background-image: none; padding-right: 12px; }
+.prog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sure { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .88rem; color: var(--muted); }
+.prog-total { margin: 4px 0 22px; font-family: var(--display); font-size: 1.25rem; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.prog-body .course { max-width: 760px; }
+.prog-list { list-style: none; margin: 0; padding: 0; }
+.prog-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 18px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+.prog-row a { text-decoration: none; font-family: var(--display); letter-spacing: -.02em; }
+.prog-row a:hover { color: var(--brass); }
+.prog-row .prog { justify-self: end; min-width: 6.5em; justify-content: center; }
+@media (max-width: 560px) { .prog-row { grid-template-columns: minmax(0, 1fr) auto; } .prog-row .n { grid-row: 2; } }
+.ticket-links { margin: -6px 0 24px; font-size: .9rem; color: var(--muted); }
+.ticket-links a { color: var(--text); text-underline-offset: 3px; }
+.ticket-links a:hover { color: var(--brass); }
+
+/* exit ticket */
+.ticket-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 22px 0 18px; }
+.ticket-tools a[aria-current="page"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.ticket-sheet { max-width: 760px; margin-bottom: 56px; padding: 34px 40px 40px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); }
+.ticket-k { margin: 0 0 4px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.ticket-head h1 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); line-height: 1.1; font-weight: 300; margin: 0 0 8px; }
+.ticket-meta { margin: 0; color: var(--muted); font-size: .92rem; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.ticket-who { display: flex; align-items: end; gap: 10px; margin: 26px 0 8px; font-size: .92rem; color: var(--muted); }
+.ticket-who .line { flex: 1 1 200px; border-bottom: 1px solid var(--text); height: 1.2em; }
+.ticket-who .line.short { flex: 0 1 140px; }
+.ticket-qs { margin: 0; padding: 0; list-style: none; counter-reset: q; display: flex; flex-direction: column; gap: 26px; }
+.ticket-qs > li { counter-increment: q; break-inside: avoid; }
+.tq { margin: 0 0 10px; font-size: 1.05rem; }
+.tq::before { content: counter(q) ". "; font-weight: 600; }
+.tc { list-style: none; margin: 0; padding: 0 0 0 1.4rem; display: flex; flex-direction: column; gap: 8px; }
+.tc li { display: flex; align-items: center; gap: 12px; }
+.bub { display: inline-grid; place-items: center; flex: none; width: 1.7em; height: 1.7em; border: 1.5px solid var(--text); border-radius: 50%; font-size: .8rem; }
+.ticket-key { margin-top: 36px; padding-top: 18px; border-top: 2px solid var(--text); break-inside: avoid; }
+.ticket-key h2 { margin: 0 0 10px; font-family: var(--display); font-weight: 400; font-size: 1.2rem; letter-spacing: -.03em; }
+.ticket-key ol { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 8px; font-size: .95rem; }
+@media (max-width: 560px) { .ticket-sheet { padding: 22px 18px 26px; } }
+
+@media print {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  :root { padding: 0 !important; }
+  body { background: #fff !important; color: #000 !important; font-size: 12pt; }
+  body { background-image: none !important; }
+  .topbar, footer, .no-print, .pager { display: none !important; }
+  .wrap { max-width: none; padding: 0; }
+  .viz { padding-top: 0; }
+  .ticket-sheet { border: 0; padding: 0; background: #fff !important; color: #000 !important; max-width: none; margin: 0; }
+  .ticket-sheet * { color: #000 !important; }
+  .std { border-color: #666 !important; background: none !important; }
+  .ticket-who .line { border-bottom-color: #000; }
+  .bub { border-color: #000; }
+  .prog-row { break-inside: avoid; }
+}
+.foot-link { color: var(--muted); text-underline-offset: 3px; }
+.foot-link:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -386,13 +460,13 @@ label.facet .facet-k { margin-bottom: 0; }
   <div class="wrap bar">
     <a class="wordmark" href="#/">Continuum</a>
     <nav class="nav" aria-label="Levels">
-      <a href="#/level/school">School</a><a href="#/level/ugrad">Undergraduate</a><a href="#/level/grad">Graduate</a>
+      <a href="#/level/school">School</a><a href="#/level/ugrad">Undergraduate</a><a href="#/level/grad">Graduate</a><a href="#progress">My progress</a>
     </nav>
     <button class="theme-btn" id="themeBtn" type="button"></button>
   </div>
 </header>
 <main id="app"></main>
-<footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span></div></footer>
+<footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#progress">My progress</a></div></footer>
 
 <script>
 /* =====================================================================
@@ -1108,19 +1182,28 @@ function matches(v, F, skip) {
 /* how many of `items` pass F if `facet` were set to just `val` */
 const facetCount = (items, F, facet, val) => items.filter(v => matches(v, F, facet) && optionMatch(v, facet, val)).length;
 
-/* shareable state: #/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1 */
+/* shareable state: #find~grade_8~skill_intro~strand_pr~course_grade8~std_8.2.4.1 (see share.js); the older
+   #/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1 form is still read */
 function filterFromHash(hash) {
+  if (hash.startsWith('#find')) {            /* plain token form: #find~grade_8~grade_9-11~course_algebra1~std_8.2.4.1 */
+    const F = emptyFilter();
+    for (const seg of hash.split('~').slice(1)) {
+      const i = seg.indexOf('_'), k = seg.slice(0, i), v = seg.slice(i + 1);
+      if (i < 0) continue;
+      if (k === 'grade' && GRADE[v] && !F.grade.includes(v)) F.grade.push(v);
+      else if (k === 'skill' && SKILL[v] && !F.skill.includes(v)) F.skill.push(v);
+      else if (k === 'strand' && STRAND[v] && !F.strand.includes(v)) F.strand.push(v);
+      else if (k === 'course' && COURSE[v]) F.course = v;
+      else if (k === 'std' && hasStandard(v)) F.std = v;
+    }
+    return F;
+  }
   const p = new URLSearchParams(hash.split('?')[1] || ''), list = k => (p.get(k) || '').split(',').filter(Boolean);
   const course = p.get('course'), std = p.get('std');
   return {
     grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]),
     course: course && COURSE[course] ? course : '', std: std && hasStandard(std) ? std : ''
   };
-}
-function filterToHash(F) {
-  const q = [];
-  for (const f of FACETS) if (Array.isArray(F[f]) ? F[f].length : F[f]) q.push(f + '=' + (Array.isArray(F[f]) ? F[f].join(',') : F[f]));
-  return q.length ? '#/?' + q.join('&') : '#/';
 }
 
 /* ---------- labels ---------- */
@@ -1135,7 +1218,7 @@ const shortText = (t, n = 90) => t.length <= n ? t : t.slice(0, n).replace(/\s+\
 /* Guided "Try this" steps. Each step is { title, text (HTML with TeX), set? }.
    Entering a step calls onEnter(step, index, first); `set` is a state patch that the
    lesson's mount() applies through the scene it returns (see ARCHITECTURE.md). */
-function Stepper(steps, onEnter) {
+function Stepper(steps, onEnter, { onStep, tools } = {}) {
   let i = 0;
   const count = h('span', { class: 'steps-n' }), title = h('h3', { class: 'step-title' });
   const text = h('div', { class: 'step-text', 'aria-live': 'polite' });
@@ -1144,7 +1227,7 @@ function Stepper(steps, onEnter) {
   const next = h('button', { type: 'button', class: 'btn primary', onclick: () => go(i + 1) }, 'Next');
   const el = h('section', { class: 'steps', 'aria-label': 'Guided steps' },
     h('div', { class: 'steps-head' }, h('span', { class: 'steps-k' }, 'Try this'), count),
-    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next));
+    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next), tools && tools.length ? h('div', { class: 'steps-tools' }, tools) : null);
   function go(k, first) {
     i = clamp(k, 0, steps.length - 1);
     const s = steps[i];
@@ -1153,19 +1236,21 @@ function Stepper(steps, onEnter) {
     dots.forEach((d, j) => { d.classList.toggle('on', j === i); d.classList.toggle('done', j < i); j === i ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
     back.disabled = i === 0; next.disabled = i === steps.length - 1;
     onEnter(s, i, !!first);
+    if (onStep) onStep(i, !!first);
   }
-  return { el, start: () => go(0, true) };
+  return { el, start: (k = 0) => go(k, true), index: () => i };
 }
 
 /* Multiple-choice quick check. Each question is { q, choices: [html], answer: index, why, hint? }.
    A wrong pick is marked and can be retried; the right pick locks the question and shows `why`. */
-function QuickCheck(questions) {
+function QuickCheck(questions, onResult) {
   const root = h('section', { class: 'check', 'aria-label': 'Quick check' }, h('h2', {}, 'Quick check'));
   questions.forEach((Q, n) => {
     const fb = h('div', { class: 'q-fb', 'aria-live': 'polite' });
     const btns = Q.choices.map((c, k) => h('button', { type: 'button', class: 'choice', html: c, onclick: () => pick(k) }));
     function pick(k) {
       if (btns[Q.answer].classList.contains('right')) return;
+      if (onResult) onResult(n, k === Q.answer);
       if (k === Q.answer) {
         btns[k].classList.add('right'); btns.forEach(b => { b.disabled = true; });
         fb.className = 'q-fb ok'; fb.innerHTML = '<b>Right.</b> ' + Q.why;
@@ -1211,14 +1296,14 @@ function SkillMeter(id) {
 /* A benchmark code colored by its strand (shape too, so color is never the only cue). A link when `link` is set. */
 function StdChip(code, link) {
   const attrs = { class: 'std', 'data-strand': strandOf(code).id, title: code + ': ' + STANDARDS[code] };
-  if (link) attrs.href = '#/?std=' + code;
+  if (link) attrs.href = '#find~std_' + code;
   return h(link ? 'a' : 'span', attrs, code);
 }
 
 /* Skill, grades and benchmark chips for a lesson. With `link`, the chips open the filtered lesson list. */
-function LessonTags(v, link) {
+function LessonTags(v, link, extra) {
   return h('div', { class: 'tags' }, SkillMeter(v.skill), h('span', { class: 'tag' }, gradesLabel(v.grades)),
-    v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null);
+    v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
 /* The filter bar. F is the live filter state (mutated); onChange(F) runs after every user change.
@@ -1230,6 +1315,7 @@ function Finder(F, onChange) {
   const badge = h('span', { class: 'badge' });
   const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter()); change(); } }, 'Clear filters');
   const grid = h('div', { class: 'finder-grid', id: 'finder-grid' });
+  const copyView = CopyButton('Copy link to this view', () => shareUrl(filterToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
   const toggle = h('button', { type: 'button', class: 'finder-toggle', 'aria-expanded': 'false', 'aria-controls': 'finder-grid',
     onclick: () => { const o = root.classList.toggle('open'); toggle.setAttribute('aria-expanded', o); } }, 'Filters', badge);
 
@@ -1280,16 +1366,229 @@ function Finder(F, onChange) {
     }
     const shown = VIZ.filter(v => matches(v, F)).length, on = filterActive(F);
     sum.textContent = on ? `${shown} of ${VIZ.length} lessons match` : `${VIZ.length} lessons`;
-    clear.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
+    clear.hidden = !on; copyView.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
   }
   function change() { refresh(); onChange(F); }
 
   const root = h('section', { class: 'wrap finder', id: 'finder', 'aria-label': 'Find lessons' },
     h('div', { class: 'finder-box' },
-      h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, clear),
+      h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, copyView, clear),
       grid));
   refresh();
   return { el: root, refresh };
+}
+
+/* =====================================================================
+   ROUTES AND SHARE LINKS
+   Only a plain anchor (letters, digits, . _ ~ -) from a link to the artifact viewer reaches the
+   page's location.hash, so every shareable view has a plain token:
+     #<lesson-id>             a lesson           #<lesson-id>.3     the lesson at step 3
+     #<lesson-id>.ticket      its exit ticket    #<lesson-id>.key   the ticket with answers
+     #find~grade_8~skill_intro~std_8.2.4.1       the lesson finder with filters (repeat a key for several values)
+     #progress                the progress page  #school | #ugrad | #grad   a level
+   The older #/viz/<id>, #/level/<id> and #/?grade=8 forms still work.
+   ===================================================================== */
+function parseRoute(hash, ids = VIZ.map(v => v.id)) {
+  const old = hash.match(/^#\/viz\/([\w-]+)/);
+  if (old) return { page: 'viz', id: old[1], step: 0 };
+  const lv = hash.match(/^#\/level\/(\w+)/);
+  if (lv) return { page: 'home', level: lv[1] };
+  if (/^#\/\?/.test(hash) || /^#find(~|$)/.test(hash)) return { page: 'home', filters: true };
+  const t = hash.slice(1);
+  if (t === 'progress') return { page: 'progress' };
+  if (Object.hasOwn(LEVELS, t)) return { page: 'home', level: t };
+  const m = t.match(/^([a-z0-9-]+)(?:\.([a-z0-9]+))?$/);
+  if (m && ids.includes(m[1])) {
+    if (!m[2]) return { page: 'viz', id: m[1], step: 0 };
+    if (/^\d+$/.test(m[2])) return { page: 'viz', id: m[1], step: Math.max(0, +m[2] - 1) };
+    if (m[2] === 'ticket' || m[2] === 'key') return { page: 'ticket', id: m[1], key: m[2] === 'key' };
+  }
+  return { page: 'home' };
+}
+const lessonToken = (id, step = 0) => '#' + id + (step > 0 ? '.' + (step + 1) : '');
+const ticketToken = (id, key) => '#' + id + (key ? '.key' : '.ticket');
+function filterToken(F) {
+  const q = [];
+  for (const f of FACETS) for (const x of Array.isArray(F[f]) ? F[f] : F[f] ? [F[f]] : []) q.push(f + '_' + x);
+  return '#find' + (q.length ? '~' + q.join('~') : '');
+}
+
+/* true when the page runs inside another page (the artifact viewer), where location is not the shareable address */
+const embedded = (() => { try { return window.top !== window.self; } catch (e) { return true; } })();
+/* the address to hand out for a token; inside the viewer only the token is known */
+const shareUrl = token => embedded ? token : location.href.split('#')[0] + token;
+const canPrint = !embedded && typeof window.print === 'function';
+
+/* Copy text to the clipboard; resolves true on success. Falls back to execCommand, then to false. */
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  try {
+    const ta = h('textarea', { style: 'position:fixed;left:-9999px;top:0', 'aria-hidden': 'true' }); ta.value = text;
+    document.body.append(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return !!ok;
+  } catch (e) { return false; }
+}
+
+/* A button that copies getText(). If the browser refuses, a selected text box appears instead. */
+function CopyButton(label, getText, { cls = 'btn small', title = '' } = {}) {
+  const box = h('input', { class: 'copy-fallback', type: 'text', readonly: '', 'aria-label': 'Select and copy this text', hidden: '' });
+  const btn = h('button', { type: 'button', class: cls, title, onclick: async () => {
+    const text = getText();
+    if (await copyText(text)) { box.hidden = true; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = label; }, 1600); }
+    else { box.value = text; box.hidden = false; box.focus(); box.select(); }
+  } }, label);
+  return h('span', { class: 'copy' }, btn, box);
+}
+
+/* TeX in quick-check text, flattened for plain-text copies */
+function texToText(s) {
+  const sup = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
+  return String(s).replace(/<[^>]+>/g, '').replace(/\\\(|\\\)|\\\[|\\\]/g, '')
+    .replace(/\\(?:text|mathrm)\{([^}]*)\}/g, '$1').replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g, '($1)/($2)').replace(/\\sqrt\{([^}]*)\}/g, '√($1)').replace(/\\sqrt(\d+)/g, '√$1')
+    .replace(/\^\{?(-?\d+)\}?/g, (_, d) => [...d].map(c => sup[c] || c).join('')).replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, '÷')
+    .replace(/\\pm/g, '±').replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ').replace(/\\circ/g, '°').replace(/\\approx/g, '≈').replace(/\\neq/g, '≠')
+    .replace(/\\le(?:q)?\b/g, '≤').replace(/\\ge(?:q)?\b/g, '≥').replace(/\\ldots|\\cdots/g, '...').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1')
+    .replace(/[{}]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+/* =====================================================================
+   PROGRESS: what this browser has done in each lesson
+   Stored on the device only (localStorage, with an in-memory fallback). A teacher sees a class through
+   the copyable summary on the progress page, not through a server.
+   Per lesson: s = indices of the steps opened, q = { question index: { n: tries, ok: got it right,
+   first: right on the first try } }, at = time first opened.
+   ===================================================================== */
+const Progress = (() => {
+  const KEY = 'continuum-progress-v1', NAME = 'continuum-student-name';
+  let mem = {}, memName = '';
+  const load = () => { try { const d = JSON.parse(localStorage.getItem(KEY)); return d && typeof d === 'object' ? d : mem; } catch (e) { return mem; } };
+  const save = d => { mem = d; try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} };
+  const touch = (d, id) => (d[id] = d[id] || { s: [], q: {}, at: Date.now() });
+  return {
+    open(id) { const d = load(); touch(d, id); save(d); },
+    step(id, i) { const d = load(), e = touch(d, id); if (!e.s.includes(i)) { e.s.push(i); e.s.sort((a, b) => a - b); } save(d); },
+    answer(id, n, right) {
+      const d = load(), e = touch(d, id), q = e.q[n] = e.q[n] || { n: 0, ok: false, first: false };
+      if (q.ok) return;
+      q.n++; if (right) { q.ok = true; q.first = q.n === 1; }
+      save(d);
+    },
+    /* counts and a state for lesson v: new, started or done. A lesson with no steps or checks is done once opened. */
+    status(v) {
+      const e = load()[v.id], st = v.steps ? v.steps.length : 0, ck = v.check ? v.check.length : 0;
+      if (!e) return { seen: 0, st, right: 0, ck, first: 0, state: 'new' };
+      const seen = e.s.filter(i => i < st).length, qs = Object.entries(e.q).filter(([n]) => +n < ck).map(([, x]) => x);
+      const right = qs.filter(x => x.ok).length, first = qs.filter(x => x.first).length;
+      return { seen, st, right, ck, first, state: seen >= st && right >= ck ? 'done' : 'started' };
+    },
+    reset() { save({}); },
+    name: () => { try { return localStorage.getItem(NAME) || ''; } catch (e) { return memName; } },
+    setName(v) { memName = v; try { localStorage.setItem(NAME, v); } catch (e) {} },
+    /* plain-text summary of every lesson, grouped by course in display order */
+    summary(vizList, level = 'school') {
+      const rows = vizList.filter(v => v.level === level), done = rows.filter(v => this.status(v).state === 'done').length;
+      const out = [`Continuum progress: ${this.name() || 'student'} (${new Date().toLocaleDateString('en-US')})`, `${LEVELS[level].name}: ${done} of ${rows.length} lessons complete`];
+      for (const c of COURSES.filter(c => c.level === level)) {
+        const items = rows.filter(v => v.course === c.id);
+        if (!items.length) continue;
+        out.push('', c.name);
+        for (const v of items) {
+          const s = this.status(v), mark = s.state === 'done' ? '[done]' : s.state === 'started' ? '[in progress]' : '[not started]';
+          out.push(`  ${mark} ${v.title}` + (s.st || s.ck ? `: steps ${s.seen}/${s.st}, checks right ${s.right}/${s.ck} (first try ${s.first})` : ''));
+        }
+      }
+      return out.join('\n');
+    }
+  };
+})();
+
+/* =====================================================================
+   TEACHER TOOLS: progress chips and page, printable exit tickets
+   ===================================================================== */
+
+/* "Steps 3/4, checks 1/2" for one lesson, kept current with update() */
+function ProgressChip(v) {
+  const el = h('span', { class: 'prog' });
+  const update = () => {
+    const s = Progress.status(v);
+    el.className = 'prog ' + s.state; el.hidden = s.state === 'new';
+    el.textContent = s.state === 'done' ? 'Complete' : s.st || s.ck ? `Steps ${s.seen}/${s.st} · Checks ${s.right}/${s.ck}` : 'Opened';
+  };
+  update();
+  return { el, update };
+}
+
+/* Progress page: one row per lesson, a copyable summary, print, and reset */
+function renderProgress(app) {
+  document.title = 'My progress | Continuum';
+  const level = 'school', rows = VIZ.filter(v => v.level === level);
+  const name = h('input', { type: 'text', id: 'student-name', class: 'fsel name-in', value: Progress.name(), placeholder: 'Optional', autocomplete: 'off' });
+  name.addEventListener('input', () => Progress.setName(name.value.trim()));
+  const body = h('div', { class: 'prog-body' }), total = h('p', { class: 'prog-total', 'aria-live': 'polite' });
+  const draw = () => {
+    body.replaceChildren();
+    const done = rows.filter(v => Progress.status(v).state === 'done').length;
+    total.textContent = `${done} of ${rows.length} lessons complete`;
+    for (const c of COURSES.filter(c => c.level === level)) {
+      const items = rows.filter(v => v.course === c.id);
+      if (!items.length) continue;
+      body.append(h('section', { class: 'course' }, h('h3', { class: 'course-head' }, c.name),
+        h('ul', { class: 'prog-list' }, items.map(v => {
+          const s = Progress.status(v);
+          return h('li', { class: 'prog-row ' + s.state },
+            h('a', { href: lessonToken(v.id) }, v.title),
+            h('span', { class: 'n' }, `Steps ${s.seen}/${s.st}`), h('span', { class: 'n' }, `Checks ${s.right}/${s.ck}`),
+            h('span', { class: 'prog ' + s.state }, s.state === 'done' ? 'Complete' : s.state === 'started' ? 'In progress' : 'Not started'));
+        }))));
+    }
+  };
+  draw();
+  const sure = h('span', { class: 'sure', hidden: '' }, 'Erase all progress on this device? ',
+    h('button', { type: 'button', class: 'btn small', onclick: () => { Progress.reset(); sure.hidden = true; resetBtn.hidden = false; draw(); } }, 'Yes, erase'),
+    h('button', { type: 'button', class: 'btn small', onclick: () => { sure.hidden = true; resetBtn.hidden = false; } }, 'Keep it'));
+  const resetBtn = h('button', { type: 'button', class: 'btn small', onclick: () => { sure.hidden = false; resetBtn.hidden = true; } }, 'Reset progress');
+  app.append(h('article', { class: 'wrap viz progress-page' },
+    h('nav', { class: 'crumbs no-print', 'aria-label': 'Breadcrumb' }, h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'My progress')),
+    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, 'My progress'),
+      h('p', { class: 'lede' }, 'Saved in this browser only. To hand progress to a teacher, copy the summary below and paste it into an email or an assignment.')),
+    h('div', { class: 'prog-tools no-print' },
+      h('label', { class: 'facet', for: 'student-name' }, h('span', { class: 'facet-k' }, 'Name for the summary'), name),
+      h('div', { class: 'prog-actions' },
+        CopyButton('Copy summary', () => Progress.summary(VIZ, level), { cls: 'btn primary small' }),
+        canPrint ? h('button', { type: 'button', class: 'btn small', onclick: () => window.print() }, 'Print') : null, resetBtn, sure)),
+    total, body));
+  return () => {};
+}
+
+/* Printable exit ticket: the lesson's quick-check questions on one page, optionally with the answer key */
+function renderTicket(app, v, key) {
+  document.title = 'Exit ticket: ' + v.title + ' | Continuum';
+  const qs = v.check || [], L = i => String.fromCharCode(65 + i);
+  const text = () => [`Exit ticket: ${v.title}`, `${COURSE[v.course].name}`, 'Name: ____________________   Date: ____________', '',
+    ...qs.flatMap((q, n) => [`${n + 1}. ${texToText(q.q)}`, ...q.choices.map((c, i) => `   ${L(i)}. ${texToText(c)}`), '']),
+    ...(key ? ['Answer key', ...qs.map((q, n) => `${n + 1}. ${L(q.answer)}. ${texToText(q.why)}`)] : [])].join('\n');
+  const sheet = h('section', { class: 'ticket-sheet', 'aria-label': 'Exit ticket' },
+    h('div', { class: 'ticket-head' },
+      h('p', { class: 'ticket-k' }, 'Exit ticket'), h('h1', { class: 'display' }, v.title),
+      h('p', { class: 'ticket-meta' }, COURSE[v.course].name + (v.standards.length ? ' · ' : ''), v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c))) : null)),
+    h('div', { class: 'ticket-who' }, h('span', {}, 'Name'), h('span', { class: 'line' }), h('span', {}, 'Date'), h('span', { class: 'line short' })),
+    qs.length ? h('ol', { class: 'ticket-qs' }, qs.map(q => h('li', {},
+      h('p', { class: 'tq', html: q.q }),
+      h('ul', { class: 'tc' }, q.choices.map((c, i) => h('li', {}, h('span', { class: 'bub', 'aria-hidden': 'true' }, L(i)), h('span', { html: c }))))))) : h('p', {}, 'This lesson has no quick-check questions yet.'),
+    key && qs.length ? h('div', { class: 'ticket-key' }, h('h2', {}, 'Answer key'),
+      h('ol', {}, qs.map(q => h('li', {}, h('b', {}, L(q.answer) + '. '), h('span', { html: q.why }))))) : null);
+  app.append(h('article', { class: 'wrap viz ticket-page' },
+    h('nav', { class: 'crumbs no-print', 'aria-label': 'Breadcrumb' }, h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
+      h('a', { href: lessonToken(v.id) }, v.title), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'Exit ticket')),
+    h('div', { class: 'ticket-tools no-print' },
+      h('a', { class: 'btn small', href: ticketToken(v.id, false), ...(key ? {} : { 'aria-current': 'page' }) }, 'Student version'),
+      h('a', { class: 'btn small', href: ticketToken(v.id, true), ...(key ? { 'aria-current': 'page' } : {}) }, 'With answer key'),
+      CopyButton('Copy as text', text),
+      canPrint ? h('button', { type: 'button', class: 'btn primary small', onclick: () => window.print() }, 'Print or save as PDF') : h('span', { class: 'n' }, 'Open the site in its own tab to print.'),
+      CopyButton('Copy link', () => shareUrl(ticketToken(v.id, key)))),
+    sheet));
+  typeset(sheet);
+  window.scrollTo(0, 0);
+  return () => {};
 }
 
 /* =====================================================================
@@ -3415,7 +3714,7 @@ function renderHome(app) {
         const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
         if (v.thumb) thumbs.push([th, v.thumb]);
         const li = h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
-          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v)),
+          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v, false, ProgressChip(v).el)),
           h('span', { class: 'go' }, 'Open')));
         rows.set(v.id, li); list.append(li);
       }
@@ -3455,8 +3754,8 @@ function renderHome(app) {
       S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
     }
     empty.hidden = !on || shown > 0;
-    const hash = filterToHash(F);
-    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
+    const hash = on ? filterToken(F) : '#/';
+    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
   };
   const finder = Finder(F, apply);
   app.append(finder.el, levels);
@@ -3512,7 +3811,7 @@ function Alignment(v) {
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
    legacy `explain` prose; every part is optional. mount() may return a teardown function
    (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
-function renderViz(app, v) {
+function renderViz(app, v, startStep = 0) {
   document.title = v.title + ' | Continuum';
   const sib = VIZ.filter(x => x.level === v.level), i = sib.indexOf(v), prev = sib[i - 1], next = sib[i + 1];
   const stage = h('div', { class: 'stage', 'data-coords': '', role: 'img', 'aria-label': 'Interactive visualization: ' + v.title },
@@ -3521,12 +3820,18 @@ function renderViz(app, v) {
   const body = v.formal != null ? h('div', { class: 'prose' }, h('h2', {}, 'The math'), h('div', { html: v.formal }))
                                 : h('div', { class: 'prose', html: v.explain || '' });
   const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
-  const check = v.check && v.check.length ? QuickCheck(v.check) : null;
+  Progress.open(v.id);
+  const chip = ProgressChip(v);
+  const check = v.check && v.check.length ? QuickCheck(v.check, (n, right) => { Progress.answer(v.id, n, right); chip.update(); }) : null;
+  const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'with answer key')) : null;
   const conn = v.links ? Connections(v.links, v.id) : null;
   const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
-    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
+    ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }, {
+        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
+        tools: [CopyButton('Copy link to this step', () => shareUrl(lessonToken(v.id, stepper.index())), { title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' })]
+      }) : null;
   if (stepper) panel.append(stepper.el);
   const pg = (x, cls, k) => h('a', { class: 'pg ' + cls, href: '#/viz/' + x.id }, h('span', { class: 'k' }, k), h('span', { class: 't' }, x.title));
   app.append(h('article', { class: 'wrap viz lvl-' + v.level },
@@ -3534,15 +3839,15 @@ function renderViz(app, v) {
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
     h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede,
-      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#/?course=' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true))),
+      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#find~course_' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true, chip.el))),
     h('div', { class: 'workbench' }, stage, panel),
-    body, check, conn, align,
+    body, check, tickets, conn, align,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
   typeset(body); if (v.hook) typeset(lede);
   const ret = v.mount({ stage, controls: Controls(panel) });
   scene = typeof ret === 'function' ? { destroy: ret } : (ret || {});
-  if (stepper) stepper.start();
+  if (stepper) stepper.start(clamp(startStep, 0, v.steps.length - 1));
   return () => scene.destroy && scene.destroy();
 }
 
@@ -3553,10 +3858,11 @@ const app = $('#app'); let teardown = null;
 function route() {
   if (teardown) teardown(); teardown = null;
   app.innerHTML = '';
-  const m = location.hash.match(/^#\/viz\/([\w-]+)/), v = m && VIZ.find(x => x.id === m[1]);
-  const lv = location.hash.match(/^#\/level\/(\w+)/);
-  teardown = v ? renderViz(app, v) : renderHome(app);
-  const target = lv ? document.getElementById('level-' + lv[1]) : (!v && /^#\/\?/.test(location.hash) ? document.getElementById('finder') : null);
+  const r = parseRoute(location.hash), v = r.id && VIZ.find(x => x.id === r.id);
+  teardown = r.page === 'viz' && v ? renderViz(app, v, r.step) : r.page === 'ticket' && v ? renderTicket(app, v, r.key)
+           : r.page === 'progress' ? renderProgress(app) : renderHome(app);
+  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress';
+  const target = home && r.level ? document.getElementById('level-' + r.level) : home && r.filters ? document.getElementById('finder') : null;
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
   else window.scrollTo(0, 0);
 }
