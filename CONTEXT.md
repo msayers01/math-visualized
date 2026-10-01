@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v44
+**Version:** v45
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -103,7 +103,7 @@ Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-sl
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **Done (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (done and audited: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7)); batch F-B (done and audited): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
-- **Done (not merged yet, waiting for the owner): matrices lesson** (Algebra 2, intermediate, 9.3.5.4; independent review applied; 45 lessons, 89 of 185 benchmarks tagged). The branch has it pushed; merge needs the owner's go-ahead (PR and merge steps as before).
+- **Done and merged (PR #16): matrices lesson** (Algebra 2, intermediate, 9.3.5.4; independent review applied; 45 lessons, 89 of 185 benchmarks tagged).
 - **Done: Enrichment tag and the modular-arithmetic lesson** (Algebra 1, introductory; `enrichment: true` in ALIGN; Type filter and chip; independent math review applied).
 - **Done: batch S2, high-school statistics** (two-way-tables-and-conditional-probability, the-normal-distribution, correlation-and-causation, expected-value; tag audit applied; 88 of 185 benchmarks tagged). **Next, waiting for the owner:** S3 (bias-and-study-design, misleading-graphs) or another area.
 - **Done: school statistics and probability, batch S1** (sample-spaces-and-probability, statistical-questions-and-data-displays (Grade 6), compound-events-and-tree-diagrams, samples-and-populations (Grade 7); tag audit applied; 81 of 185 benchmarks tagged). **Next, waiting for the owner's go-ahead: S2** (two-way tables and conditional probability, the normal distribution, correlation and causation, expected value; high school), then S3. Plan in ARCHITECTURE.md section 9.
