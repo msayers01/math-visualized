@@ -3,7 +3,8 @@ const path = require('path'), os = require('os'), { execSync } = require('child_
 const fs = require('fs'), vm = require('vm');
 const root = path.resolve(__dirname, '../..'), shots = process.env.SHOTS || path.join(os.tmpdir(), 'continuum-shots');
 fs.mkdirSync(shots, { recursive: true });
-const URL = 'file://' + root + '/index.html';
+/* CONTINUUM_BUILD=split runs the same checks against dist/ (built with: node tools/build.js --split) */
+const URL = 'file://' + root + (process.env.CONTINUUM_BUILD === 'split' ? '/dist/index.html' : '/index.html');
 
 /* Run:  node tools/tests/finder.test.js   (needs Playwright and a built index.html; set SHOTS=dir to keep screenshots) */
 /* ---- independent model of the curriculum data (does not use engine/curriculum.js) ---- */
@@ -23,7 +24,8 @@ const toHash = F => { const q = []; for (const k of ['grade', 'skill', 'strand']
 
 const TOTAL = model.length, fails = [], ok = [];
 const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '' : '   -> ' + (extra ?? ''))); };
-const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.topic')].filter(a => a.offsetParent).map(a => a.getAttribute('href').slice(6)));
+/* rows the filter shows; a row inside a collapsed course still counts (collapsing is tested separately) */
+const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.topic')].filter(a => !a.closest('li').hidden && !a.closest('.course').hidden && !a.closest('.level').hidden).map(a => a.getAttribute('href').slice(6)));
 
 (async () => {
   const browser = await chromium.launch();
@@ -41,7 +43,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
 
   /* 1. structure and order */
   const heads = await page.evaluate(() => [...document.querySelectorAll('.level')].map(l => ({ level: l.id, courses: [...l.querySelectorAll('.course')].map(c => ({
-    name: c.querySelector('.course-head').firstChild.textContent, ids: [...c.querySelectorAll('a.topic')].map(a => a.getAttribute('href').slice(6)) })) })));
+    name: (c.querySelector('.course-head .cname') || c.querySelector('.course-head')).textContent, ids: [...c.querySelectorAll('a.topic')].map(a => a.getAttribute('href').slice(6)) })) })));
   const school = heads.find(h => h.level === 'level-school');
   /* the build's own computed order, to compare with what the page renders */
   const want = {}; let cur = null;
@@ -166,6 +168,55 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; dispatchEvent(new Event('themechange')); });
   await page.locator('.align').scrollIntoViewIfNeeded(); await page.screenshot({ path: shots + '/lesson-align-dark.png' });
   await c.close();
+
+  /* ===== hero, collapsible courses, on-demand lessons ===== */
+  const SPLIT = process.env.CONTINUUM_BUILD === 'split';
+  const lz = await mk(), lp = lz.page, fetched = [];
+  lp.on('request', r => { const mm = r.url().match(/\/lessons\/([^/]+)\.js$/); if (mm) fetched.push(mm[1]); });
+  await lp.goto(URL); await lp.waitForSelector('.course-toggle');
+  const heroId = ((await lp.getAttribute('.hero-cta .btn.primary', 'href')) || '').replace('#/viz/', ''), heroAlign = D.ALIGN.find(a => a.id === heroId);
+  check('hero button starts a school lesson', !!heroAlign && D.COURSES.find(c => c.id === heroAlign.course).level === 'school', heroId);
+  const groupsState = () => lp.evaluate(() => [...document.querySelectorAll('#level-school .course')].filter(c => c.querySelector('.course-toggle')).map(c => ({ name: c.querySelector('.cname').textContent,
+    open: c.querySelector('.course-toggle').getAttribute('aria-expanded') === 'true', list: !c.querySelector('.topics').hidden, hidden: c.hidden })));
+  let gs = await groupsState();
+  check('courses start collapsed', gs.length === schoolCourses.length && gs.every(g => !g.open && !g.list), JSON.stringify(gs));
+  check('collapsed courses preview their lesson titles', await lp.evaluate(() => [...document.querySelectorAll('#level-school .course-preview')].every(pv => !pv.hidden && pv.textContent.length > 10)));
+  if (SPLIT) check('home page fetches no lesson files while courses are collapsed', fetched.length === 0, fetched.join(','));
+  const g6 = want['Grade 6 Mathematics'];
+  await lp.locator('.course-toggle', { hasText: 'Grade 6 Mathematics' }).click();
+  await lp.waitForFunction(n => document.querySelectorAll('.course.open .thumb canvas').length === n, g6.length, { timeout: 8000 }).catch(() => {});
+  check('opening a course draws one thumbnail per lesson', (await lp.locator('.course.open .thumb canvas').count()) === g6.length, await lp.locator('.course.open .thumb canvas').count());
+  if (SPLIT) check('opening Grade 6 fetched exactly its lessons', JSON.stringify([...fetched].sort()) === JSON.stringify([...g6].sort()), fetched.join(','));
+  check('only the opened course is open', (await groupsState()).filter(g => g.open).map(g => g.name).join('|') === 'Grade 6 Mathematics');
+  await lp.locator('.course-all').click();
+  check('Expand all opens every course', (await groupsState()).every(g => g.open) && (await lp.textContent('.course-all')) === 'Collapse all courses');
+  await lp.locator('.course-all').click();
+  check('Collapse all closes every course', (await groupsState()).every(g => !g.open) && (await lp.textContent('.course-all')) === 'Expand all courses');
+  await lp.locator('.course-toggle', { hasText: 'Grade 7 Mathematics' }).click();
+  await lp.locator('fieldset.facet', { hasText: 'Grade level' }).getByRole('button', { name: /^Grade 8/ }).click();
+  gs = (await groupsState()).filter(g => !g.hidden);
+  check('a filter opens every course that has matches', gs.length > 0 && gs.every(g => g.open && g.list), JSON.stringify(gs));
+  await lp.locator('.finder-clear').click();
+  check('clearing the filter restores the courses the visitor opened', (await groupsState()).filter(g => g.open).map(g => g.name).join('|') === 'Grade 7 Mathematics', JSON.stringify(await groupsState()));
+  check('no errors while opening and closing courses', lz.errs.length === 0, lz.errs.join(' | '));
+  await lz.c.close();
+
+  const dl = await mk(), seen = [];
+  dl.page.on('request', r => { const mm = r.url().match(/\/lessons\/([^/]+)\.js$/); if (mm) seen.push(mm[1]); });
+  await dl.page.goto(URL + '#proportional-relationships.2'); await dl.page.waitForSelector('.stage canvas');
+  check('a lesson link opens the lesson at its step', (await dl.page.textContent('h1')) === 'Proportional relationships' && (await dl.page.textContent('.steps-n')) === '2 / 4');
+  if (SPLIT) check('a lesson link fetches only that lesson', seen.length === 1 && seen[0] === 'proportional-relationships', seen.join(','));
+  check('no errors opening a lesson link', dl.errs.length === 0, dl.errs.join(' | '));
+  await dl.c.close();
+  if (SPLIT) {
+    const lf = await mk(); let blocked = true;
+    await lf.page.route('**/lessons/ratios-and-equivalent-ratios.js', r => (blocked ? r.abort() : r.continue()));
+    await lf.page.goto(URL + '#ratios-and-equivalent-ratios'); await lf.page.waitForSelector('.lesson-loading button');
+    check('a lesson that cannot load says so and offers Try again', /Could not load/.test(await lf.page.textContent('.lesson-loading')));
+    blocked = false; await lf.page.click('.lesson-loading button'); await lf.page.waitForSelector('.stage canvas');
+    check('Try again loads the lesson', (await lf.page.textContent('h1')) === 'Ratios and equivalent ratios');
+    await lf.c.close();
+  }
 
   /* ===== mobile ===== */
   const m = await mk({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });

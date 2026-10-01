@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /* Builds the single-file site: src/template.html + src/** -> index.html
-   Usage: node tools/build.js [--check]   (--check fails if index.html is stale) */
+   Usage: node tools/build.js [--check]   (--check fails if index.html is stale)
+          node tools/build.js --split   (also/instead: dist/index.html + dist/lessons/<id>.js, lessons loaded on demand) */
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.resolve(__dirname, '..'), src = path.join(root, 'src');
 const man = JSON.parse(fs.readFileSync(path.join(src, 'manifest.json'), 'utf8'));
@@ -88,10 +89,44 @@ function checkTex() {
 checkTex();
 const curSummary = checkCurriculum();
 
-const scripts = [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n');
+/* Split build (--split): dist/index.html holds the curriculum, engine and app plus one metadata record per
+   lesson, and every lesson is its own file, dist/lessons/<id>.js, fetched when the lesson is first needed.
+   The metadata is read by running each lesson file in a sandbox that stubs every engine name, so the
+   lessons need no changes; it covers what the home list, the order, the filters and progress counts use. */
+function captureLessons() {
+  return man.lessons.map(f => {
+    let got = null;
+    const target = { register: v => { got = v; } }, stub = () => stub;
+    const sandbox = new Proxy(target, {
+      has: () => true,
+      get: (t, k) => (k in t ? t[k] : typeof k === 'symbol' ? undefined : k in globalThis ? globalThis[k] : stub),
+      set: (t, k, v) => { t[k] = v; return true; }
+    });
+    vm.createContext(sandbox);
+    try { vm.runInContext(fs.readFileSync(path.join(src, f), 'utf8'), sandbox, { timeout: 3000 }); }
+    catch (e) { throw new Error(`cannot read the metadata of ${f}: ${e.message}`); }
+    if (!got || !got.id || !got.title || !got.level) throw new Error(`${f} did not register a lesson with id, level and title`);
+    return { id: got.id, level: got.level, title: got.title, blurb: got.blurb || '', steps: (got.steps || []).length, check: (got.check || []).length,
+      prereq: (got.links && got.links.prereq) || [], src: 'lessons/' + got.id + '.js', file: f };
+  });
+}
+const wantSplit = process.argv.includes('--split');
+const splitMeta = wantSplit ? captureLessons() : [];
+const scripts = (wantSplit
+  ? [...man.curriculum, ...man.engine].map(read).join('\n') + '\nLAZY_LESSONS.push(...' + JSON.stringify(splitMeta.map(({ file, ...m }) => m)) + ');\n' + man.app.map(read).join('\n')
+  : [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n'));
 const out = read('template.html')
   .replace('/*@STYLES*/', () => man.styles.map(read).join('').replace(/\n$/, ''))
   .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, ''));
+if (wantSplit) {
+  const dist = path.join(root, 'dist'), ldir = path.join(dist, 'lessons');
+  fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(ldir, { recursive: true });
+  fs.writeFileSync(path.join(dist, 'index.html'), out);
+  for (const m of splitMeta) fs.writeFileSync(path.join(dist, m.src), read(m.file));
+  const lessonBytes = splitMeta.reduce((n, m) => n + fs.statSync(path.join(dist, m.src)).size, 0);
+  console.log(`built dist/ (index.html ${(out.length / 1024).toFixed(1)} KB + ${splitMeta.length} lesson files, ${(lessonBytes / 1024).toFixed(1)} KB; ${curSummary})`);
+  process.exit(0);
+}
 const dest = path.join(root, 'index.html');
 if (process.argv.includes('--check')) {
   if (!fs.existsSync(dest) || fs.readFileSync(dest, 'utf8') !== out) { console.error('index.html is out of date; run node tools/build.js'); process.exit(1); }

@@ -5,7 +5,8 @@ const root = path.resolve(__dirname, '../..'), shots = process.env.SHOTS || path
 fs.mkdirSync(shots, { recursive: true });
 /* Run:  node tools/tests/teacher.test.js   (needs Playwright and a built index.html) */
 const EMBED = path.join(os.tmpdir(), 'continuum-embed.html');
-const SITE = 'file://' + root + '/index.html';
+/* CONTINUUM_BUILD=split runs the same checks against dist/ (built with: node tools/build.js --split) */
+const SITE = 'file://' + root + (process.env.CONTINUUM_BUILD === 'split' ? '/dist/index.html' : '/index.html');
 /* counts and expectations come from the curriculum data, so adding lessons needs no edits here */
 const dctx = vm.createContext({});
 vm.runInContext(['src/curriculum/standards-mn2022.js', 'src/curriculum/curriculum.js'].map(f => fs.readFileSync(path.join(root, f), 'utf8')).join('\n') + ';this.D={ALIGN,COURSES}', dctx);
@@ -49,7 +50,7 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   await go(page, '#progress');
   check('progress token opens the progress page', (await page.textContent('h1')) === 'My progress');
   await go(page, '#find~grade_8~skill_intro');
-  const vis = async () => page.evaluate(() => [...document.querySelectorAll('a.topic')].filter(a => a.offsetParent).map(a => a.getAttribute('href').slice(6)).sort());
+  const vis = async () => page.evaluate(() => [...document.querySelectorAll('a.topic')].filter(a => !a.closest('li').hidden && !a.closest('.course').hidden && !a.closest('.level').hidden).map(a => a.getAttribute('href').slice(6)).sort());
   check('find token applies grade and skill filters', JSON.stringify(await vis()) === JSON.stringify(GRADE8_INTRO), JSON.stringify(await vis()));
   await go(page, '#find~course_algebra1~std_9.3.6.2');
   check('find token applies course and standard', JSON.stringify(await vis()) === '["quadratics-and-the-parabola"]', JSON.stringify(await vis()));
