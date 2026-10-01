@@ -318,6 +318,12 @@ a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
 .tag { font-size: .8rem; color: var(--muted); }
 .stds { display: inline-flex; flex-wrap: wrap; gap: 5px; }
+/* Enrichment: goes beyond the benchmarks */
+.tag.enrich { display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px 1px 8px; border-radius: 999px; font-size: .76rem; line-height: 1.6; text-decoration: none; color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
+.tag.enrich::before { content: "\2726"; color: var(--brass); font-size: .8em; }
+a.tag.enrich:hover { border-color: var(--brass); background: color-mix(in srgb, var(--brass) 24%, transparent); }
+fieldset.facet.kind { grid-column: 1 / -1; }
 .skill { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
 .pips { display: inline-flex; gap: 2px; }
 .pip { width: 10px; height: 4px; border-radius: 2px; background: var(--line-strong); }
@@ -1223,7 +1229,7 @@ function curriculumMeta(a) {
   const standards = [...a.standards].sort(cmpCode), grades = new Set(COURSE[a.course].grades);
   standards.forEach(c => grades.add(bandOf(c)));
   return {
-    course: a.course, skill: a.skill, standards,
+    course: a.course, skill: a.skill, standards, enrichment: !!a.enrichment,
     strands: STRANDS.filter(s => standards.some(c => strandOf(c).id === s.id)).map(s => s.id),
     grades: GRADES.filter(g => grades.has(g.id)).map(g => g.id)
   };
@@ -1261,13 +1267,15 @@ function applyCurriculum() {
 /* ---------- filtering ----------
    F = { grade: [], skill: [], strand: [], course: '', std: '' }. Several choices within grade, skill or
    strand match any of them; different facets must all match. */
-const FACETS = ['grade', 'skill', 'strand', 'course', 'std'];
-const emptyFilter = () => ({ grade: [], skill: [], strand: [], course: '', std: '' });
-const filterActive = F => !!(F.grade.length || F.skill.length || F.strand.length || F.course || F.std);
-const filterCount = F => F.grade.length + F.skill.length + F.strand.length + (F.course ? 1 : 0) + (F.std ? 1 : 0);
+/* Lesson types. Enrichment = goes beyond the Minnesota 2022 benchmarks (set `enrichment: true` on the lesson's ALIGN entry). */
+const KINDS = [{ id: 'enrich', name: 'Enrichment', desc: 'Goes beyond the Minnesota 2022 benchmarks, or no benchmark addresses it.' }];
+const FACETS = ['grade', 'skill', 'strand', 'kind', 'course', 'std'];
+const emptyFilter = () => ({ grade: [], skill: [], strand: [], kind: [], course: '', std: '' });
+const filterActive = F => !!(F.grade.length || F.skill.length || F.strand.length || F.kind.length || F.course || F.std);
+const filterCount = F => F.grade.length + F.skill.length + F.strand.length + F.kind.length + (F.course ? 1 : 0) + (F.std ? 1 : 0);
 function optionMatch(v, facet, val) {
   return facet === 'grade' ? v.grades.includes(val) : facet === 'skill' ? v.skill === val : facet === 'strand' ? v.strands.includes(val)
-       : facet === 'course' ? v.course === val : v.standards.includes(val);
+       : facet === 'kind' ? (val === 'enrich' && !!v.enrichment) : facet === 'course' ? v.course === val : v.standards.includes(val);
 }
 /* does lesson v pass F? `skip` names a facet to ignore (used to count a facet's options) */
 function matches(v, F, skip) {
@@ -1287,6 +1295,7 @@ function filterFromHash(hash) {
       if (k === 'grade' && GRADE[v] && !F.grade.includes(v)) F.grade.push(v);
       else if (k === 'skill' && SKILL[v] && !F.skill.includes(v)) F.skill.push(v);
       else if (k === 'strand' && STRAND[v] && !F.strand.includes(v)) F.strand.push(v);
+      else if (k === 'kind' && v === 'enrich' && !F.kind.includes(v)) F.kind.push(v);
       else if (k === 'course' && COURSE[v]) F.course = v;
       else if (k === 'std' && hasStandard(v)) F.std = v;
     }
@@ -1295,7 +1304,7 @@ function filterFromHash(hash) {
   const p = new URLSearchParams(hash.split('?')[1] || ''), list = k => (p.get(k) || '').split(',').filter(Boolean);
   const course = p.get('course'), std = p.get('std');
   return {
-    grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]),
+    grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]), kind: list('kind').filter(x => x === 'enrich'),
     course: course && COURSE[course] ? course : '', std: std && hasStandard(std) ? std : ''
   };
 }
@@ -1397,6 +1406,7 @@ function StdChip(code, link) {
 /* Skill, grades and benchmark chips for a lesson. With `link`, the chips open the filtered lesson list. */
 function LessonTags(v, link, extra) {
   return h('div', { class: 'tags' }, SkillMeter(v.skill), h('span', { class: 'tag' }, gradesLabel(v.grades)),
+    v.enrichment ? h(link ? 'a' : 'span', { class: 'tag enrich', title: KINDS[0].desc, ...(link ? { href: '#find~kind_enrich' } : {}) }, KINDS[0].name) : null,
     v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
@@ -1425,7 +1435,7 @@ function Finder(F, onChange) {
       const btn = h('button', attrs, h('span', { class: 'lbl' }, o.label), n);
       chips.push({ facet, val: o.val, btn, n }); set.append(btn);
     }
-    return h('fieldset', { class: 'facet' }, h('legend', { class: 'facet-k' }, label), set);
+    return h('fieldset', { class: 'facet ' + facet }, h('legend', { class: 'facet-k' }, label), set);
   };
   const selectBox = (facet, label, anyLabel, groups) => {
     const sel = h('select', { class: 'fsel', id: 'f-' + facet, onchange: () => { F[facet] = sel.value; change(); } }, h('option', { value: '' }, anyLabel));
@@ -1444,6 +1454,7 @@ function Finder(F, onChange) {
     chipGroup('grade', 'Grade level', GRADES.filter(g => VIZ.some(v => v.grades.includes(g.id))).map(g => ({ val: g.id, label: g.name }))),
     chipGroup('skill', 'Skill level', SKILLS.map(s => ({ val: s.id, label: s.name, title: s.desc }))),
     used.length ? chipGroup('strand', 'Standard strand', STRANDS.map(s => ({ val: s.id, label: s.name, strand: s.id }))) : null,
+    VIZ.some(v => v.enrichment) ? chipGroup('kind', 'Type', KINDS.map(k => ({ val: k.id, label: k.name, title: k.desc }))) : null,
     selectBox('course', 'Course', 'Any course', LEVEL_ORDER.map(l => ({ label: LEVELS[l].name,
       options: COURSES.filter(c => c.level === l && VIZ.some(v => v.course === c.id)).map(c => ({ val: c.id, label: c.name })) })).filter(g => g.options.length)),
     used.length ? selectBox('std', 'Standard (Minnesota 2022)', 'Any standard', STRANDS.map(s => ({ label: `Strand ${s.n}: ${s.name}`,

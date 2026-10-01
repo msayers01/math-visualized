@@ -21,7 +21,7 @@ function curriculumMeta(a) {
   const standards = [...a.standards].sort(cmpCode), grades = new Set(COURSE[a.course].grades);
   standards.forEach(c => grades.add(bandOf(c)));
   return {
-    course: a.course, skill: a.skill, standards,
+    course: a.course, skill: a.skill, standards, enrichment: !!a.enrichment,
     strands: STRANDS.filter(s => standards.some(c => strandOf(c).id === s.id)).map(s => s.id),
     grades: GRADES.filter(g => grades.has(g.id)).map(g => g.id)
   };
@@ -59,13 +59,15 @@ function applyCurriculum() {
 /* ---------- filtering ----------
    F = { grade: [], skill: [], strand: [], course: '', std: '' }. Several choices within grade, skill or
    strand match any of them; different facets must all match. */
-const FACETS = ['grade', 'skill', 'strand', 'course', 'std'];
-const emptyFilter = () => ({ grade: [], skill: [], strand: [], course: '', std: '' });
-const filterActive = F => !!(F.grade.length || F.skill.length || F.strand.length || F.course || F.std);
-const filterCount = F => F.grade.length + F.skill.length + F.strand.length + (F.course ? 1 : 0) + (F.std ? 1 : 0);
+/* Lesson types. Enrichment = goes beyond the Minnesota 2022 benchmarks (set `enrichment: true` on the lesson's ALIGN entry). */
+const KINDS = [{ id: 'enrich', name: 'Enrichment', desc: 'Goes beyond the Minnesota 2022 benchmarks, or no benchmark addresses it.' }];
+const FACETS = ['grade', 'skill', 'strand', 'kind', 'course', 'std'];
+const emptyFilter = () => ({ grade: [], skill: [], strand: [], kind: [], course: '', std: '' });
+const filterActive = F => !!(F.grade.length || F.skill.length || F.strand.length || F.kind.length || F.course || F.std);
+const filterCount = F => F.grade.length + F.skill.length + F.strand.length + F.kind.length + (F.course ? 1 : 0) + (F.std ? 1 : 0);
 function optionMatch(v, facet, val) {
   return facet === 'grade' ? v.grades.includes(val) : facet === 'skill' ? v.skill === val : facet === 'strand' ? v.strands.includes(val)
-       : facet === 'course' ? v.course === val : v.standards.includes(val);
+       : facet === 'kind' ? (val === 'enrich' && !!v.enrichment) : facet === 'course' ? v.course === val : v.standards.includes(val);
 }
 /* does lesson v pass F? `skip` names a facet to ignore (used to count a facet's options) */
 function matches(v, F, skip) {
@@ -85,6 +87,7 @@ function filterFromHash(hash) {
       if (k === 'grade' && GRADE[v] && !F.grade.includes(v)) F.grade.push(v);
       else if (k === 'skill' && SKILL[v] && !F.skill.includes(v)) F.skill.push(v);
       else if (k === 'strand' && STRAND[v] && !F.strand.includes(v)) F.strand.push(v);
+      else if (k === 'kind' && v === 'enrich' && !F.kind.includes(v)) F.kind.push(v);
       else if (k === 'course' && COURSE[v]) F.course = v;
       else if (k === 'std' && hasStandard(v)) F.std = v;
     }
@@ -93,7 +96,7 @@ function filterFromHash(hash) {
   const p = new URLSearchParams(hash.split('?')[1] || ''), list = k => (p.get(k) || '').split(',').filter(Boolean);
   const course = p.get('course'), std = p.get('std');
   return {
-    grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]),
+    grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]), kind: list('kind').filter(x => x === 'enrich'),
     course: course && COURSE[course] ? course : '', std: std && hasStandard(std) ? std : ''
   };
 }
