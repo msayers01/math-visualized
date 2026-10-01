@@ -2,7 +2,7 @@
 
 Interactive, 3Blue1Brown-style math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
-**Version:** 0.15 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2, Grade 6-7 foundations batches F-A and F-B)
+**Version:** 0.16 (teacher tools, Grade 8 and Algebra 1 course plan, batches 1 and 2, Grade 6-7 foundations batches F-A and F-B)
 **Last updated:** 2026-10-01
 
 ## 1. Deployment model
@@ -287,10 +287,10 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
   | Batch | Lesson (id) | Course | Benchmarks | Status |
   |---|---|---|---|---|
-  | S1 | `sample-spaces-and-probability` | Grade 6 | 6.1.2.1, 6.1.2.2, 7.1.2.1 | being built |
-  | S1 | `statistical-questions-and-data-displays` | Grade 6 | 6.1.1.1, 6.1.1.4 | being built |
-  | S1 | `compound-events-and-tree-diagrams` | Grade 7 | 7.1.2.4 | being built |
-  | S1 | `samples-and-populations` | Grade 7 | 7.1.1.2, 7.1.1.3 | being built |
+  | S1 | `sample-spaces-and-probability` | Grade 6 | 6.1.2.1, 6.1.2.2, 7.1.2.1 | built |
+  | S1 | `statistical-questions-and-data-displays` | Grade 6 | 6.1.1.1, 6.1.1.4 | built |
+  | S1 | `compound-events-and-tree-diagrams` | Grade 7 | 7.1.2.3, 7.1.2.4, 7.1.2.6 | built |
+  | S1 | `samples-and-populations` | Grade 7 | 7.1.1.2, 7.1.1.3, 9.1.1.8 | built |
   | S2 | `two-way-tables-and-conditional-probability` (with Venn diagrams) | Statistics & Probability | 9.1.2.5, 9.1.2.2 | planned |
   | S2 | `the-normal-distribution` | Statistics & Probability | 9.1.1.7 | planned |
   | S2 | `correlation-and-causation` | Statistics & Probability | 9.1.1.5, 9.1.1.6 | planned |
@@ -317,6 +317,7 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 
 ## 10. Change log
 
+- **0.16 (2026-10-01):** School statistics and probability, batch S1 (section 9): Sample spaces and probability, Statistical questions and data displays (Grade 6), Compound events and tree diagrams, Samples and populations (Grade 7). 39 lessons, 81 of 185 benchmarks tagged. Independent tag audit: no tag removed; added 7.1.2.3 and 7.1.2.6 to Compound events (the readout and check give event count over sample-space count), and 9.1.1.8 to Samples and populations (the student generates many same-size samples to gauge variation and infers an unknown value; a judgment call, a band 9 tag on a Grade 7 lesson, drop it for strictly in-band tags). Coverage limits recorded by the audit: Sample spaces has list, table and pictorial but no tree diagrams, and area regions are rectangles only; Statistical questions builds only the dot plot and histogram (table, stem-and-leaf and box plot are computed views) and only touches "compares groups"; Samples covers one proportion, not means. Fixes: per-choice wrong-answer feedback for the remaining distractors in three exit tickets, a loose 1/12 explanation, a typo. Not republished to the artifact.
 - **0.15 (2026-10-01):** Undergraduate batch U1, the Calculus course: Limits and epsilon-delta (the epsilon-delta game on a graph, six functions, challenge mode), Derivatives as tangent slopes (secants to tangents, a live slope graph, sketch-the-derivative and find-the-bad-point challenges), Riemann sums and the integral (five sample rules, signed area, net change versus distance, smallest-n challenge), The fundamental theorem of calculus (accumulation function, strip argument, which-graph-is-A, F(b)-F(a)). New courses added (Calculus, Multivariable Calculus & Differential Equations, Complex Numbers/Fourier/Probability). An independent read recomputed every worked number and found no numeric or answer-key errors; fixes made: a misleading hook and a wrong feedback message (limits), a wrong "full wave" claim and two overstated continuity statements (fundamental theorem), "speed" vs "velocity" and a weak related link (Riemann), small wording fixes (derivatives). Tests: course and level checks are data-driven. Not republished to the artifact.
 - **0.14.1 (2026-10-01):** Footer credit line "By Michael Sayers" (template and `.credit` style).
 - **0.14 (2026-10-01):** Bug and polish pass. Swept every lesson at 1280, 390 and 320 px (light and dark), every step deep link, every exit ticket, the home, progress and token pages, 24 malformed link tokens and 30 rapid navigations: no page errors, no horizontal overflow, no broken links, all thumbnails drawn. Fixes: (1) **MathJax blocked or offline** (a school network can block the cdnjs host): lesson text used to show raw `\( ... \)`; `typeset()` now falls back to readable plain text (`texFallback`, built on the new `texFlat`: 2/3, x², ×, ⇒; the template's script tag sets `__mjFail` on error so the fallback is immediate, otherwise after 7.5 s). `texToText` (copy exit ticket as text) shares the same code and now writes `(y-y_1)/(x-x_1)`, `1/(b³)` and `2^(5+(-3))` correctly (it used to mangle nested exponents and fractions such as `\tfrac1{10}`). (2) Favicon (inline SVG), page description, Open Graph title and description, light and dark `theme-color`, and a `<noscript>` message. (3) Step dots on lesson pages are 30 px tall (were 22) for touch. Tests: both suites cover the fallback (`texFlat` cases; no raw TeX on a lesson page with MathJax blocked). Known and not changed: canvas handles cannot be moved with the keyboard (sliders and buttons can); the top navigation is hidden below 640 px (the footer still links to My progress; level headings are reached by scrolling).

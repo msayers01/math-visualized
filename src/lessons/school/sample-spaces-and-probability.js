@@ -177,11 +177,11 @@
     check: [
       { q: 'A bag holds 2 red marbles, 3 blue marbles and 5 green marbles. You take one marble without looking. What is the probability that it is blue?',
         choices: ['1/3', '3/10', '3/7', '3/5'], answer: 1,
-        why: String.raw`There are \(2+3+5=10\) marbles, so the sample space has 10 equally likely outcomes. 3 of them are blue, so the probability is \(\tfrac{3}{10}\). \(\tfrac13\) counts the 3 colors, but the colors are not equally likely. \(\tfrac37\) divides by the marbles that are not blue.`,
+        why: String.raw`There are \(2+3+5=10\) marbles, so the sample space has 10 equally likely outcomes. 3 of them are blue, so the probability is \(\tfrac{3}{10}\). \(\tfrac13\) counts the 3 colors, but the colors are not equally likely. \(\tfrac37\) divides by the marbles that are not blue. \(\tfrac35\) compares blue with green (3 to 5) instead of blue with all the marbles.`,
         hint: 'Count all the marbles first. That number is the denominator.' },
       { q: 'A square dartboard is made of 100 equal small squares. A red region covers 35 small squares, a blue region covers 45 small squares, and a yellow region covers all the rest. A dart lands at a random spot on the board. What is the probability, as a percent, that it lands in the yellow region?',
         choices: ['33%', '80%', '0.2%', '20%'], answer: 3,
-        why: String.raw`Red and blue cover \(35+45=80\) squares, so yellow covers \(100-80=20\) squares. The probability is \(\tfrac{20}{100}=0.20=20\%\). \(33\%\) counts the 3 regions as equal, but they are not the same size. \(80\%\) is the chance of not landing in yellow.`,
+        why: String.raw`Red and blue cover \(35+45=80\) squares, so yellow covers \(100-80=20\) squares. The probability is \(\tfrac{20}{100}=0.20=20\%\). \(33\%\) counts the 3 regions as equal, but they are not the same size. \(80\%\) is the chance of not landing in yellow. \(0.2\%\) writes the decimal \(0.20\) as a percent without multiplying by 100.`,
         hint: 'Find how many squares are yellow, then write that number out of 100.' }
     ],
     links: { next: ['compound-events-and-tree-diagrams'], related: ['probability-with-repeated-trials', 'percents-on-tape-and-number-lines', 'pascals-triangle-and-the-galton-board'] },

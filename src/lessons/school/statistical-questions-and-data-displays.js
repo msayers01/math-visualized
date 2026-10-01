@@ -242,7 +242,7 @@
     formal: String.raw`
       <h3>Statistical questions</h3>
       <p>A <b>statistical question</b> expects the answers to <b>vary</b>, so you need a data set to answer it. "How many students are in my school today?" has one answer. "How tall are the students in my class?" has a different answer for every student.</p>
-      <p>A statistical question can also <b>compare groups</b>, such as sixth graders and seventh graders. The data may be <b>categorical</b> (labels such as dog, cat or bus) or <b>numerical</b> (counts or measurements such as minutes or centimeters). The answer must account for the variability. It can not be one student's number.</p>
+      <p>A statistical question can also <b>compare groups</b>, such as sixth graders and seventh graders. The data may be <b>categorical</b> (labels such as dog, cat or bus) or <b>numerical</b> (counts or measurements such as minutes or centimeters). The answer must account for the variability. It cannot be one student's number.</p>
       <h3>Five ways to display data</h3>
       <p>A <b>table</b> gives exact counts. A <b>dot plot</b> puts one dot per value on a number line, so every value stays visible. A <b>stem-and-leaf plot</b> splits each value into a stem (the leading digits) and a leaf (the last digit), so the rows also show the shape. A <b>histogram</b> counts the values in equal-width bins. A <b>box plot</b> draws five numbers: the minimum, the first quartile \(Q_1\), the median, the third quartile \(Q_3\) and the maximum.</p>
       <h3>How a histogram counts</h3>

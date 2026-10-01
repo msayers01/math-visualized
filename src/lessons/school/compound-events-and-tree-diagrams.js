@@ -177,11 +177,11 @@
     check: [
       { q: 'A bag holds 3 marbles: one red, one blue and one green. You pull out one marble, do not put it back, and then pull out a second marble. Write each outcome as two letters, such as RB for red first and blue second. How many outcomes are in the sample space?',
         choices: ['9', '6', '3', '4'], answer: 1,
-        why: String.raw`There are 3 choices for the first marble. The first marble is not put back, so only 2 are left for the second. By the counting principle there are \(3\times 2=6\) outcomes: RB, RG, BR, BG, GR, GB. The answer 9 is for putting the marble back, which also allows RR, BB and GG.`,
+        why: String.raw`There are 3 choices for the first marble. The first marble is not put back, so only 2 are left for the second. By the counting principle there are \(3\times 2=6\) outcomes: RB, RG, BR, BG, GR, GB. The answer 9 is for putting the marble back, which also allows RR, BB and GG. The answer 3 counts only the choices for the first marble, and 4 does not come from counting outcomes at all.`,
         hint: 'How many marbles are in the bag when you pull the second one?' },
       { q: 'Two fair dice are rolled, one red and one blue. The sample space has 36 equally likely outcomes, one for each pair (red die, blue die). What is the probability that the sum is 7?',
         choices: ['1/11', '1/12', '1/6', '7/36'], answer: 2,
-        why: String.raw`A sum of 7 comes from (1,6), (2,5), (3,4), (4,3), (5,2) and (6,1). That is 6 outcomes out of 36, so the probability is \(6/36=1/6\). The answer 1/11 counts the 11 possible sums as if they were equally likely, and 1/12 counts (1,6) and (6,1) as the same outcome.`,
+        why: String.raw`A sum of 7 comes from (1,6), (2,5), (3,4), (4,3), (5,2) and (6,1). That is 6 outcomes out of 36, so the probability is \(6/36=1/6\). The answer 1/11 counts the 11 possible sums as if they were equally likely. The answer 1/12 counts (1,6) and (6,1) as one outcome, which leaves only 3 outcomes out of 36. The answer 7/36 uses the sum, 7, as if it were the number of outcomes.`,
         hint: 'Count the pairs of dice that add to 7. Then divide by 36, not by the number of different sums.' }
     ],
     links: { prereq: ['sample-spaces-and-probability'], related: ['probability-with-repeated-trials', 'pascals-triangle-and-the-galton-board', 'mean-median-and-spread'] },
