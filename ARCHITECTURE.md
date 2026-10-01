@@ -226,10 +226,10 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
   | 1 (Grade 8) | `scatter-plots-and-lines-of-fit` | 8.1.1.2 to 8.1.1.4 | built |
   | 1 (Grade 8) | `square-roots-and-irrational-numbers` | 8.3.5.1, 8.3.5.2, 8.3.6.4 | built |
   | 1 (Grade 8) | `exponents-and-scientific-notation` | 8.3.5.3 to 8.3.5.5 | built |
-  | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1 to 8.3.6.3 | planned |
-  | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | planned |
-  | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | planned |
-  | 2 (Grade 8) | `distance-and-the-pythagorean-theorem` (plane and 3D) | 8.2.3.2, 8.2.3.3 | planned |
+  | 2 (Grade 8) | `solving-equations-with-a-balance` | 8.3.6.1 to 8.3.6.3 | being built |
+  | 2 (Grade 8) | `forms-of-a-linear-equation` | 8.3.6.5, 8.3.6.6, 8.3.7.1 | being built |
+  | 2 (Grade 8) | `parallel-and-perpendicular-lines` | 8.2.4.2 | being built |
+  | 2 (Grade 8) | `distance-and-the-pythagorean-theorem` (plane and 3D) | 8.2.3.2, 8.2.3.3 | being built |
   | 3 (Grade 8) | `inequalities-and-absolute-value` | 8.3.6.7, 8.3.6.8 | planned |
   | 3 (Grade 8) | `patterns-and-the-nth-term` | 8.3.7.2 | planned |
   | 4 (Algebra 1) | `domain-range-and-key-features` | 9.3.7.6, 9.3.7.7, 9.3.7.10 | planned |
