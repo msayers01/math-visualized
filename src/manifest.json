@@ -62,6 +62,10 @@
     "lessons/ugrad/derivatives-as-tangent-slopes.js",
     "lessons/ugrad/limits-and-epsilon-delta.js",
     "lessons/ugrad/the-fundamental-theorem-of-calculus.js",
+    "lessons/school/sample-spaces-and-probability.js",
+    "lessons/school/statistical-questions-and-data-displays.js",
+    "lessons/school/compound-events-and-tree-diagrams.js",
+    "lessons/school/samples-and-populations.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
