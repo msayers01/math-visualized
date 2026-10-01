@@ -200,7 +200,7 @@ a.topic:hover::before { transform: scaleY(1); }
 .btn.primary { background: var(--brass); border-color: var(--brass); color: var(--brass-ink); }
 .btn.primary:hover { filter: brightness(1.08); color: var(--brass-ink); }
 .ctl.select { display: flex; flex-direction: column; gap: 6px; }
-.ctl select { -webkit-appearance: none; appearance: none; font: inherit; font-size: .92rem; padding: 9px 36px 9px 12px; border-radius: 4px;
+.ctl select, .fsel { -webkit-appearance: none; appearance: none; font: inherit; font-size: .92rem; padding: 9px 36px 9px 12px; border-radius: 4px;
   border: 1px solid var(--line-strong); color: var(--text); min-height: 40px; cursor: pointer;
   background: var(--stage) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238390A3' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center / 12px; }
 .ctl.toggle { display: flex; align-items: center; gap: 12px; }
@@ -291,6 +291,94 @@ a.link:hover { border-color: var(--brass); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* ---------- Curriculum: course groups, lesson tags, standard chips, lesson finder ---------- */
+[hidden] { display: none !important; }
+
+/* Strand colors: blue, violet, amber. Each strand also has its own swatch shape, so color is never the only cue. */
+[data-strand="dp"] { --st: var(--yellow); }
+[data-strand="sr"] { --st: var(--violet); }
+[data-strand="pr"] { --st: var(--blue); }
+.std::before, .chip[data-strand] .lbl::before { content: ""; display: inline-block; flex: none; width: 8px; height: 8px; background: var(--st); }
+.chip[data-strand] .lbl::before { margin-right: 8px; }
+.std[data-strand="dp"]::before, .chip[data-strand="dp"] .lbl::before { border-radius: 50%; }
+.std[data-strand="sr"]::before, .chip[data-strand="sr"] .lbl::before { border-radius: 1.5px; }
+.std[data-strand="pr"]::before, .chip[data-strand="pr"] .lbl::before { border-radius: 1px; transform: rotate(45deg) scale(.9); }
+
+.std { display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px 1px 7px; border-radius: 999px; font-size: .76rem; line-height: 1.6;
+  font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; text-decoration: none; color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
+a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 26%, transparent); }
+
+.tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
+.tag { font-size: .8rem; color: var(--muted); }
+.stds { display: inline-flex; flex-wrap: wrap; gap: 5px; }
+.skill { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
+.pips { display: inline-flex; gap: 2px; }
+.pip { width: 10px; height: 4px; border-radius: 2px; background: var(--line-strong); }
+.pip.on { background: var(--brass); }
+
+/* Course groups inside a level */
+.course + .course { margin-top: 34px; }
+.course-head { display: flex; align-items: baseline; gap: 12px; margin: 0 0 6px; padding: 0 14px 10px; border-bottom: 1px solid var(--line);
+  font-family: var(--display); font-weight: 400; font-size: 1.05rem; letter-spacing: -.025em; }
+.course-head .n { margin-left: auto; font-family: var(--sans); font-size: .8rem; color: var(--muted); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+
+/* Lesson finder */
+.finder { padding-top: clamp(32px, 5vw, 56px); }
+.finder-box { border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); padding: 18px 20px 22px;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.finder-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 16px; }
+.finder-title { font-family: var(--display); font-weight: 400; font-size: 1.3rem; letter-spacing: -.035em; margin: 0; }
+.finder-sum { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.finder-clear { margin-left: auto; font: inherit; font-size: .88rem; color: var(--brass); background: none; border: 0; padding: 4px 2px; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px; }
+.finder-clear:hover { filter: brightness(1.15); }
+.finder-toggle { display: none; }
+.finder-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px 32px; }
+fieldset.facet { grid-column: span 2; }
+label.facet { grid-column: span 3; }
+@media (max-width: 1000px) { .finder-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } fieldset.facet, label.facet { grid-column: span 1; } }
+.facet { min-width: 0; margin: 0; padding: 0; border: 0; }
+label.facet { display: flex; flex-direction: column; gap: 8px; }
+.facet-k { display: block; padding: 0; margin-bottom: 8px; font-size: .8rem; color: var(--muted); letter-spacing: .02em; }
+label.facet .facet-k { margin-bottom: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: .86rem; padding: 5px 12px; min-height: 34px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; transition: border-color .2s, background .2s, color .2s; }
+.chip:hover:not(:disabled) { border-color: var(--brass); }
+.chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.chip:disabled { opacity: .38; cursor: default; }
+.chip .n { font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+.fsel { width: 100%; text-overflow: ellipsis; }
+.finder-empty { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px; padding: 36px 0; color: var(--muted); }
+.finder-empty p { margin: 0; }
+@media (max-width: 700px) {
+  .finder-toggle { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; font: inherit; font-size: .88rem; padding: 6px 14px; min-height: 36px;
+    border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
+  .finder-toggle .badge { display: inline-grid; place-items: center; min-width: 1.4em; height: 1.4em; border-radius: 999px; background: var(--brass); color: var(--brass-ink);
+    font-size: .75rem; font-variant-numeric: tabular-nums; }
+  .finder-clear { margin-left: 0; }
+  .finder-grid { display: none; }
+  .finder.open .finder-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Lesson page: course, skill, grades and standards under the title; alignment section */
+.viz-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 18px; }
+.viz-meta .tags { margin-top: 0; }
+.tag.course { color: var(--text); font-family: var(--display); font-size: .92rem; letter-spacing: -.02em; text-decoration: none; border-bottom: 1px solid var(--line-strong); transition: border-color .2s, color .2s; }
+.tag.course:hover { border-color: var(--brass); color: var(--brass); }
+.align { max-width: 68ch; padding: 8px 0 28px; }
+.align h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.035em; margin: 0 0 .5em; }
+.align-note { margin: 0 0 14px; color: var(--muted); font-size: .92rem; }
+.align-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.align-item { display: grid; grid-template-columns: 5.6rem minmax(0, 1fr); gap: 4px 16px; align-items: start; padding: 12px 16px;
+  border: 1px solid var(--line); border-left: 3px solid var(--st); border-radius: 4px; background: var(--surface); }
+.align-item .std { justify-self: start; }
+.align-item p { margin: 0; }
+.align-item .bench { font-size: .95rem; line-height: 1.55; }
+.align-item .anc { margin-top: 4px; font-size: .8rem; color: var(--muted); }
+@media (max-width: 560px) { .align-item { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -307,6 +395,311 @@ a.link:hover { border-color: var(--brass); }
 <footer class="wrap"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span></div></footer>
 
 <script>
+/* =====================================================================
+   MINNESOTA K-12 ACADEMIC STANDARDS IN MATHEMATICS, 2022 VERSION
+   Source: "2022 Minnesota K-12 Academic Standards in Mathematics" (Minnesota Department of
+   Education; adopted into rule in 2025, fully implemented in 2027-28), the Grade 6, Grade 7,
+   Grade 8 and Grades 9-11 benchmark tables: 185 benchmarks, 7 anchor standards, 3 strands.
+   Benchmark wording is transcribed from the document. The trailing Standards-for-Mathematical-
+   Practice notes and margin symbols are omitted. Inline math and superscripts that the text
+   layer drops (for example k^2, 22/7, a(b)^x) were restored from the rendered pages.
+
+   Benchmark code <band>.<strand>.<anchor>.<n>
+     band    6, 7, 8, or 9 (the single high-school band, Grades 9-11)
+     strand  1 Data and Probability, 2 Spatial Reasoning, 3 Patterns and Relationships
+     anchor  1 Data Sciences, 2 Chance and Uncertainty (strand 1); 3 Measurement, 4 Geometry
+             (strand 2); 5 Number Relationships, 6 Equivalence and Relational Thinking,
+             7 Patterns and Relationships (strand 3)
+   Grade 8 has no Chance and Uncertainty benchmarks in the document.
+   Do not hand-edit the benchmark text; lesson tagging lives in curriculum.js.
+   ===================================================================== */
+const STRANDS = [
+  { id: 'dp', n: 1, name: 'Data and Probability' },
+  { id: 'sr', n: 2, name: 'Spatial Reasoning' },
+  { id: 'pr', n: 3, name: 'Patterns and Relationships' }
+];
+const ANCHORS = {
+  1: { strand: 1, name: "Data Sciences", text: "Identify, formulate and investigate statistical questions by collecting data, considering cultural perspectives, analyzing and interpreting data and communicating the results." },
+  2: { strand: 1, name: "Chance and Uncertainty", text: "Apply and explain the concepts of probability to interpret data, generate questions, predict and make informed decisions to solve problems and communicate ideas." },
+  3: { strand: 2, name: "Measurement", text: "Investigate measurement using a variety of tools, units, systems, processes and techniques in various cultures. Explain and reason with attributes, estimations and formulas to communicate measurement(s) and relationships effectively. Justify decisions and consider the reasonableness of the measurement." },
+  4: { strand: 2, name: "Geometry", text: "Analyze characteristics of geometric shapes to make mathematical arguments and justifications about geometric relationships. Use visualization and geometric modeling to compare, solve problems and communicate ideas." },
+  5: { strand: 3, name: "Number Relationships", text: "Describe, Interpret and use quantities, relationships between quantities, representations of quantities, and number systems. Describe operations and the relationship between operations. Use strategies and procedures accurately, efficiently and flexibly. Assess the reasonableness of the results." },
+  6: { strand: 3, name: "Equivalence and Relational Thinking", text: "Use concepts and properties of equivalence and relational thinking to represent and compare numerical expressions, proportional relationships, algebraic expressions and equations." },
+  7: { strand: 3, name: "Patterns and Relationships", text: "Represent and connect mathematical patterns and relationships using verbal descriptions, generalizations, tables and graphs. Use representations to generate questions, make predictions and solve mathematical problems." }
+};
+const STANDARDS = {
+  '6.1.1.1': "Recognize a statistical question as one that anticipates variability in the data, compares differences between groups and collects categorical or numerical data related to the question, and accounts for it in the answer.",
+  '6.1.1.2': "Design and conduct investigations and experiments to gather data, while considering cultural perspectives, to answer statistically investigative questions considering variability and justifying choice of variables.",
+  '6.1.1.3': "Identify, determine and interpret measures of center (mean and median) and measures of variability (range, interquartile range, mean-absolute deviation) to answer a statistically investigative question, summarizing the distribution of data using the measures of center and variability.",
+  '6.1.1.4': "Create a visualization about a data set to describe patterns, highlight relationships or illustrate features of the distribution of the data to answer or help answer their statistically investigative question. Visualizations should represent the data in appropriate ways, including tables, dot plots, stem-and-leaf plots, histograms and box plots while incorporating any other relevant information that helps to tell a story about the data.",
+  '6.1.1.5': "Compare and communicate competing explanations for data trends observed, considering cultural perspectives and reasonable alternatives given the variability in findings.",
+  '6.1.2.1': "Determine the sample space (set of possible outcomes) for a given experiment. Sample space may be determined by the use of tree diagrams, tables or pictorial representations.",
+  '6.1.2.2': "Determine the theoretical probability of an event using the ratio between the size of the event and the size of the sample space. Represent probabilities as percentages, fractions and decimals between 0 and 1 inclusive.",
+  '6.1.2.3': "Calculate experimental probabilities from experiments where the theoretical probability is known, recognizing that there may be differences between theoretical and experimental probability. Represent the probabilities as percentages, fractions and decimals between 0 and 1 inclusive. Use experimental probabilities to make predictions when actual probabilities are unknown.",
+  '6.2.3.1': "Calculate the measurements of the surface area of rectangular and triangular prisms using appropriate units. Justify the formulas used. Justification may involve decomposition, nets or other models.",
+  '6.2.3.2': "Calculate the measurement of the volume of prisms (including triangular and nonrectangular prisms) using appropriate units. Justify the formulas used. Justification may involve decomposition or other models.",
+  '6.2.3.3': "Solve situations in various contexts involving conversion of time, weights, capacities, lengths and area within measurement systems using appropriate units.",
+  '6.2.3.4': "Estimate time, weights, capacities, lengths and dollar amounts using benchmarks in measurement systems with appropriate units.",
+  '6.2.3.5': "Find the area of special quadrilaterals and polygons by composing into rectangles or decomposing into triangles and other shapes. Apply these techniques in contextual mathematical situations.",
+  '6.2.4.1': "Determine missing angle measures in a triangle using the fact that the sum of the interior angles of a triangle is 180°. Use models to illustrate this fact.",
+  '6.2.4.2': "Decompose polygons into triangles to investigate the sum of the interior angles of polygons.",
+  '6.2.4.3': "Draw polygons in the coordinate plane given coordinates for the vertices. Use coordinates to find the length of a side joining points with the same first coordinate or the same second coordinate. Apply these techniques in contextual situations.",
+  '6.3.5.1': "Use positive and negative numbers to describe quantities having opposite directions or values, represent quantities in contexts and explain the meaning of 0 in situations including credits/debits, temperature above/below zero, elevation above/below sea level and positive/negative electric charge.",
+  '6.3.5.2': "Locate positive and negative rational numbers on a number line. Plot ordered pairs of positive and negative rational numbers on a coordinate grid.",
+  '6.3.5.3': "Interpret statements of inequality (<, >, =) as statements about the relative position of two numbers on a number line, including positive and negative rational numbers in various forms.",
+  '6.3.5.4': "Factor whole numbers. Express a whole number as a product of prime factors with exponents. Identify a prime number as a whole number greater than one whose only factors are one and itself.",
+  '6.3.5.5': "Find the greatest common factor of two whole numbers less than or equal to 100 and the least common multiple of two whole numbers less than or equal to 12. Use the distributive property to express a sum or difference of two whole numbers, from 1 through 100, with a common factor as a multiple of a sum or difference of two whole numbers with no common factor.",
+  '6.3.5.6': "Understand the absolute value of a rational number as its distance from 0 on the number line. Interpret absolute value as magnitude for a positive or negative quantity in context.",
+  '6.3.5.7': "Estimate solutions to situations with whole numbers, fractions and decimals and use the estimates to assess the reasonableness of the results in the context of the situation.",
+  '6.3.5.8': "Multiply and divide fractions and mixed numbers using visual models to represent the situation leading towards generalizable algorithms.",
+  '6.3.5.9': "Solve mathematical situations requiring arithmetic, including multiplication and division, with decimals, fractions and mixed numbers, explaining the solution pathway. Interpret quotients in the context of the situation.",
+  '6.3.5.10': "Solve situations using the concept of a unit rate associated with a ratio a : b with b ≠ 0 in context, including constant speed and unit pricing to make purchase decisions.",
+  '6.3.5.11': "Solve percent situations using visual models including tables of equivalent ratios, tape diagrams or double number lines. Apply concepts of percentage including discounts, markups, tips and commission. Situations can include identifying the part given a whole and the percentage, and identifying the percentage given the part and the whole.",
+  '6.3.6.1': "Generate equivalent numerical expressions involving positive rational numbers and justify why expressions are equivalent.",
+  '6.3.6.2': "Determine equivalences among fractions, decimals and percentages involving rational numbers. Convert between equivalent representations.",
+  '6.3.6.3': "Represent mathematical situations using expressions, equations and inequalities involving variables and positive rational numbers.",
+  '6.3.6.4': "Solve one-step equations, including equations of the form x + p = q and px = q for cases in which p, q and x are all positive rational numbers. Use number sense, properties of arithmetic and the idea of maintaining equality on both sides of the equation. Interpret a solution in the original context and assess the reasonableness of results.",
+  '6.3.6.5': "Identify and use ratios to compare quantities. Understand that comparing quantities using ratios is not the same as comparing quantities using subtraction.",
+  '6.3.6.6': "Solve ratio and rate situations, including mixtures and concentrations, by modeling with tables of equivalent ratios, tape diagrams, double number lines or equations.",
+  '6.3.7.1': "Use variables to represent two quantities in a situation that change in relationship to one another. Write an equation to express one quantity, thought of as the dependent variable, in terms of the other quantity, thought of as the independent variable. Analyze the relationship between the dependent and independent variables using graphs and tables and relate these to the equation.",
+  '7.1.1.1': "Formulate statistical investigative questions with data collection, keeping cultural perspectives in mind, which compare differences between groups, require a sample of a population and use categorical and/or numerical data.",
+  '7.1.1.2': "Describe how statistics can be used to gain information about a population by examining a sample of the population. Explain how generalizations about a population are valid only when the sample is representative of that population and that random sampling tends to produce representative samples and support valid inferences.",
+  '7.1.1.3': "Make inferences using statistics about population parameters based on a random sample from that population.",
+  '7.1.1.4': "Understand that a set of data collected to answer a statistical question has a distribution that can be described by its center, variability and overall shape. Use measures of center and measures of variability for numerical data from random samples to draw informal comparative inferences about two populations. Justify the choice of measures of center and variability, the shape of the data distribution and the context in which the data were gathered.",
+  '7.1.1.5': "Create a visualization about a data set, organizing and presenting the data in appropriate ways, including in tables, circle graphs and histograms, and incorporating any other relevant information that helps to tell a story about the data.",
+  '7.1.1.6': "Compare and communicate multiple explanations for data trends observed, considering reasonable alternatives given the variability in findings and sampling methods and cultural perspectives.",
+  '7.1.2.1': "Calculate probability as a fraction of sample space or as a fraction of area. Express probabilities as fractions, decimals and percentages.",
+  '7.1.2.2': "Approximate the probability of a chance event, where the theoretical probability is unknown, by collecting data and observing its long-run frequency. Represent the probabilities as percentages, fractions and decimals between 0 and 1 inclusive. Use approximate probabilities to make predictions when actual probabilities are unknown.",
+  '7.1.2.3': "Recognize that, just as with simple events, the probability of a compound event is the fraction of outcomes in the sample space where the compound event occurs.",
+  '7.1.2.4': "Represent sample spaces for compound events by decomposing the events using methods such as organized lists, tables and/or tree diagrams. For an event described in everyday language, identify the outcomes in the sample space that compose the event.",
+  '7.1.2.5': "Design and use a simulation within a computational tool to generate frequencies for compound events.",
+  '7.1.2.6': "Find probabilities of compound events using organized lists, tables, tree diagrams and/or simulation via a computational tool.",
+  '7.2.3.1': "Demonstrate an understanding of the proportional relationship between the diameter and circumference of a circle and that the unit rate (constant of proportionality) is π.",
+  '7.2.3.2': "Calculate the circumference and area of circles to solve situations in various contexts.",
+  '7.2.3.3': "Calculate the arc length and area of sectors of circles (given the central angle) to solve situations in various contexts.",
+  '7.2.3.4': "Calculate the surface area and volume of cylinders. Justify the formulas used.",
+  '7.2.4.1': "Graph and describe translations and reflections of figures on a coordinate grid. Determine the coordinates of the vertices of the figure after the transformation. Describe the properties of congruency when performing translations and reflections.",
+  '7.2.4.2': "Describe the properties of similarity, distinguishing between similarity and congruency, compare geometric figures for similarity and determine scale factors.",
+  '7.2.4.3': "Apply scale factors, length ratios and area ratios to determine side lengths and areas of similar geometric figures.",
+  '7.2.4.4': "Use proportional reasoning and ratios to solve situations involving scale drawings and conversions of measurement units.",
+  '7.3.5.1': "Know that every rational number can be written as the ratio of two integers and as a terminating or repeating decimal. Recognize that π is not rational but that it can be approximated by rational numbers such as 22/7 and 3.14.",
+  '7.3.5.2': "Recognize opposite signs of numbers as indicating locations on opposite sides of 0 on the number line. Recognize that the opposite of the opposite of a number is the number itself, such as – (– 3) = 3. Recognize that 0 is its own opposite.",
+  '7.3.5.3': "Compare positive and negative rational numbers expressed in various forms including the symbols <, >, =, ≤ and ≥.",
+  '7.3.5.4': "Recognize subtraction of rational numbers as adding the additive inverse, p – q = p + (–q). Show that the distance between two rational numbers on the number line is the absolute value of their difference and apply this principle in contexts.",
+  '7.3.5.5': "Create a budget using positive and negative rational numbers for an event and calculate what percentage of the total budget each category comprises. Justify choices of the allocation of the available resources.",
+  '7.3.5.6': "Solve mathematical situations involving adding, subtracting, multiplying and dividing positive and negative rational numbers that are integers, fractions and terminating decimals. Use efficient and generalizable procedures. Raise positive rational numbers to whole-number exponents.",
+  '7.3.5.7': "Compute unit rates associated with ratios of fractions, including ratios of lengths, areas and other quantities measured in like or different units.",
+  '7.3.6.1': "Use properties of algebra to generate equivalent numerical and algebraic expressions containing rational numbers, grouping symbols and whole number exponents. Properties of algebra include associative, commutative and distributive laws.",
+  '7.3.6.2': "Represent and solve contextual situations resulting in two-step equations and inequalities involving variables and positive/negative rational numbers. Graph the solution set of the inequality and interpret the solution in context.",
+  '7.3.6.3': "Evaluate algebraic expressions, including expressions containing rational numbers, absolute value and whole number exponents, by applying computational hierarchy of operations at specified values of their variables.",
+  '7.3.6.4': "Solve multi-step situations involving proportional relationships in numerous contexts using models, such as tables of equivalent ratios involving scaling up and down, tape diagrams, double number lines or equations.",
+  '7.3.6.5': "Solve multi-step financial literacy situations including simple interest, tax, markups and markdowns, tips and commissions, fees, percent increase and decrease and percent error. Distinguish between sales tax and income tax for earned wages. Situations include finding the whole, the part and the percent.",
+  '7.3.7.1': "Represent proportional relationships with tables, verbal descriptions, symbols, equations and graphs. Translate from one representation to another. Determine the unit rate (constant of proportionality or rate of change) given any of these representations.",
+  '7.3.7.2': "Express a relationship between two variables, the independent (x) and the dependent (y) as proportional if it can be written in the form y/x = k or y = kx. Distinguish proportional relationships from non-proportional relationships, including relationships where the x and y value are not 0.",
+  '7.3.7.3': "Determine whether two quantities are in a proportional relationship by testing for equivalent ratios in a table or graphing on a coordinate plane and by observing whether the graph is a straight line through the origin. Use graphing technology to examine the relationship between the unit rate and the line for a given situation.",
+  '8.1.1.1': "Formulate statistical investigative questions, such as questions about variation, the differences between groups and associations between two numerical variables.",
+  '8.1.1.2': "Construct and interpret scatter plots for bivariate measurement data to investigate patterns of association between two quantities. Describe patterns such as clustering, outliers, positive or negative association, linear association and nonlinear association.",
+  '8.1.1.3': "Identify when to use straight lines to model relationships between two quantitative variables. For scatter plots that suggest a linear association, informally fit a straight line and assess the model fit by judging the closeness of the data points to the line.",
+  '8.1.1.4': "Use the equation of a linear model to solve situations in the context of bivariate measurement data. Interpret the slope and intercepts in context of the variables.",
+  '8.1.1.5': "Create data visualizations about a data set. Organize and present the data in appropriate ways, including in tables and scatter plots, and incorporate other relevant information that helps to tell a story and support a claim about the data.",
+  '8.1.1.6': "Compare and communicate competing explanations for data trends observed, considering the reasonableness of the model’s predictions and correlation versus causation.",
+  '8.2.3.1': "Informally justify the Pythagorean Theorem and its converse by using measurements, diagrams or computer software.",
+  '8.2.3.2': "Apply the Pythagorean Theorem to solve multi-step contextual situations by determining unknown side lengths in right triangles in both two-and three-dimensional shapes.",
+  '8.2.3.3': "Determine the distance between two points on a horizontal or vertical line in a coordinate system. Use the Pythagorean Theorem to find the distance between any two points in a coordinate system.",
+  '8.2.4.1': "Use similar triangles to explain why the slope m is the same between any two distinct points on a non-vertical line in the coordinate plane. Derive the equation y = mx for a line through the origin and the equation y = mx + b for a line intercepting the vertical axis at b.",
+  '8.2.4.2': "Given a line on a coordinate plane and the coordinates of a point not on the line, find lines through that point that are parallel and perpendicular to the given line, using graphing technology or hand drawn graphs.",
+  '8.2.4.3': "Identify the different types of solutions possible for a system of linear equations (no solution, one solution, infinitely many solutions). Using slope, compare the number of solutions to the graphical representation of pairs of lines that are intersecting, parallel or identical.",
+  '8.3.5.1': "Classify real numbers as rational or irrational. Know that when a square root of a positive integer is not an integer, then it is irrational.",
+  '8.3.5.2': "Use rational approximations of irrational numbers to compare the size of irrational numbers and locate them approximately on a number line. Estimate the value of expressions involving irrational numbers.",
+  '8.3.5.3': "Know and apply the properties of positive and negative integer exponents to generate equivalent numerical expressions.",
+  '8.3.5.4': "Express approximations of very large and very small numbers using scientific notation. Understand how technology displays numbers in scientific notation. Compare numbers expressed in scientific notation using the symbols <, >, =, ≤ and ≥.",
+  '8.3.5.5': "Multiply and divide numbers expressed in scientific notation. Express answers in scientific notation.",
+  '8.3.5.6': "Solve situations in various contexts involving calculating and comparing simple and compound interest. Compound interest situations are limited to compounded annually.",
+  '8.3.5.7': "Solve multi-step contextual situations comparing how interest rate and loan length affect the cost of credit. Calculate the total cost of repaying a loan under various rates of interest and over different periods of time.",
+  '8.3.5.8': "Compare and contrast employment opportunities and their payment methods, including per hour, with or without tips, salary, per diem and piecework pay. Justify financial decisions with representations, including linear relationships.",
+  '8.3.6.1': "Justify steps in generating equivalent algebraic expressions and identify the properties used. Properties include the associative, commutative, distributive, identity and inverse.",
+  '8.3.6.2': "Evaluate algebraic expressions, including expressions containing radicals and absolute values, by applying computational hierarchy of operations at specified values of their variables.",
+  '8.3.6.3': "Solve multi-step equations in one variable, including equivalent linear expressions. Solve for one variable in a multivariable equation in terms of the other variables. Justify the steps by identifying the properties of the equality used.",
+  '8.3.6.4': "Use the relationship between square roots and squares of a number to solve situations.",
+  '8.3.6.5': "Represent linear relationships in point-slope and standard form and convert to slope-intercept form.",
+  '8.3.6.6': "Reason abstractly, involving variables as a point, slope or intercept, to compare general forms of linear relationships, including point-point, point-slope, standard form and slope-intercept form.",
+  '8.3.6.7': "Represent relationships in various contexts using multi-step linear inequalities. Solve linear inequalities using properties of inequalities. Graph the solutions on a number line and interpret the solutions in context.",
+  '8.3.6.8': "Represent relationships in various contexts with equations and inequalities involving the absolute value of a linear expression. Solve such equations and inequalities and graph the solutions on a number line.",
+  '8.3.6.9': "Represent relationships in various contextual situations using systems of linear equations. Solve systems of linear equations in two variables, symbolically and graphically, understanding that the solution corresponds to the point of intersection of their graphs.",
+  '8.3.7.1': "Compare graphical properties of proportional and non-proportional linear relationships, including slope.",
+  '8.3.7.2': "Analyze visual patterns to distinguish between linear and non-linear patterns. For linear patterns, describe how a pattern is changing, name the nth term and write an equation to generalize the nth term.",
+  '8.3.7.3': "Recognize that a function is a rule that assigns each input to exactly one output. Use the function to represent the relationship in which changing the input (independent) variable, by an amount, leads to a change in the output (dependent) variable, a constant multiplied by that amount. Recognize that the graph of a function is the set of ordered pairs consisting of an input and the corresponding output. Use functional notation, such as f(x), to represent such relationships.",
+  '8.3.7.4': "Represent linear functions with tables, verbal descriptions, symbols, equations and graphs. Translate from one representation to another.",
+  '8.3.7.5': "Explain how changes to the values m or b in the linear function f(x) = mx + b affect the graph of the function. Use graphing technology to examine these effects. Recognize that the graph of the linear equation y = mx + b comes from b units translation of y = mx graph.",
+  '8.3.7.6': "Identify graphical properties of linear functions in the form f(x) = mx + b, including slope, y-intercept and x-intercept. Know that the graph is a straight line, the slope (m) equals the rate of change, the y-intercept (b) is the value of the function at x = 0 and the x-intercept is the value of the function at f(x) = 0.",
+  '8.3.7.7': "Recognize that an arithmetic sequence is a linear function that can be expressed in the form f(x) = mx + b, where x = 0, 1, 2, 3,....",
+  '8.3.7.8': "Recognize that a geometric sequence is a non-linear function that can be expressed in the form f(x) = a(b)^x, where x = 0, 1, 2, 3,….",
+  '8.3.7.9': "Represent arithmetic and geometric sequences using equations, tables, graphs and verbal descriptions and use them to solve situations.",
+  '9.1.1.1': "Formulate statistical investigative questions and pose hypotheses. These include questions about variation or the differences between groups, associations between quantitative and categorical variables or pairing together multiple analyses.",
+  '9.1.1.2': "Explain how choices concerning data collection methods can affect the quality, size, speed, accessibility and cost of the data.",
+  '9.1.1.3': "Analyze issues of bias by considering data collection methods and cultural perspectives.",
+  '9.1.1.4': "Explain the purposes of and differences among sample surveys, experiments and observational studies. Explain whether randomization in each allows for conclusions of causation and/or generalization of a population.",
+  '9.1.1.5': "Analyze and explain when arguments based on data confuse correlation and causation.",
+  '9.1.1.6': "Compute using technology or estimate the correlation coefficient of a linear model. Interpret the linear model in the context of the data.",
+  '9.1.1.7': "Use the mean and standard deviation of a data set to fit it to a normal distribution and to estimate population percentages. Identify data sets for which such a procedure is not appropriate. Tools can include calculators, spreadsheets, apps or tables.",
+  '9.1.1.8': "Use data from a random sample to draw inferences about a population with an unknown characteristic of interest. Generate multiple samples or simulated samples of the same size to gauge the variation in estimates or predictions.",
+  '9.1.1.9': "Use statistics appropriate to the shape of the data distribution to compare the center and spread of two or more data sets.",
+  '9.1.1.10': "Create and analyze data displays, including scatter plots, histograms and boxplots using technology.",
+  '9.1.1.11': "Identify, create and compare statistical models with linear and exponential functions, including linear regression. Assess the reasonableness of model fit using residuals and correlation coefficients.",
+  '9.1.1.12': "Examine and discuss competing explanations for data trends observed such as confounding variables. Respond to competing arguments or interpretations of the data of different community groups, paying careful attention to what conclusions the data supports.",
+  '9.1.1.13': "Analyze and interpret data using various measures, such as difference in shapes, center and spread to draw conclusions, identify trends and describe relationships, accounting for possible effects of extreme data points (outliers).",
+  '9.1.1.14': "Evaluate reports based on published data by identifying the source of the data, the design of the study and the way the data are analyzed and displayed.",
+  '9.1.1.15': "Identify and explain misleading uses of data along with how to use spreadsheets, tables or graphing technology to recognize and analyze distortions in data displays. Use interactive data visualizations to support and influence different points of view.",
+  '9.1.2.1': "Select and apply counting procedures such as the multiplication and addition principles, permutations, combinations and tree diagrams to determine the elements and size of a sample space.",
+  '9.1.2.2': "Describe events as subsets of a sample space using characteristics of the outcomes. Use Venn diagrams, tables or lists to depict events and compute event sizes. Create representations to find unions, intersections and complements of events.",
+  '9.1.2.3': "Apply probability concepts, such as intersections, unions and complements of events, and conditional probability and independence, to calculate probabilities and solve situations.",
+  '9.1.2.4': "Calculate experimental probabilities by repeatedly performing simulations or experiments involving a probability model and by using relative frequencies of outcomes. Recognize that as the number of trials increases, the closer the experimental probability approaches the theoretical probability.",
+  '9.1.2.5': "Construct and interpret two-way frequency tables when two categories are associated with each object being classified. Use the two-way table to decide if events are independent and to calculate conditional probabilities.",
+  '9.1.2.6': "Compare the recursion to create the nth row of Pascal’s triangle, the recursion to expand (x + y)^n, the recursion to generate all sequences of heads and tails on n coin flips and the recursion to generate all subsets of a set with n elements. Establish connections among the various representations.",
+  '9.1.2.7': "Calculate and make decisions based on expected values using theoretical or experimental probabilities in scenarios, including finance or games of chance.",
+  '9.1.2.8': "Calculate and make decisions to obtain a desired outcome (maximum or minimum value or maximum or minimum probability) based on expected value and theoretical or experimental probabilities in scenarios such as games of chance or finance.",
+  '9.2.3.1': "Apply the Pythagorean Theorem and distance formula to compute perimeters of polygons and areas of right triangles and rectangles on coordinate planes.",
+  '9.2.3.2': "Apply properties of 45°-45°-90° and 30°-60°-90° triangles to solve situations and logically justify results.",
+  '9.2.3.3': "Use trigonometric ratios and the Pythagorean Theorem and its converse to solve contextual situations, including right triangles or polygons that can be decomposed into triangles.",
+  '9.2.3.4': "Develop, justify and use decomposition to determine the formula for surface area and volume of various three-dimensional figures.",
+  '9.2.3.5': "Use the formulas for surface area and volume of various three-dimensional figures to solve multi-step contextual situations.",
+  '9.2.3.6': "Use units of measure and dimensional analysis to solve multi-step situations. Interpret units consistently in formulas. Interpret the scale and the origin in graphs and data displays.",
+  '9.2.3.7': "Compute the unit cost and total cost to cover different areas and volumes in applications, such as painting, carpeting and gardening. Optimize costs for various models, including linear and quadratic. Use technology, including spreadsheets.",
+  '9.2.3.8': "Use similarity to determine the side ratios in right triangles as properties of the angles in the triangle, leading to definitions of trigonometric ratios for acute angles.",
+  '9.2.3.9': "Apply dilations of scale factor k on length, area and volume and recognize the effect is multiplication by k, k², k³ respectively.",
+  '9.2.4.1': "Apply properties of angles, including corresponding, exterior, interior, vertical, complementary and supplementary angles, to solve situations and logically justify results.",
+  '9.2.4.2': "Apply properties of equilateral, isosceles and scalene triangles to solve situations and logically justify results.",
+  '9.2.4.3': "Apply properties such as interior and exterior angles and parallel and perpendicular sides to define, classify and solve situations involving regular and irregular polygons.",
+  '9.2.4.4': "Apply properties of congruent figures to solve situations and logically justify results.",
+  '9.2.4.5': "Accurately interpret and use words and phrases such as “if ... then,” “if and only if,” “all” and “not.” Recognize the logical relationships between an “if ... then” statement and its inverse, converse and contrapositive.",
+  '9.2.4.6': "Analyze the validity of a logical argument and give counterexamples to disprove a statement.",
+  '9.2.4.7': "Construct logical arguments using axioms, definitions, theorems and postulates that clearly justify the reasoning.",
+  '9.2.4.8': "Identify, describe and solve situations using relationships among inscribed angles, circumscribed angles, radii and chords in circles.",
+  '9.2.4.9': "Describe and solve situations using the relationships of angles formed outside the circle for both secants and tangent lines.",
+  '9.2.4.10': "Apply properties of similar figures to solve situations and logically justify results.",
+  '9.2.4.11': "Show that two triangles are similar using the AA, SAS and SSS similarity criteria.",
+  '9.2.4.12': "Make geometric constructions with a variety of tools, including dynamic geometric technology, to examine theorems, make and test conjectures, represent transformations and develop mathematical reasoning skills in multi-step situations.",
+  '9.2.4.13': "Create and compare rigid and non-rigid transformations, and connect the preimage and image to congruence.",
+  '9.2.4.14': "Describe the steps used to show various sequences of transformations, applying reflections, rotations, translations and/or dilations of geometric figures that map one figure onto the other.",
+  '9.2.4.15': "Apply geometric methods to solve design situations, including designing an object or structure to satisfy physical constraints or optimize resources.",
+  '9.2.4.16': "Apply concepts of density based on area and volume in modeling contextual situations, including population density, BTUs per cubic foot and data storage.",
+  '9.3.5.1': "Add, subtract, multiply and divide numbers in scientific notation.",
+  '9.3.5.2': "Compare the definition of rational exponents and properties of radicals. Explain how the definition of rational exponents follows from extending the properties of integer exponents, allowing for a notation for radicals in terms of rational exponents.",
+  '9.3.5.3': "Apply knowledge of number systems extending from whole numbers to integers, from integers to rational numbers, from rational numbers to real numbers and from real numbers to complex numbers to solve equations.",
+  '9.3.5.4': "Use matrices to represent and manipulate data and interpret the results in context. Add, subtract and multiply matrices of appropriate dimensions. Multiply matrices by scalars.",
+  '9.3.5.5': "Estimate and verify the cost of an item, including multiple discounts and taxes. Show an understanding of the order of operations.",
+  '9.3.5.6': "Assess the reasonableness of a solution in its given context, including financial literacy applications. Compare the solution to appropriate graphical or numerical estimates. Interpret a solution in the original context.",
+  '9.3.5.7': "Use the structure of an expression, equation and/or formula to create an equivalent form that is more helpful given the situation. Rearrange formulas to highlight a quantity of interest, using the same reasoning in solving equations.",
+  '9.3.5.8': "Use the structure of an expression to write it in multiple ways.",
+  '9.3.5.9': "Find and evaluate the composition of multiple functions.",
+  '9.3.5.10': "Compute the time it takes to pay off a loan given the interest rate, loan amount and monthly payment. Determine the change in cost by the variation in loan amount, fixed or variable interest rates and payment amounts. Use technology, including spreadsheets.",
+  '9.3.5.11': "Compute the total payments to pay off a loan given the interest rate, loan amount and monthly payment. Compare the total payments for various monthly payments and various interest rates. Use technology, including spreadsheets.",
+  '9.3.5.12': "Compare different types of retirement plans, considering after tax or pretax contributions, employer match contributions, the benefit of starting contributions early and the consequences of use prior to retirement.",
+  '9.3.6.1': "Add, subtract and multiply polynomials.",
+  '9.3.6.2': "Reason abstractly to compare general forms of quadratics, including vertex form, general form, factored form and the graph. Develop procedures to convert from one form to another.",
+  '9.3.6.3': "Choose and produce an equivalent form of a quadratic function, using symbolic and graphical methods, to identify the vertex, line of symmetry and intercepts of the parabola.",
+  '9.3.6.4': "Factor polynomials including common monomial factors from polynomials, quadratic polynomials and the difference of two squares.",
+  '9.3.6.5': "Solve quadratic equations by appropriate methods using factoring, completing the square, graphing or the quadratic formula. Find non-real complex roots when they exist.",
+  '9.3.6.6': "Compare the equation of a circle, the Pythagorean Theorem and the Distance Formula. Complete the square to find the center and radius of a circle given an equation.",
+  '9.3.6.7': "Solve situations involving relationships which are inversely proportional in various contexts, including rates.",
+  '9.3.6.8': "Apply the properties of rational exponents and radicals to generate equivalent algebraic expressions.",
+  '9.3.7.1': "Represent and solve situations in various contexts, including financial literacy, using systems of linear equations, systems of linear inequalities and exponential and quadratic functions.",
+  '9.3.7.2': "Translate between graphs of quadratic, exponential and other functions (including absolute value, rational and polynomial), tables and symbolic representations. Sketch graphs and use graphing technology to graph functions.",
+  '9.3.7.3': "Determine how vertical/ horizontal reflecting, translating and scaling affect the symbolic and graphical forms of a function. Use graphing technology to examine transformations.",
+  '9.3.7.4': "Express the terms in an arithmetic or geometric sequence recursively and by giving an explicit formula.",
+  '9.3.7.5': "Express recursive patterns using recursive formulas. Calculate sequences defined by recursive formulas.",
+  '9.3.7.6': "Find the domain and range of functions defined symbolically, graphically or in a context, including piecewise and step functions. Express solutions and recognize that some answers obtained may not be valid, including cases where the function inputs are discrete instead of continuous.",
+  '9.3.7.7': "Describe the graph of a function using key features such as intercepts, maxima/minima, intervals of increase and decrease and end behavior. Draw conclusions from graphs of functions and other relations.",
+  '9.3.7.8': "Define the compounding of interest n times per year according to a recursive formula. Compare the recursive definition of interest to the recursive definition of a geometric sequence t(n) = r(t(n – 1)). Compare the interest formula to the general form of an exponential function y = a(b)^x. Explain the purpose of each part of the interest formula.",
+  '9.3.7.9': "Find the inverse of a given function and justify the results using tables, graphs or algebra.",
+  '9.3.7.10': "Use the concept of a function as a connection between inputs and outputs to find function values and use function notation."
+};
+
+/* =====================================================================
+   CURRICULUM: grade bands, courses, skill levels, and the alignment of every lesson
+   (the standards themselves are in standards-mn2022.js)
+
+   Adding a lesson also means adding one ALIGN entry below; the build fails without it.
+
+   Tagging rule: list a benchmark only when the lesson's steps, interactive, formal math or
+   quick checks actually address it, not merely when the topic is nearby. Fewer, accurate tags
+   beat many loose ones, because teachers filter on them.
+
+   Order rule (computed, see engine/curriculum.js): level, then course sequence (COURSES order),
+   then skill level (introductory first), then the lesson's first benchmark in the standards
+   document's own order (strand, anchor, benchmark), then registration order. Within a course a
+   lesson never appears before one it builds on ("prereq" links).
+   ===================================================================== */
+
+/* Grade-level filter. School bands follow the 2022 Minnesota document: Grades 6, 7 and 8 each
+   have their own benchmarks and Grades 9-11 are one band. A lesson's grades are its course's
+   grades plus the band of every benchmark it is tagged with. */
+const GRADES = [
+  { id: '6',    name: 'Grade 6' },
+  { id: '7',    name: 'Grade 7' },
+  { id: '8',    name: 'Grade 8' },
+  { id: '9-11', name: 'Grades 9–11' },
+  { id: 'ug',   name: 'Undergraduate' },
+  { id: 'gr',   name: 'Graduate' }
+];
+
+/* Courses in teaching sequence. The 2022 standards have no high-school course split, so
+   Algebra 1 through Precalculus are conventional labels, not state-defined courses. A course
+   with no lessons is simply not shown. */
+const COURSES = [
+  { id: 'grade6',           level: 'school', name: 'Grade 6 Mathematics',        grades: ['6'] },
+  { id: 'grade7',           level: 'school', name: 'Grade 7 Mathematics',        grades: ['7'] },
+  { id: 'grade8',           level: 'school', name: 'Grade 8 Mathematics',        grades: ['8'] },
+  { id: 'algebra1',         level: 'school', name: 'Algebra 1',                  grades: ['9-11'] },
+  { id: 'geometry',         level: 'school', name: 'Geometry',                   grades: ['9-11'] },
+  { id: 'algebra2',         level: 'school', name: 'Algebra 2',                  grades: ['9-11'] },
+  { id: 'precalc',          level: 'school', name: 'Precalculus & Trigonometry', grades: ['9-11'] },
+  { id: 'stats',            level: 'school', name: 'Statistics & Probability',   grades: ['9-11'] },
+  { id: 'linear-algebra',   level: 'ugrad',  name: 'Linear Algebra',             grades: ['ug'] },
+  { id: 'complex-analysis', level: 'grad',   name: 'Complex Analysis',           grades: ['gr'] }
+];
+
+/* Skill level of the lesson itself, not of the student. */
+const SKILLS = [
+  { id: 'intro', name: 'Introductory', desc: 'A first look at the idea. Needs nothing else on this site.' },
+  { id: 'mid',   name: 'Intermediate', desc: 'An on-grade skill that builds on earlier ideas.' },
+  { id: 'adv',   name: 'Advanced',     desc: 'Proof-style reasoning, or ideas that go beyond the grade-band benchmarks.' }
+];
+
+/* One entry per lesson: its course, skill level and aligned benchmarks.
+   Entries are grouped by course for reading; the displayed order is computed. */
+const ALIGN = [
+  /* Grade 7 */
+  { id: 'area-of-a-circle', course: 'grade7', skill: 'intro', standards: ['7.2.3.1', '7.2.3.2'] },
+
+  /* Grade 8 */
+  { id: 'pythagorean-theorem',         course: 'grade8', skill: 'intro', standards: ['8.2.3.1', '8.2.3.3'] },
+  { id: 'slope-and-linear-functions',  course: 'grade8', skill: 'intro', standards: ['8.2.4.1', '8.3.7.5', '8.3.7.6'] },
+  { id: 'systems-of-equations',        course: 'grade8', skill: 'mid',   standards: ['8.2.4.3', '8.3.6.9'] },
+
+  /* Algebra 1 */
+  { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
+  { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
+  { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
+
+  /* Geometry */
+  { id: 'similarity-and-scaling',      course: 'geometry', skill: 'mid', standards: ['7.2.4.2', '7.2.4.3', '9.2.3.9'] },
+  { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
+
+  /* Precalculus & Trigonometry. Radians and periodic waves go beyond the 9-11 benchmarks; 9.2.3.8 (acute-angle
+     trigonometric ratios) is the nearest one, and the lesson extends it rather than teaching it. */
+  { id: 'the-unit-circle-and-trig-waves', course: 'precalc', skill: 'adv', standards: ['9.2.3.8'] },
+
+  /* Statistics & Probability */
+  { id: 'mean-median-and-spread',      course: 'stats', skill: 'mid', standards: ['6.1.1.3', '7.1.1.4', '9.1.1.9', '9.1.1.13'] },
+  { id: 'probability-with-repeated-trials', course: 'stats', skill: 'mid', standards: ['6.1.2.3', '7.1.2.2', '7.1.2.6', '9.1.2.3', '9.1.2.4'] },
+  { id: 'pascals-triangle-and-the-galton-board', course: 'stats', skill: 'adv', standards: ['7.1.2.3', '9.1.2.1', '9.1.2.4', '9.1.2.6'] },
+
+  /* Undergraduate and graduate (on hold): course and skill only; the 2022 K-12 standards do not apply */
+  { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
+  { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
+];
+
 /* =====================================================================
    CORE UTILITIES
    ===================================================================== */
@@ -640,6 +1033,102 @@ function lessonRef(id) {
 }
 
 /* =====================================================================
+   CURRICULUM HELPERS: derived tags, display order, filtering
+   Pure functions over the data in src/curriculum/ (no DOM), so tools/build.js can run the
+   same ordering and checks that the page does.
+   ===================================================================== */
+const byId = list => Object.assign(Object.create(null), Object.fromEntries(list.map(x => [x.id, x])));
+const GRADE = byId(GRADES), COURSE = byId(COURSES), SKILL = byId(SKILLS), STRAND = byId(STRANDS), ALIGN_BY_ID = byId(ALIGN);
+const LEVEL_ORDER = ['school', 'ugrad', 'grad'];
+
+/* benchmark codes: '8.2.4.1' -> parts, comparison key, grade band, strand */
+const codeKey = code => code.split('.').map(Number);
+const cmpKey = (a, b) => { for (let i = 0; i < Math.max(a.length, b.length); i++) if (a[i] !== b[i]) return (a[i] ?? -1) - (b[i] ?? -1); return 0; };
+const cmpCode = (a, b) => cmpKey(codeKey(a), codeKey(b));
+const bandOf = code => { const g = +code.split('.')[0]; return g >= 9 ? '9-11' : String(g); };
+const strandOf = code => STRANDS[+code.split('.')[1] - 1];
+const anchorOf = code => ANCHORS[+code.split('.')[2]];
+const hasStandard = code => Object.hasOwn(STANDARDS, code);
+
+/* Everything a lesson inherits from its ALIGN entry: grades are the course's plus the band of each tag */
+function curriculumMeta(a) {
+  const standards = [...a.standards].sort(cmpCode), grades = new Set(COURSE[a.course].grades);
+  standards.forEach(c => grades.add(bandOf(c)));
+  return {
+    course: a.course, skill: a.skill, standards,
+    strands: STRANDS.filter(s => standards.some(c => strandOf(c).id === s.id)).map(s => s.id),
+    grades: GRADES.filter(g => grades.has(g.id)).map(g => g.id)
+  };
+}
+
+/* Display order of lessons. items: [{ id, level, course, skill, standards (sorted), prereq: [ids], pos }].
+   Sort by level, course sequence, skill level, first benchmark in document order, then registration
+   position; then a stable pass so a lesson never precedes a same-course lesson it builds on. */
+function orderLessons(items) {
+  const lv = l => LEVEL_ORDER.indexOf(l), ci = c => COURSES.findIndex(x => x.id === c), si = s => SKILLS.findIndex(x => x.id === s);
+  const first = it => it.standards.length ? codeKey(it.standards[0]) : [99];
+  const rest = [...items].sort((a, b) => lv(a.level) - lv(b.level) || ci(a.course) - ci(b.course) || si(a.skill) - si(b.skill) ||
+    cmpKey(first(a), first(b)) || a.pos - b.pos);
+  const by = Object.fromEntries(items.map(x => [x.id, x])), done = new Set(), out = [];
+  while (rest.length) {
+    let i = rest.findIndex(it => it.prereq.every(p => !by[p] || by[p].course !== it.course || done.has(p)));
+    if (i < 0) i = 0;                         /* a prerequisite cycle; the build reports it */
+    const it = rest.splice(i, 1)[0]; done.add(it.id); out.push(it);
+  }
+  return out;
+}
+
+/* Attach course, skill, standards, strands and grades to every registered lesson and put VIZ in display order */
+function applyCurriculum() {
+  const items = VIZ.map((v, pos) => {
+    let a = ALIGN_BY_ID[v.id];
+    if (!a) { console.warn('No curriculum entry for lesson: ' + v.id); a = { course: COURSES.find(c => c.level === v.level).id, skill: 'mid', standards: [] }; }
+    Object.assign(v, curriculumMeta(a));
+    return { id: v.id, level: v.level, course: v.course, skill: v.skill, standards: v.standards, prereq: (v.links && v.links.prereq) || [], pos };
+  });
+  const rank = new Map(orderLessons(items).map((it, i) => [it.id, i]));
+  VIZ.sort((a, b) => rank.get(a.id) - rank.get(b.id));
+}
+
+/* ---------- filtering ----------
+   F = { grade: [], skill: [], strand: [], course: '', std: '' }. Several choices within grade, skill or
+   strand match any of them; different facets must all match. */
+const FACETS = ['grade', 'skill', 'strand', 'course', 'std'];
+const emptyFilter = () => ({ grade: [], skill: [], strand: [], course: '', std: '' });
+const filterActive = F => !!(F.grade.length || F.skill.length || F.strand.length || F.course || F.std);
+const filterCount = F => F.grade.length + F.skill.length + F.strand.length + (F.course ? 1 : 0) + (F.std ? 1 : 0);
+function optionMatch(v, facet, val) {
+  return facet === 'grade' ? v.grades.includes(val) : facet === 'skill' ? v.skill === val : facet === 'strand' ? v.strands.includes(val)
+       : facet === 'course' ? v.course === val : v.standards.includes(val);
+}
+/* does lesson v pass F? `skip` names a facet to ignore (used to count a facet's options) */
+function matches(v, F, skip) {
+  return FACETS.every(f => f === skip || (Array.isArray(F[f]) ? !F[f].length || F[f].some(x => optionMatch(v, f, x)) : !F[f] || optionMatch(v, f, F[f])));
+}
+/* how many of `items` pass F if `facet` were set to just `val` */
+const facetCount = (items, F, facet, val) => items.filter(v => matches(v, F, facet) && optionMatch(v, facet, val)).length;
+
+/* shareable state: #/?grade=8,9-11&skill=intro&strand=pr&course=grade8&std=8.2.4.1 */
+function filterFromHash(hash) {
+  const p = new URLSearchParams(hash.split('?')[1] || ''), list = k => (p.get(k) || '').split(',').filter(Boolean);
+  const course = p.get('course'), std = p.get('std');
+  return {
+    grade: list('grade').filter(x => GRADE[x]), skill: list('skill').filter(x => SKILL[x]), strand: list('strand').filter(x => STRAND[x]),
+    course: course && COURSE[course] ? course : '', std: std && hasStandard(std) ? std : ''
+  };
+}
+function filterToHash(F) {
+  const q = [];
+  for (const f of FACETS) if (Array.isArray(F[f]) ? F[f].length : F[f]) q.push(f + '=' + (Array.isArray(F[f]) ? F[f].join(',') : F[f]));
+  return q.length ? '#/?' + q.join('&') : '#/';
+}
+
+/* ---------- labels ---------- */
+const gradeNum = id => id === '9-11' ? '9\u201311' : id;
+const gradesLabel = ids => ids.every(id => /^\d/.test(id)) ? (ids.length > 1 || ids[0] === '9-11' ? 'Grades ' : 'Grade ') + ids.map(gradeNum).join(', ') : ids.map(id => GRADE[id].name).join(', ');
+const shortText = (t, n = 90) => t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, '') + '…';
+
+/* =====================================================================
    LESSON FORMAT: guided steps, quick checks, cross-links
    ===================================================================== */
 
@@ -706,6 +1195,101 @@ function Connections(links, selfId) {
                : h('span', { class: 'link soon' }, h('span', { class: 'lvl-dot' }), r.title, h('span', { class: 'link-l' }, 'Soon')))))));
   }
   return cols.length ? h('section', { class: 'links', 'aria-label': 'Connections' }, h('h2', {}, 'Connections'), h('div', { class: 'link-cols' }, cols)) : null;
+}
+
+/* =====================================================================
+   LESSON TAGS AND FINDER: skill meter, standard chips, and the filter bar
+   ===================================================================== */
+
+/* Three bars for introductory, intermediate, advanced, plus the name */
+function SkillMeter(id) {
+  const n = SKILLS.findIndex(s => s.id === id) + 1, S = SKILL[id];
+  return h('span', { class: 'skill', title: S.name + ': ' + S.desc },
+    h('span', { class: 'pips', 'aria-hidden': 'true' }, [1, 2, 3].map(i => h('span', { class: 'pip' + (i <= n ? ' on' : '') }))), S.name);
+}
+
+/* A benchmark code colored by its strand (shape too, so color is never the only cue). A link when `link` is set. */
+function StdChip(code, link) {
+  const attrs = { class: 'std', 'data-strand': strandOf(code).id, title: code + ': ' + STANDARDS[code] };
+  if (link) attrs.href = '#/?std=' + code;
+  return h(link ? 'a' : 'span', attrs, code);
+}
+
+/* Skill, grades and benchmark chips for a lesson. With `link`, the chips open the filtered lesson list. */
+function LessonTags(v, link) {
+  return h('div', { class: 'tags' }, SkillMeter(v.skill), h('span', { class: 'tag' }, gradesLabel(v.grades)),
+    v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null);
+}
+
+/* The filter bar. F is the live filter state (mutated); onChange(F) runs after every user change.
+   Option counts show how many lessons each choice would leave given the other filters, and
+   choices that would leave none are disabled. Returns { el, refresh }. */
+function Finder(F, onChange) {
+  const chips = [], selects = [];
+  const sum = h('span', { class: 'finder-sum', 'aria-live': 'polite' });
+  const badge = h('span', { class: 'badge' });
+  const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter()); change(); } }, 'Clear filters');
+  const grid = h('div', { class: 'finder-grid', id: 'finder-grid' });
+  const toggle = h('button', { type: 'button', class: 'finder-toggle', 'aria-expanded': 'false', 'aria-controls': 'finder-grid',
+    onclick: () => { const o = root.classList.toggle('open'); toggle.setAttribute('aria-expanded', o); } }, 'Filters', badge);
+
+  const chipGroup = (facet, label, opts) => {
+    const set = h('div', { class: 'chips' });
+    for (const o of opts) {
+      const n = h('span', { class: 'n' });
+      const attrs = { type: 'button', class: 'chip', 'aria-pressed': 'false', onclick: () => {
+        const i = F[facet].indexOf(o.val); i < 0 ? F[facet].push(o.val) : F[facet].splice(i, 1); change();
+      } };
+      if (o.title) attrs.title = o.title;
+      if (o.strand) attrs['data-strand'] = o.strand;
+      const btn = h('button', attrs, h('span', { class: 'lbl' }, o.label), n);
+      chips.push({ facet, val: o.val, btn, n }); set.append(btn);
+    }
+    return h('fieldset', { class: 'facet' }, h('legend', { class: 'facet-k' }, label), set);
+  };
+  const selectBox = (facet, label, anyLabel, groups) => {
+    const sel = h('select', { class: 'fsel', id: 'f-' + facet, onchange: () => { F[facet] = sel.value; change(); } }, h('option', { value: '' }, anyLabel));
+    const opts = [];
+    for (const g of groups) {
+      const og = h('optgroup', { label: g.label });
+      for (const o of g.options) { const el = h('option', { value: o.val }, o.label); opts.push({ val: o.val, el }); og.append(el); }
+      sel.append(og);
+    }
+    selects.push({ facet, sel, opts });
+    return h('label', { class: 'facet', for: 'f-' + facet }, h('span', { class: 'facet-k' }, label), sel);
+  };
+
+  const used = [...new Set(VIZ.flatMap(v => v.standards))].sort(cmpCode);
+  grid.append(
+    chipGroup('grade', 'Grade level', GRADES.filter(g => VIZ.some(v => v.grades.includes(g.id))).map(g => ({ val: g.id, label: g.name }))),
+    chipGroup('skill', 'Skill level', SKILLS.map(s => ({ val: s.id, label: s.name, title: s.desc }))),
+    used.length ? chipGroup('strand', 'Standard strand', STRANDS.map(s => ({ val: s.id, label: s.name, strand: s.id }))) : null,
+    selectBox('course', 'Course', 'Any course', LEVEL_ORDER.map(l => ({ label: LEVELS[l].name,
+      options: COURSES.filter(c => c.level === l && VIZ.some(v => v.course === c.id)).map(c => ({ val: c.id, label: c.name })) })).filter(g => g.options.length)),
+    used.length ? selectBox('std', 'Standard (Minnesota 2022)', 'Any standard', STRANDS.map(s => ({ label: `Strand ${s.n}: ${s.name}`,
+      options: used.filter(c => strandOf(c).id === s.id).map(c => ({ val: c, label: c + '  ' + shortText(STANDARDS[c], 70) })) })).filter(g => g.options.length)) : null);
+
+  function refresh() {
+    for (const c of chips) {
+      const n = facetCount(VIZ, F, c.facet, c.val), on = F[c.facet].includes(c.val);
+      c.n.textContent = n; c.btn.setAttribute('aria-pressed', on); c.btn.disabled = !n && !on;
+    }
+    for (const s of selects) {
+      s.sel.value = F[s.facet];
+      for (const o of s.opts) o.el.disabled = !facetCount(VIZ, F, s.facet, o.val) && F[s.facet] !== o.val;
+    }
+    const shown = VIZ.filter(v => matches(v, F)).length, on = filterActive(F);
+    sum.textContent = on ? `${shown} of ${VIZ.length} lessons match` : `${VIZ.length} lessons`;
+    clear.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
+  }
+  function change() { refresh(); onChange(F); }
+
+  const root = h('section', { class: 'wrap finder', id: 'finder', 'aria-label': 'Find lessons' },
+    h('div', { class: 'finder-box' },
+      h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, clear),
+      grid));
+  refresh();
+  return { el: root, refresh };
 }
 
 /* =====================================================================
@@ -1156,7 +1740,7 @@ register({
       why: String.raw`Factor: \(x^2-6x+5=(x-1)(x-5)\), which is zero at \(x=1\) and \(x=5\). The quadratic formula gives the same.`,
       hint: String.raw`Find two numbers that multiply to \(5\) and add to \(-6\).` }
   ],
-  links: { prereq: ['slope-and-linear-functions', 'functions-as-transformations'], next: ['exponential-growth'], related: ['derivatives-as-tangent-slopes'] },
+  links: { prereq: ['slope-and-linear-functions', 'functions-as-transformations'], related: ['exponential-growth', 'derivatives-as-tangent-slopes'] },
 
   mount({ stage, controls: C }) {
     const st = { a: 1, h: 0, k: 0 };
@@ -1555,7 +2139,7 @@ register({
       why: String.raw`\(A=\pi\cdot 5^2 = 25\pi \approx 78.5\), which rounds to \(79\). (\(31\) is the circumference \(10\pi\) and \(157\) is \(50\pi\).)`,
       hint: String.raw`Use \(A=\pi r^2\), not \(2\pi r\).` }
   ],
-  links: { prereq: ['pythagorean-theorem'], next: ['similarity-and-scaling'], related: ['riemann-sums-and-the-integral', 'inscribed-angles'] },
+  links: { next: ['similarity-and-scaling'], related: ['pythagorean-theorem', 'riemann-sums-and-the-integral', 'inscribed-angles'] },
 
   mount({ stage, controls: C }) {
     const st = { n: 8, t: 0, r: 2 };
@@ -2814,31 +3398,69 @@ function renderHome(app) {
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Determinant'), detEl),
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Eigenvalues'), eigEl)))));
 
-  /* topic lists, one section per level */
-  const thumbs = [], levels = h('div', { class: 'wrap levels' });
+  /* Lesson finder, then one section per level with lessons grouped by course in curriculum order.
+     Filtering only hides rows (thumbnails stay mounted), and the filter state lives in the URL hash. */
+  const F = filterFromHash(location.hash), thumbs = [], rows = new Map(), sections = [];
+  const levels = h('div', { class: 'wrap levels', id: 'lessons' });
+  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match these filters.'),
+    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter()); finder.refresh(); apply(); } }, 'Clear filters'));
   for (const [key, L] of Object.entries(LEVELS)) {
     const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
-    const list = h('ul', { class: 'topics' });
-    for (const v of live) {
-      const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
-      if (v.thumb) thumbs.push([th, v.thumb]);
-      list.append(h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
-        th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb)),
-        h('span', { class: 'go' }, 'Open'))));
+    const body = h('div', { class: 'level-body' }), groups = [];
+    for (const c of COURSES.filter(c => c.level === key)) {
+      const items = live.filter(v => v.course === c.id);
+      if (!items.length) continue;
+      const list = h('ul', { class: 'topics' }), n = h('span', { class: 'n' });
+      for (const v of items) {
+        const th = h('div', { class: 'thumb', 'aria-hidden': 'true' });
+        if (v.thumb) thumbs.push([th, v.thumb]);
+        const li = h('li', {}, h('a', { class: 'topic', href: '#/viz/' + v.id },
+          th, h('div', { class: 'tt' }, h('span', { class: 't' }, v.title), h('span', { class: 'd' }, v.blurb), LessonTags(v)),
+          h('span', { class: 'go' }, 'Open')));
+        rows.set(v.id, li); list.append(li);
+      }
+      const el = h('section', { class: 'course', 'aria-label': c.name }, h('h3', { class: 'course-head' }, c.name, n), list);
+      groups.push({ el, items, n }); body.append(el);
     }
-    for (const t of todo)
-      list.append(h('li', { class: 'planned' }, h('div', { class: 'topic' },
-        h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
-        h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
-        h('span', { class: 'go' }, 'Soon'))));
-    levels.append(h('section', { class: 'level lvl-' + key, id: 'level-' + key },
+    let planned = null;
+    if (todo.length) {
+      planned = h('section', { class: 'course', 'aria-label': 'In development' }, h('h3', { class: 'course-head' }, 'In development'),
+        h('ul', { class: 'topics' }, todo.map(t => h('li', { class: 'planned' }, h('div', { class: 'topic' },
+          h('div', { class: 'thumb empty', 'aria-hidden': 'true' }),
+          h('div', { class: 'tt' }, h('span', { class: 't' }, t), h('span', { class: 'd' }, 'In development')),
+          h('span', { class: 'go' }, 'Soon'))))));
+      body.append(planned);
+    }
+    const count = h('p', { class: 'count' });
+    const el = h('section', { class: 'level lvl-' + key, id: 'level-' + key },
       h('div', { class: 'level-head' },
         h('span', { class: 'numeral', 'aria-hidden': 'true' }, NUMERALS[key]),
-        h('div', {}, h('h2', { class: 'display' }, L.name), h('p', { class: 'desc' }, L.desc),
-          h('p', { class: 'count' }, `${live.length} of ${total} topics ready`))),
-      list));
+        h('div', {}, h('h2', { class: 'display' }, L.name), h('p', { class: 'desc' }, L.desc), count)),
+      body);
+    levels.append(el); sections.push({ el, live, total, groups, planned, count });
   }
-  app.append(levels);
+  levels.append(empty);
+  const apply = () => {
+    const on = filterActive(F); let shown = 0;
+    for (const S of sections) {
+      let n = 0;
+      for (const g of S.groups) {
+        let k = 0;
+        for (const v of g.items) { const ok = matches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
+        g.el.hidden = !k; n += k;
+        g.n.textContent = k === g.items.length ? `${k} ${k === 1 ? 'lesson' : 'lessons'}` : `${k} of ${g.items.length}`;
+      }
+      if (S.planned) S.planned.hidden = on;
+      S.el.hidden = on && !n; shown += n;
+      S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
+    }
+    empty.hidden = !on || shown > 0;
+    const hash = filterToHash(F);
+    if (location.hash !== hash && (on || /^#\/\?/.test(location.hash))) history.replaceState(null, '', hash);
+  };
+  const finder = Finder(F, apply);
+  app.append(finder.el, levels);
+  apply();
   const tPlanes = thumbs.map(([el, fn]) => { const P = new Plane(el, { span: 3 }); P.onDraw = fn; P.draw(); return P; });
 
   /* hero: a grid cycling through linear maps, with a live readout */
@@ -2875,6 +3497,18 @@ function renderHome(app) {
   return () => { cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
 }
 
+/* "Standards alignment" section of a lesson page: each tagged benchmark with its full wording. */
+function Alignment(v) {
+  if (!v.standards.length) return null;
+  return h('section', { class: 'align', 'aria-label': 'Standards alignment' }, h('h2', {}, 'Standards alignment'),
+    h('p', { class: 'align-note' }, 'Minnesota K\u201312 Academic Standards in Mathematics (2022). Select a code to see every lesson that addresses it.'),
+    h('ul', { class: 'align-list' }, v.standards.map(c => {
+      const s = strandOf(c), a = anchorOf(c);
+      return h('li', { class: 'align-item', 'data-strand': s.id }, StdChip(c, true),
+        h('div', {}, h('p', { class: 'bench' }, STANDARDS[c]), h('p', { class: 'anc' }, s.name + ' \u00b7 ' + a.name)));
+    })));
+}
+
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
    legacy `explain` prose; every part is optional. mount() may return a teardown function
    (legacy) or a scene { destroy, apply(patch, immediate) } that guided steps can drive. */
@@ -2889,6 +3523,7 @@ function renderViz(app, v) {
   const lede = h('p', { class: v.hook ? 'lede hook' : 'lede', html: v.hook || v.blurb });
   const check = v.check && v.check.length ? QuickCheck(v.check) : null;
   const conn = v.links ? Connections(v.links, v.id) : null;
+  const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
     ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }) : null;
@@ -2898,9 +3533,10 @@ function renderViz(app, v) {
     h('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' },
       h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
-    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede),
+    h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede,
+      h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#/?course=' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true))),
     h('div', { class: 'workbench' }, stage, panel),
-    body, check, conn,
+    body, check, conn, align,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },
       prev ? pg(prev, 'prev', 'Previous') : null, next ? pg(next, 'next', 'Next') : null)));
   typeset(body); if (v.hook) typeset(lede);
@@ -2920,7 +3556,7 @@ function route() {
   const m = location.hash.match(/^#\/viz\/([\w-]+)/), v = m && VIZ.find(x => x.id === m[1]);
   const lv = location.hash.match(/^#\/level\/(\w+)/);
   teardown = v ? renderViz(app, v) : renderHome(app);
-  const target = lv && document.getElementById('level-' + lv[1]);
+  const target = lv ? document.getElementById('level-' + lv[1]) : (!v && /^#\/\?/.test(location.hash) ? document.getElementById('finder') : null);
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
   else window.scrollTo(0, 0);
 }
@@ -2928,6 +3564,7 @@ addEventListener('hashchange', route);
 document.querySelectorAll('.nav a, .wordmark').forEach(a => a.addEventListener('click', e => {
   if (location.hash === a.getAttribute('href')) { e.preventDefault(); route(); }
 }));
+applyCurriculum();
 $('#footStat').textContent = `${VIZ.length} topics live, ${Object.values(PLANNED).flat().filter(t => !VIZ.some(v => v.id === slug(t))).length} in development.`;
 route();
 </script>

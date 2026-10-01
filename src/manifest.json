@@ -5,7 +5,12 @@
     "styles/viz.css",
     "styles/prose.css",
     "styles/lesson.css",
-    "styles/motion.css"
+    "styles/motion.css",
+    "styles/curriculum.css"
+  ],
+  "curriculum": [
+    "curriculum/standards-mn2022.js",
+    "curriculum/curriculum.js"
   ],
   "engine": [
     "engine/core.js",
@@ -15,7 +20,9 @@
     "engine/controls.js",
     "engine/math.js",
     "engine/registry.js",
-    "engine/lesson.js"
+    "engine/curriculum.js",
+    "engine/lesson.js",
+    "engine/finder.js"
   ],
   "lessons": [
     "lessons/school/slope-and-linear-functions.js",
