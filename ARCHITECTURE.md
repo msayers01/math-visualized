@@ -2,7 +2,7 @@
 
 Interactive, 3Blue1Brown-style math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
-**Version:** 0.7 (Phase 4: nine school lessons)
+**Version:** 0.8 (Phase 5: all thirteen school lessons)
 **Last updated:** 2026-09-30
 
 ## 1. Deployment model
@@ -33,7 +33,7 @@ tools/build.js           concatenates everything into index.html
 |---|---|
 | `core.js` | `h()` DOM builder, `clamp`, `lerp`, `ease`, `snap`, `tween`, `animateTo`, `fmt`, `palette()`, `alpha()` |
 | `theme.js` | Light/dark toggle, system preference, `themechange` event, `typeset()` (MathJax) |
-| `plane.js` / `draggable.js` / `controls.js` | `Plane` (incl. `ticks()` axis numbers), pointer-drag helper plus `near()` hit test, side-panel builder |
+| `plane.js` / `draggable.js` / `controls.js` | `Plane` (incl. `ticks()` axis numbers and `fit()` plot-area framing), pointer-drag helper plus `near()` hit test, side-panel builder |
 | `math.js` | Shared math helpers (`eig2`, `num`, `linEq`, `TAU`) |
 | `registry.js` | `LEVELS`, `VIZ[]`, `register()`, `PLANNED`, `slug()`, `lessonRef()` |
 | `lesson.js` | `Stepper`, `QuickCheck`, `Connections` (lesson format components) |
@@ -122,6 +122,10 @@ Direction: **precision instruments, modern and sleek**. Midnight ink or cool pap
 |---|---|---|---|
 | `slope-and-linear-functions` | school | Slope and linear functions | Slope/intercept/run sliders; drag the intercept, the rise-run triangle's corners (left corner slides it along the line, upper corner tilts the line about it). Steps animate `m, b, x0, run`. |
 | `systems-of-equations` | school | Systems of equations | Two lines, each with draggable intercept and slope rings (snapped); live intersection, parallel and same-line cases. Steps animate `m1, b1, m2, b2`. |
+| `inscribed-angles` | school | Inscribed angles | Chord endpoints A, B and viewpoint P, all draggable on the circle (or by slider); intercepted arc (the one without P), central vs inscribed angle readout; crossing the chord gives the supplementary angle. Steps animate `a, b, p` (degrees). |
+| `mean-median-and-spread` | school | Mean, median, and spread | Dot plot (values 0–20, snapped to integers, stacked per bin); draggable dots, add/remove, presets; mean balance triangle, median line, σ band. Steps pass a whole `data` array, tweened when the length matches. |
+| `probability-with-repeated-trials` | school | Probability with repeated trials | Two stacked panes: running fraction of successes on a log-trials axis, and 1−(1−p)^k with an optional 1,000-attempt simulation. Steps set `p, k`, `reset`, `runTo` (log-time ramp of trials) and `sim`. |
+| `pascals-triangle-and-the-galton-board` | school | Pascal's triangle and the Galton board | Falling-ball animation on a peg board (2–12 rows, bias p) with Pascal numbers on the pegs, histogram bars and binomial expected-count rings. Steps set `rows, p, reset, nums, theory, drop`. |
 | `functions-as-transformations` | school | Functions as transformations | Pick a base function (|x|, x², x³, √x, sin x); sliders for `g(x)=a·f(b(x−h))+k`; drag a tracked point P on f and see its image P′. Steps animate `a, b, h, k, xp` and set `fn`. |
 | `exponential-growth` | school | Exponential growth | Exponential vs linear growth on independently scaled axes (normalized plot area with its own tick labels); start amount, rate, periods shown, read-at-t; presets; doubling time / half-life. Steps animate `p0, r, T, t` and set `showLin`. |
 | `area-of-a-circle` | school | Area of a circle | Circle cut into n sectors (staggered rotation into an interlocked near-rectangle); readout of n·sin(π/n) → π. Steps set `n` instantly and animate `t, r`. |
@@ -140,12 +144,13 @@ Current priority: **middle & high school only**. Undergraduate and graduate less
 - **Phase 2 (engine part done in 0.5):** lesson-format engine and source split. Still open: retrofit the undergraduate and graduate lessons only if the engine ever requires it (today it does not).
 - **Phase 3 (done in 0.6):** Slope and linear functions, Systems of equations, Quadratics and the parabola, The unit circle and trig waves.
 - **Phase 4 (done in 0.7):** Functions as transformations, Exponential growth, Area of a circle, Similarity and scaling.
-- **Phase 5:** the last 4 school lessons: Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board.
-- **Phases 6+:** undergraduate and graduate lessons (on hold).
+- **Phase 5 (done in 0.8):** Inscribed angles; Mean, median, and spread; Probability with repeated trials; Pascal's triangle and the Galton board. The school level (13 lessons) is complete.
+- **Phases 6+:** undergraduate and graduate lessons (on hold until the owner lifts the school-only priority).
 - **Final:** search, progress tracking, polish.
 
 ## 9. Change log
 
+- **0.8 (2026-10-01):** Phase 5. The last four school lessons (inscribed angles, mean/median/spread, probability with repeated trials, Pascal's triangle and the Galton board), completing the school level. `Plane.fit(W, H, margins)` added. Lesson order: algebra, geometry, then probability and data. Cross-links only point at lessons that exist or are in `PLANNED`.
 - **0.7 (2026-10-01):** Phase 4. Four more school lessons (functions as transformations, exponential growth, area of a circle, similarity and scaling). Lesson order in `manifest.json` follows the curriculum (algebra, then geometry, then the unit circle). Quadratics now lists Functions as transformations as a prerequisite. `TAU` moved into `engine/math.js`.
 - **0.6 (2026-09-30):** Phase 3. Four school lessons in the new lesson format (slope, systems of equations, quadratics, unit circle and trig waves). Engine additions: `snap`, `Plane.ticks()`, `near()`, `num`/`linEq`, stacked-pane stage (`.stage.split`). Lesson order in `manifest.json`: algebra lessons, Pythagorean theorem, unit circle, then the two upper-level lessons.
 - **0.5 (2026-09-30):** Source split into `src/` with `tools/build.js` (output verified equivalent to 0.4). Lesson-format engine: `hook`, guided `steps` (stepper in the side panel, scenes with `apply`), `formal`, multiple-choice `check`, `links` cross-links (`lessonRef`, slug-matched planned lessons), per-level pager, `animateTo`. Side panel scrolls when taller than the viewport. `PLANNED` school list set to the draft curriculum. Pythagorean lesson retrofitted as the reference. Undergraduate and graduate lessons only moved into files, content unchanged.

@@ -97,6 +97,12 @@ class Plane {
     c.fillStyle = color || this.pal.text; c.fillText(text, px, py);
     c.globalAlpha = 1;
   }
+  /* Frame the plot area [0,W]x[0,H] with margins {l, r, t, b} (math units) using one uniform scale. */
+  fit(W, H, { l = 1, r = 1, t = 1, b = 1 } = {}) {
+    const sc = Math.min(this.w / (W + l + r), this.h / (H + t + b));
+    this.span = Math.min(this.w, this.h) / (2 * sc);
+    this.cx = W / 2 + (r - l) / 2; this.cy = H / 2 + (t - b) / 2;
+  }
   /* integer tick numbers along both axes (skips 0); thins out on small screens */
   ticks(step = 1, { size = 15 } = {}) {
     while (this.scale * step < 26) step *= 2;
