@@ -646,7 +646,7 @@
         why: String.raw`Distribute: \(3(x-4)=3x-12\). Subtract \(2x\) from both sides: \(x-12=1\). Add 12 to both sides: \(x=13\). Check: \(3(13-4)=27\) and \(2(13)+1=27\). Forgetting to distribute the 3 over the \(-4\) gives \(x=5\).`,
         hint: 'Open the parentheses first: multiply both terms inside by 3. Then get the x terms on one side and check your answer in the original equation.' }
     ],
-    links: { next: ['systems-of-equations', 'forms-of-a-linear-equation'], related: ['slope-and-linear-functions', 'what-is-a-function', 'square-roots-and-irrational-numbers'] },
+    links: { next: ['solving-linear-inequalities', 'systems-of-equations', 'forms-of-a-linear-equation'], related: ['slope-and-linear-functions', 'what-is-a-function', 'square-roots-and-irrational-numbers'] },
 
     mount({ stage, controls: C }) {
       const mq = matchMedia('(max-width: 900px)'), capOn = () => !mq.matches;
