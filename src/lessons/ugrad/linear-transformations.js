@@ -23,7 +23,7 @@ register({
     <h2>The determinant is an area</h2>
     <p>The shaded square starts with area 1. After the map its area is \(|ad-bc|\), and every other region is scaled by the same factor. When \(\det A < 0\) the plane has been flipped over, and when \(\det A = 0\) it has collapsed onto a line or a point.</p>
     <h2>Eigenvectors keep their direction</h2>
-    <p>The <span class="swatch" style="background:var(--violet)"></span> violet lines mark directions that the map only stretches or flips: \(A\mathbf v = \lambda \mathbf v\). The eigenvalues solve \(\lambda^2 - (a+d)\lambda + (ad-bc) = 0\). A rotation moves every direction, so its eigenvalues are complex and no violet lines appear.</p>`,
+    <p>The <span class="swatch" style="background:var(--violet)"></span> violet lines mark directions that the map only stretches or flips: \(A\mathbf v = \lambda \mathbf v\). The eigenvalues solve \(\lambda^2 - (a+d)\lambda + (ad-bc) = 0\). A rotation by an angle other than \(0^\circ\) or \(180^\circ\) moves every direction, so its eigenvalues are complex and no violet lines appear.</p>`,
   mount({ stage, controls: C }) {
     const st = { M: [1, 1, 0, 1], t: 0, eig: true };
     let cancel = () => {};

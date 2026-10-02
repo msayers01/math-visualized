@@ -76,7 +76,7 @@
     { text: 'The graph is a car\'s velocity in m/s (positive means forward). Look at the readout for t from 0 to 5 s. Where is the car at t = 5 compared with where it started?',
       opts: ['4.083 m ahead of the start', '0.417 m behind the start', '0.417 m ahead of the start', 'Exactly back at the start'], ans: 1,
       why: 'Net change in position is the signed area. Forward area (yellow) is about 0.917 + 0.917 = 1.833. Backward area (red) is 2.250. Net: 1.833 − 2.250 = −0.417 m, so the car ends behind where it started.' },
-    { text: 'How far did the car\'s odometer say it travelled from t = 0 to t = 5?',
+    { text: 'How far did the car\'s odometer say it traveled from t = 0 to t = 5?',
       opts: ['2.250 m', '0.417 m', '−0.417 m', '4.083 m'], ans: 3,
       why: 'An odometer never runs backward, so red area counts as positive too: 1.833 + 2.250 = 4.083 m. That is the "Total distance" line in the readout. Net change and distance agree only when the velocity never goes negative.' },
     { text: 'The curve touches zero at t = 1 and t = 4. What is the car doing for t between 1 and 4?',
@@ -97,11 +97,11 @@
     { text: 'At n = 100 the left and right sums differ by 0.010. How far apart will they be at n = 1000?',
       opts: ['0.100', '0.010', '0.001', '0'], ans: 2,
       why: 'The gap is (rise of the function) × (strip width) = (1 − 0) × 1/n. At n = 1000 that is 0.001. It is never exactly 0 for any finite n. Only the limit n → ∞ closes it completely.' },
-    { text: 'Now switch the rule to Midpoints (use the Rectangles menu) and compare with the table. Does a different rule give a different limit?',
+    { text: 'Now switch the rule to Midpoints (use the Sample rule menu) and compare with the table. Does a different rule give a different limit?',
       opts: ['Yes, it uses different heights', 'Only when n is even', 'No, every rule closes in on the same number, 1/3', 'Yes, it gives exactly 0.5'], ans: 2,
       why: 'Every rule picks a height somewhere inside each thin strip. As the strips get thinner, the heights inside one strip differ by less and less, so all the rules agree in the limit. That is why the integral does not depend on the rule.' }
   ];
-  const TITLES = ['Challenge 1: how many rectangles?', 'Challenge 2: over or under?', 'Challenge 3: distance travelled', 'Challenge 4: the limit'];
+  const TITLES = ['Challenge 1: how many rectangles?', 'Challenge 2: over or under?', 'Challenge 3: distance traveled', 'Challenge 4: the limit'];
 
   register({
     id: 'riemann-sums-and-the-integral', level: 'ugrad',
@@ -119,7 +119,7 @@
       const pts = []; for (let x = .1; x <= 2.9; x += .05) pts.push([x, x * x * .6]);
       p.curve(pts, { stroke: pal.blue, width: 2.8 });
     },
-    hook: String.raw`A car's speedometer gives its speed at every instant, but never the distance. How can you get the distance travelled from the speed alone, and what happens if the car reverses?`,
+    hook: String.raw`A car's speedometer gives its speed at every instant, but never the distance. How can you get the distance traveled from the speed alone, and what happens if the car reverses?`,
     steps: [
       { title: 'Rectangles under a curve',
         text: String.raw`<p>We want the yellow area under \(y=x^2\) between \(x=0\) and \(x=2\). Curved edges are hard, so cut it into \(n=4\) strips of width \(\Delta x=0.5\) and replace each by a rectangle.</p><p>With the <b>left</b> rule each height is the curve's value at the strip's left edge. The sum is \(1.750\), but the exact area is \(2.667\). The error is \(-0.917\).</p><p>Try Challenge 1: find the smallest \(n\) that gets within the target, and compare the rules.</p>`,
@@ -128,7 +128,7 @@
         text: String.raw`<p>Before you look, predict. Does the left sum come out too big or too small? What about the right sum? It depends on whether the curve is rising or falling.</p><p>Answer each case in Challenge 2. The rectangles stay hidden until you do. Each answer explains why, and the case with \(\sin x\) breaks the simple rule.</p>`,
         set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 1 } },
       { title: 'Velocity: area is distance',
-        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
+        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance traveled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
         set: { fn: 5, a: 0, b: 5, n: 20, rule: 'mid', ch: 2 } },
       { title: 'The limit',
         text: String.raw`<p>Back to \(x^2\), now on \([0,1]\). Drag \(n\) up to 100. The left sum is \(0.285\) at \(n=10\) and the right sum is \(0.385\); at \(n=100\) they are \(0.328\) and \(0.338\).</p><p>The integral is the number all the sums close in on as \(n\to\infty\). Challenge 4 asks which number, and whether the rule matters.</p>`,
@@ -145,7 +145,7 @@
       \[ \int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
       Here \(dx\) is the width \(\Delta x\) in the limit, and \(x\) is a dummy variable. For a continuous \(f\), or one with finitely many jumps, the limit exists and does not depend on how the sample points are chosen. That independence is why all the rules in the lesson close in on the same number.</p>
       <h3>Signed area and net change</h3>
-      <p>Where \(f\ge 0\) a rectangle adds its area. Where \(f&lt;0\) its height is negative, so it subtracts. The integral is therefore <em>signed area</em>: area above the axis minus area below. If \(v(t)\) is velocity, then \(\int_a^b v\,dt\) is the <em>net change in position</em>, while the total distance travelled is \(\int_a^b |v|\,dt\). For the car in the lesson, \(v(t) = \tfrac12(t-1)(t-4)\) on \([0,5]\) gives \(\int v\,dt = -\tfrac{5}{12} \approx -0.417\) m and \(\int|v|\,dt = \tfrac{49}{12} \approx 4.083\) m.</p>
+      <p>Where \(f\ge 0\) a rectangle adds its area. Where \(f&lt;0\) its height is negative, so it subtracts. The integral is therefore <em>signed area</em>: area above the axis minus area below. If \(v(t)\) is velocity, then \(\int_a^b v\,dt\) is the <em>net change in position</em>, while the total distance traveled is \(\int_a^b |v|\,dt\). For the car in the lesson, \(v(t) = \tfrac12(t-1)(t-4)\) on \([0,5]\) gives \(\int v\,dt = -\tfrac{5}{12} \approx -0.417\) m and \(\int|v|\,dt = \tfrac{49}{12} \approx 4.083\) m.</p>
       <h3>Worked example: \(\int_0^1 x^2\,dx\)</h3>
       <p>Use \(n\) strips, so \(\Delta x = 1/n\) and \(x_i = i/n\). With right endpoints,
       \[ R_n = \sum_{i = 1}^{n}\Big (\frac{i}{n}\Big )^2\frac1n = \frac{1}{n^3} \sum_{i = 1}^{n} i^2 = \frac{1}{n^3} \cdot \frac{n(n+1)(2n+1)}{6} = \frac{(n+1)(2n+1)}{6n^2}. \]

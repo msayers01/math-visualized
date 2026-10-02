@@ -94,7 +94,7 @@
       <h3>Worked example</h3>
       <p>A cone has radius 3 cm and height 4 cm. The base area is \(\pi\cdot3^2=9\pi\). Then \(V=\tfrac13\cdot9\pi\cdot4=12\pi\approx37.7\ \text{cm}^3\). A cylinder with the same base and height holds \(36\pi\), which is exactly three cones.</p>`,
     check: [
-      { q: 'A prism has a triangular base. Which statement is true for every prism, whatever the shape of its base?',
+      { q: 'A prism can have a triangle, a rectangle or any other shape as its base. Which statement is true for every prism?',
         choices: ['Volume = perimeter of the base × height', 'Volume = area of the base × height', 'Volume = length × width × height', 'Volume = half the area of the base × height'], answer: 1,
         why: String.raw`Slice any prism into layers. Each layer is a copy of the base and holds as many unit cubes as the base area. So \(V=B\times h\). "Length × width × height" is only the special case where the base is a rectangle. The perimeter measures the outline, not the space inside.`,
         hint: 'Think of stacking identical layers. How many cubes fit in one layer?' },
@@ -576,7 +576,7 @@
                ['10 cm³', 'That used ⅓ × 6 × 5. The base is a square, so its area is 6 × 6 = 36, not 6.']] },
         { fig: { shape: 'box', L: 10, W: 5, H: 2, k: 1, unit: 'm' }, ans: 1,
           q: 'A pool is 10 m long, 5 m wide and 2 m deep. A pump adds 500 liters each minute. One cubic meter holds 1000 liters. How many minutes does it take to fill the pool?',
-          ch: [['100 minutes', 'That comes from 50 m³, the floor area with no depth (50,000 ÷ 500 = 100). The volume is 10 × 5 × 2 = 100 m³.'],
+          ch: [['100 minutes', 'That comes from using only the floor area, 10 × 5 = 50, with no depth (50,000 ÷ 500 = 100). The volume is 10 × 5 × 2 = 100 m³.'],
                ['200 minutes', 'V = 10 × 5 × 2 = 100 m³ = 100,000 liters. Then 100,000 ÷ 500 = 200 minutes.'],
                ['0.2 minutes', 'That forgot to change cubic meters to liters. 100 m³ is 100,000 liters, and 100,000 ÷ 500 = 200.'],
                ['2,000 minutes', '100,000 ÷ 500 is 200, not 2,000. Check the zeros when you divide.']] },

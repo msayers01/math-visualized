@@ -2962,7 +2962,7 @@ register({
   hook: String.raw`A point circles at a steady pace. Why does its height rise and fall in such a smooth, repeating wave?`,
   steps: [
     { title: 'A point on a circle',
-      text: String.raw`<p>The circle has radius \(1\). The angle \(\theta\) is measured counterclockwise from the positive x-axis.</p><p>The <b>yellow arc</b> is the distance travelled around the circle. That length <em>is</em> \(\theta\) in radians.</p>`,
+      text: String.raw`<p>The circle has radius \(1\). The angle \(\theta\) is measured counterclockwise from the positive x-axis.</p><p>The <b>yellow arc</b> is the distance traveled around the circle. That length <em>is</em> \(\theta\) in radians.</p>`,
       set: { th: .9, showCos: false } },
     { title: 'Two legs: cosine and sine',
       text: String.raw`<p>Drop a vertical line from the point. The <b>green</b> leg is how far right it is, \(\cos\theta\). The <b>red</b> leg is how high it is, \(\sin\theta\).</p><p>The radius is \(1\), so Pythagoras gives \(\cos^2\theta+\sin^2\theta=1\).</p>`,
@@ -3677,10 +3677,10 @@ register({
         text: String.raw`<p>Now the rule is \(x^2+y^2=25\), a circle. Feed it \(x=3\) and two numbers fit: \(y=4\) and \(y=-4\), because \(3^2+4^2=25\) and \(3^2+(-4)^2=25\).</p><p>A function must give exactly one output for each input, so this is not a function. The <b>violet</b> vertical line at \(x=3\) crosses the graph twice. Now pick \(f(x)=x^2\) in the Rule menu: every vertical line crosses its graph only once.</p>`,
         set: { rule: 'circ', x: 3, tbl: 0, steps: 0, vline: true, dx: 1 } },
       { title: 'Four ways to show one function',
-        text: String.raw`<p>Here is \(f(x)=2x-1\) in four forms. <b>Words:</b> double the input, then subtract 1. <b>Equation:</b> \(f(x)=2x-1\). <b>Table:</b> each row is an input and its output. <b>Graph:</b> each row is a point.</p><p>The highlighted row is \(x=2\) and \(f(2)=3\), so its point is \((2,3)\). The graph is the set of all such points, and the line passes through every one of them.</p><p>You can translate in any direction. The table row with \(x=0\) shows \(f(0)=-1\), the constant in the equation. Pick another linear rule and all four forms change together.</p>`,
+        text: String.raw`<p>Here is \(f(x)=2x-1\) in four forms. <b>Words:</b> double the input, then subtract 1. <b>Equation:</b> \(f(x)=2x-1\). <b>Table:</b> each row is an input and its output. <b>Graph:</b> each row is a point.</p><p>The highlighted row is \(x=2\) and \(f(2)=3\), so its point is \((2,3)\). The graph is the set of all such points.</p><p>You can move between the four forms in any direction. The table row with \(x=0\) shows \(f(0)=-1\), the constant in the equation. Pick another linear rule and all four forms change together.</p>`,
         set: { rule: 'lin1', x: 2, tbl: 1, steps: 0, vline: false, dx: 1 } },
       { title: 'Equal steps in, equal steps out',
-        text: String.raw`<p>Read down the table. Each time the input goes up by \(1\) (green), the output goes up by \(2\) (red). It is always \(2\), from the first row to the last, and every stair on the graph has the same height.</p><p>That \(2\) is the \(m\) in \(f(x)=2x-1\). With <b>Step size</b> \(2\) or \(3\) the output changes by \(4\) or \(6\). Now choose \(f(x)=x^2\) in the Rule menu: with step size \(1\) the changes are \(-5,-3,-1,+1,+3,+5\). They are not constant, so \(x^2\) is not linear.</p>`,
+        text: String.raw`<p>Read down the table. Each time the input goes up by \(1\) (green), the output goes up by \(2\) (red). It is always \(2\), and every stair on the graph has the same height.</p><p>That \(2\) is the \(m\) in \(f(x)=2x-1\). With <b>Step size</b> \(2\) or \(3\) the output changes by \(4\) or \(6\). Now choose \(f(x)=x^2\) in the Rule menu: with step size \(1\) the changes are \(-5,-3,-1,+1,+3,+5\). They are not constant, so \(x^2\) is not linear.</p>`,
         set: { rule: 'lin1', x: 1, tbl: 1, steps: 1, vline: false, dx: 1 } }
     ],
     formal: String.raw`
@@ -11593,10 +11593,10 @@ register({
     hook: String.raw`Mia puts $5 in a jar and adds $2 every week. How much will be in the jar after 10 weeks, and how can a table, a graph and one short rule all give the answer?`,
     steps: [
       { title: 'Two quantities, two roles',
-        text: String.raw`<p>A <b>variable</b> is a quantity that can change. Mia puts $5 in a jar and adds $2 every week. The weeks change, and so do the dollars in the jar. The $5 and the $2 never change, so they are not variables.</p><p>When two variables change together, you <em>choose</em> one and the other <em>responds</em>. The one you choose is the <b>independent variable</b>, called \(x\). The one that responds is the <b>dependent variable</b>, called \(y\). On a graph, \(x\) goes along the bottom and \(y\) goes up the side.</p><p>For each situation, first pick the two quantities that change together. Then pick which one is independent.</p>`,
+        text: String.raw`<p>A <b>variable</b> is a quantity that can change. Mia puts $5 in a jar and adds $2 every week. The weeks and the dollars change, so they are variables. The $5 and the $2 never change.</p><p>When two variables change together, you <em>choose</em> one and the other <em>responds</em>. The one you choose is the <b>independent variable</b>, \(x\). The one that responds is the <b>dependent variable</b>, \(y\). On a graph, \(x\) goes along the bottom and \(y\) goes up the side.</p><p>For each situation, pick the two quantities that change together, then the independent one.</p>`,
         set: { mode: 'roles', qi: 0, x: 2, steps: 0 } },
       { title: 'Change x and watch y',
-        text: String.raw`<p>Ava is 4 years older than her brother Ben. Let \(x\) be Ben's age and \(y\) be Ava's age. The marker starts at \(x=2\), where the table says \(y=6\).</p><p>Drag across the graph, tap a table column, or use the slider to change \(x\). Watch \(y\) respond in the table and on the graph. The rule is \(y=x+4\): add 4 to \(x\).</p><p>Switch on <b>Show the changes</b> to see how \(y\) moves each time \(x\) goes up 1. Then try the other two situations in the menu and solve each challenge.</p>`,
+        text: String.raw`<p>Ava is 4 years older than her brother Ben. Let \(x\) be Ben's age and \(y\) be Ava's age. The marker starts at \(x=2\), where the table says \(y=6\).</p><p>Drag across the graph, tap a table column, or use the slider to change \(x\). Watch \(y\) respond. The rule is \(y=x+4\): add 4 to \(x\).</p><p>Switch on <b>Show the changes</b> to see how \(y\) moves each time \(x\) goes up 1. Then try the other two situations in the menu and solve each challenge.</p>`,
         set: { mode: 'explore', sit: 'age', x: 2, steps: 0 } },
       { title: 'Write the rule',
         text: String.raw`<p>A <b>rule</b> is an equation that gives \(y\) from \(x\). Some rules add (\(y=x+4\)), some multiply (\(y=3x\)) and some do both (\(y=2x+1\)).</p><p>Each question shows a table, a graph or words. Choose the rule that fits. The lesson then tests your choice on <b>every</b> column. A rule can match one column and still be wrong, and the red marks show which column breaks it.</p>`,
@@ -16110,7 +16110,7 @@ register({
     { text: 'The graph is a car\'s velocity in m/s (positive means forward). Look at the readout for t from 0 to 5 s. Where is the car at t = 5 compared with where it started?',
       opts: ['4.083 m ahead of the start', '0.417 m behind the start', '0.417 m ahead of the start', 'Exactly back at the start'], ans: 1,
       why: 'Net change in position is the signed area. Forward area (yellow) is about 0.917 + 0.917 = 1.833. Backward area (red) is 2.250. Net: 1.833 − 2.250 = −0.417 m, so the car ends behind where it started.' },
-    { text: 'How far did the car\'s odometer say it travelled from t = 0 to t = 5?',
+    { text: 'How far did the car\'s odometer say it traveled from t = 0 to t = 5?',
       opts: ['2.250 m', '0.417 m', '−0.417 m', '4.083 m'], ans: 3,
       why: 'An odometer never runs backward, so red area counts as positive too: 1.833 + 2.250 = 4.083 m. That is the "Total distance" line in the readout. Net change and distance agree only when the velocity never goes negative.' },
     { text: 'The curve touches zero at t = 1 and t = 4. What is the car doing for t between 1 and 4?',
@@ -16131,11 +16131,11 @@ register({
     { text: 'At n = 100 the left and right sums differ by 0.010. How far apart will they be at n = 1000?',
       opts: ['0.100', '0.010', '0.001', '0'], ans: 2,
       why: 'The gap is (rise of the function) × (strip width) = (1 − 0) × 1/n. At n = 1000 that is 0.001. It is never exactly 0 for any finite n. Only the limit n → ∞ closes it completely.' },
-    { text: 'Now switch the rule to Midpoints (use the Rectangles menu) and compare with the table. Does a different rule give a different limit?',
+    { text: 'Now switch the rule to Midpoints (use the Sample rule menu) and compare with the table. Does a different rule give a different limit?',
       opts: ['Yes, it uses different heights', 'Only when n is even', 'No, every rule closes in on the same number, 1/3', 'Yes, it gives exactly 0.5'], ans: 2,
       why: 'Every rule picks a height somewhere inside each thin strip. As the strips get thinner, the heights inside one strip differ by less and less, so all the rules agree in the limit. That is why the integral does not depend on the rule.' }
   ];
-  const TITLES = ['Challenge 1: how many rectangles?', 'Challenge 2: over or under?', 'Challenge 3: distance travelled', 'Challenge 4: the limit'];
+  const TITLES = ['Challenge 1: how many rectangles?', 'Challenge 2: over or under?', 'Challenge 3: distance traveled', 'Challenge 4: the limit'];
 
   register({
     id: 'riemann-sums-and-the-integral', level: 'ugrad',
@@ -16153,7 +16153,7 @@ register({
       const pts = []; for (let x = .1; x <= 2.9; x += .05) pts.push([x, x * x * .6]);
       p.curve(pts, { stroke: pal.blue, width: 2.8 });
     },
-    hook: String.raw`A car's speedometer gives its speed at every instant, but never the distance. How can you get the distance travelled from the speed alone, and what happens if the car reverses?`,
+    hook: String.raw`A car's speedometer gives its speed at every instant, but never the distance. How can you get the distance traveled from the speed alone, and what happens if the car reverses?`,
     steps: [
       { title: 'Rectangles under a curve',
         text: String.raw`<p>We want the yellow area under \(y=x^2\) between \(x=0\) and \(x=2\). Curved edges are hard, so cut it into \(n=4\) strips of width \(\Delta x=0.5\) and replace each by a rectangle.</p><p>With the <b>left</b> rule each height is the curve's value at the strip's left edge. The sum is \(1.750\), but the exact area is \(2.667\). The error is \(-0.917\).</p><p>Try Challenge 1: find the smallest \(n\) that gets within the target, and compare the rules.</p>`,
@@ -16162,7 +16162,7 @@ register({
         text: String.raw`<p>Before you look, predict. Does the left sum come out too big or too small? What about the right sum? It depends on whether the curve is rising or falling.</p><p>Answer each case in Challenge 2. The rectangles stay hidden until you do. Each answer explains why, and the case with \(\sin x\) breaks the simple rule.</p>`,
         set: { fn: 0, a: 0, b: 2, n: 4, rule: 'left', ch: 1 } },
       { title: 'Velocity: area is distance',
-        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance travelled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
+        text: String.raw`<p>The graph now shows a car's velocity. Velocity times time is a change in position, so each rectangle is a small distance. A rectangle below the axis is a distance traveled <em>backward</em>, drawn in red.</p><p>Between \(t=0\) and \(t=5\) the exact signed area is \(-0.417\) m, but the total area with every piece counted positive is \(4.083\) m. Answer Challenge 3 using the readout.</p>`,
         set: { fn: 5, a: 0, b: 5, n: 20, rule: 'mid', ch: 2 } },
       { title: 'The limit',
         text: String.raw`<p>Back to \(x^2\), now on \([0,1]\). Drag \(n\) up to 100. The left sum is \(0.285\) at \(n=10\) and the right sum is \(0.385\); at \(n=100\) they are \(0.328\) and \(0.338\).</p><p>The integral is the number all the sums close in on as \(n\to\infty\). Challenge 4 asks which number, and whether the rule matters.</p>`,
@@ -16179,7 +16179,7 @@ register({
       \[ \int_a^b f(x)\,dx = \lim_{n\to\infty} \sum_{i = 1}^{n} f(x_i^*)\,\Delta x. \]
       Here \(dx\) is the width \(\Delta x\) in the limit, and \(x\) is a dummy variable. For a continuous \(f\), or one with finitely many jumps, the limit exists and does not depend on how the sample points are chosen. That independence is why all the rules in the lesson close in on the same number.</p>
       <h3>Signed area and net change</h3>
-      <p>Where \(f\ge 0\) a rectangle adds its area. Where \(f&lt;0\) its height is negative, so it subtracts. The integral is therefore <em>signed area</em>: area above the axis minus area below. If \(v(t)\) is velocity, then \(\int_a^b v\,dt\) is the <em>net change in position</em>, while the total distance travelled is \(\int_a^b |v|\,dt\). For the car in the lesson, \(v(t) = \tfrac12(t-1)(t-4)\) on \([0,5]\) gives \(\int v\,dt = -\tfrac{5}{12} \approx -0.417\) m and \(\int|v|\,dt = \tfrac{49}{12} \approx 4.083\) m.</p>
+      <p>Where \(f\ge 0\) a rectangle adds its area. Where \(f&lt;0\) its height is negative, so it subtracts. The integral is therefore <em>signed area</em>: area above the axis minus area below. If \(v(t)\) is velocity, then \(\int_a^b v\,dt\) is the <em>net change in position</em>, while the total distance traveled is \(\int_a^b |v|\,dt\). For the car in the lesson, \(v(t) = \tfrac12(t-1)(t-4)\) on \([0,5]\) gives \(\int v\,dt = -\tfrac{5}{12} \approx -0.417\) m and \(\int|v|\,dt = \tfrac{49}{12} \approx 4.083\) m.</p>
       <h3>Worked example: \(\int_0^1 x^2\,dx\)</h3>
       <p>Use \(n\) strips, so \(\Delta x = 1/n\) and \(x_i = i/n\). With right endpoints,
       \[ R_n = \sum_{i = 1}^{n}\Big (\frac{i}{n}\Big )^2\frac1n = \frac{1}{n^3} \sum_{i = 1}^{n} i^2 = \frac{1}{n^3} \cdot \frac{n(n+1)(2n+1)}{6} = \frac{(n+1)(2n+1)}{6n^2}. \]
@@ -17880,7 +17880,7 @@ register({
       p.path(inn, { stroke: pal.blue, width: 4 });
       p.dot(0, 0, 6, pal.yellow, pal.stage, 2);
     },
-    hook: String.raw`Near a point, a function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
+    hook: String.raw`A function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
     steps: [
       { title: 'Getting close',
         text: String.raw`<p>The limit \(\lim_{x\to a} f(x) = L\) says: as \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). Here \(f(x)=x^2\) and \(a=2\).</p><p>Drag the point, or press <b>Step closer</b>. Read the table: from both sides the values of \(f(x)\) head for \(4\). At \(x=2.001\) we get \(4.004\), and at \(x=1.999\) we get \(3.996\).</p>`,
@@ -21322,7 +21322,7 @@ register({
         text: String.raw`<p>Suppose you know a student is in 10th grade. What is the chance that this student plays a sport? This is a <b>conditional probability</b>, written P(A given B). Only the 10th graders can be the one you picked, so the sample space shrinks to the 10th grade column.</p><p>Choose <b>P(A given B)</b>. Mark the cells that count as the <b>top</b> of the fraction. Switch to <b>bottom</b> and mark the cells that make the new sample space. Then try <b>P(B given A)</b> and compare.</p>`,
         set: { mode: 'prob', ds: 0, task: 2 } },
       { title: 'Does knowing B change A?',
-        text: String.raw`<p>Two events are <b>independent</b> if knowing one does not change the chance of the other. Here 100 students were asked about their phone and their favorite streaming service. A is "has an iPhone" and B is "likes music best".</p><p>Find P(A) and P(A given B). Real counts are never exactly equal, so ask whether the two numbers are close. Then give your verdict. Switch the survey to grade and sport and compare.</p>`,
+        text: String.raw`<p>Two events are <b>independent</b> if knowing one does not change the chance of the other. Here 100 students were asked about their phone and their favorite streaming service. A is "has an iPhone" and B is "likes music best".</p><p>Find P(A) and P(A given B). Real counts are almost never exactly equal, so ask whether the two numbers are close. Then give your verdict. Switch the survey to grade and sport and compare.</p>`,
         set: { mode: 'indep', ds: 1, task: 0 } }
     ],
     formal: String.raw`
@@ -21879,7 +21879,7 @@ register({
         text: String.raw`<p>The bars show \(200\) test scores. Each bar counts the students in a \(5\)-point range. The computed mean is \(70.0\) and the standard deviation is \(10.0\).</p><p>The blue curve is a <b>normal curve</b>. Drag its top handle to set the center \(\mu\) (the mean). Drag its side handle to set the width \(\sigma\) (the standard deviation). It starts at \(\mu=60\) and \(\sigma=15\), too far left and too wide.</p>`,
         set: { mode: 'fit', mu: 60, sd: 15 } },
       { title: 'The 68-95-99.7 rule',
-        text: String.raw`<p>Now the curve has \(\mu=70\) and \(\sigma=10\). The area under it is the share of all scores. About \(68\%\) of scores lie within \(1\sigma\) of the mean (\(60\) to \(80\)), about \(95\%\) within \(2\sigma\) (\(50\) to \(90\)), and about \(99.7\%\) within \(3\sigma\) (\(40\) to \(100\)).</p><p>The yellow region starts at \(60\) to \(80\). Drag its boundaries to \(50\) and \(90\), then \(40\) and \(100\), and compare the exact area with the rule.</p>`,
+        text: String.raw`<p>Now the curve has \(\mu=70\) and \(\sigma=10\). The area under it is the share of all scores. About \(68\%\) of scores lie within \(1\sigma\) of the mean (\(60\) to \(80\)), about \(95\%\) within \(2\sigma\) (\(50\) to \(90\)), and about \(99.7\%\) within \(3\sigma\) (\(40\) to \(100\)).</p><p>The yellow region covers \(60\) to \(80\). Drag its boundaries to \(50\) and \(90\), then \(40\) and \(100\), and compare the exact area with the rule.</p>`,
         set: { mode: 'area', rtype: 'between', bands: true, qi: -1, mu: 70, sd: 10, a: 60, b: 80 } },
       { title: 'Estimate a percentage',
         text: String.raw`<p>Use the rule to answer four questions about these scores. Each time, drag the boundary to the cutoff and read its <b>z-score</b>: how many standard deviations it is from the mean. Then choose an estimate.</p><p>The questions include one-sided regions (above, below) and a region between two cutoffs. The exact area from the curve appears after you answer, so you can compare.</p>`,
@@ -21905,7 +21905,7 @@ register({
       The rest is split evenly between the two tails. So the share above \(\mu+\sigma\) is \(\frac{100-68}{2}=16\%\), and the share above \(\mu+2\sigma\) is \(\frac{100-95}{2}=2.5\%\).</p>
       <h3>Exact areas</h3>
       <p>The area to the left of \(z\) is written \(\Phi(z)\) and can be computed from the error function, \(\Phi(z)=\tfrac12\bigl(1+\operatorname{erf}(z/\sqrt2)\bigr)\). The lesson uses a numerical approximation of this. A calculator, a spreadsheet (the function NORM.DIST) or a z-table gives the same values.</p>
-      <p><b>Example.</b> Above \(85\): \(1-\Phi(1.5)=1-0.9332=0.0668\), about \(6.7\%\), or about \(13\) of the \(200\) students. The rule only said between \(2.5\%\) and \(16\%\). Between \(60\) and \(90\): \(\Phi(2)-\Phi(-1)=0.9772-0.1587=0.8186\), about \(82\%\). The rule gave \(34\%+47.5\%=81.5\%\).</p>
+      <p><b>Example.</b> Above \(85\): \(1-\Phi(1.5)=1-0.9332=0.0668\), about \(6.7\%\), or about \(13\) of the \(200\) students. The rule only said between \(2.5\%\) and \(16\%\). Between \(60\) and \(90\): \(\Phi(2)-\Phi(-1)=0.9772-0.1587=0.8185\), about \(82\%\). The rule gave \(34\%+47.5\%=81.5\%\).</p>
       <h3>When a normal curve is the wrong model</h3>
       <p>The mean and standard deviation can be computed for any list of numbers, so they never tell you whether the curve fits. Look at the histogram first. A normal curve is a poor model when the data is
       <b>skewed</b> (a long tail on one side, such as incomes), has <b>two or more peaks</b> (such as a group mixing children and adults), or <b>piles up against a hard limit</b> (such as quiz scores near the maximum), and when there are too few values to show a shape at all. A good candidate has one peak, is symmetric, falls off smoothly, and has no wall. Even then, the percentages are for the model. The real data can differ a little.</p>`,
@@ -28297,7 +28297,7 @@ register({
       <h3>Worked example</h3>
       <p>A cone has radius 3 cm and height 4 cm. The base area is \(\pi\cdot3^2=9\pi\). Then \(V=\tfrac13\cdot9\pi\cdot4=12\pi\approx37.7\ \text{cm}^3\). A cylinder with the same base and height holds \(36\pi\), which is exactly three cones.</p>`,
     check: [
-      { q: 'A prism has a triangular base. Which statement is true for every prism, whatever the shape of its base?',
+      { q: 'A prism can have a triangle, a rectangle or any other shape as its base. Which statement is true for every prism?',
         choices: ['Volume = perimeter of the base × height', 'Volume = area of the base × height', 'Volume = length × width × height', 'Volume = half the area of the base × height'], answer: 1,
         why: String.raw`Slice any prism into layers. Each layer is a copy of the base and holds as many unit cubes as the base area. So \(V=B\times h\). "Length × width × height" is only the special case where the base is a rectangle. The perimeter measures the outline, not the space inside.`,
         hint: 'Think of stacking identical layers. How many cubes fit in one layer?' },
@@ -28779,7 +28779,7 @@ register({
                ['10 cm³', 'That used ⅓ × 6 × 5. The base is a square, so its area is 6 × 6 = 36, not 6.']] },
         { fig: { shape: 'box', L: 10, W: 5, H: 2, k: 1, unit: 'm' }, ans: 1,
           q: 'A pool is 10 m long, 5 m wide and 2 m deep. A pump adds 500 liters each minute. One cubic meter holds 1000 liters. How many minutes does it take to fill the pool?',
-          ch: [['100 minutes', 'That comes from 50 m³, the floor area with no depth (50,000 ÷ 500 = 100). The volume is 10 × 5 × 2 = 100 m³.'],
+          ch: [['100 minutes', 'That comes from using only the floor area, 10 × 5 = 50, with no depth (50,000 ÷ 500 = 100). The volume is 10 × 5 × 2 = 100 m³.'],
                ['200 minutes', 'V = 10 × 5 × 2 = 100 m³ = 100,000 liters. Then 100,000 ÷ 500 = 200 minutes.'],
                ['0.2 minutes', 'That forgot to change cubic meters to liters. 100 m³ is 100,000 liters, and 100,000 ÷ 500 = 200.'],
                ['2,000 minutes', '100,000 ÷ 500 is 200, not 2,000. Check the zeros when you divide.']] },
@@ -33475,14 +33475,14 @@ register({
       <h3>The ways three planes can meet</h3>
       <p><b>One point</b>: the planes have three different tilts, like the floor and two walls in the corner of a room. <b>A line</b>: the planes share a line, like the pages of a book at its spine; or two equations are the same plane and the third crosses it. <b>Nothing</b>: two planes are parallel (or two are the same plane and the third is parallel to them), or the planes cross in pairs but the three crossing lines are parallel (a triangular tunnel). <b>A whole plane</b>: all three equations describe the same plane.</p>
       <h3>Why adding equations keeps the solution</h3>
-      <p>Suppose \((x,y,z)\) makes \(E_1\) and \(E_2\) true. Then the left side of \(E_1\) equals its right side, and the same holds for \(E_2\). Adding equal numbers to equal numbers gives equal numbers, so the sum of the left sides equals the sum of the right sides. The same holds for multiplying an equation by a number. So every solution of the system is also a solution of any combination \(m_1E_1+m_2E_2+m_3E_3\). The new equations can have extra solutions, which is why you find the last variable from an original equation and check all three. The new equation does not lose any solution. When we use all three original equations in the new ones, we do not gain false ones either.</p>
+      <p>Suppose \((x,y,z)\) makes \(E_1\) and \(E_2\) true. Then the left side of \(E_1\) equals its right side, and the same holds for \(E_2\). Adding equal numbers to equal numbers gives equal numbers, so the sum of the left sides equals the sum of the right sides. The same holds for multiplying an equation by a number. So every solution of the system is also a solution of any combination \(m_1E_1+m_2E_2+m_3E_3\). The new equations can have extra solutions, which is why you find the last variable from an original equation and check all three. Every solution of the system also solves the new equation, so no solution is lost.</p>
       <h3>Elimination for three unknowns</h3>
       <p>1. Choose a variable to eliminate, say \(z\). 2. Combine one pair of equations so the \(z\) terms cancel. Call the result \(N_1\). 3. Combine a <em>different</em> pair that includes the equation \(N_1\) left out, so the \(z\) terms cancel again. Call it \(N_2\). It must be the <b>same variable</b>, otherwise \(N_1\) and \(N_2\) are not in the same two unknowns. 4. Solve the two equations \(N_1,N_2\) in \(x\) and \(y\) by ordinary elimination. 5. Put \(x\) and \(y\) back into any original equation to find \(z\). 6. Check all three original equations.</p>
       <h3>Worked example</h3>
       <p>\(x+y+z=6,\;2x-y+z=3,\;x+2y-z=2\). Adding the first and third gives \(2x+3y=8\). Subtracting the second from the first gives \(-x+2y=3\). Multiply the second by 2 and add: \(7y=14\), so \(y=2\). Then \(2x+6=8\) gives \(x=1\), and the first equation gives \(z=3\). Check the second: \(2-2+3=3\), and the third: \(1+4-3=2\). The solution is \((1,2,3)\).</p>
       <p>Geometry: \(2x+3y=8\) has no \(z\), so it is a vertical sheet. It contains the line where the first and third sheets cross. The two vertical sheets cross in a vertical line, and that line pierces the original sheets at \((1,2,3)\).</p>
       <h3>When elimination ends strangely</h3>
-      <p>If every variable cancels and you are left with a <b>false</b> statement such as \(0=5\), the system has <b>no solution</b>. If you are left with a <b>true</b> statement such as \(0=0\), that combination was redundant. Try the other combinations: if none of them gives a false statement, there are infinitely many solutions. For \(x+y+z=3,\;x-y+z=1,\;x+z=2\), adding the first two gives \(2x+2z=4\), the same as twice the third. We get \(0=0\). Choose \(x=t\). The second equation minus the first gives \(y=1\), and then \(z=2-t\). The solutions are \((t,\,1,\,2-t)\) for any \(t\): a line.</p>
+      <p>If every variable cancels and you are left with a <b>false</b> statement such as \(0=5\), the system has <b>no solution</b>. If you are left with a <b>true</b> statement such as \(0=0\), that combination was redundant. Try the other combinations: if none of them gives a false statement, there are infinitely many solutions. For \(x+y+z=3,\;x-y+z=1,\;x+z=2\), adding the first two gives \(2x+2z=4\), the same as twice the third. We get \(0=0\). Choose \(x=t\). The first equation minus the second gives \(2y=2\), so \(y=1\), and then \(z=2-t\). The solutions are \((t,\,1,\,2-t)\) for any \(t\): a line.</p>
       <h3>The same steps as a matrix</h3>
       <p>Write the coefficients and totals as rows of an <em>augmented matrix</em>. Adding a multiple of one row to another is a <em>row operation</em>, and it is exactly the step above. Eliminating from the example looks like \(R_1+R_3\to N_1\) and \(R_1-R_2\to N_2\). The matrix lesson uses this idea in a shorter form.</p>
       <h3>From a story to equations</h3>
@@ -33894,7 +33894,7 @@ register({
         const prompts = {
           pick: 'Which variable will you eliminate first? To eliminate means to make it disappear from two new equations.',
           make: A.news.length === 0 ? `Make N1 with no ${vname(A.e)}. Choose how many of each equation to use (1 adds it, −1 subtracts it). Use two equations.` : `Now make N2, also with no ${vname(A.e)}. It must use E${un.length ? un[0] + 1 : '?'}, the equation N1 left out.`,
-          pick2: `N1 and N2 are two equations in ${[0, 1, 2].filter(k => k !== A.e).map(vname).join(' and ')}. Choose which of these to eliminate next, as in the last lesson.`,
+          pick2: `N1 and N2 are two equations in ${[0, 1, 2].filter(k => k !== A.e).map(vname).join(' and ')}. Choose which of these to eliminate next, as you would for two equations.`,
           make2: `Multiply N1 and N2 by numbers so the ${A.e2 != null ? vname(A.e2) : ''} terms cancel, then add. The result M has one unknown.`,
           solve1: A.M ? `Solve ${eqText(A.one)} for ${vname(A.vleft)}.` : '',
           solve2: A.via == null ? `Find ${A.e2 != null ? vname(A.e2) : ''}: choose an equation to put ${A.vleft != null ? vname(A.vleft) : ''} into.` : A.sub,
@@ -37704,9 +37704,9 @@ register({
   const evalE = (e, x, y) => e[0] * x + e[1] * y;
   const PV1 = { cx: 2.5, cy: 2.5, span: 6.5 };
   const PROBS = [
-    { kind: 'pts', q: 'A system is  y ≥ x − 1  and  x + y < 6. Which point is a solution of BOTH inequalities?',
+    { kind: 'pts', q: 'A system is y ≥ x − 1 and x + y < 6. Which point is a solution of BOTH inequalities?',
       cons: [I('y', Y, '≥', 'x − 1', [1, 0, -1]), I('x + y', [1, 1, 0], '<', '6', K(6))], view: PV1, cands: [[5, 1], [3, 2], [3, 3], [0, -2]], ans: 1, note: {} },
-    { kind: 'graphs', q: 'A system is  y ≥ x − 1  (solid line)  and  y < 3  (dashed line). Which graph shows its solution?', ans: 2,
+    { kind: 'graphs', q: 'A system is y ≥ x − 1 (solid line) and y < 3 (dashed line). Which graph shows its solution?', ans: 2,
       vs: [
         { cons: [I('y', Y, '≤', 'x − 1', [1, 0, -1]), I('y', Y, '<', '3', K(3))], fb: 'This graph shades BELOW the slanted line, but y ≥ x − 1 means y is at least x − 1, which is the side ABOVE the line.' },
         { cons: [I('y', Y, '≥', 'x − 1', [1, 0, -1]), I('y', Y, '≤', '3', K(3))], fb: 'The side is right, but the flat line is solid here. The symbol in y < 3 is strict, so points with y = 3 are NOT included: that line must be dashed.' },
@@ -37889,7 +37889,7 @@ register({
           }
           const ok = all.every(q => holds(q, S.px, S.py));
           p.dot(S.px, S.py, 11, ok ? alpha(pal.violet, .95) : pal.stage, pal.brass, 3.5);
-          p.label(`${S.px} cakes, ${S.py} pies`, S.px, S.py, { size: 16, italic: false, dy: -25, color: pal.text });
+          p.label(`${S.px} cake${S.px === 1 ? '' : 's'}, ${S.py} pie${S.py === 1 ? '' : 's'}`, S.px, S.py, { size: 16, italic: false, dy: -25, color: pal.text });
         }
         const rows = built.map(i => [C4[i], `${BEQ[i].name}  ${txt(BEQ[i].q)}   solid`]);
         if (S.stage >= 2) rows.push([null, 'x ≥ 0 and y ≥ 0 (no negative bakes)']);
@@ -38182,7 +38182,7 @@ register({
           els.push(mk('Let x be…', 'sx'), mk('Let y be…', 'sy'));
           els.push(h('div', { class: 'ctl buttons' }, mkBtn('Check my unknowns', () => {
             if (S.sx < 0 || S.sy < 0) { S.fb = 'Choose something for both x and y.'; renderStory(); return; }
-            const L = [], one = (sel, want, other, nm) => { if (sel === want) L.push(good(nm + ' is right.') + ' ' + UNK[sel][1]); else if (sel === other) L.push(bad(nm + ':') + ` That is one of the two unknowns, but call it ${nm === 'x' ? 'y' : 'x'} so that cakes are on the x axis.`); else L.push(bad(nm + ':') + ' ' + UNK[sel][1]); };
+            const L = [], one = (sel, want, other, nm) => { if (sel === want) L.push(good(nm + ' is right.') + ' ' + UNK[sel][1]); else if (sel === other) L.push(bad(nm + ':') + ` That is one of the two unknowns, but call it ${nm === 'x' ? 'y' : 'x'} so that cakes are on the x-axis.`); else L.push(bad(nm + ':') + ' ' + UNK[sel][1]); };
             one(S.sx, 0, 1, 'x'); one(S.sy, 1, 0, 'y');
             if (S.sx === 0 && S.sy === 1) { S.unkOk = true; S.stage = 1; S.pi = 0; S.eq = 0; L.push('x is on the horizontal axis and y on the vertical axis of the graph.'); }
             S.fb = L.join('<br>'); renderStory(); sync();
@@ -38225,8 +38225,8 @@ register({
       const planRo = () => {
         const f = ev([2, 1, 0], S.px, S.py), o = S.px + S.py, L = [];
         L.push(`${kk('Plan')} ${S.px} cake${S.px === 1 ? '' : 's'} and ${S.py} pie${S.py === 1 ? '' : 's'}`);
-        L.push(`${kk('Flour')} 2(${S.px}) + ${S.py} = ${f} cups. Limit 8: ${f <= 8 ? good('ok') : bad('too much')}`);
-        L.push(`${kk('Oven')} ${S.px} + ${S.py} = ${o} hours. Limit 6: ${o <= 6 ? good('ok') : bad('too much')}`);
+        L.push(`${kk('Flour')} 2(${S.px}) + ${S.py} = ${f} cup${f === 1 ? '' : 's'}. Limit 8: ${f <= 8 ? good('ok') : bad('too much')}`);
+        L.push(`${kk('Oven')} ${S.px} + ${S.py} = ${o} hour${o === 1 ? '' : 's'}. Limit 6: ${o <= 6 ? good('ok') : bad('too much')}`);
         L.push(f <= 8 && o <= 6 ? good('Allowed.') + ' It is a whole-number point in the violet region.' : bad('Not allowed.') + ` It breaks ${f > 8 && o > 6 ? 'both limits' : f > 8 ? 'the flour limit' : 'the oven limit'}, so it is outside the region.`);
         return L.join('<br>');
       };
@@ -43100,7 +43100,7 @@ register({
              A('legs 3, hypotenuse 7', 'The legs 3 are right, but 7 is the old leg a. The new hypotenuse is 2a − c = 14 − 10 = 4.')], ans: 2 },
     { title: 'Why forever is impossible',
       q: 'Suppose a triangle with whole sides really had c² = 2a². Folding gives a smaller one with whole sides, and folding that one gives another, and so on. Why is that impossible?',
-      opts: [A('It is possible: the triangles just get very small', 'Whole-number sides cannot be smaller than 1. Starting from a, you can shrink at most a few times before you run out of whole numbers.'),
+      opts: [A('It is possible: the triangles just get very small', 'Whole-number sides cannot be smaller than 1. Each shrink gives smaller whole-number sides, so starting from a you can shrink at most a times before you run out of whole numbers.'),
              A('Whole numbers cannot get smaller forever', ok('Yes.') + ' Each fold gives smaller positive whole numbers: a, then c − a, then smaller again. A list of positive whole numbers cannot keep shrinking forever. So no whole-number triangle with c² = 2a² exists, and √2 is not a fraction.'),
              A('Because 2a − c is negative', 'It is not: c is between a and 2a, so 2a − c is positive.')], ans: 1 }
   ];
@@ -48643,7 +48643,7 @@ register({
       ], ans: 3, show: { part: 'orbit', cr: 1, ci: 0, n: 4 } },
     { q: 'The main cardioid is the big heart-shaped body of the Mandelbrot set. There the orbit of 0 settles to a single fixed point. Work out the orbits by hand. Which c lies in the main cardioid?',
       ch: [
-        ['c = −1', 'The orbit of −1 is 0, −1, 0, −1, … It repeats a cycle of 2 points, so it is not one fixed point. c = −1 is the centre of the round bulb to the left of the cardioid.'],
+        ['c = −1', 'The orbit of −1 is 0, −1, 0, −1, … It repeats a cycle of 2 points, so it is not one fixed point. c = −1 is the center of the round bulb to the left of the cardioid.'],
         ['c = 0.5', 'The orbit of 0.5 is 0, 0.5, 0.75, 1.063, 1.629, 3.153, … It passes 2 and escapes, so c = 0.5 is outside the set.'],
         ['c = −0.5', ok('Right.') + ' The orbit of −0.5 is −0.5, −0.25, −0.4375, −0.309, −0.405, −0.336, … It closes in on one fixed point, about −0.366. That is what happens inside the main cardioid.'],
         ['c = 1', 'The orbit of 1 is 0, 1, 2, 5, 26, … It escapes, so c = 1 is outside the set.']
@@ -48691,19 +48691,19 @@ register({
       }
       void pal;
     },
-    hook: String.raw`Square a number, then add a fixed number \(c\). Do it again, and again. For some \(c\) the numbers explode, for others they settle down. Colour every \(c\) by which happens. What picture do you get, and what happens when you zoom in on its edge?`,
+    hook: String.raw`Square a number, then add a fixed number \(c\). Do it again, and again. For some \(c\) the numbers explode, for others they settle down. Color every \(c\) by which happens. What picture do you get, and what happens when you zoom in on its edge?`,
     steps: [
       { title: 'One rule, repeated',
         text: String.raw`<p>Pick a number \(c\). Start at \(z_0=0\) and apply \(z\mapsto z^2+c\) again and again. The dots are the orbit. For \(c=0.5\): 0, 0.5, 0.75, 1.063, 1.629, 3.153. At step 5 the size \(|z|\) is 3.153, past the line \(|z|=2\), and it never comes back. Predict, then press Next step. Then try \(c=-1\), \(c=i\) and \(c=0.2\): an orbit can also settle.</p>`,
         set: { part: 'orbit', cr: .5, ci: 0, n: 5 } },
-      { title: 'Colour every c',
-        text: String.raw`<p>Now colour every \(c\) by the step where its orbit first passes \(|z|=2\). Black means it never does. The black shape is the Mandelbrot set. Here \(c=-1\) is black: its orbit is 0, −1, 0, −1, and so on. Drag the ring or use the sliders. Try \(c=0.25\) and \(c=-2\): the set meets the real axis exactly from −2 to 0.25.</p>`,
+      { title: 'Color every c',
+        text: String.raw`<p>Now color every \(c\) by the step where its orbit first passes \(|z|=2\). Black means it never does. The black shape is the Mandelbrot set. Here \(c=-1\) is black: its orbit is 0, −1, 0, −1, and so on. Drag the ring or use the sliders. Try \(c=0.25\) and \(c=-2\): the set meets the real axis exactly from −2 to 0.25.</p>`,
         set: { part: 'set', cr: -1, ci: 0, n: 30 } },
       { title: 'Zoom in on the edge',
         text: String.raw`<p>Zoom in on the edge, here near \(-0.75+0.1i\). It never becomes smooth: curls, spirals and little bulbs keep appearing at every level. The step limit rises with each zoom (60 plus 10 per level, at most 200) so the detail stays visible. Use the presets, the zoom buttons and the pan buttons.</p>`,
         set: { part: 'zoom', cr: -.75, ci: .1, view: { x: -.75, y: .1, k: 5 } } },
       { title: 'Julia sets',
-        text: String.raw`<p>Keep the rule, but fix \(c\) and colour each starting point \(z_0\) by how fast it escapes. That picture is the Julia set for \(c\). Drag \(c\) on the top picture. If \(c\) is in the Mandelbrot set, the Julia set is one connected piece. If \(c\) is outside, it is dust. Here \(c=-1\) gives the basilica.</p>`,
+        text: String.raw`<p>Keep the rule, but fix \(c\) and color each starting point \(z_0\) by how fast it escapes. That picture is the Julia set for \(c\). Drag \(c\) on the top picture. If \(c\) is in the Mandelbrot set, the Julia set is one connected piece. If \(c\) is outside, it is dust. Here \(c=-1\) gives the basilica.</p>`,
         set: { part: 'julia', cr: -1, ci: 0 } }
     ],
     formal: String.raw`
@@ -48727,7 +48727,7 @@ register({
       <p><i>In between.</i> Let \(c\in[-2,\tfrac14]\) and \(\beta=\tfrac{1+\sqrt{1-4c}}{2}\), so \(\beta^2-\beta+c=0\), i.e. \(\beta^2+c=\beta\). If \(|z|\le\beta\) then \(z^2+c\) lies between \(c\) and \(\beta^2+c=\beta\). And \(c\ge-\beta\) exactly when \(\beta\le2\), i.e. \(c\ge-2\). So \([-\beta,\beta]\) is mapped into itself, contains 0, and the orbit never leaves it. The set meets the real axis in exactly \([-2,\tfrac14]\).</p>
 
       <h3>The Mandelbrot set</h3>
-      <p>The <b>Mandelbrot set</b> is the set of all \(c\) whose orbit of 0 never escapes. The picture colours each \(c\) by the step where \(|z|\) first passes 2. A computer can only try a limited number of steps, so black means "no escape found within the step limit". Near the edge a point can escape later than the limit, so the black region is drawn slightly too big. The picture is an approximation from the outside.</p>
+      <p>The <b>Mandelbrot set</b> is the set of all \(c\) whose orbit of 0 never escapes. The picture colors each \(c\) by the step where \(|z|\) first passes 2. A computer can only try a limited number of steps, so black means "no escape found within the step limit". Near the edge a point can escape later than the limit, so the black region is drawn slightly too big. The picture is an approximation from the outside.</p>
       <p>Facts we do not prove here. The big heart-shaped <b>main cardioid</b> is where the orbit settles to one attracting fixed point (the derivative of \(z^2+c\) at a fixed point \(z^*\) is \(2z^*\), and the orbit is pulled in when \(|2z^*|&lt;1\)). The round <b>period-2 bulb</b> is the disc \(|c+1|&lt;\tfrac14\), where the orbit ends in a 2-cycle. Further bulbs on the cardioid belong to cycles of length 3, 4, 5, and so on. The thin <b>antenna</b> on the left runs along the real axis out to \(-2\), with branches and tiny bulbs along it.</p>
 
       <h3>Zoom and the edge</h3>
@@ -48747,8 +48747,8 @@ register({
           'The orbit of 0 returns to 0 after a few steps.',
           'c is a real number.'],
         answer: 1,
-        why: 'Colours show the step where the orbit first passes \\(|z|=2\\). Black is the one case where that never happens within the step limit. Near the edge a point can escape after the limit, so black means "in the set as far as the program can tell". Only a few special c (centres of bulbs, like \\(c=-1\\)) return exactly to 0, and the real axis is mostly colourless of any meaning here.',
-        hint: 'What do the colours measure? Black is what is left over.' },
+        why: 'Colors show the step where the orbit first passes \\(|z|=2\\). Black is the one case where that never happens within the step limit. Near the edge a point can escape after the limit, so black means "in the set as far as the program can tell". Only a few special c (centers of bulbs, like \\(c=-1\\)) return exactly to 0.',
+        hint: 'What do the colors measure? Black is what is left over.' },
       { q: 'Take c = −1 + i. Start at z₀ = 0 and use the rule z → z² + c. At which step n is |z_n| first larger than 2?',
         choices: [
           'Step 1',
@@ -48885,7 +48885,7 @@ register({
           T(c, 'c', p.X(S.cr) + 16, p.Y(S.ci) - 15, { size: fs * 1.5, color: '#fff', weight: 700, halo: 'rgba(8,10,24,.9)', italic: true });
         }
         if (S.part === 'zoom') {
-          T(c, `centre ${cs(S.view.x, S.view.y, 7)}   zoom ×${Math.pow(2, S.view.k)}   step limit ${cap}`, 8, p.h - 12, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
+          T(c, `center ${cs(S.view.x, S.view.y, 7)}   zoom ×${Math.pow(2, S.view.k)}   step limit ${cap}`, 8, p.h - 12, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
         } else {
           T(c, S.part === 'julia' ? 'c-plane: drag c' : 'black = never passes 2 (up to ' + cap + ' steps)', 8, 14, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
         }
@@ -49000,7 +49000,7 @@ register({
         zS = C.slider({ label: 'Zoom level (each level doubles the magnification)', min: 0, max: KMAX, step: 1, value: 0, format: v => `level ${v}, ×${Math.pow(2, v)}`, onInput: v => zoomTo(v) });
         C.title('Move the view');
         C.buttons([{ label: '◀ Left', onClick: panBy(-1, 0) }, { label: 'Right ▶', onClick: panBy(1, 0) }, { label: '▲ Up', onClick: panBy(0, 1) }, { label: '▼ Down', onClick: panBy(0, -1) }]);
-        C.buttons([{ label: 'Centre on c', onClick: () => { st.view = { ...st.view, x: st.cr, y: st.ci }; sync(); } }, { label: 'Whole set', onClick: goView(-.5, 0, 0) }]);
+        C.buttons([{ label: 'Center on c', onClick: () => { st.view = { ...st.view, x: st.cr, y: st.ci }; sync(); } }, { label: 'Whole set', onClick: goView(-.5, 0, 0) }]);
         C.title('Places to look');
         C.buttons([
           { label: 'Seahorse valley', onClick: goView(-.75, .1, 5) },
@@ -49056,8 +49056,8 @@ register({
       };
       const setRo = S => {
         const f = fate(S.cr, S.ci), L = [`${kk('c')} ${cs(S.cr, S.ci)}`];
-        if (f.t === 'esc') L.push(`${kk('Colour')} the colour of step ${f.n}: the orbit first passes |z| = 2 at step ${f.n}. c is outside the set.`);
-        else L.push(`${kk('Colour')} black: no escape found in 3000 steps, so c is very likely in the set.`);
+        if (f.t === 'esc') L.push(`${kk('Color')} the color of step ${f.n}: the orbit first passes |z| = 2 at step ${f.n}. c is outside the set.`);
+        else L.push(`${kk('Color')} black: no escape found in 3000 steps, so c is very likely in the set.`);
         L.push(fateText(S.cr, S.ci));
         const rg = regionTxt(S.cr, S.ci); if (rg) L.push('Region: ' + rg + '.');
         if (S.ci === 0) L.push('On the real axis, c is in the set exactly when −2 ≤ c ≤ 0.25.');
@@ -49065,7 +49065,7 @@ register({
       };
       const zoomRo = S => {
         const f = fate(S.cr, S.ci), hs = viewHs(S, PT), L = [];
-        L.push(`${kk('View')} centre ${cs(S.view.x, S.view.y, 7)}, about ${nf(2 * hs, 6)} across the shorter side`);
+        L.push(`${kk('View')} center ${cs(S.view.x, S.view.y, 7)}, about ${nf(2 * hs, 6)} across the shorter side`);
         L.push(`${kk('Zoom')} level ${S.view.k}, magnification ×${Math.pow(2, S.view.k)}. Step limit ${capOf(S.view.k)}.`);
         L.push(`${kk('c')} ${cs(S.cr, S.ci, 7)}: ` + (f.t === 'esc' ? `escapes at step ${f.n}` : 'no escape in 3000 steps (black)'));
         if (S.view.k >= 4) L.push('The edge is still rough at this scale. Zoom out and back in to compare.');
@@ -50528,7 +50528,7 @@ register({
         text: String.raw`<p>Two chords cross at \(X\) inside the circle. Angle \(AXB\) cuts off arc \(AB=100^\circ\), and its vertical angle \(CXD\) cuts off arc \(CD=60^\circ\).</p><p>The angle is half the <b>sum</b> of the two arcs: \(\tfrac12(100+60)=80^\circ\). Change the arcs with the sliders: the measured angle and the half sum always agree.</p>`,
         set: { view: 'in', w: 100, x: 80, y: 60, which: 0 } },
       { title: 'Vertex outside: subtract',
-        text: String.raw`<p>Two secants meet at \(P\) outside the circle. The <b>far arc</b> is \(200^\circ\) and the <b>near arc</b> is \(60^\circ\). The angle is half the <b>difference</b>: \(\tfrac12(200-60)=70^\circ\).</p><p>Drag \(P\) outward or raise the near arc. The near arc grows toward the far arc, so the angle shrinks. Switch the kind to tangents to see \(180^\circ\) minus the near arc.</p>`,
+        text: String.raw`<p>Two secants meet at \(P\) outside the circle. The <b>far arc</b> is \(200^\circ\) and the <b>near arc</b> is \(60^\circ\). The angle is half the <b>difference</b>: \(\tfrac12(200-60)=70^\circ\).</p><p>Drag \(P\) outward or raise the near arc. The near arc grows toward the far arc, so the angle shrinks. Set the menu "The two lines are" to "Two tangents" to see \(180^\circ\) minus the near arc.</p>`,
         set: { view: 'out', kind: 'ss', N: 60, F: 200 } }
     ],
     formal: String.raw`
@@ -52830,7 +52830,7 @@ register({
     <h2>The determinant is an area</h2>
     <p>The shaded square starts with area 1. After the map its area is \(|ad-bc|\), and every other region is scaled by the same factor. When \(\det A < 0\) the plane has been flipped over, and when \(\det A = 0\) it has collapsed onto a line or a point.</p>
     <h2>Eigenvectors keep their direction</h2>
-    <p>The <span class="swatch" style="background:var(--violet)"></span> violet lines mark directions that the map only stretches or flips: \(A\mathbf v = \lambda \mathbf v\). The eigenvalues solve \(\lambda^2 - (a+d)\lambda + (ad-bc) = 0\). A rotation moves every direction, so its eigenvalues are complex and no violet lines appear.</p>`,
+    <p>The <span class="swatch" style="background:var(--violet)"></span> violet lines mark directions that the map only stretches or flips: \(A\mathbf v = \lambda \mathbf v\). The eigenvalues solve \(\lambda^2 - (a+d)\lambda + (ad-bc) = 0\). A rotation by an angle other than \(0^\circ\) or \(180^\circ\) moves every direction, so its eigenvalues are complex and no violet lines appear.</p>`,
   mount({ stage, controls: C }) {
     const st = { M: [1, 1, 0, 1], t: 0, eig: true };
     let cancel = () => {};
