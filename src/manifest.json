@@ -100,6 +100,12 @@
     "lessons/school/set-and-interval-notation.js",
     "lessons/school/why-the-square-root-of-2-is-irrational.js",
     "lessons/school/domain-and-range-of-functions.js",
+    "lessons/school/imaginary-numbers-and-the-complex-plane.js",
+    "lessons/school/complex-arithmetic-in-the-plane.js",
+    "lessons/school/complex-roots-of-quadratics.js",
+    "lessons/school/polar-form-and-roots-of-unity.js",
+    "lessons/school/fractals-self-similarity-and-dimension.js",
+    "lessons/school/the-mandelbrot-and-julia-sets.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
