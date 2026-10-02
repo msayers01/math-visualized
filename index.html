@@ -35465,14 +35465,14 @@ register({
       const tGateRender = () => {
         tGate.replaceChildren();
         if (st.pd) return;
-        tGate.append(h('p', { class: 'sli-prompt' }, 'Predict first. When x = 4, x + 3 equals 7. Is x = 4 a solution of x + 3 > 7?'),
+        tGate.append(h('p', { class: 'sli-prompt' }, `Predict first. When x = 4, x + 3 equals 7. Is x = 4 a solution of x + 3 ${SH[tRel()]} 7?`),
           brow(btn('Yes, it is a solution', () => gate(true)), btn('No, it is not', () => gate(false))));
       };
       const gate = yes => {
         st.pd = 1; st.tx = 4; testAt(4); tS.set(4);
         tGateRender();
-        const lead = yes ? no('Not quite.') + ' ' : ok('Right.') + ' ';
-        tGate.append(h('p', { class: 'sli-prompt', html: lead + 'At x = 4 we get 4 + 3 = 7, and 7 is not greater than 7, so 4 is not a solution of &gt;. The test point is on the boundary: the place where the inequality becomes the equation x + 3 = 7. Now test other numbers.' }));
+        const truth = tTruth(4), lead = yes === truth ? ok('Right.') + ' ' : no('Not quite.') + ' ';
+        tGate.append(h('p', { class: 'sli-prompt', html: lead + (truth ? 'At x = 4 we get 4 + 3 = 7, and 7 equals 7, so 4 is a solution of &ge;.' : 'At x = 4 we get 4 + 3 = 7, and 7 is not greater than 7, so 4 is not a solution of &gt;.') + ' The test point is on the boundary: the place where the inequality becomes the equation x + 3 = 7. Now test other numbers.' }));
         sync();
       };
 
@@ -36090,7 +36090,7 @@ register({
     { name: '|x − 3| < 0', type: 'special', a: 3, k: 0, rel: '<', lo: -1, hi: 7, lab: 1, step: 1, x0: 5, verdict: 'No solution',
       intro: 'Think of the smallest a distance can be.',
       gate: { q: 'How many numbers x make |x − 3| < 0 true? Think of the smallest value a distance can have.', ans: 0,
-        ch: [[SPEC[0], 'The smallest distance is 0, and 0 is not less than 0. So nothing is closer to 3 than "less than 0 away". No solution.'],
+        ch: [[SPEC[0], 'The smallest distance is 0, and 0 is not less than 0. No distance is below 0, so no number works. No solution.'],
           ['One solution: x = 3', 'At x = 3 the distance is 0, but 0 &lt; 0 is false. The sign is strict. (With ≤ instead, x = 3 would work.)'],
           [SPEC[2], 'You would need a distance below 0. The smallest a distance can be is 0.'],
           [SPEC[3], 'Every number would need a distance below 0. No distance is.']] } },
@@ -36115,7 +36115,7 @@ register({
     { name: 'A tricky one', story: 'Solve |x − 2| + 5 = 3. Look closely at the number you get after isolating the bars.',
       t: { type: 'work', c: 1, d: -2, e: 5, f: 3, lo: -4, hi: 8, step: 1, ord: ['drop', 'ok', 'opp'], sord: ['two', 'none', 'one'] } },
     { name: 'A story', story: 'A water tank should hold 40 liters, give or take 3 liters. Let x be the amount in liters. Write the inequality for the allowed amounts, then graph it.',
-      t: { type: 'graph', a: 40, k: 3, rel: '≤', lo: 34, hi: 46, lab: 2, step: 1, x0: 44,
+      t: { type: 'graph', a: 40, k: 3, rel: '≤', lo: 34, hi: 46, lab: 2, step: 1, x0: 46,
         gate: { q: 'Which inequality says the amount x is within 3 liters of 40 liters?', ans: 2, hide: true,
           ch: [['|x − 3| ≤ 40', 'The numbers are in the wrong places. The target, 40, is what you subtract. The 3 is the distance.'],
             ['|x − 40| ≥ 3', '≥ 3 means at least 3 liters off, the tanks that are NOT in range.'],
@@ -36149,7 +36149,7 @@ register({
         text: String.raw`<p>\(|x-a|\) is the <b>distance</b> from \(x\) to \(a\) on a number line. The violet point is \(a=2\). The blue bar is \(|x-2|\).</p><p>Predict first: how many numbers make \(|x-2|=3\) true? Then move the point to find them and press Mark.</p>`,
         set: { task: 'find' } },
       { title: 'Within and beyond',
-        text: String.raw`<p>\(|x-3|&lt;4\) means "within 4 of 3". Pick a sign, test points, then build the graph: the edges, between or outside, open or closed.</p><p>An <b>open circle</b> leaves its number out. A <b>closed circle</b> keeps it in.</p>`,
+        text: String.raw`<p>\(|x-3|&lt;4\) means "closer than 4 to 3". Pick a sign, test points, then build the graph: the edges, between or outside, open or closed.</p><p>An <b>open circle</b> leaves its number out. A <b>closed circle</b> keeps it in.</p>`,
         set: { task: 'graph' } },
       { title: 'A line inside the bars',
         text: String.raw`<p>In \(|2x-1|+3=8\) the bars hold \(2x-1\). First get the bars alone. Then the inside is 5 away from 0, so it is \(5\) or \(-5\).</p><p>Split into two equations, solve both, and check both in the original.</p>`,
@@ -36298,7 +36298,7 @@ register({
         const t = cur, g = t.gate, right = i === g.ans;
         if (!right) R.err++;
         R.fb = (right ? good('Yes.') : bad('Not quite.')) + ' ' + g.ch[i][1];
-        if (right) { if (t.type === 'special') { R.fb += ' ' + (t.mark != null ? 'The point is marked on the line.' : 'No point on the line works.'); finish(); } else R.phase = 'main'; }
+        if (right) { if (t.type === 'special') { R.fb += ' ' + (t.mark != null ? 'The point is marked on the line.' : ''); finish(); } else R.phase = 'main'; }
         refresh();
       };
 
@@ -36364,7 +36364,7 @@ register({
           drop: { label: 'Remove the bars, then solve',
             fb: `The bars cannot just be dropped. They mean a distance, and the ${e > 0 ? '+' : MI}${a} sits outside them. First get the bars alone, then deal with the bars.` },
           div: { label: `Divide both sides by ${t.c}`,
-            fb: `That also divides the ${a} outside the bars, and the bars are still not alone. Cancel the ${e > 0 ? '+' : MI}${a} first.` }
+            fb: `Dividing first is legal but messy: it also divides the ${a} outside the bars, and the bars are still not alone. Cancel the ${e > 0 ? '+' : MI}${a} first.` }
         };
       };
       const pickIso = key => {

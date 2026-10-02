@@ -407,14 +407,14 @@
       const tGateRender = () => {
         tGate.replaceChildren();
         if (st.pd) return;
-        tGate.append(h('p', { class: 'sli-prompt' }, 'Predict first. When x = 4, x + 3 equals 7. Is x = 4 a solution of x + 3 > 7?'),
+        tGate.append(h('p', { class: 'sli-prompt' }, `Predict first. When x = 4, x + 3 equals 7. Is x = 4 a solution of x + 3 ${SH[tRel()]} 7?`),
           brow(btn('Yes, it is a solution', () => gate(true)), btn('No, it is not', () => gate(false))));
       };
       const gate = yes => {
         st.pd = 1; st.tx = 4; testAt(4); tS.set(4);
         tGateRender();
-        const lead = yes ? no('Not quite.') + ' ' : ok('Right.') + ' ';
-        tGate.append(h('p', { class: 'sli-prompt', html: lead + 'At x = 4 we get 4 + 3 = 7, and 7 is not greater than 7, so 4 is not a solution of &gt;. The test point is on the boundary: the place where the inequality becomes the equation x + 3 = 7. Now test other numbers.' }));
+        const truth = tTruth(4), lead = yes === truth ? ok('Right.') + ' ' : no('Not quite.') + ' ';
+        tGate.append(h('p', { class: 'sli-prompt', html: lead + (truth ? 'At x = 4 we get 4 + 3 = 7, and 7 equals 7, so 4 is a solution of &ge;.' : 'At x = 4 we get 4 + 3 = 7, and 7 is not greater than 7, so 4 is not a solution of &gt;.') + ' The test point is on the boundary: the place where the inequality becomes the equation x + 3 = 7. Now test other numbers.' }));
         sync();
       };
 
