@@ -54,7 +54,7 @@ Test: step through all 4 steps and compare every readout number with the step te
 3. Skill level you recommend (introductory / intermediate / advanced) and why; and any `prereq` / `next` links you used.
 4. Anything you could not verify or are unsure about.
 
-## Geometry batches (G1, G2): extra requirements
+## Geometry and systems batches (G1, G2, A1): extra requirements
 These override the matching rules above. The owner asked for lessons that are high quality, thoroughly assessed, suited to a wide range of learning styles, elegantly explained and engaging.
 
 1. **Several ways in.** Every lesson must give each of these, and the report must say where: (a) a visual that moves (the diagram changes as the student acts); (b) a hands-on action (drag, cut, fold, place, choose a move); (c) a concrete story or real object in the hook or a step (a ramp, a floor plan, a shadow, a tile); (d) one short argument in words that explains why the fact is true (a proof sketch in `formal`, in plain sentences, with TeX only where it helps); (e) a "predict, then see" moment: ask the student to commit to a guess (a choice button) before the diagram reveals the answer.
@@ -65,3 +65,6 @@ These override the matching rules above. The owner asked for lessons that are hi
 6. **Stage tests.** Besides the tests above, test Practice mode end to end: answer every problem right and wrong at least once and read the feedback text for correctness of the math and the wording.
 7. **Links and TeX.** Use only `related` links (plus any `prereq`/`next` your assignment names), and use only existing lesson ids plus the other ids of the batch named in your assignment. Remember the `&lt;` rule.
 8. Report limit: 400 words. Item 2 of the report must list, for each benchmark, what is covered and what is not (the lead tags from it). Add item 5: where each of (a) to (e) above appears.
+
+## Audience for the systems batch (A1)
+Algebra 1 lessons are for students aged 14 to 16, Algebra 2 lessons for ages 15 to 17, working alone or assigned by a teacher. Symbols are fine (x, y, z, matrices, determinants) but define each one on first use, explain the idea in words and pictures before the procedure, and always show WHY a step is allowed (for example why adding two equations keeps the solution). The student must DO the algebra: choose the operation, choose the multiplier, type nothing but click buttons or steppers, and see the consequence on the picture. Each lesson links the symbolic step to the graph or geometry (lines, areas or planes). Numbers in every lesson are small integers unless the point is a fraction. `check` and Practice problems must be fully self-contained and must state every equation in text (the paper ticket has no graph).

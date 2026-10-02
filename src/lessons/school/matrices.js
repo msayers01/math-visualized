@@ -256,7 +256,7 @@
         why: String.raw`Pair the entries in order and add: \(4\cdot 1 + 6\cdot 3 + 2\cdot 2 = 4+18+4 = 26\). The answer \(12\) adds the three sold numbers and ignores the prices. The answer \(28\) pairs them in reverse order (\(4\cdot2+6\cdot3+2\cdot1\)). The answer \(72\) adds first (\(12\) items, \(\$6\) in prices) and multiplies once, which is not what a row times a column does.`,
         hint: String.raw`Each item has its own price. Multiply 4 by the pencil price, 6 by the notebook price and 2 by the eraser price, then add the three amounts.` }
     ],
-    links: { related: ['systems-of-equations', 'solving-equations-with-a-balance', 'linear-transformations', 'scatter-plots-and-lines-of-fit'] },
+    links: { next: ['determinants-and-inverse-matrices'], related: ['systems-of-equations', 'solving-systems-with-matrices', 'solving-equations-with-a-balance', 'linear-transformations', 'scatter-plots-and-lines-of-fit'] },
 
     mount({ stage, controls: C }) {
       const P = new Plane(stage, { span: 5 }), cv = P.canvas;

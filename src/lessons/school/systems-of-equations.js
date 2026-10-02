@@ -51,7 +51,7 @@ register({
       why: String.raw`Both lines have slope \(3\) but different intercepts, so they are parallel and never meet.`,
       hint: String.raw`Compare the slopes and the intercepts of the two lines.` }
   ],
-  links: { prereq: ['slope-and-linear-functions', 'solving-equations-with-a-balance'], next: ['quadratics-and-the-parabola'], related: ['linear-transformations'] },
+  links: { prereq: ['slope-and-linear-functions', 'solving-equations-with-a-balance'], next: ['solving-systems-by-substitution'], related: ['quadratics-and-the-parabola', 'solving-systems-by-elimination', 'modeling-with-systems', 'linear-transformations'] },
 
   mount({ stage, controls: C }) {
     const st = { m1: 1, b1: 2, m2: .5, b2: 5 };
