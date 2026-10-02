@@ -190,7 +190,7 @@
         ['8 × cos 52° ≈ 4.93', 'Cosine involves the adjacent side and the hypotenuse. The opposite side is not part of cosine.'],
         ['8 × tan 52° ≈ 10.24', 'Yes. tan 52° = opposite ÷ 8, so opposite = 8 × 1.2799 ≈ 10.24.', 1]] },
     { fig: { al: Math.asin(.7) / D2R, at: 'A', th: 'θ = ?', txt: { ac: [], bc: ['opposite', '7'], ab: ['hypotenuse', '10'] } },
-      q: 'A right triangle has opposite side 7 and hypotenuse 10. What is the angle θ? Choose the inverse button.',
+      q: 'A right triangle has opposite side 7 and hypotenuse 10. What is the angle θ? Choose the correct calculation.',
       ch: [['cos⁻¹(7 ÷ 10) ≈ 45.6°', 'Cosine uses the adjacent side. The 7 is the opposite side, so the matching ratio is sine.'],
         ['tan⁻¹(7 ÷ 10) ≈ 35.0°', 'Tangent compares the two legs. The 10 is the hypotenuse, not the adjacent leg.'],
         ['sin⁻¹(10 ÷ 7): no such angle', 'The ratio is upside down. Sine is opposite ÷ hypotenuse, at most 1. The hypotenuse cannot be less than a leg.'],
@@ -240,7 +240,7 @@
     hook: String.raw`A ramp rises 1 m over a 4 m run. How steep is it, and does the answer change if the ramp is twice as long?`,
     steps: [
       { title: 'Does the size matter?',
-        text: String.raw`<p>A ramp rises 1 m over a 4 m run. Its angle \(\theta\) is about \(14^\circ\). Would a ramp twice as long, built at the same angle, be steeper?</p><p>Predict what happens to opposite \(\div\) hypotenuse when every side doubles, then watch. Then try the <b>Size</b> slider and <b>Show similar copies</b>.</p>`,
+        text: String.raw`<p>A ramp rises about 1 m over a 4 m run. Its angle \(\theta\) is about \(14^\circ\). Would a ramp twice as long, built at the same angle, be steeper?</p><p>Predict what happens to opposite \(\div\) hypotenuse when every side doubles, then watch. Then try the <b>Size</b> slider and notice the dashed similar copies.</p>`,
         set: { mode: 'size', q: 1, ghost: true, at: 'A', al: 14, size: 4 } },
       { title: 'Opposite, adjacent, hypotenuse',
         text: String.raw`<p>Pick an angle \(\theta\). The <b>opposite</b> side is across from it. The <b>adjacent</b> side touches it. The <b>hypotenuse</b> is across from the right angle. Sine, cosine and tangent are ratios of these sides (SOH CAH TOA).</p><p>Predict what the labels do when \(\theta\) moves to the other acute angle. Then try the label tasks.</p>`,
@@ -261,7 +261,7 @@
       \[ \sin\theta = \frac{\text{opposite}}{\text{hypotenuse}}, \qquad \cos\theta = \frac{\text{adjacent}}{\text{hypotenuse}}, \qquad \tan\theta = \frac{\text{opposite}}{\text{adjacent}}. \]
       The mnemonic SOH CAH TOA lists them: Sine is Opposite over Hypotenuse, Cosine is Adjacent over Hypotenuse, Tangent is Opposite over Adjacent. For a triangle with legs \(5\) and \(12\) and hypotenuse \(13\), the angle \(A\) across from the \(5\) has \(\sin A = \tfrac{5}{13}\), \(\cos A = \tfrac{12}{13}\) and \(\tan A = \tfrac{5}{12}\).</p>
       <h3>What the table shows</h3>
-      <p>As \(\theta\) grows from \(0^\circ\) toward \(90^\circ\), the opposite side grows and the adjacent side shrinks, so sine grows from \(0\) to \(1\), cosine shrinks from \(1\) to \(0\), and tangent grows without bound because the adjacent side shrinks toward \(0\). Two values are exact. A \(30^\circ\) angle comes from half of an equilateral triangle, whose short side is half the hypotenuse, so \(\sin 30^\circ = \tfrac12\). A \(45^\circ\) angle has equal legs, so \(\tan 45^\circ = 1\). The sibling lesson on special right triangles uses both. Between table entries you can estimate by going part of the way from one entry to the next. The estimate is close for sine and cosine, and a little high for tangent, because the tangent curve bends upward.</p>
+      <p>As \(\theta\) grows from \(0^\circ\) toward \(90^\circ\), the opposite side grows and the adjacent side shrinks, so sine grows from \(0\) to \(1\), cosine shrinks from \(1\) to \(0\), and tangent grows without bound because the adjacent side shrinks toward \(0\). Some values are exact. A \(30^\circ\) angle comes from half of an equilateral triangle, whose short side is half the hypotenuse, so \(\sin 30^\circ = \tfrac12\). A \(45^\circ\) angle has equal legs, so \(\tan 45^\circ = 1\). The sibling lesson on special right triangles uses both. Between table entries you can estimate by going part of the way from one entry to the next. The estimate is close for sine and cosine, and a little high for tangent, because the tangent curve bends upward.</p>
       <h3>Relationships</h3>
       <p><b>Complementary angles.</b> The acute angles of a right triangle add to \(90^\circ\). The side opposite \(\theta\) is the side adjacent to the other angle \(90^\circ - \theta\), and the hypotenuse is the same. So
       \[ \sin\theta = \cos(90^\circ - \theta), \qquad \cos\theta = \sin(90^\circ - \theta). \]
@@ -488,7 +488,7 @@
       reg(() => (V.mode === 'names' && V.nsub === 'explore') || (V.mode === 'rel' && V.rv === 'comp'), atB[0].parentNode);
       const subB = C.buttons([{ label: 'Explore', onClick: () => { cancel(); V.nsub = 'explore'; sync(); } }, { label: 'Try the label tasks', onClick: () => { cancel(); V.nsub = 'tasks'; sync(); } }]);
       reg(() => V.mode === 'names', subB[0].parentNode);
-      const preB = C.buttons([{ label: 'Set θ = 37°', onClick: () => { cancel(); touch(); st.al = 37; sync(); } }]);
+      const preB = C.buttons([{ label: 'Set θ = 37°', onClick: () => { cancel(); touch(); st.al = V.at === 'B' ? 53 : 37; sync(); } }]);
       reg(() => V.mode === 'rel', preB[0].parentNode);
 
       const lenS = C.slider({ label: 'Known side length', min: 1, max: 20, step: 1, value: st.len, format: v => num(v),
@@ -501,7 +501,7 @@
         { label: 'Next table angle', onClick: () => { cancel(); touch(); st.al = clamp(Math.floor(st.al / 10) * 10 + 10, 10, 80); sync(); } }]);
       reg(() => V.mode === 'table' && V.q !== 1, tbB[0].parentNode);
       const tbB2 = C.buttons([
-        { label: 'Add this angle to the table', onClick: () => { if (st.al % 10 === 0) V.tbl[st.al] = true; sync(); } },
+        { label: 'Add this angle to the table', onClick: () => { if (st.al % 10 === 0) V.tbl[st.al] = true; else V.pfb = 'The table only has multiples of 10 degrees. Set the angle to one of them first.'; sync(); } },
         { label: 'Fill the table', onClick: () => { TBL.forEach(d => { V.tbl[d] = true; }); sync(); } },
         { label: 'Clear the table', onClick: () => { V.tbl = {}; sync(); } }]);
       reg(() => V.mode === 'table' && V.q !== 1, tbB2[0].parentNode);
