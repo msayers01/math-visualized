@@ -29,7 +29,7 @@
     : `(${o.lab})² = ${o.k2}`);
   const mkRT = r => { r.rng = Math.max(Math.abs(r.tgt), ...r.opts.map(o => Math.abs(sqv(o)))) * 1.12; r.kind = 'root'; return r; };
   const RT = {
-    r9: mkRT({ lab: '√' + MI + '9', tgt: -9, q: 'Which number, squared, gives −9? That number is what √−9 means.',
+    r9: mkRT({ lab: '√' + MI + '9', tgt: -9, q: 'Which number, squared, gives −9? The one with a positive number in front of i is what √−9 means.',
       opts: [
         { lab: '3', cof: '3', k2: 9, im: 0, why: '3 × 3 = 9, which is positive. A real number squared is never negative, so no real number can be √−9.' },
         { lab: MI + '3', cof: '3', k2: 9, im: 0, why: '(−3) × (−3) = 9. A negative times a negative is positive, so this is not −9 either.' },
@@ -163,7 +163,7 @@
     formal: String.raw`
       <h3>The problem and the new number</h3>
       <p>The square of a real number is never negative: a positive times a positive is positive, a negative times a negative is positive, and \(0\cdot0=0\). So \(x^2=-1\) has no real solution. This is the same picture as the lesson: the parabola \(y=x^2+1\) has lowest height \(1\) at \(x=0\) and never reaches the x-axis.</p>
-      <p>We did this before. \(x+5=2\) had no natural solution, so we invented negatives. \(2x=3\) had no integer solution, so we invented fractions. \(x^2=2\) had no rational solution, so we filled the gaps and got the real numbers. Now \(x^2=-1\) has no real solution, so we invent a number \(i\) with
+      <p>We did this before. \(x+5=2\) had no natural solution, so we invented negatives. \(2x=3\) had no integer solution, so we invented fractions. \(x^2=2\) had no rational solution, so we added the irrational numbers and got the real numbers. Now \(x^2=-1\) has no real solution, so we invent a number \(i\) with
       \[ i^2=-1. \]
       The <em>complex numbers</em> are all numbers \(z=a+bi\) with \(a\) and \(b\) real. We call \(a\) the <em>real part</em> and \(b\) the <em>imaginary part</em>. Note that the imaginary part is the real number \(b\), not \(bi\). Every real number is complex, with \(b=0\), so the staircase continues: \(\mathbb N\subset\mathbb Z\subset\mathbb Q\subset\mathbb R\subset\mathbb C\).</p>
       <p>The names are historical. Early mathematicians distrusted these numbers and called them "imaginary", and the numbers on the line "real". Both names stuck, but neither is a judgement. Complex numbers are used every day in electrical engineering and signal processing, for example to describe alternating current and radio signals.</p>

@@ -348,7 +348,7 @@
       \[ (a+bi)(c+di)=ac+adi+bci+bd\,i^2=(ac-bd)+(ad+bc)\,i. \]
       <em>Worked example.</em> \((2+i)(3+2i)=6+4i+3i+2i^2=6+7i-2=4+7i\). The classic mistakes are writing \(i\cdot i=i\) (it is \(i^2\)) and writing \(i^2=1\) (it is \(-1\)). Another is \((1+i)^2=1+i^2\): squaring a sum has a middle term, \((1+i)^2=1+2i+i^2=2i\).</p>
       <h3>Multiplying turns and stretches</h3>
-      <p>Multiply \(z=a+bi\) by \(i\): \(i(a+bi)=ai+bi^2=-b+ai\). So the point \((a,b)\) goes to \((-b,a)\). That is the quarter turn counterclockwise about the origin that you met in the rigid motions lesson. Multiplying by 2 sends \((a,b)\) to \((2a,2b)\), a stretch from the origin.</p>
+      <p>Multiply \(z=a+bi\) by \(i\): \(i(a+bi)=ai+bi^2=-b+ai\). So the point \((a,b)\) goes to \((-b,a)\). That is the quarter turn counterclockwise about the origin as in the rigid motions lesson. Multiplying by 2 sends \((a,b)\) to \((2a,2b)\), a stretch from the origin.</p>
       <p>In general describe a complex number by its <b>modulus</b> \(|z|=\sqrt{a^2+b^2}\) (its distance from 0) and its <b>angle</b> (measured counterclockwise from the positive real axis, in degrees from \(0^\circ\) up to \(360^\circ\)). The rule is
       \[ |zw|=|z|\,|w|, \qquad \text{angle of } zw = \text{angle of } z + \text{angle of } w, \]
       where you subtract a full turn of \(360^\circ\) if the sum reaches it. The lesson shows the angle rule by examples and does not prove it. The distance rule can be proved with the algebra above:
@@ -525,7 +525,7 @@
           if (FF.done) S.items.push(IT(cm(z, w), 'zw = ' + cs(cm(z, w)), 'red'));
         } else if (st.view === 'move') {
           const z = [st.zr, st.zi], w = WS[st.wk].v, zw = cm(z, w);
-          S.span = Math.max(4.4, 1.5 + Math.max(Math.abs(z[0]), Math.abs(z[1]), ...Object.values(WS).map(o => { const q = cm(z, o.v); return Math.max(Math.abs(q[0]), Math.abs(q[1])); })));
+          S.span = 7.4;   /* fixed, so the plane never rescales under the pointer while z is dragged */
           S.items.push(IT(z, 'z', 'blue'), IT(w, 'w', 'green'), IT(zw, 'zw', 'red'));
           S.legend = [{ t: 'z = ' + cs(z), col: 'blue' }, { t: 'w = ' + WS[st.wk].t, col: 'green' }, { t: 'zw = ' + cs(zw), col: 'red' }];
           if (m2(z) > 1e-9) {
@@ -540,7 +540,7 @@
           S.marks = MF.marks.map(p => p);
         } else if (st.view === 'conj') {
           const z = [st.cr, st.ci], zb = cj(z), sum = 2 * z[0], prod = m2(z);
-          S.span = Math.max(4.4, 1.5 + Math.max(Math.abs(sum), Math.abs(z[1])));
+          S.span = 7.4;
           S.items.push(IT(z, 'z = ' + cs(z), 'blue'));
           if (z[1] !== 0) S.items.push(IT(zb, CJ + ' = ' + cs(zb), 'red'));
           S.guides.push({ a: z, b: zb, col: 'muted' });
