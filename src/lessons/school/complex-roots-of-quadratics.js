@@ -479,7 +479,7 @@
         C.title('Place the other root');
         placeBox = quizBox(() => { placed = true; sync(); }, (it, i) => { badPick.add(i); sync(); });
         placeBox.load({
-          q: 'At c = 5 one root is 1 + 2i, the point (1, 2). The other root is one of the labelled points A, B or C on the plane. Which one?',
+          q: 'At c = 5 one root is 1 + 2i, the point (1, 2). The other root is one of the labeled points A, B or C on the plane. Which one?',
           opts: [['A  (−1, 2)', 'A is the number −1 + 2i. Its real part is −1, but both roots share the real part 1: it is −b/2a, the axis of symmetry x = 1.'],
                  ['B  (1, −2)', 'B is 1 − 2i, the conjugate: same real part, opposite imaginary part, the mirror image in the real axis. It is the other root. The slider is now unlocked: slide c and watch the pair.'],
                  ['C  (−1, −2)', 'C is −1 − 2i, the opposite of the root. The real part must stay 1. Check: (−1 − 2i)² − 2(−1 − 2i) + 5 = (−3 + 4i) + (2 + 4i) + 5 = 4 + 8i, not 0.']], ans: 1

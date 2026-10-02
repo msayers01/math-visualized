@@ -179,7 +179,7 @@
       ivs: [I(0, INF, false, false)], dom: { ivs: [I(0, INF, false, false)] }, ran: { ivs: [I(0, INF, false, false)] }, dots: null,
       valid: x => x > 0, why: x => (x < 0 ? 'A side length cannot be negative.' : 'A side of 0 makes no square at all.'), tag: 'side', unit: '',
       sub: x => `A(${num(x)}) = ${par(x)}² = ${num(x * x)}`,
-      dq: { q: 'The sides of the squares are measured in any length, so they can be 2.5 or 0.1 too. Which set of side lengths x is valid?', ch: [
+      dq: { q: 'A side can have any length, so 2.5 and 0.1 are possible too. Which set of side lengths x is valid?', ch: [
         ['(−∞, ∞)', 'The formula x² accepts every number, but the story does not: a side length cannot be negative.'],
         ['[0, ∞)', 'A side of 0 gives no square at all, with area 0. So 0 is left out, and the bracket at 0 is round.'],
         ['(0, ∞)', 'Any positive length works, whole or not, so the domain is an interval. The round bracket at 0 leaves 0 out.'],
@@ -297,7 +297,7 @@
         'A coin is dropped from a roof 45 m up. Its height is h(t) = 45 − 5t², where t counts seconds from the moment it is dropped. Solving 45 − 5t² = 0 gives t² = 9, so t = 3 or t = −3. Which answers are valid times for the coin to hit the ground?', [
           ['Both 3 and −3', 'Both solve the equation, but t = −3 is 3 seconds before the coin was dropped. It is outside the domain of the story, so it is rejected.'],
           ['t = 3 only', 'The coin lands 3 seconds after the drop: h(3) = 45 − 45 = 0. The solution t = −3 is not in the story, so we reject it.'],
-          ['t = −3 only', 'Negative time comes before the drop. The coin is still in the thrower\'s hand then.'],
+          ['t = −3 only', 'Negative time comes before the drop. The coin has not been dropped yet.'],
           ['Neither', 'At t = 3 the height is 45 − 5(9) = 0, so the coin is on the ground. That is a valid answer.']], 1)] },
     { name: 'Two traps', stages: [
       stg(['f(x) = √(x − 2)', 'A student says the domain is x > 2'], W_(-3, 9, -3, 5), [{ f: x => Math.sqrt(x - 2), ivs: [I(2, INF, true, false)] }], null,

@@ -2025,7 +2025,7 @@ register({
     hook: String.raw`Every graph you will meet is a copy of a simpler one that has been moved, stretched or flipped. Can you tell which moves, just from the formula?`,
     steps: [
       { title: 'Two graphs, one tracked point',
-        text: String.raw`<p>The grey curve is the base function \(f\). The blue curve is the transformed one, \(g\). Right now they are the same.</p><p>The ringed point \(P\) sits on \(f\). Its red twin \(P'\) shows where \(P\) lands on \(g\). Drag \(P\) along the curve.</p>`,
+        text: String.raw`<p>The gray curve is the base function \(f\). The blue curve is the transformed one, \(g\). Right now they are the same.</p><p>The ringed point \(P\) sits on \(f\). Its red twin \(P'\) shows where \(P\) lands on \(g\). Drag \(P\) along the curve.</p>`,
         set: { fn: 'abs', a: 1, b: 1, h: 0, k: 0, xp: 1 } },
       { title: 'Shift: h and k',
         text: String.raw`<p>Here \(g(x)=f(x-2)+1\). The \(+1\) outside lifts every point up by \(1\).</p><p>The \(-2\) inside moves the graph <em>right</em> by \(2\), the opposite of what the sign suggests. \(g\) needs \(x-2\) to equal the old \(x\), so it must go \(2\) further.</p>`,
@@ -2118,7 +2118,7 @@ register({
       const bS = C.slider({ label: 'b  (squeeze, flip)', min: -3, max: 3, step: .25, value: st.b, onInput: edit('b') });
       C.buttons([{ label: 'Reset transformation', onClick: () => { cancel(); Object.assign(st, { a: 1, b: 1, h: 0, k: 0 }); sync(); } }]);
       const ro = C.readout(); upd();
-      C.hint('Drag P along the grey curve to see where it lands.');
+      C.hint('Drag P along the gray curve to see where it lands.');
 
       draggable(P, {
         hit: (px, py) => { const y = F()(st.xp); return isFinite(y) && near(P, st.xp, y, px, py) ? 'p' : null; },
@@ -20247,7 +20247,7 @@ register({
         { name: 'The sum is 7', test: (a, b) => +a + +b === 7, r: (a, b) => a + ' + ' + b + ' = ' + (+a + +b), note: 'The sum 7 can be made 6 ways: 1+6, 2+5, 3+4, 4+3, 5+2, 6+1. The sums 2 to 12 are 11 different totals, but they are not 11 equally likely outcomes. The sum 2 has only 1 cell (1+1), while 7 has 6.' },
         { name: 'The sum is 10 or more', test: (a, b) => +a + +b >= 10, r: (a, b) => a + ' + ' + b + ' = ' + (+a + +b), note: 'Sum 10 has 3 cells, sum 11 has 2 and sum 12 has 1.' },
         { name: 'Doubles (both dice match)', test: (a, b) => a === b, r: (a, b) => a + ' and ' + b, note: 'The matches run down the diagonal of the table.' },
-        { name: 'At least one die shows a 6', test: (a, b) => a === '6' || b === '6', r: (a, b) => a + ' and ' + b, note: 'Row 6 and column 6 together have 6 + 6 - 1 = 11 cells, because 6,6 is in both.' }
+        { name: 'At least one die shows a 6', test: (a, b) => a === '6' || b === '6', r: (a, b) => a + ' and ' + b, note: 'Row 6 and column 6 together have 6 + 6 − 1 = 11 cells, because 6,6 is in both.' }
       ] },
     { id: 'bag', name: 'Two marbles, put back', n1: 'First marble', n2: 'Second marble', A: BAG(), B: BAG(), sym: true, reps: ['list', 'table', 'tree'],
       key: 'A bag holds one red (R), one blue (B) and one green (G) marble. You draw one, look, and put it back. Then you draw again. RB means red first, blue second.',
@@ -20342,10 +20342,10 @@ register({
     hook: String.raw`You flip a coin twice. Is it just as likely to get one head and one tail as it is to get two heads?`,
     steps: [
       { title: 'List every outcome',
-        text: String.raw`<p>Flip a coin twice. An <b>outcome</b> is one complete result, such as heads on the first flip and tails on the second, written HT. The list of all possible outcomes is the <b>sample space</b>.</p><p>Build an organized list. Tap a first result, then tap a second result to add that outcome. Order matters: HT and TH are different outcomes. Press <b>Check</b> and the lesson tells you what is missing or repeated. Then try the <b>Table</b> and <b>Tree</b> buttons to build the same sample space two more ways.</p>`,
+        text: String.raw`<p>Flip a coin twice. An <b>outcome</b> is one complete result, such as heads on the first flip and tails on the second, written HT. The list of all possible outcomes is the <b>sample space</b>.</p><p>Build an organized list. Tap a first result, then tap a second result to add that outcome. Order matters: HT and TH are different outcomes. Press <b>Check</b> to see what is missing or repeated. Then use the <b>Table</b> and <b>Tree</b> buttons to build it two more ways.</p>`,
         set: { scn: 0, rep: 'list', task: 'build', ev: 0, fill: 'none' } },
       { title: 'Trees and the counting principle',
-        text: String.raw`<p>Now flip a coin and roll a die. The tree starts with the 2 coin results. Tap the H or T node, then add a branch for each die result. Each path from the start to the end is one outcome. The end of a path is a <b>leaf</b>.</p><p>There are 2 choices for the coin and 6 for the die, so the tree has \(2\times 6=12\) leaves. This is the <b>counting principle</b>: multiply the number of choices at each stage. Next, open the experiment menu and pick <b>Two marbles, not put back</b>. After the first marble is out, the second stage has fewer branches.</p>`,
+        text: String.raw`<p>Now flip a coin and roll a die. The tree starts with the 2 coin results. Tap the H or T node, then add a branch for each die result. Each path from the start to its end, a <b>leaf</b>, is one outcome.</p><p>There are 2 choices for the coin and 6 for the die, so the tree has \(2\times 6=12\) leaves. This is the <b>counting principle</b>: multiply the number of choices at each stage. Next, pick <b>Two marbles, not put back</b> in the experiment menu. Once the first marble is out, the second stage has fewer branches.</p>`,
         set: { scn: 1, rep: 'tree', task: 'build', ev: 0, fill: 'tree1' } },
       { title: 'From words to outcomes',
         text: String.raw`<p>Roll two dice. The table has 6 rows for die 1 and 6 columns for die 2, so there are \(6\times 6=36\) cells. Each cell is one outcome, and all 36 are equally likely.</p><p>The event is "the sum is 7". Tap every cell where the two dice add to 7, then press <b>Check my event</b>. The lesson shows the number of marked cells over 36 as a fraction, a decimal and a percent. Do not count sums: the 11 sums from 2 to 12 are not equally likely.</p>`,
@@ -22469,7 +22469,7 @@ register({
     hook: 'Ice cream sales and drownings rise and fall together. Does ice cream cause drowning? What can a number called r tell you, and what can it never tell you?',
     steps: [
       { title: 'Estimate r from a picture',
-        text: String.raw`<p>The <b>correlation coefficient</b>, \(r\), is one number from \(-1\) to \(1\). It tells how closely the dots follow a <em>straight line</em>. The sign is the direction: positive when the dots rise, negative when they fall. The size is the strength: near \(1\) or \(-1\) means the dots hug a line.</p><p>Look at the dots and <b>click the number line</b> under the picture to place your guess. Then press <b>Check my guess</b>. The lesson computes the real \(r\) and draws the line of fit.</p><p>Then reshape the picture. Use the slider and the sign buttons, drag any dot, and open the <b>U shape</b> and the <b>outlier</b> pictures. Watch what \(r\) does.</p>`,
+        text: String.raw`<p>The <b>correlation coefficient</b>, \(r\), is one number from \(-1\) to \(1\). It tells how closely the dots follow a <em>straight line</em>. The sign is the direction: positive when the dots rise, negative when they fall. The size is the strength: near \(1\) or \(-1\) means the dots hug a line.</p><p>Look at the dots, <b>click the number line</b> under the picture to place your guess, then press <b>Check my guess</b>. The lesson computes the real \(r\) and draws the line of fit.</p><p>Then reshape the picture. Use the slider and the sign buttons, drag any dot, and open the <b>U shape</b> and the <b>outlier</b> pictures. Watch what \(r\) does.</p>`,
         set: { mode: 'est', pat: 'band', sgn: 1, t: .85, seed: 1 } },
       { title: 'Read the line in context',
         text: String.raw`<p>Now real units. Each dot is a student: hours studied (across) and test score (up). The line of fit is \(y = 4x + 50\), and the computed correlation is \(r = 0.89\).</p><p>Drag the yellow guide along the line. At \(5\) hours the line predicts \(4(5) + 50 = 70\) points.</p><p>Answer the three questions in the panel. For each one, pick the sentence that reads the line correctly. One choice makes a causal overclaim and one trusts the line too far away from the data.</p>`,
@@ -23190,7 +23190,7 @@ register({
       } },
     { ask: 'Set the prize to $10, so the game is fair, and press Play 10 a few times. A player spins 10 times. Which statement is correct?',
       items: seat([
-        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$18 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
+        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$20 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
         I('The net is exactly $0.', false, `${no('Not quite.')} Fair means the AVERAGE per spin is $0 in the long run. A few spins can end far from $0.`),
         I('The player will lose, because the host always wins.', false, `${no('Not quite.')} In a fair game the host has no advantage on average. Over a few spins either side can come out ahead.`)
       ], 0) }
@@ -23225,7 +23225,7 @@ register({
         I('Game A, because the prize is bigger', false, `${no('Not quite.')} The size of the prize does not change the chance of winning. For at least one win, only the chances count.`),
         I('They are the same, because 3 tickets each', false, `${no('Not quite.')} Same number of tickets, but different chances per ticket (1/10 against 1/2).`)
       ], 0) },
-    { ask: 'You must pick Game A. Use the slider for the number of tickets. What is the smallest number of tickets that gives at least a 50% chance of at least one win, then press the button.',
+    { ask: 'You must pick Game A. Use the slider to find the smallest number of tickets that gives at least a 50% chance of at least one win, then press the button.',
       check: st => {
         const n = Math.round(st.n);
         if (n === 7) return { right: true, text: `${ok('Right.')} With 7 tickets the chance of at least one win is 1 − 0.9⁷ = ${pc1(pA(7))}. With 6 tickets it is 1 − 0.9⁶ = ${pc1(pA(6))}, which is just under 50%. So 7 is the smallest number that works.` };
@@ -23671,13 +23671,13 @@ register({
         const a = st.act, k = kOf(a);
         let t = '';
         if (a === 'build') {
-          t = kk('Plays', grp(String(simB.n))) + ' &nbsp; ' + kk('Last spin net', simB.last === null ? '—' : sg(simB.last)) + '<br>' +
-            kk('Average net so far', simB.n ? m2(simB.sum / simB.n) : '—') + (k >= 6 ? ' ' + kk('(expected ' + m2(EVNET) + ')', '') : '') + '<br>' +
-            kk('Range of single spins', simB.n ? sg(simB.lo) + ' to ' + sg(simB.hi) : '—');
+          t = kk('Plays', grp(String(simB.n))) + ' &nbsp; ' + kk('Last spin net', simB.last === null ? 'none yet' : sg(simB.last)) + '<br>' +
+            kk('Average net so far', simB.n ? m2(simB.sum / simB.n) : 'none yet') + (k >= 6 ? ' ' + kk('(expected ' + m2(EVNET) + ')', '') : '') + '<br>' +
+            kk('Range of single spins', simB.n ? sg(simB.lo) + ' to ' + sg(simB.hi) : 'none yet');
         } else if (a === 'fair') {
           const pr = Math.round(st.prize), e = fairEV(pr);
           t = kk('Prize', m(pr)) + ' &nbsp; ' + kk('Fee', '$2') + '<br>' + kk('Expected payout', `${m(pr)} × 1/5 = ${m2(pr / FSEC)}`) + '<br>' +
-            kk('Expected net', m2(e) + ' (' + kind(e) + ')') + '<br>' + kk('Plays', grp(String(simF.n))) + ' &nbsp; ' + kk('Average net', simF.n ? m2(simF.sum / simF.n) : '—');
+            kk('Expected net', m2(e) + ' (' + kind(e) + ')') + '<br>' + kk('Plays', grp(String(simF.n))) + ' &nbsp; ' + kk('Average net', simF.n ? m2(simF.sum / simF.n) : 'none yet');
         } else if (a === 'profit') {
           const pr = st.price;
           t = kk('Price', m2(pr)) + '<br>' + kk('Plays', `300 − 60 × ${pr.toFixed(2)} = ${plays(pr)}`) + '<br>' +
@@ -29603,7 +29603,7 @@ register({
 
   const byAng = (a, b, c) => Math.max(a, b, c) > 90 ? 'obtuse (one angle is over 90°)' : Math.max(a, b, c) === 90 ? 'right (one angle is 90°)' : 'acute (every angle is under 90°)';
   const bySide = (a, b, c) => a === b && b === c ? 'equilateral (3 equal angles, so 3 equal sides)'
-    : (a === b || b === c || a === c) ? 'isosceles (exactly 2 equal angles, so exactly 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
+    : (a === b || b === c || a === c) ? 'isosceles (2 equal angles, so 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
 
   /* ----- canvas helpers ----- */
   const sector = (p, x, y, r, a0, sw, fill, stroke, lw = 2.4, dash) => {
@@ -32785,7 +32785,7 @@ register({
         text: String.raw`<p>Draw the parallelogram of \(w\) and \(v\). Its area is \(7\cdot3-1\cdot6=15\). Predict \(x\) in the panel, then watch the top edge slide along \(v\).</p><p>Sliding along \(v\) keeps the base and the height, so the area never changes. At the start the edge is \(x\) copies of \(u\), so the area is \(x\) times \(D\): \(15=x\cdot5\).</p>`,
         set: { mode: 'X', a: 2, b: 1, c: 1, d: 3, e: 7, f: 6, sh: 0, walkT: 0 } },
       { title: 'Pick the column, then compute',
-        text: String.raw`<p>For \(x\), swap the \(x\) column \((2,1)\) for the right side \((7,6)\). That gives the parallelogram of \(w\) and \(v\). For \(y\), swap the \(y\) column instead.</p><p>Choose the column, set \(D\) and the top number with the sliders, and press Check. Here \(x=\tfrac{15}{5}=3\) and \(y=\tfrac55=1\).</p>`,
+        text: String.raw`<p>For \(x\), swap the \(x\) column \((2,1)\) for the right side \((7,6)\). That gives the parallelogram of \(w\) and \(v\). For \(y\), swap the \(y\) column instead.</p><p>Choose the column, set \(D\) and the top number with the sliders, and press <b>Check my numbers</b>. Here \(x=\tfrac{15}{5}=3\) and \(y=\tfrac55=1\).</p>`,
         set: { mode: 'rule', a: 2, b: 1, c: 1, d: 3, e: 7, f: 6, sh: 0, walkT: 0 } },
       { title: 'When the parallelogram is flat',
         text: String.raw`<p>Now \(x+2y=3,\ 2x+4y=5\). The arrows \(u=(1,2)\) and \(v=(2,4)\) point along one line, so the parallelogram is flat: \(D=1\cdot4-2\cdot2=0\). You cannot divide by 0.</p><p>Decide in the panel: none or many? The top numbers here are \(2\) and \(-1\). Then change the right side to \((3,6)\) and look again.</p>`,
@@ -43888,7 +43888,7 @@ register({
       ivs: [I(0, INF, false, false)], dom: { ivs: [I(0, INF, false, false)] }, ran: { ivs: [I(0, INF, false, false)] }, dots: null,
       valid: x => x > 0, why: x => (x < 0 ? 'A side length cannot be negative.' : 'A side of 0 makes no square at all.'), tag: 'side', unit: '',
       sub: x => `A(${num(x)}) = ${par(x)}² = ${num(x * x)}`,
-      dq: { q: 'The sides of the squares are measured in any length, so they can be 2.5 or 0.1 too. Which set of side lengths x is valid?', ch: [
+      dq: { q: 'A side can have any length, so 2.5 and 0.1 are possible too. Which set of side lengths x is valid?', ch: [
         ['(−∞, ∞)', 'The formula x² accepts every number, but the story does not: a side length cannot be negative.'],
         ['[0, ∞)', 'A side of 0 gives no square at all, with area 0. So 0 is left out, and the bracket at 0 is round.'],
         ['(0, ∞)', 'Any positive length works, whole or not, so the domain is an interval. The round bracket at 0 leaves 0 out.'],
@@ -44006,7 +44006,7 @@ register({
         'A coin is dropped from a roof 45 m up. Its height is h(t) = 45 − 5t², where t counts seconds from the moment it is dropped. Solving 45 − 5t² = 0 gives t² = 9, so t = 3 or t = −3. Which answers are valid times for the coin to hit the ground?', [
           ['Both 3 and −3', 'Both solve the equation, but t = −3 is 3 seconds before the coin was dropped. It is outside the domain of the story, so it is rejected.'],
           ['t = 3 only', 'The coin lands 3 seconds after the drop: h(3) = 45 − 45 = 0. The solution t = −3 is not in the story, so we reject it.'],
-          ['t = −3 only', 'Negative time comes before the drop. The coin is still in the thrower\'s hand then.'],
+          ['t = −3 only', 'Negative time comes before the drop. The coin has not been dropped yet.'],
           ['Neither', 'At t = 3 the height is 45 − 5(9) = 0, so the coin is on the ground. That is a valid answer.']], 1)] },
     { name: 'Two traps', stages: [
       stg(['f(x) = √(x − 2)', 'A student says the domain is x > 2'], W_(-3, 9, -3, 5), [{ f: x => Math.sqrt(x - 2), ivs: [I(2, INF, true, false)] }], null,
@@ -46724,7 +46724,7 @@ register({
         C.title('Place the other root');
         placeBox = quizBox(() => { placed = true; sync(); }, (it, i) => { badPick.add(i); sync(); });
         placeBox.load({
-          q: 'At c = 5 one root is 1 + 2i, the point (1, 2). The other root is one of the labelled points A, B or C on the plane. Which one?',
+          q: 'At c = 5 one root is 1 + 2i, the point (1, 2). The other root is one of the labeled points A, B or C on the plane. Which one?',
           opts: [['A  (−1, 2)', 'A is the number −1 + 2i. Its real part is −1, but both roots share the real part 1: it is −b/2a, the axis of symmetry x = 1.'],
                  ['B  (1, −2)', 'B is 1 − 2i, the conjugate: same real part, opposite imaginary part, the mirror image in the real axis. It is the other root. The slider is now unlocked: slide c and watch the pair.'],
                  ['C  (−1, −2)', 'C is −1 − 2i, the opposite of the root. The real part must stay 1. Check: (−1 − 2i)² − 2(−1 − 2i) + 5 = (−3 + 4i) + (2 + 4i) + 5 = 4 + 8i, not 0.']], ans: 1
@@ -47705,7 +47705,7 @@ register({
              ['d = 9 ÷ 3', 'That gives d = 3, but 3³ = 27, not 9. Dimension is a power of s, not a quotient.']], ans: 1 },
     eqkoch: { q: 'The Koch curve is made of N = 4 copies of itself, each at scale 1/3. Which equation finds its dimension d?',
       opts: [['4^d = 3', 'This swaps the two numbers. It would give d = log 3 ÷ log 4 = 0.7925. The copies are scaled by 1/3, so s = 3, and there are N = 4 of them.'],
-             ['d = 4 ÷ 3 = 1.33', 'A power, not a quotient. Check: 3 to the power 1.33 is about 4.33, not 4.'],
+             ['d = 4 ÷ 3 = 1.33', 'A power, not a quotient. Check: 3 to the power 1.33 is about 4.31, not 4.'],
              ['3^d = 4', 'Yes. 3¹ = 3 is too small and 3² = 9 is too big, so d is between 1 and 2. The calculator gives d = log 4 ÷ log 3 = 0.60206 ÷ 0.47712 = 1.2619.']], ans: 2 },
     psier: { q: 'The Sierpinski triangle keeps 3 of 4 pieces at every stage. A line has dimension 1 and a filled triangle has dimension 2. Predict: is its dimension nearer 1 or nearer 2?',
       opts: [['Nearer 1, like a thin curve'], ['Exactly halfway, 1.5'], ['Nearer 2, like a filled shape']], ans: 2,
@@ -47827,7 +47827,7 @@ register({
       <p>One jump halfway to corner \(A\) sends every point \(P\) to the point halfway between \(P\) and \(A\). Applied to the whole triangle, this gives a copy at scale \(\tfrac12\) sitting in corner \(A\). So after one jump the dot is in one of 3 half-size triangles (stage 1). After a second jump it is in one of 9 quarter-size triangles (stage 2), and after \(n\) jumps in one of the \(3^{n}\) triangles of stage \(n\). The dots can never land in a removed middle triangle. If you start outside the triangle, the first few dots wander in, and then this argument applies. Which corner you pick at random only decides which of the pieces you visit, so a fixed pseudo-random sequence draws the same picture every time.</p>
       <h3>Make your own, and honest limits</h3>
       <p>For \(N\) copies at scale \(\tfrac1s\) in a plane, the copies need room: there are only \(s^{2}\) cells, so \(N\le s^{2}\), that is \(d\le2\). With \(N=s^{2}\) the copies fill the square. The dimension depends only on \(N\) and \(s\), not on where the copies are put: the Koch curve and Cantor dust both have \(N=4,\ s=3\) and \(d\approx1.26\), but look nothing alike.</p>
-      <p>Real objects are only approximately self-similar. A coastline looks rough at many scales, but only across a limited range, from kilometres down to centimetres, and its "dimension" is a measured estimate, not an exact value. The boundary of the Mandelbrot set (see the sibling lesson) has an even richer structure. There are other definitions of dimension too; this lesson uses only the similarity dimension.</p>`,
+      <p>Real objects are only approximately self-similar. A coastline looks rough at many scales, but only across a limited range, from kilometers down to centimeters, and its "dimension" is a measured estimate, not an exact value. The boundary of the Mandelbrot set (see the Mandelbrot and Julia sets lesson) has an even richer structure. There are other definitions of dimension too; this lesson uses only the similarity dimension.</p>`,
     check: [
       { q: 'A square is cut into smaller squares, each with sides 1/4 as long as the original. How many small squares are there, and what does the calculation N = s^d show?',
         choices: ['4 small squares, because 1/4 of each side', '8 small squares, because 4 × 2 = 8', '16 small squares, because 4² = 16: the exponent 2 is the dimension', '64 small squares, because 4³ = 64'], answer: 2,
@@ -51924,12 +51924,12 @@ register({
     hex: { name: 'Regular hexagon (a nut)', lab: 'Side s (mm)', vals: [2, 4, 6, 8, 10], def: 10, u: 'mm',
       stages: s => [
         mk('A regular hexagon has six equal sides of ' + s + ' mm. How do you cut it into triangles you know?',
-          ['Draw lines from the centre to all six corners', 'That makes six triangles around the centre. Each central angle is 360° ÷ 6 = 60°.'],
+          ['Draw lines from the center to all six corners', 'That makes six triangles around the center. Each central angle is 360° ÷ 6 = 60°.'],
           [['Draw one long diagonal from corner to corner', 'That makes two trapezoids, not triangles.'],
             ['Join two corners that skip one corner between them', 'That cuts off one triangle with a 120° angle, whose angles are 30°, 30° and 120°. It is not a special right triangle.']], 2),
         typeQ('What kind of triangle is each of the six pieces?', 'oeq',
           'Two sides of each piece are radii, and the angle between them is 60°. The other two angles are equal and add to 120°, so they are 60° too. All three sides are equal, so the radius equals the side, ' + s + ' mm. (The next scene gives this argument step by step.) Cut one piece down the middle and you get two 30-60-90 triangles.',
-          { o45: 'The angle at the centre is 60°, not 90°, so a piece has no right angle at all.', o3060: 'Not yet. Each piece has three 60° angles. A 30-60-90 triangle appears when you cut one piece down the middle.', oplain: 'The pieces are not right triangles, but they do have a pattern: three equal sides.' }, 0),
+          { o45: 'The angle at the center is 60°, not 90°, so a piece has no right angle at all.', o3060: 'Not yet. Each piece has three 60° angles. A 30-60-90 triangle appears when you cut one piece down the middle.', oplain: 'The pieces are not right triangles, but they do have a pattern: three equal sides.' }, 0),
         mk('The distance between two opposite flat sides is the wrench size. How big is it? (It is two heights of the small triangles.)',
           [val(s, 3, 'mm'), `One small triangle has height ${rt(s / 2, 3)} (its long leg: ${s / 2} × √3). The wrench size is two of them: 2 × ${rt(s / 2, 3)} = ${rt(s, 3)}. In general it is s√3.`],
           [[`${2 * s} mm`, 'That is the distance between opposite corners, 2 × the side. The flat sides are closer than the corners.'],
@@ -52007,7 +52007,7 @@ register({
   const ARGS = [
     { name: 'The height of an equilateral triangle halves the base',
       given: 'Triangle ABC is equilateral. D is the point where the height from A meets BC, so AD ⟂ BC.',
-      claim: 'BD = DC and that AD splits the 60° angle at A into two 30° angles.',
+      claim: 'BD = DC, and AD splits the 60° angle at A into two 30° angles.',
       steps: [
         { s: 'Triangles ADB and ADC both have a right angle at D.',
           ch: [['AD is the height, so it meets BC at 90°.', 'That is how D was defined. The height makes a right angle with the base.', 1],
@@ -52031,16 +52031,16 @@ register({
             ['D is the middle because the triangle is equilateral.', 'That is what we wanted to show, so it cannot be a reason.']] }],
       done: 'So BD = DC = s/2, and the 60° angle at A is split into two 30° angles. Each half is a 30-60-90 triangle with hypotenuse s and short leg s/2.' },
     { name: 'The six triangles in a regular hexagon are equilateral',
-      given: 'ABCDEF is a regular hexagon with centre O. All six sides are equal and all six corners are the same distance from O.',
-      claim: 'triangle OAB is equilateral, so the radius equals the side.',
+      given: 'ABCDEF is a regular hexagon with center O. All six sides are equal and all six corners are the same distance from O.',
+      claim: 'Triangle OAB is equilateral, so the radius equals the side.',
       steps: [
         { s: 'Angle AOB = 60°.',
           ch: [['The six angles around O are equal and add to 360°, and 360 ÷ 6 = 60.', 'The six triangles have three pairs of equal sides (the six sides of the hexagon and the radii), so they are congruent and their angles at O are equal: each is a sixth of a full turn.', 1],
             ['A hexagon has six sides, so the angle is 6°.', 'The count of sides is not the angle. Divide the full turn, 360°, by 6.'],
-            ['The interior angle of a hexagon is 120°, so AOB is 120°.', '120° is the angle at a corner of the hexagon (angle FAB), not the angle at the centre.']] },
+            ['The interior angle of a hexagon is 120°, so AOB is 120°.', '120° is the angle at a corner of the hexagon (angle FAB), not the angle at the center.']] },
         { s: 'OA = OB.',
           ch: [['Both are radii: every corner is the same distance from O.', 'In a regular hexagon all corners lie on a circle around O, so OA and OB are both radii.', 1],
-            ['They are both sides of the hexagon.', 'OA and OB go from the centre to corners. They are not sides of the hexagon.'],
+            ['They are both sides of the hexagon.', 'OA and OB go from the center to corners. They are not sides of the hexagon.'],
             ['They look equal.', 'A picture can mislead. We use the fact that the corners are the same distance from O.']] },
         { s: 'Angle OAB = angle OBA.',
           ch: [['Base angles of an isosceles triangle are equal.', 'OA = OB, so triangle OAB is isosceles, and the angles opposite the equal sides are equal.', 1],
@@ -52099,7 +52099,7 @@ register({
       q: 'In equilateral triangle ABC the height AD meets BC at D. Which reason shows that BD = DC?',
       ch: [['In the picture D looks like the middle.', 'A proof cannot rest on how a picture looks.'],
         ['Triangles ADB and ADC are congruent by hypotenuse-leg, so their matching sides BD and DC are equal.', 'Both are right triangles, AB = AC because the triangle is equilateral, and AD is shared. Hypotenuse-leg gives congruence, and matching sides of congruent triangles are equal.', 1],
-        ['A height always bisects the side it meets.', 'That is false in general. In a scalene triangle the height lands off-centre. It works here because the triangle is equilateral.'],
+        ['A height always bisects the side it meets.', 'That is false in general. In a scalene triangle the height lands off center. It works here because the triangle is equilateral.'],
         ['AD = BD because both are heights.', 'BD is not a height, and AD and BD are different lengths.']] },
     { v: { k: 'fig', fig: 'eq', s: 8, tgt: 0 },
       q: 'A student finds the height of an equilateral triangle with side 8 cm like this: "height = 8 × sin 60° = 8 × 1/2 = 4 cm." What is wrong, and what is the right height?',
@@ -52157,7 +52157,7 @@ register({
       <h3>Figures cut into special triangles</h3>
       <p><b>Equilateral triangle of side \(s\).</b> The height splits it into two 30-60-90 triangles with hypotenuse \(s\) and short leg \(s/2\). The height is the long leg, \(h = \tfrac{s}{2}\sqrt3 = \tfrac{s\sqrt3}{2}\). The area is
       \[ \tfrac12\cdot s\cdot\tfrac{s\sqrt3}{2} = \tfrac{\sqrt3}{4}s^2. \]</p>
-      <p><b>Regular hexagon of side \(s\).</b> Lines from the centre make six equilateral triangles of side \(s\) (proved below). So the area is
+      <p><b>Regular hexagon of side \(s\).</b> Lines from the center make six equilateral triangles of side \(s\) (proved below). So the area is
       \[ 6\cdot\tfrac{\sqrt3}{4}s^2 = \tfrac{3\sqrt3}{2}s^2. \]
       Two opposite flat sides are two triangle heights apart: \(2\cdot\tfrac{s\sqrt3}{2} = s\sqrt3\). A nut with sides \(10\) mm needs a \(10\sqrt3 \approx 17.3\) mm wrench. Opposite corners are farther apart, \(2s = 20\) mm.</p>
       <p><b>Rectangle with a \(30^\circ\) diagonal.</b> If the short side is \(s\), the diagonal is \(2s\) (the hypotenuse is twice the side across from \(30^\circ\)) and the long side is \(s\sqrt3\). The area is \(s\cdot s\sqrt3 = s^2\sqrt3\).</p>
@@ -52165,7 +52165,7 @@ register({
       <p><b>Square of side \(s\).</b> A diagonal makes two 45-45-90 triangles, so the diagonal is \(s\sqrt2\).</p>
       <h3>Why the pieces are special: two short arguments</h3>
       <p><b>The height of an equilateral triangle bisects the base.</b> In triangle \(ABC\), let \(AD\) be the height, so \(\angle ADB = \angle ADC = 90^\circ\). Then \(AB = AC\) (equilateral) and \(AD = AD\) (shared). Two right triangles with equal hypotenuses and one equal leg are congruent (hypotenuse-leg). Corresponding parts of congruent triangles are equal, so \(BD = DC\) and \(\angle BAD = \angle CAD = 30^\circ\).</p>
-      <p><b>The six triangles in a regular hexagon are equilateral.</b> The six angles at the centre \(O\) are equal and add to \(360^\circ\), so each is \(60^\circ\). \(OA\) and \(OB\) are radii, so \(OA = OB\) and the base angles of triangle \(OAB\) are equal. They add to \(180^\circ - 60^\circ = 120^\circ\), so each is \(60^\circ\). Three equal angles give three equal sides: \(OA = OB = AB = s\).</p>
+      <p><b>The six triangles in a regular hexagon are equilateral.</b> The six angles at the center \(O\) are equal and add to \(360^\circ\), so each is \(60^\circ\). \(OA\) and \(OB\) are radii, so \(OA = OB\) and the base angles of triangle \(OAB\) are equal. They add to \(180^\circ - 60^\circ = 120^\circ\), so each is \(60^\circ\). Three equal angles give three equal sides: \(OA = OB = AB = s\).</p>
       <h3>Where this leads: the unit circle</h3>
       <p>Take a right triangle with hypotenuse \(1\) and angle \(\theta\) at the origin. Its legs are \(\cos\theta\) (across) and \(\sin\theta\) (up), so its far corner is the point \((\cos\theta, \sin\theta)\) on the circle of radius \(1\). The special angles give
       \[ 30^\circ: \left(\tfrac{\sqrt3}{2}, \tfrac12\right), \qquad 45^\circ: \left(\tfrac{\sqrt2}{2}, \tfrac{\sqrt2}{2}\right), \qquad 60^\circ: \left(\tfrac12, \tfrac{\sqrt3}{2}\right). \]

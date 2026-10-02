@@ -26,7 +26,7 @@
     hook: String.raw`Every graph you will meet is a copy of a simpler one that has been moved, stretched or flipped. Can you tell which moves, just from the formula?`,
     steps: [
       { title: 'Two graphs, one tracked point',
-        text: String.raw`<p>The grey curve is the base function \(f\). The blue curve is the transformed one, \(g\). Right now they are the same.</p><p>The ringed point \(P\) sits on \(f\). Its red twin \(P'\) shows where \(P\) lands on \(g\). Drag \(P\) along the curve.</p>`,
+        text: String.raw`<p>The gray curve is the base function \(f\). The blue curve is the transformed one, \(g\). Right now they are the same.</p><p>The ringed point \(P\) sits on \(f\). Its red twin \(P'\) shows where \(P\) lands on \(g\). Drag \(P\) along the curve.</p>`,
         set: { fn: 'abs', a: 1, b: 1, h: 0, k: 0, xp: 1 } },
       { title: 'Shift: h and k',
         text: String.raw`<p>Here \(g(x)=f(x-2)+1\). The \(+1\) outside lifts every point up by \(1\).</p><p>The \(-2\) inside moves the graph <em>right</em> by \(2\), the opposite of what the sign suggests. \(g\) needs \(x-2\) to equal the old \(x\), so it must go \(2\) further.</p>`,
@@ -119,7 +119,7 @@
       const bS = C.slider({ label: 'b  (squeeze, flip)', min: -3, max: 3, step: .25, value: st.b, onInput: edit('b') });
       C.buttons([{ label: 'Reset transformation', onClick: () => { cancel(); Object.assign(st, { a: 1, b: 1, h: 0, k: 0 }); sync(); } }]);
       const ro = C.readout(); upd();
-      C.hint('Drag P along the grey curve to see where it lands.');
+      C.hint('Drag P along the gray curve to see where it lands.');
 
       draggable(P, {
         hit: (px, py) => { const y = F()(st.xp); return isFinite(y) && near(P, st.xp, y, px, py) ? 'p' : null; },
