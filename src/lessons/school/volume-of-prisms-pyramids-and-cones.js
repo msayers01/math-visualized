@@ -152,7 +152,7 @@
         const pal = p.pal, w = p.w, hh = p.h, u = st.unit, pr = prac.on ? PR[prac.i] : null, shape = st.shape;
         const fs = w < 520 ? 13 : 15;
         const ex = extent(), rho = ex.rho, zmax = ex.zmax, topM = 16, botM = pr ? 16 : 46;
-        const availH = hh - topM - botM, availW = w - (w < 520 ? 120 : 170);
+        const availH = hh - topM - botM, availW = w - (w < 520 ? 150 : 170);
         const sc = Math.min(availW / (2 * rho), availH / (zmax * CP + 2 * rho * SP));
         const E = (zmax * CP + 2 * rho * SP) * sc, a = st.rot * PI / 180, ca = Math.cos(a), sa = Math.sin(a);
         const ox = w / 2, oy = topM + (availH - E) / 2 + (zmax * CP + rho * SP) * sc;
@@ -381,7 +381,7 @@
             if (showDims) hLabel(rimV(xs, R, 1), 0, 2 * R, 'h = 2r = ' + dim(2 * R), 1);
             const rq = pj([-xs, 0, R]); txt('r = ' + dim(R), rq[0], rq[1], { col: pal.text });
           };
-          cap = st.sp >= .995 ? 'The water fills 2/3 of the cylinder' : st.sp <= .005 ? 'Sphere radius r, cylinder radius r and height 2r' : `Cylinder is ${num(st.sp * 2 / 3 * 100)}% full`;
+          cap = st.sp >= .995 ? 'The water fills 2/3 of the cylinder' : st.sp <= .005 ? 'Cylinder: radius r, height 2r' : `Cylinder is ${num(st.sp * 2 / 3 * 100)}% full`;
         }
 
         parts.sort((x, y) => y.yr - x.yr).forEach(pt => pt.run());
@@ -557,7 +557,7 @@
                ['40 cm³', 'One layer holds 5 × 2 = 10 cubes. There are 4 layers, so 10 × 4 = 40 cubes. Each cube is 1 cm³.'],
                ['40 cm²', 'The number 40 is right, but cm² measures flat area. Cubes fill space, so the unit is cm³.']] },
         { fig: { shape: 'tri', L: 6, W: 4, H: 5, k: 1 }, ans: 1,
-          q: 'The base of this prism is a right triangle with legs 6 cm and 4 cm. The prism is 5 cm long. What is its volume?',
+          q: 'The base of this prism is a right triangle with legs 6 cm and 4 cm. The prism is 5 cm long (the length is the edge drawn upright). What is its volume?',
           ch: [['120 cm³', 'That is 6 × 4 × 5, a box. A triangle is half of a 6 by 4 rectangle, so the base area is 12 cm², not 24.'],
                ['60 cm³', 'Base area = ½ × 6 × 4 = 12 cm². Volume = base area × length = 12 × 5 = 60 cm³.'],
                ['15 cm³', 'That adds the three numbers. Volume multiplies the base area (12 cm²) by the length (5 cm).'],
@@ -576,7 +576,7 @@
                ['10 cm³', 'That used ⅓ × 6 × 5. The base is a square, so its area is 6 × 6 = 36, not 6.']] },
         { fig: { shape: 'box', L: 10, W: 5, H: 2, k: 1, unit: 'm' }, ans: 1,
           q: 'A pool is 10 m long, 5 m wide and 2 m deep. A pump adds 500 liters each minute. One cubic meter holds 1000 liters. How many minutes does it take to fill the pool?',
-          ch: [['100 minutes', 'That used the floor area, 50 m², and forgot the depth. The volume is 10 × 5 × 2 = 100 m³.'],
+          ch: [['100 minutes', 'That comes from 50 m³, the floor area with no depth (50,000 ÷ 500 = 100). The volume is 10 × 5 × 2 = 100 m³.'],
                ['200 minutes', 'V = 10 × 5 × 2 = 100 m³ = 100,000 liters. Then 100,000 ÷ 500 = 200 minutes.'],
                ['0.2 minutes', 'That forgot to change cubic meters to liters. 100 m³ is 100,000 liters, and 100,000 ÷ 500 = 200.'],
                ['2,000 minutes', '100,000 ÷ 500 is 200, not 2,000. Check the zeros when you divide.']] },
@@ -585,7 +585,7 @@
           ch: [['3 scoops', 'That would be true only if the scoop had the same radius as the tank. This scoop is narrower, so it holds much less.'],
                ['4 scoops', 'The base areas differ by 4, but a cone also holds only a third of its cylinder. You missed the third.'],
                ['12 scoops', 'Tank: π × 2² × 3 = 12π m³. Scoop: ⅓ × π × 1² × 3 = π m³. So 12π ÷ π = 12 scoops.'],
-               ['36 scoops', 'That multiplies by 9 somewhere. The tank has 4 times the base area of the scoop, and a cone holds a third of its cylinder, so it is 4 × 3 = 12.']] },
+               ['36 scoops', '36 treats the cone as 3 times its cylinder instead of a third of it. The tank has 4 times the base area of the scoop, and a cone holds a third of its cylinder, so it is 4 × 3 = 12.']] },
         { fig: { shape: 'scale', R: 1, H: 2, dbl: 'rh2' }, dims: true, ans: 1,
           q: 'Cylinder B has twice the radius of cylinder A and half the height of A. How does the volume of B compare with the volume of A?',
           ch: [['B holds the same as A', 'The radius counts twice (r²), so doubling it gives 4 times. Halving the height gives ½. 4 × ½ is 2, not 1.'],
