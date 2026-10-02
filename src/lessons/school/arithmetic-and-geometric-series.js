@@ -68,6 +68,19 @@
     return w;
   };
   const fitRich = (c, s, x, y, size, maxW, color, align, wt = 500, min = 12) => { let z = size; while (z > min && richW(c, s, z, wt) > maxW) z -= .5; return rich(c, s, x, y, z, color, align, wt); };
+  /* like fitRich, but a line that is still too wide at the smallest size is broken onto two rows (at the last ' = ' if both halves fit, else balanced) */
+  const fitRows = (c, s, x, y, size, maxW, color, align = 'center', wt = 500, min = 12) => {
+    let z = size; while (z > min && richW(c, s, z, wt) > maxW) z -= .5;
+    if (richW(c, s, z, wt) <= maxW) { rich(c, s, x, y, z, color, align, wt); return 1; }
+    const sp = []; for (let i = 0; i < s.length; i++) if (s[i] === ' ') sp.push(i);
+    const wd = i => Math.max(richW(c, s.slice(0, i), z, wt), richW(c, s.slice(i + 1), z, wt));
+    let cut = sp.length ? sp.reduce((a, b) => (wd(b) < wd(a) ? b : a)) : -1;
+    const eq = s.lastIndexOf(' = '); if (eq > 0 && wd(eq) <= maxW) cut = eq;
+    if (cut < 0) { rich(c, s, x, y, z, color, align, wt); return 1; }
+    rich(c, s.slice(0, cut), x, y, z, color, align, wt); rich(c, s.slice(cut + 1), x, y + z * 1.3, z, color, align, wt);
+    return 2;
+  };
+  const stackRows = (c, lines, x, y, size, maxW, gap, min = 12) => lines.forEach(([t, col]) => { const n = fitRows(c, t, x, y, size, maxW, col, 'center', 600, min); y += gap + (n - 1) * size * 1.3; });
   /* HTML version of the same markup for the panel */
   const rh = s => s.replace(/_\{([^}]*)\}/g, '<sub>$1</sub>').replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>');
   const good = t => `<b style="color:var(--green)">${t}</b>`;
@@ -169,7 +182,7 @@
         text: String.raw`<p>Take \(3, 5, 7, 9, 11, 13\). Switch on <b>Stack the reversed copy</b>. Every column now reaches the same height: \(a_1 + a_n = 3 + 13 = 16\).</p><p>There are 6 columns of height 16, so the rectangle holds \(6 \times 16 = 96\). It is two copies of the sum, so \(S_6 = 96 \div 2 = 48\).</p>`,
         set: { view: 'gauss', kind: 'arith', a1: 3, d: 2, n: 6, showRev: false } },
       { title: 'Shift and subtract',
-        text: String.raw`<p>Take \(3, 6, 12, 24\) with \(r = 2\). The second row is every term times \(r\), which just slides the list one place.</p><p>All the middle boxes match. Only \(a_1 = 3\) and \(a_5 = 48\) are left, so \(S - 2S = 3 - 48 = -45\). That means \(-S = -45\) and \(S = 45\).</p>`,
+        text: String.raw`<p>Take \(3, 6, 12, 24\) with \(r = 2\). The second row is every term times \(r\), which just slides the list one place.</p><p>All the middle boxes match. Only \(a_1 = 3\) and \(a_5 = r \cdot a_4 = 48\) are left, so \(S - 2S = 3 - 48 = -45\). That means \(-S = -45\) and \(S = 45\).</p>`,
         set: { view: 'shift', kind: 'geom', a1: 3, rk: '2', n: 4 } },
       { title: 'Adding forever',
         text: String.raw`<p>Start with \(1 + \tfrac12 + \tfrac14 + \dots\). First predict, using the buttons: do the partial sums settle? Then slide <b>Number of terms n</b>.</p><p>They creep toward 2 but never pass it. With \(r = \tfrac12\) the limit is \(a_1/(1-r) = 1/(1/2) = 2\). Now try \(r = 2\) or \(r = -1\).</p>`,
@@ -234,10 +247,11 @@
       const st = {
         view: 'running', kind: 'arith', a1: 2, d: 3, rk: '2', n: 5, showRev: false, fade: 1,
         sg: { s: 1, e: 6, ex: 4 }, wr: false, tg: 0, wrDone: false,
-        H: 8, bk: '1/2', b: 3, pred: {}, practice: false
+        H: 8, bk: '1/2', b: 3, pred: {}, predI: {}, practice: false
       };
-      let cancel = () => {};
-      let pIdx = 0, pFirst = 0, pDone = 0, pSolved = false, pTried = false, pOver = false, curQ = null, curBtns = [];
+      let cancelT = () => {};
+      const cancel = () => { cancelT(); cancelT = () => {}; st.fade = 1; };
+      let pIdx = 0, pFirst = 0, pDone = 0, pSolved = false, pTried = false, pOver = false, pLoaded = false, curQ = null, curBtns = [];
 
       const cfg = () => (st.practice ? PRAC[pIdx].sc : st);
       const full = cf => (cf === st ? st : { kind: 'arith', d: 1, showRev: false, ...cf, showRev: !!cf.rev });
@@ -255,7 +269,12 @@
         c.beginPath(); rect(c, x, ya, w, yb - ya); c.fillStyle = fill; c.fill(); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
       };
       const baseline = (c, pal, x0, x1, y) => { c.strokeStyle = pal['grid-strong']; c.lineWidth = 1.6; c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.stroke(); };
-      const valLabel = (c, s, cx, y, below, size, maxW, color, wt = 600) => fitRich(c, s, cx, below ? y + size * .7 : y - size * .7, size, maxW, color, 'center', wt, 10);
+      let curW = 0;
+      const valLabel = (c, s, cx, y, below, size, maxW, color, wt = 600) => {
+        let z = size; while (z > 10 && richW(c, s, z, wt) > maxW) z -= .5;
+        const hw = richW(c, s, Math.max(z, 12), wt) / 2; if (curW) cx = clamp(cx, hw + 3, curW - hw - 3);
+        return rich(c, s, cx, below ? y + size * .7 : y - size * .7, z, color, 'center', wt);
+      };
 
       const drawRunning = (c, p, cf, K) => {
         const { fs, pad, pal } = K, W = p.w, H = p.h, n = cf.n, hide = K.hide;
@@ -415,7 +434,7 @@
         const lines = [[`Number of terms = end − start + 1 = ${sg.e} − ${sg.s} + 1 = ${N}`, pal.violet], ['Red: last k. Green: first k. Right: the rule.', pal.muted]];
         if (cf.tgt) lines.push([`Target: ${cf.tgt}`, pal.muted]);
         else lines.push([`Sum = ${joinSum(L)} = ${qt(sumQ(L))}`, pal.yellow]);
-        lines.forEach(([s, col], i) => fitRich(c, s, W / 2, yl + i * fs * 1.7, fs * 1.05, lw, col, 'center', 600, 12));
+        stackRows(c, lines, W / 2, yl, fs * 1.05, lw, fs * 1.7);
       };
 
       const drawPlain = (c, p, cf, K) => {
@@ -449,7 +468,7 @@
         S.forEach((v, i) => {
           const cx = pad + sw * (i + .5), hl = i === nShow - 1;
           bar(c, cx - bw / 2, bw, A.y0, A.y(sv[i]), alpha(pal.yellow, hl ? .42 : .22), pal.yellow, hl ? 2.6 : 1.6);
-          if (!(hide && hl)) { let tx = qt(v); const fits = richW(c, tx, fs * .9, 600) <= sw * 1.05; if (!fits && hl) tx = '≈ ' + qdec(v).replace(/(\.\d\d)\d+/, '$1'); if (fits || hl) valLabel(c, tx, cx, A.y(sv[i]), sv[i] < 0, fs * .9, sw * 1.5, pal.text, 600); }
+          if (!(hide && hl)) { let tx = qt(v); const fits = richW(c, tx, fs * .9, 600) <= sw * 1.05; if (!fits && hl) tx = (v.d === 1 ? '' : '≈ ') + qdec(v).replace(/(\.\d\d)\d+/, '$1'); const near = showLim && sv[i] >= 0 && A.y(sv[i]) - A.y(Lv) < fs * 1.6; if (hl || (fits && !near)) valLabel(c, tx, cx, A.y(sv[i]), sv[i] < 0 || (hl && near), fs * .9, sw * 1.5, pal.text, 600); }
         });
         for (let i = 0; i < NN; i++) {
           const cx = pad + sw * (i + .5); c.textAlign = 'center'; c.textBaseline = 'top'; c.fillStyle = pal.muted; c.font = `500 ${fs * .9}px ${FONT}`;
@@ -469,7 +488,7 @@
           if (conv) { const gap = qs(L, Sn); lines.push([`Gap to the limit = ${qt(L)} − ${qt(Sn)} = ${qt(gap)}`, pal.violet]); }
           else lines.push([qe(r, Q(-1)) ? 'The sums switch between two values. They never settle.' : qv(r) === 1 ? 'S_{n} = n·a_{1} grows without limit.' : qv(r) > 1 ? 'The sums grow without limit. No sum exists.' : 'The sums swing wider and wider. No sum exists.', pal.red]);
         }
-        lines.forEach(([s, col], i) => fitRich(c, s, W / 2, y0 + fs * .5 + i * fs * 1.7, fs * 1.05, lw, col, 'center', 600, 12));
+        stackRows(c, lines, W / 2, y0 + fs * .5, fs * 1.05, lw, fs * 1.7);
       };
 
       const ballGeom = cf => { const r = RK[cf.bk]; return { r, H: cf.H, b: cf.b }; };
@@ -479,7 +498,7 @@
       const drawBall = (c, p, cf, K) => {
         const { fs, pad, pal } = K, W = p.w, H = p.h, hide = K.hide, { r, H: h0, b } = ballGeom(cf);
         const gy = H * .56, hPx = H * .38, x0 = pad + 18;
-        fitRich(c, `Dropped from ${h0} m. Each bounce reaches ${qt(r)} of the last height.`, pad, pad + fs * .7, fs, W - 2 * pad, pal.text, 'left', 600, 12);
+        fitRows(c, `Dropped from ${h0} m. Each bounce reaches ${qt(r)} of the last height.`, pad, pad + fs * .7, fs, W - 2 * pad, pal.text, 'left', 600, 12);
         c.strokeStyle = pal['grid-strong']; c.lineWidth = 2; c.beginPath(); c.moveTo(pad, gy); c.lineTo(W - pad, gy); c.stroke();
         /* arcs: width proportional to the square root of the height */
         const wk = k => Math.sqrt(qv(qp(r, k)));
@@ -488,7 +507,7 @@
         c.strokeStyle = pal.blue; c.lineWidth = 3; c.setLineDash([]);
         c.beginPath(); c.moveTo(x0, gy - hPx); c.lineTo(x0, gy); c.stroke();
         c.fillStyle = pal.blue; c.beginPath(); c.arc(x0, gy - hPx, 6, 0, TAU); c.fill();
-        rich(c, `${h0} m`, x0 + 10, gy - hPx * .55, fs * .95, pal.blue, 'left', 700);
+        rich(c, `${h0} m`, x0 + 10, gy - hPx * .82, fs * .95, pal.blue, 'left', 700);
         let x = x0;
         for (let k = 1; k <= b; k++) {
           const w = wk(k) * sc, hk = hPx * qv(qp(r, k));
@@ -517,12 +536,12 @@
           lines.push([`After ${b} bounce${b === 1 ? '' : 's'}: ${qt(Q(h0))} + 2(${segs.slice(1).map(v => qt(qd(v, Q(2)))).join(' + ') || '0'}) = ${qt(D)} m`, pal.text]);
           lines.push([`Always less than the limit ${qt(Lm)} m. Short by ${qt(qs(Lm, D))} m.`, pal.violet]);
         }
-        lines.forEach(([s, col], i) => fitRich(c, s, W / 2, ly + i * fs * 1.7, fs * 1.05, bwx, col, 'center', 600, 12));
+        stackRows(c, lines, W / 2, ly, fs * 1.05, bwx, fs * 1.7);
       };
 
       P.onDraw = (c, p) => {
         const pal = p.pal, cf = full(cfg()), W = p.w, fs = clamp(W / 30, 13, 16.5), pad = clamp(W * .04, 12, 26);
-        const K = { fs, pad, pal, hide: hidden(cf) };
+        curW = W; const K = { fs, pad, pal, hide: hidden(cf) };
         c.globalAlpha = clamp(st.fade, 0, 1);
         const v = cf.view;
         if (v === 'running') drawRunning(c, p, cf, K);
@@ -550,7 +569,7 @@
       const nRange = () => {
         const v = st.view;
         if (v === 'running') return st.kind === 'arith' ? [2, 12] : [2, 8];
-        if (v === 'gauss') return [2, st.n > 20 ? 100 : 20];
+        if (v === 'gauss') return [2, 100];
         if (v === 'shift') return [2, 6];
         if (v === 'inf') return [1, 12];
         return [2, 12];
@@ -594,21 +613,21 @@
       };
       const answerPred = i => {
         const rk = st.rk, k = kindOf(rk), ok = i === k;
-        st.pred[rk] = 1;
-        prF.innerHTML = (ok ? good('Right. ') : bad('Not quite. ')) + rh(predFb(rk));
+        st.pred[rk] = 1; st.predI[rk] = i;
         sync();
       };
       PREDS.forEach((t, i) => prB.append(mkBtn(t, () => answerPred(i))));
 
       /* sigma controls */
-      const wrT = reg(() => C.toggle({ label: 'Write mode: build a sigma for a target sum', value: false, onChange: v => { cancel(); st.wr = v; st.wrDone = false; wrF.innerHTML = ''; sync(); } }), () => st.view === 'sigma');
-      const tgSel = reg(() => C.select({ label: 'Target sum', options: TG.map((t, i) => ({ value: String(i), label: t.name })), value: '0', onChange: v => { st.tg = +v; wrF.innerHTML = ''; sync(); } }), () => st.view === 'sigma' && st.wr);
-      const sS = reg(() => slider({ label: 'Start of k', min: 0, max: 5, step: 1, value: st.sg.s, format: v => 'k = ' + Math.round(v), onInput: v => { cancel(); st.sg.s = v; fixSg(); sync(); } }), () => st.view === 'sigma');
-      const eS = reg(() => slider({ label: 'End of k', min: 0, max: 12, step: 1, value: st.sg.e, format: v => String(Math.round(v)), onInput: v => { cancel(); st.sg.e = v; fixSg(); sync(); } }), () => st.view === 'sigma');
-      const exSel = reg(() => C.select({ label: 'Rule for each term', options: EX.map((e, i) => ({ value: String(i), label: e.s.replace(/\^\{([^}]*)\}/g, '^$1') })), value: String(st.sg.ex),
-        onChange: v => { cancel(); st.sg.ex = +v; sync(); } }), () => st.view === 'sigma');
+      const wrT = reg(() => C.toggle({ label: 'Write mode: build a sigma for a target sum', value: false, onChange: v => { cancel(); st.wr = v; clrWr(); sync(); } }), () => st.view === 'sigma');
+      const tgSel = reg(() => C.select({ label: 'Target sum', options: TG.map((t, i) => ({ value: String(i), label: t.name })), value: '0', onChange: v => { cancel(); st.tg = +v; clrWr(); sync(); } }), () => st.view === 'sigma' && st.wr);
+      const sS = reg(() => slider({ label: 'Start of k', min: 0, max: 5, step: 1, value: st.sg.s, format: v => 'k = ' + Math.round(v), onInput: v => { cancel(); st.sg.s = v; clrWr(); fixSg(); sync(); } }), () => st.view === 'sigma');
+      const eS = reg(() => slider({ label: 'End of k', min: 0, max: 12, step: 1, value: st.sg.e, format: v => String(Math.round(v)), onInput: v => { cancel(); st.sg.e = v; clrWr(); fixSg(); sync(); } }), () => st.view === 'sigma');
+      const exSel = reg(() => C.select({ label: 'Rule for each term', options: EX.map((e, i) => ({ value: String(i), label: e.s.replace(/\^\{([^}]*)\}/g, (m, t) => t.length > 1 ? '^(' + t + ')' : '^' + t) })), value: String(st.sg.ex),
+        onChange: v => { cancel(); st.sg.ex = +v; clrWr(); sync(); } }), () => st.view === 'sigma');
       const wrChk = reg(() => C.buttons([{ label: 'Check my sigma', primary: true, onClick: () => checkSigma() }]), () => st.view === 'sigma' && st.wr);
       const wrF = h('div', { class: 'ctl readout', 'aria-live': 'polite' }); panel.append(wrF); regs.push([wrF, () => st.view === 'sigma' && st.wr]);
+      const clrWr = () => { wrF.innerHTML = ''; st.wrDone = false; };
       const fixSg = () => {
         const sg = st.sg; if (sg.e < sg.s) sg.e = sg.s; if (sg.e > sg.s + 7) sg.e = sg.s + 7;
         setRange(eS, 0, 12, sg.e, v => String(Math.round(v)));
@@ -636,7 +655,7 @@
         const v = st.view, L = [];
         if (v === 'running' || v === 'gauss' || v === 'shift' || v === 'inf') {
           const n = v === 'inf' && !st.pred[st.rk] ? Math.min(3, st.n) : st.n, cf = { ...st, n, view: v === 'running' ? 'running' : v }, T = termsOf(cf, n), S = partials(T);
-          if (v === 'running' || v === 'gauss' || v === 'shift') L.push(`${kk('Terms')} ${T.slice(0, 12).map(qt).join(', ')}`);
+          if (v === 'running' || v === 'gauss' || v === 'shift') L.push(`${kk('Terms')} ${T.slice(0, 12).map(qt).join(', ')}${n > 12 ? ', …' : ''}`);
           if (v === 'running') L.push(`${kk('Running totals')} ${S.map(qt).join(', ')}`);
           if (v === 'running' || v === 'gauss' || v === 'shift') {
             L.push(`${kk('Adding directly')} ${rh(`S_{${n}}`)} = ${joinSum(T.slice(0, 12))}${n > 12 ? ' + …' : ''} = ${qt(sumQ(T))}`);
@@ -674,13 +693,13 @@
       pBox.append(pTitle, pPrompt, pBtns, pFb, pNextBox);
       C.title('Practice');
       C.hint('Eleven short problems. Nothing here is saved or scored.');
-      const startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; } else { st.practice = true; loadProb(); } sync(); } }])[0];
+      const startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; } else { st.practice = true; if (!pLoaded || pOver) { pIdx = 0; pFirst = 0; pDone = 0; loadProb(); pLoaded = true; } } sync(); } }])[0];
             panel.append(pBox);
 
       const tally = () => { pTitle.textContent = `Problem ${pIdx + 1} of ${PRAC.length}: ${PRAC[pIdx].name}. Right on the first try: ${pFirst} of ${pDone} done`; };
       const loadProb = () => {
         pSolved = false; pTried = false; pNext.disabled = true; pNext.textContent = pIdx === PRAC.length - 1 ? 'Finish' : 'Next problem';
-        const pr = PRAC[pIdx]; pPrompt.innerHTML = rh(pr.q); pFb.innerHTML = ''; pBtns.replaceChildren(); pOver = false;
+        const pr = PRAC[pIdx]; pPrompt.innerHTML = rh(pr.q); pFb.innerHTML = ''; pBtns.replaceChildren(); pOver = false; pNextBox.style.display = '';
         curBtns = pr.ch.map((o, i) => { const b = mkBtn('', () => choose(i), false, rh(o[0])); b._dead = false; pBtns.append(b); return b; });
         tally();
       };
@@ -713,7 +732,8 @@
           viewSel.value = st.view; kindSel.value = st.kind; a1S.set(st.a1); dS.set(st.d); rSel.value = st.rk; revT.checked = st.showRev; wrT.checked = st.wr;
           nS.inp.disabled = st.view === 'inf' && !st.pred[st.rk];
           const asked = !!st.pred[st.rk];
-          [...prB.children].forEach(b => { vis(b, !asked); }); vis(prP, !asked); if (!asked) { prP.textContent = `Adding ${st.a1} + ${qt(termAt({ ...st, view: 'inf' }, 2))} + ${qt(termAt({ ...st, view: 'inf' }, 3))} + … forever, with r = ${RLAB(st.rk).replace(' (the trap)', '')}. What will the partial sums S₁, S₂, S₃, … do?`; prF.innerHTML = ''; }
+          [...prB.children].forEach(b => { vis(b, !asked); }); vis(prP, !asked); if (!asked) { prP.textContent = `Adding ${st.a1} + ${qt(termAt({ ...st, view: 'inf' }, 2))} + ${qt(termAt({ ...st, view: 'inf' }, 3))} + … forever, with r = ${RLAB(st.rk).replace(' (the trap)', '')}. What will the partial sums S₁, S₂, S₃, … do?`; }
+          prF.innerHTML = asked && st.predI[st.rk] !== undefined ? (st.predI[st.rk] === kindOf(st.rk) ? good('Right. ') : bad('Not quite. ')) + rh(predFb(st.rk)) : '';
           if (st.view === 'sigma') { sS.set(st.sg.s); setRange(eS, 0, 12, st.sg.e); exSel.value = String(st.sg.ex); tgSel.value = String(st.tg); }
           if (st.view === 'ball') { hS.set(st.H); bkSel.value = st.bk; bS.set(st.b); }
           if (seqView()) { setRange(nS, ...nRange(), st.n); }
@@ -728,9 +748,9 @@
         const { view, kind, showRev, rk, ...nums } = patch;
         if (view !== undefined) st.view = view; if (kind !== undefined) st.kind = kind; if (showRev !== undefined) st.showRev = showRev; if (rk !== undefined) st.rk = rk;
         Object.assign(st, nums);
-        if (view === 'inf') delete st.pred[st.rk];
+        if (view === 'inf') { delete st.pred[st.rk]; delete st.predI[st.rk]; }
         fix();
-        if (immediate) { st.fade = 1; sync(); } else { st.fade = 0; sync(); cancel = animateTo(st, { fade: 1 }, 450, () => P.draw()); }
+        if (immediate) { st.fade = 1; sync(); } else { st.fade = 0; sync(); cancelT = animateTo(st, { fade: 1 }, 450, () => P.draw()); }
       };
       fix(); sync();
       return { destroy: () => { cancel(); P.destroy(); }, apply };

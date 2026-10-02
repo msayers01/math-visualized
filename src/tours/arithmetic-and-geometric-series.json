@@ -10,25 +10,25 @@
     {
       "at": "ctl:What to explore",
       "title": "Choose a view",
-      "text": "Six views: running total, pairing the ends, shift and subtract, adding forever, the sigma machine and a bouncing ball. Each has its own sliders.",
-      "try": "Pick The sigma machine, then drag Start of k and End of k and count the terms."
+      "text": "Six views: running total, Pair up the ends (has the reversed copy), Shift and subtract (has the ratio r), Adding forever (asks you to predict), the sigma machine and a bouncing ball. Each has its own sliders.",
+      "try": "Pick Pair up the ends, then restart this tour to see its controls."
     },
     {
       "at": "ctl:Stack the reversed copy",
       "title": "Reverse and stack",
-      "text": "In Pair up the ends, this adds the list written backwards in red on top of the blue list. Every column then reaches the same height a1 + an.",
+      "text": "Choose Pair up the ends in the menu first, or open step 2. This adds the list written backwards in red on top of the blue list. Every column then reaches the same height a1 + an.",
       "try": "Switch it on, then press Gauss: 1 to 100."
     },
     {
       "at": "ctl:Common ratio r",
       "title": "Pick the ratio r",
-      "text": "r is the number each term is multiplied by. Try 1/2, 2 and -1. The value 1 is the trap: the formula would divide by zero, so the sum is just n times a1.",
+      "text": "Choose Shift and subtract (or Adding forever) first, or open step 3. r is the number each term is multiplied by. Try 1/2, 2 and -1. At 1 the formula divides by zero, so the sum is n times a1.",
       "try": "In Shift and subtract, choose 1 (the trap) and read the red line."
     },
     {
       "at": "ctl:They settle on one number",
       "title": "Predict, then see",
-      "text": "In Adding forever, you commit to a guess about the partial sums before more bars appear. The explanation says why, using whether r is between -1 and 1.",
+      "text": "Choose Adding forever first, or open step 4. You commit to a guess about the partial sums before more bars appear. The explanation says why, using whether r is between -1 and 1.",
       "try": "Pick an answer, then slide Number of terms and compare."
     },
     {
