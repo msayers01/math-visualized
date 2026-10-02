@@ -66,8 +66,39 @@ function renderProgress(app) {
   return () => {};
 }
 
+/* The answer key and other teacher views wait behind the teacher password (see teachermode.js) */
+function renderLockedKey(app, v) {
+  document.title = 'Teacher mode | Continuum';
+  app.append(h('article', { class: 'wrap viz teacher-page' },
+    h('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' }, h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
+      h('a', { href: lessonToken(v.id) }, v.title), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'Answer key')),
+    h('h1', { class: 'display' }, 'Answer key'),
+    h('p', { class: 'lede' }, 'The answer key is for teachers. Enter the teacher password to unlock it on this device.'),
+    TeacherLogin(() => {}),
+    h('p', { class: 'n' }, 'Students can still print the ticket without answers: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), '.')));
+  window.scrollTo(0, 0);
+  const pw = document.getElementById('teacher-pw'); if (pw) pw.focus({ preventScroll: true });
+  return () => {};
+}
+
+/* #teacher: unlock, or see that teacher mode is on and lock it */
+function renderTeacher(app) {
+  document.title = 'Teacher mode | Continuum';
+  const on = TeacherMode.active() && TeacherMode.configured;
+  app.append(h('article', { class: 'wrap viz teacher-page' },
+    h('h1', { class: 'display' }, 'Teacher mode'),
+    !TeacherMode.configured ? h('p', { class: 'lede' }, 'No teacher password is set on this copy of the site, so teacher views are open to everyone.')
+    : on ? h('div', {}, h('p', { class: 'lede' }, 'Teacher mode is on for this device for the next few hours. Answer keys are unlocked.'),
+        h('button', { type: 'button', class: 'btn', onclick: () => TeacherMode.lock() }, 'Lock teacher mode'),
+        h('p', { class: 'n' }, h('a', { href: '#/' }, 'Back to all lessons')))
+    : h('div', {}, h('p', { class: 'lede' }, 'Enter the teacher password to unlock answer keys on this device.'), TeacherLogin(() => {}))));
+  window.scrollTo(0, 0);
+  return () => {};
+}
+
 /* Printable exit ticket: the lesson's quick-check questions on one page, optionally with the answer key */
 function renderTicket(app, v, key) {
+  if (key && !TeacherMode.active()) return renderLockedKey(app, v);
   document.title = 'Exit ticket: ' + v.title + ' | Continuum';
   const qs = v.check || [], L = i => String.fromCharCode(65 + i);
   const text = () => [`Exit ticket: ${v.title}`, `${COURSE[v.course].name}`, 'Name: ____________________   Date: ____________', '',
@@ -91,7 +122,7 @@ function renderTicket(app, v, key) {
       h('a', { href: lessonToken(v.id) }, v.title), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'Exit ticket')),
     h('div', { class: 'ticket-tools no-print' },
       h('a', { class: 'btn small', href: ticketToken(v.id, false), ...(key ? {} : { 'aria-current': 'page' }) }, 'Student version'),
-      h('a', { class: 'btn small', href: ticketToken(v.id, true), ...(key ? { 'aria-current': 'page' } : {}) }, 'With answer key'),
+      h('a', { class: 'btn small', href: ticketToken(v.id, true), ...(key ? { 'aria-current': 'page' } : {}) }, 'With answer key (teachers)'),
       CopyButton('Copy as text', text),
       canPrint ? h('button', { type: 'button', class: 'btn primary small', onclick: () => window.print() }, 'Print or save as PDF') : h('span', { class: 'n' }, 'Open the site in its own tab to print.'),
       CopyButton('Copy link', () => shareUrl(ticketToken(v.id, key)))),

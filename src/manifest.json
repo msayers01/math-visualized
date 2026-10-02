@@ -26,7 +26,8 @@
     "engine/finder.js",
     "engine/share.js",
     "engine/progress.js",
-    "engine/teacher.js"
+    "engine/teacher.js",
+    "engine/teachermode.js"
   ],
   "lessons": [
     "lessons/school/slope-and-linear-functions.js",
