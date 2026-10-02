@@ -107,10 +107,16 @@ class Plane {
   ticks(step = 1, { size = 15 } = {}) {
     while (this.scale * step < 26) step *= 2;
     const b = this.bounds(), col = this.pal.muted, txt = v => (v < 0 ? '−' : '') + (+Math.abs(v).toFixed(2));
-    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step)
-      if (Math.abs(x) > 1e-9) this.label(txt(x), x, 0, { size, italic: false, color: col, dy: 15, halo: true });
-    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step)
-      if (Math.abs(y) > 1e-9) this.label(txt(y), 0, y, { size, italic: false, color: col, dx: -11, align: 'right', halo: true });
+    /* A label whose box would cross the canvas edge is dropped (an end label cut in half reads as a wrong number). */
+    const half = t => t.length * size * .85 * .27 + 3, vh = size * .85 * .6 + 2;
+    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step) {
+      const t = txt(x), px = this.X(x);
+      if (Math.abs(x) > 1e-9 && px - half(t) >= 1 && px + half(t) <= this.w - 1) this.label(t, x, 0, { size, italic: false, color: col, dy: 15, halo: true });
+    }
+    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step) {
+      const t = txt(y), py = this.Y(y);
+      if (Math.abs(y) > 1e-9 && py - vh >= 0 && py + vh <= this.h) this.label(t, 0, y, { size, italic: false, color: col, dx: -11, align: 'right', halo: true });
+    }
   }
   grid(step = 1, { color, axes = true } = {}) {
     const b = this.bounds(), c = this.ctx;

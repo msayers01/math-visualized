@@ -90,7 +90,7 @@ label.facet .facet-k { margin-bottom: 0; }
 }
 
 /* Lesson page: course, skill, grades and standards under the title; alignment section */
-.viz-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 18px; }
+.viz-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 12px; }
 .viz-meta .tags { margin-top: 0; }
 .tag.course { color: var(--text); font-family: var(--display); font-size: .92rem; letter-spacing: -.02em; text-decoration: none; border-bottom: 1px solid var(--line-strong); transition: border-color .2s, color .2s; }
 .tag.course:hover { border-color: var(--brass); color: var(--brass); }

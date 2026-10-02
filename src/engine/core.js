@@ -5,6 +5,7 @@ const $ = (s, el = document) => el.querySelector(s);
 function h(tag, attrs = {}, ...kids) {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'title' && !v) continue;   /* an empty title attribute is announced as an unnamed tooltip */
     if (k === 'class') e.className = v;
     else if (k === 'html') e.innerHTML = v;
     else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
