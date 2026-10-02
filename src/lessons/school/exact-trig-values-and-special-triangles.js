@@ -222,7 +222,7 @@
       claim: 'triangle OAB is equilateral, so the radius equals the side.',
       steps: [
         { s: 'Angle AOB = 60°.',
-          ch: [['The six angles around O are equal and add to 360°, and 360 ÷ 6 = 60.', 'The six triangles fit around O with no gaps and are alike, so each angle at O is a sixth of a full turn.', 1],
+          ch: [['The six angles around O are equal and add to 360°, and 360 ÷ 6 = 60.', 'The six triangles have three pairs of equal sides (the six sides of the hexagon and the radii), so they are congruent and their angles at O are equal: each is a sixth of a full turn.', 1],
             ['A hexagon has six sides, so the angle is 6°.', 'The count of sides is not the angle. Divide the full turn, 360°, by 6.'],
             ['The interior angle of a hexagon is 120°, so AOB is 120°.', '120° is the angle at a corner of the hexagon (angle FAB), not the angle at the centre.']] },
         { s: 'OA = OB.',
@@ -333,7 +333,7 @@
       <h3>The exact-value table</h3>
       <p>Recall the two triangles. The 45-45-90 triangle has sides \(1, 1, \sqrt2\). The 30-60-90 triangle has sides \(1, \sqrt3, 2\), with the short leg across from \(30^\circ\) and the long leg across from \(60^\circ\). For an acute angle \(\theta\), \(\sin\theta\) is opposite over hypotenuse, \(\cos\theta\) is adjacent over hypotenuse, and \(\tan\theta\) is opposite over adjacent. Reading the triangles gives
       \[ \begin{array}{c|ccc} \theta & 30^\circ & 45^\circ & 60^\circ \\ \hline \sin\theta & \tfrac12 & \tfrac{\sqrt2}{2} & \tfrac{\sqrt3}{2} \\ \cos\theta & \tfrac{\sqrt3}{2} & \tfrac{\sqrt2}{2} & \tfrac12 \\ \tan\theta & \tfrac{\sqrt3}{3} & 1 & \sqrt3 \end{array} \]
-      <b>A memory pattern.</b> Write the sines as \(\tfrac{\sqrt1}{2}, \tfrac{\sqrt2}{2}, \tfrac{\sqrt3}{2}\) (remember that \(\sqrt1 = 1\)). The cosines are the same list backwards. This works because the sine of an angle equals the cosine of its complement, \(\sin\theta = \cos(90^\circ-\theta)\). The tangent is the sine divided by the cosine, \(\tan\theta = \sin\theta/\cos\theta\), because both have the same hypotenuse and it cancels.</p>
+      <b>A memory pattern.</b> Write the sines as \(\tfrac{\sqrt1}{2}, \tfrac{\sqrt2}{2}, \tfrac{\sqrt3}{2}\) (remember that \(\sqrt1 = 1\)). The cosines are the same list backwards, because the sine of an angle equals the cosine of its complement, \(\sin\theta = \cos(90^\circ-\theta)\). The tangent is the sine divided by the cosine, \(\tan\theta = \sin\theta/\cos\theta\), because both have the same hypotenuse and it cancels.</p>
       <p><b>Rationalizing.</b> The tangent of \(30^\circ\) is \(1/\sqrt3\). To remove the root from the bottom, multiply top and bottom by \(\sqrt3\); this multiplies the fraction by \(1\), so its value does not change:
       \[ \frac{1}{\sqrt3} = \frac{1\cdot\sqrt3}{\sqrt3\cdot\sqrt3} = \frac{\sqrt3}{3} \approx 0.577. \]
       The same step turns \(1/\sqrt2\) into \(\sqrt2/2\). Forgetting to multiply the top is a common slip.</p>
@@ -843,7 +843,7 @@
             [`cos ${a}° = ${h} ÷ L`, `Cosine is adjacent ÷ hypotenuse. The height is not next to the ${a}° angle, it is across from it.`],
             [`sin ${a}° = L ÷ ${h}`, 'The ratio is upside down. A sine is at most 1, but L ÷ height is more than 1, because the ladder is longer than the height it reaches.']], 1);
         const L2 = h / n.s2, err = Math.abs(L2 - n.L);
-        return mk(`Now solve for L. You must cut a pole this long. Which answer do you give?`,
+        return mk(`Now solve for L. You must cut a pole this long. Give the exact value and the decimal. Which answer is right?`,
           [`${n.ex} ≈ ${n.L.toFixed(2)} m`, `L = ${h} ÷ (${n.sx}) = ${2 * h} ÷ √${a === 60 ? 3 : 2}, and rationalizing gives ${n.ex}. Keep it exact, then round once at the end: ${n.L.toFixed(2)} m.`],
           [[`${h} ÷ ${n.s2} ≈ ${L2.toFixed(2)} m`, `You rounded sin ${a}° to ${n.s2} first. That error is passed on: the answer is off by about ${err.toFixed(2)} m. Keep the root and round last.`],
             [`${h} ÷ ½ = ${2 * h} m`, `½ is sin 30°, not sin ${a}°. Using the wrong value gives a ladder that is far too long.`],
@@ -978,7 +978,7 @@
         cancel();
         const nums = {}, fl = {};
         for (const [k, v] of Object.entries(patch)) (FLAGS.includes(k) ? fl : nums)[k] = v;
-        if (fl.rq) { if (fl.mode === 'tbl') { PD.tbl.done = false; } if (fl.fig === 'hex') { PD.hex.done = false; FS.hex = { stg: 0, fb: '', wrong: [] }; } }
+        if (fl.rq) { if (fl.mode === 'tbl') { PD.tbl.done = false; } if (fl.fig === 'hex') { PD.hex.done = false; FS.hex = { stg: 0, fb: '', wrong: [] }; SZ.hex = 10; } }
         delete fl.rq;
         const lad = fl.lang !== undefined || fl.hgt !== undefined;
         Object.assign(V, fl); if (lad) resetLad();

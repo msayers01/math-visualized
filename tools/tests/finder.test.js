@@ -119,7 +119,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   check('clear -> hash reset', (await page.evaluate(() => location.hash)) === '#/', await page.evaluate(() => location.hash));
   check('clear button hidden again', await page.locator('.finder-clear').isHidden());
   await page.selectOption('#f-std', '9.2.4.8');
-  check('std select -> inscribed-angles only', JSON.stringify(await visibleIds(page)) === '["inscribed-angles"]', JSON.stringify(await visibleIds(page)));
+  check('std select -> exactly the lessons tagged 9.2.4.8', JSON.stringify((await visibleIds(page)).sort()) === JSON.stringify(model.filter(m => m.std.includes('9.2.4.8')).map(m => m.id).sort()) && (await visibleIds(page)).includes('inscribed-angles'), JSON.stringify(await visibleIds(page)));
   await page.locator('.finder-clear').click();
   await chip('Standard strand', /^Spatial/).click(); await chip('Standard strand', /^Data/).click();
   check('two strands OR together', JSON.stringify((await visibleIds(page)).sort()) === JSON.stringify(expected({ strand: ['sr', 'dp'] })));

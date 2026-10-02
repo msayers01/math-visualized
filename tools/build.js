@@ -86,6 +86,17 @@ function checkTex() {
   }
   if (bad.length) throw new Error('TeX problems:\n  ' + bad.join('\n  '));
 }
+/* A syntax error in a lesson (for example an unescaped apostrophe in a single-quoted string) would only show up in the
+   browser as a lesson that never opens, so compile every lesson file here and name the file and line. */
+function checkSyntax() {
+  const bad = [];
+  for (const f of man.lessons) {
+    try { new vm.Script(read(f), { filename: f }); }
+    catch (e) { bad.push(String(e.stack || e.message).split('\n').slice(0, 4).join(' | ')); }
+  }
+  if (bad.length) throw new Error('Syntax errors:\n  ' + bad.join('\n  '));
+}
+checkSyntax();
 checkTex();
 const curSummary = checkCurriculum();
 
