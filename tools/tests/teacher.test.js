@@ -39,6 +39,8 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   check('texFlat writes fractions, exponents and arrows as plain text', flat2 === '(y-y_1)/(x-x_1)=m ⇒ 2^(5+(-3)) 1/(10⁶)', flat2);
   const flat3 = await page.evaluate(() => texFlat('a \\equiv b \\pmod{5}, -3 \\bmod 5 = 2, \\gcd(a,n)=1'));
   check('texFlat writes congruences as plain text', flat3 === 'a ≡ b  (mod 5), -3  mod  5 = 2, gcd(a,n)=1', flat3);
+  const flat4 = await page.evaluate(() => texFlat('x \\in \\mathbb{R}, \\{x \\mid x \\ge 2\\} = [2, \\infty), (-\\infty, 1) \\cup (3, 5], A \\cap B = \\emptyset, 2 \\notin \\mathbb{Q}'));
+  check('texFlat writes set and interval notation', flat4 === 'x ∈ R, {x | x ≥ 2} = [2, ∞), (-∞, 1) ∪ (3, 5], A ∩ B = ∅, 2 ∉ Q', flat4);
   check('plain lesson token opens the lesson', (await page.textContent('h1')) === 'Slope and linear functions' && (await stepText()) === '1 / 4');
   await go(page, '#slope-and-linear-functions.3');
   check('step token opens step 3', (await stepText()) === '3 / 4', await stepText());
