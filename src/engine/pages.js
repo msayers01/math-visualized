@@ -257,6 +257,7 @@ function renderViz(app, v, startStep = 0) {
       h('a', { class: 'lvl-tag', href: '#/level/' + v.level }, LEVELS[v.level].name)),
     h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, v.title), lede,
       h('div', { class: 'viz-meta' }, h('a', { class: 'tag course', href: '#find~course_' + v.course, title: 'See every ' + COURSE[v.course].name + ' lesson' }, COURSE[v.course].name), LessonTags(v, true, chip.el))),
+    h('div', { class: 'tour-row' }, Tour.button(v)),
     h('div', { class: 'workbench' }, stage, panel),
     body, check, tickets, conn, align,
     h('nav', { class: 'pager', 'aria-label': 'More topics' },

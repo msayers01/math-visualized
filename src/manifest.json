@@ -7,7 +7,8 @@
     "styles/lesson.css",
     "styles/motion.css",
     "styles/curriculum.css",
-    "styles/teacher.css"
+    "styles/teacher.css",
+    "styles/tour.css"
   ],
   "curriculum": [
     "curriculum/standards-mn2022.js",
@@ -27,7 +28,8 @@
     "engine/share.js",
     "engine/progress.js",
     "engine/teacher.js",
-    "engine/teachermode.js"
+    "engine/teachermode.js",
+    "engine/tour.js"
   ],
   "lessons": [
     "lessons/school/slope-and-linear-functions.js",

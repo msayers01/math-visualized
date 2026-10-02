@@ -135,6 +135,22 @@ function teacherHash() {
 }
 const TH = teacherHash();
 if (!TH) console.warn('note: no teacher password set; answer keys are open to everyone (set CONTINUUM_TEACHER_PASSWORD)');
+/* Tours: src/tours/<id>.json, one per lesson, embedded as TOURS (see engine/tour.js) */
+function loadTours() {
+  const dir = path.join(src, 'tours'), out = {};
+  if (!fs.existsSync(dir)) return out;
+  const ids = new Set(man.lessons.map(f => path.basename(f, '.js')));
+  for (const f of fs.readdirSync(dir).filter(x => x.endsWith('.json')).sort()) {
+    const id = f.slice(0, -5);
+    if (!ids.has(id)) throw new Error(`src/tours/${f}: no lesson with id ${id}`);
+    let t; try { t = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch (e) { throw new Error(`src/tours/${f}: ${e.message}`); }
+    if (!t.purpose || !Array.isArray(t.stops)) throw new Error(`src/tours/${f}: needs purpose and stops`);
+    for (const s of t.stops) if (!s.title || !s.text || !/^(stage|steps|check|panel|ctl:.+)$/.test(s.at || '')) throw new Error(`src/tours/${f}: bad stop ${JSON.stringify(s).slice(0, 80)}`);
+    out[id] = t;
+  }
+  return out;
+}
+const TOURS_JSON = JSON.stringify(loadTours());
 const wantSplit = process.argv.includes('--split');
 const splitMeta = wantSplit ? captureLessons() : [];
 const scripts = (wantSplit
@@ -142,7 +158,7 @@ const scripts = (wantSplit
   : [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n'));
 const out = read('template.html')
   .replace('/*@STYLES*/', () => man.styles.map(read).join('').replace(/\n$/, ''))
-  .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, '').replace('__TEACHER_HASH__', () => TH));
+  .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, '').replace('__TEACHER_HASH__', () => TH).replace('__TOURS__', () => TOURS_JSON));
 if (wantSplit) {
   const dist = path.join(root, 'dist'), ldir = path.join(dist, 'lessons');
   fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(ldir, { recursive: true });
