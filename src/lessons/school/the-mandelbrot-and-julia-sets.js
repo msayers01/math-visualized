@@ -191,7 +191,7 @@
         ['Only c = 0.5i escapes, because it has an imaginary part.', 'Having an imaginary part does not make an orbit escape. For c = 0.5i the orbit is 0.5i, −0.25 + 0.5i, −0.19 + 0.25i, … and its size stays around 0.3 to 0.6.'],
         ['c = 1 escapes. c = −1 and c = 0.5i do not.', ok('Right.') + ' c = 1: 0, 1, 2, 5, 26, … passes 2 at step 3 and then grows. c = −1: 0, −1, 0, −1, … is a cycle. c = 0.5i: 0.5i, −0.25 + 0.5i, −0.19 + 0.25i, −0.03 + 0.41i, … the size stays small and the orbit closes in on a fixed point.']
       ], ans: 3, show: { part: 'orbit', cr: 1, ci: 0, n: 4 } },
-    { q: 'The main cardioid is the big heart-shaped body of the Mandelbrot set. There the orbit of 0 settles to a single fixed point. Test the orbits. Which c lies in the main cardioid?',
+    { q: 'The main cardioid is the big heart-shaped body of the Mandelbrot set. There the orbit of 0 settles to a single fixed point. Work out the orbits by hand. Which c lies in the main cardioid?',
       ch: [
         ['c = −1', 'The orbit of −1 is 0, −1, 0, −1, … It repeats a cycle of 2 points, so it is not one fixed point. c = −1 is the centre of the round bulb to the left of the cardioid.'],
         ['c = 0.5', 'The orbit of 0.5 is 0, 0.5, 0.75, 1.063, 1.629, 3.153, … It passes 2 and escapes, so c = 0.5 is outside the set.'],
@@ -281,7 +281,7 @@
       <p>Facts we do not prove here. The big heart-shaped <b>main cardioid</b> is where the orbit settles to one attracting fixed point (the derivative of \(z^2+c\) at a fixed point \(z^*\) is \(2z^*\), and the orbit is pulled in when \(|2z^*|&lt;1\)). The round <b>period-2 bulb</b> is the disc \(|c+1|&lt;\tfrac14\), where the orbit ends in a 2-cycle. Further bulbs on the cardioid belong to cycles of length 3, 4, 5, and so on. The thin <b>antenna</b> on the left runs along the real axis out to \(-2\), with branches and tiny bulbs along it.</p>
 
       <h3>Zoom and the edge</h3>
-      <p>Zooming in on the edge never makes it smooth. Curls, spirals, and sometimes small copies of the whole set keep appearing at every scale we can compute. The copies are similar to the whole, not exact duplicates, so this is not exact self-similarity. The deeper you zoom, the more steps an orbit may need before it shows its fate, so the step limit has to rise (here by 10 for every doubling, from 60 up to 200). Ordinary decimal arithmetic holds about 15 to 16 digits, so a zoom of about 14 levels is as deep as this lesson goes; deeper pictures need extra-precision numbers.</p>
+      <p>Zooming in on the edge never makes it smooth. Curls, spirals, and sometimes small copies of the whole set keep appearing at every scale we can compute. The copies are similar to the whole, not exact duplicates, so this is not exact self-similarity. The deeper you zoom, the more steps an orbit may need before it shows its fate, so the step limit has to rise (here by 10 for every doubling, from 60 up to 200). This lesson stops at about 14 levels of zoom to keep the pictures quick; ordinary decimal arithmetic would allow roughly 45 levels before it runs out of digits, and deeper pictures need extra-precision numbers.</p>
 
       <h3>Julia sets</h3>
       <p>The Mandelbrot picture fixes the start \(z_0=0\) and varies \(c\). A Julia picture does the opposite: it fixes \(c\) and varies the start \(z_0\). The <b>filled Julia set</b> of \(c\) is the set of starting points whose orbit under \(z\mapsto z^2+c\) never escapes. It is the black part of the picture. The <b>Julia set</b> is its edge.</p>
@@ -477,7 +477,7 @@
         const inside = fate(S.cr, S.ci).t !== 'esc';
         const halo = 'rgba(8,10,24,.85)';
         T(c, `Julia set for c = ${cs(S.cr, S.ci, 3)}`, 8, 14, { size: fs, color: '#fff', weight: 700, halo, align: 'left' });
-        T(c, inside ? 'c is in the Mandelbrot set: one connected piece' : 'c is outside the Mandelbrot set: dust', 8, 14 + fs * 1.45, { size: fs * .95, color: '#fff', weight: 600, halo, align: 'left' });
+        T(c, inside ? 'c appears to be in the Mandelbrot set: one connected piece' : 'c is outside the Mandelbrot set: dust', 8, 14 + fs * 1.45, { size: fs * .95, color: '#fff', weight: 600, halo, align: 'left' });
         T(c, 'start z₀ here; black = never passes 2', 8, p.h - 12, { size: fs * .92, color: '#fff', weight: 600, halo, align: 'left' });
         if (rJ.running) T(c, `${st.dragging ? 'coarse' : 'drawing ' + Math.round(rJ.prog * 100) + '%'}`, p.w - 8, 14, { size: fs * .95, color: '#fff', weight: 600, halo, align: 'right' });
       };
@@ -607,7 +607,7 @@
       const setRo = S => {
         const f = fate(S.cr, S.ci), L = [`${kk('c')} ${cs(S.cr, S.ci)}`];
         if (f.t === 'esc') L.push(`${kk('Colour')} the colour of step ${f.n}: the orbit first passes |z| = 2 at step ${f.n}. c is outside the set.`);
-        else L.push(`${kk('Colour')} black: no escape in 3000 steps, so c is in the set.`);
+        else L.push(`${kk('Colour')} black: no escape found in 3000 steps, so c is very likely in the set.`);
         L.push(fateText(S.cr, S.ci));
         const rg = regionTxt(S.cr, S.ci); if (rg) L.push('Region: ' + rg + '.');
         if (S.ci === 0) L.push('On the real axis, c is in the set exactly when −2 ≤ c ≤ 0.25.');
@@ -624,7 +624,7 @@
       const juliaRo = S => {
         const f = fate(S.cr, S.ci), inside = f.t !== 'esc';
         return lines([`${kk('c')} ${cs(S.cr, S.ci)}`,
-          inside ? `c is in the Mandelbrot set (no escape in 3000 steps), so its Julia set is <b>one connected piece</b>.`
+          inside ? `c appears to be in the Mandelbrot set (no escape in 3000 steps), so its Julia set is <b>one connected piece</b>.`
             : `c is outside the Mandelbrot set (the orbit passes 2 at step ${f.n}), so its Julia set is <b>dust</b>: separate points.`,
           'The black part is the filled-in Julia set; the Julia set is its edge. For c = 0 that is the unit circle.',
           !inside && f.n > 12 ? 'This c is only just outside the set, so the dust is fine and hard to see at this size.' : null]);

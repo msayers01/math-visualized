@@ -145,7 +145,7 @@
              ['d = 3 ÷ 2 = 1.5', 'A power, not a quotient. Check: 2 to the power 1.5 is about 2.83, not 3.']], ans: 0 },
     pchaos: { q: 'You will start at any point, pick a corner at random, jump halfway to it, and leave a dot. Repeat thousands of times. What shape will the dots form?',
       opts: [['A filled triangle'], ['A random cloud with no pattern'], ['A triangle with holes in it'], ['Three clumps, one near each corner']], ans: 2,
-      why: 'The dots form a triangle with holes: the Sierpinski triangle. Each jump takes the whole triangle onto one of three half-size copies of it, so after 1, 2, 3 jumps a dot sits in a stage 1, 2, 3 piece. The middle triangle is never hit.' }
+      why: 'The dots form a triangle with holes: the Sierpinski triangle. Each jump takes the whole triangle onto one of three half-size copies of it, so once the dots are inside the triangle, after 1, 2, 3 jumps a dot sits in a stage 1, 2, 3 piece. The middle triangle is never hit.' }
   };
   const KQ = n => {
     const base = [
@@ -190,7 +190,7 @@
       q: 'The picture shows stage 3. At each stage the middle quarter of every triangle is removed. What fraction of the original area remains at stage 3?',
       ch: [['9/16', 'That is the fraction at stage 2: (3/4)². Stage 3 multiplies by 3/4 once more.'],
            ['27/64, about 0.42', 'Yes. Each stage keeps 3 of 4 equal pieces: (3/4)³ = 27/64. It keeps shrinking toward 0.'],
-           ['3/8', 'That is 3 × 1/8, which is not how area shrinks. Each stage keeps 3/4 of what is left, so you multiply by 3/4 three times.'],
+           ['3/8', 'That adds 3 eighths instead of multiplying by 3/4, which is not how area shrinks. Each stage keeps 3/4 of what is left, so you multiply by 3/4 three times.'],
            ['1/64', 'That is (1/4)³, the area of ONE tiny triangle at stage 3. There are 27 of them.']], ans: 1 },
     { name: 'The carpet', kind: 'build', tN: 8, tS: 3,
       q: 'The Sierpinski carpet has 8 copies of itself at scale 1/3 (a 3 by 3 grid with the middle left out). Set 8 copies and scale 1/3 with the sliders, then press Check my setting.',
@@ -200,8 +200,8 @@
            ['1.893, from log 8 ÷ log 3', 'Yes. 3^d = 8, so d = log 8 ÷ log 3 = 0.90309 ÷ 0.47712 = 1.893. Just under 2: it is almost a filled square.'],
            ['Exactly 2, because it looks like a square', 'A filled square would need all 9 copies, and 3² = 9. With 8, d is a little below 2.']], ans: 2 },
     { name: 'A trap', kind: 'choice', view: 'koch', kst: 5,
-      q: 'Ana says the Koch curve has dimension 1 because it is a curve. Ben says it has dimension 2 because it is so crinkly it fills area. Who is right?',
-      ch: [['Ana: any curve has dimension 1', 'The Koch curve is not a smooth curve. At stage n it is (4/3)^n long, with no limit. Its self-similarity gives 3^d = 4, so d is not 1.'],
+      q: 'Using N = s^d (the similarity dimension), Ana says the Koch curve has dimension 1 because it is a curve. Ben says it has dimension 2 because it is so crinkly it fills area. Who is right?',
+      ch: [['Ana: any curve has dimension 1', 'A smooth curve has similarity dimension 1, but the Koch curve is not smooth: at stage n it is (4/3)^n long, with no limit. Its self-similarity gives 3^d = 4, so d is not 1.'],
            ['Ben: it fills area, so d = 2', 'The Koch curve itself does not fill any area. If d were 2, it would be made of 9 copies at scale 1/3, but it has only 4.'],
            ['Both are right in different ways', 'Dimension is one number given by N = s^d. For N = 4 and s = 3 only one value fits.'],
            ['Neither: 3^d = 4, so d is about 1.26', 'Yes. 4 copies at scale 1/3 give d = log 4 ÷ log 3 = 1.2619. That is more than a line (1) and less than a plane (2).']], ans: 3 }
@@ -248,7 +248,7 @@
       It is a geometric sequence with ratio \(\tfrac43>1\): \(1,\ 1.33,\ 1.78,\ 2.37,\ 3.16,\ 4.21,\dots\) The length grows without bound, so the limiting curve has infinite length, yet it fits on a page. Its dimension is \(d=\log 4\div\log 3\approx1.2619\), between a line and a plane.</p>
       <p>Now build a snowflake from three Koch curves on an equilateral triangle of area \(T\). Its perimeter is \(3\left(\tfrac43\right)^{n}\), also unbounded. Its area is not. At stage \(n\) the new triangles added have total area \(\tfrac13\left(\tfrac49\right)^{n-1}T\): there are \(3\cdot 4^{n-1}\) of them, each \(\left(\tfrac19\right)^{n}T\). The areas added are \(\tfrac13,\ \tfrac{4}{27},\ \tfrac{16}{243},\dots\) of \(T\), a geometric series with ratio \(\tfrac49<1\). Its sum is
       \[ T\left(1+\frac{1/3}{1-4/9}\right)=T\left(1+\frac35\right)=\frac85\,T. \]
-      Numerically the area is \(1,\ 1.3333,\ 1.4815,\ 1.5473,\ 1.5766,\ 1.5896\) times \(T\) at stages 0 to 5, closing in on \(1.6\). So a snowflake with infinite perimeter encloses a finite area; it stays inside the circle through the corners of the starting triangle.</p>
+      Numerically the area is \(1,\ 1.3333,\ 1.4815,\ 1.5473,\ 1.5766,\ 1.5896\) times \(T\) at stages 0 to 5, closing in on \(1.6\). So a snowflake with infinite perimeter encloses a finite area; it stays inside or on the circle through the corners of the starting triangle.</p>
       <h3>The Sierpinski triangle</h3>
       <p>At each stage every triangle is replaced by 3 triangles at scale \(\tfrac12\) (the middle one is removed). Stage \(n\) has \(3^{n}\) triangles, each \(\left(\tfrac12\right)^{n}\) as wide, so each has \(\left(\tfrac14\right)^{n}\) of the area. The area left is \(3^{n}\left(\tfrac14\right)^{n}=\left(\tfrac34\right)^{n}\to0\). The area goes to 0, but the shape is not empty: the corners and edges of every triangle are never removed. Its dimension is \(d=\log 3\div\log 2\approx1.585\), so it is too big to be a curve and too thin to have area.</p>
       <p><b>Pascal's triangle mod 2.</b> Build Pascal's triangle with the rule "add the two numbers above", and mark the odd entries. Rows 0 to \(2^{n}-1\) show the stage-\(n\) pattern: the same shape appears. One way to see which entries are odd: the entry \(\binom{r}{k}\) is odd exactly when adding \(k\) and \(r-k\) in binary needs no carrying. For example \(\binom{5}{2}=10\) is even, because \(2+3\) is \(010+011\) and the last place carries; \(\binom{6}{2}=15\) is odd, because \(2+4\) is \(010+100\) with no carry. (This is a known result; the lesson shows it, it does not prove it.)</p>
@@ -738,7 +738,7 @@
         if (!fits) { o.push(bad('They do not fit.') + ` Only ${s * s} cells exist and you asked for ${N}. A flat shape cannot have a dimension above 2, and here ${s}^d = ${N} gives d = ${d4(d)}.`); return lines(o); }
         o.push(`${kk('Equation')} ${s}^d = ${N}, so d = ${dimLine(N, s)}.`);
         if (N === s * s) o.push('N equals s² exactly, so the copies fill the whole square: dimension 2.');
-        else o.push(d < 1 ? 'Less than 1: the pieces are separate specks, like dust.' : d < 2 ? `Between the line (1) and the plane (2): ${d4(d)}.` : '');
+        else o.push(d < 1 ? 'Less than 1: the pieces are separate specks, like dust.' : d === 1 ? 'Exactly 1: the copies fill a line.' : d < 2 ? `Between the line (1) and the plane (2): ${d4(d)}.` : '');
         o.push(m.v === 0 ? (pre ? `This is ${pre.name}.` : 'This arrangement has no special name.') : `Arrangement ${m.v + 1} of 6: a different layout, but the same N and s, so the same d = ${d4(d)}. Dimension does not depend on where the copies go.`);
         if (N === 4 && s === 3) o.push('The Koch curve has the same N = 4 and s = 3, so the same dimension, but the shapes look nothing alike.');
         return lines(o);
