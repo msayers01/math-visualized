@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v56
+**Version:** v57 (classroom polish pass: touch, layout, accessibility, resilience, search; see ARCHITECTURE 0.31)
 **Last updated:** 2026-10-02
 
 ## ⚠️ Current priority: middle & high school ONLY
