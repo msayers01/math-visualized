@@ -104,6 +104,7 @@ const ALIGN = [
   { id: 'mean-median-and-spread',      course: 'stats', skill: 'mid', standards: ['6.1.1.3', '7.1.1.4', '9.1.1.9', '9.1.1.13'] },
   { id: 'probability-with-repeated-trials', course: 'stats', skill: 'mid', standards: ['6.1.2.3', '7.1.2.2', '7.1.2.6', '9.1.2.3', '9.1.2.4'] },
   { id: 'pascals-triangle-and-the-galton-board', course: 'stats', skill: 'adv', standards: ['7.1.2.3', '9.1.2.1', '9.1.2.4', '9.1.2.6'] },
+  { id: 'permutations-and-combinations', course: 'stats', skill: 'mid', standards: ['9.1.2.1'] },
   { id: 'expected-value', course: 'stats', skill: 'mid', standards: ['9.1.2.7', '9.1.2.8'] },
   { id: 'correlation-and-causation', course: 'stats', skill: 'mid', standards: ['9.1.1.5', '9.1.1.6'] },
   { id: 'the-normal-distribution', course: 'stats', skill: 'mid', standards: ['9.1.1.7'] },
