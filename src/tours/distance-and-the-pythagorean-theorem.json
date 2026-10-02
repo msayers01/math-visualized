@@ -1,0 +1,53 @@
+{
+  "purpose": "This is a grid where you place two points and watch a right triangle build itself between them. You see why the distance is the square root of dx squared plus dy squared, then use the same idea in a 3D box and in stories like a ladder.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Points A and B",
+      "text": "In Plane mode, drag the rings A and B. They snap to whole numbers. When they are not in the same row or column, a green horizontal leg and a red vertical leg meet at a right angle, and the blue side is the distance d.",
+      "try": "Drag B to different places. When does the triangle disappear?"
+    },
+    {
+      "at": "ctl:3D box",
+      "title": "Three modes",
+      "text": "Plane works with two points. 3D box measures the longest rod in a box. Stories uses a picture from real life. The Next button in the steps switches modes for you: step 3 is the box, step 4 is stories.",
+      "try": "Press 3D box, then press Plane again to come back."
+    },
+    {
+      "at": "ctl:Show squares on the sides",
+      "title": "Squares on the sides",
+      "text": "Draws a square on each side of the triangle. The two small squares (green and red) add up to the big blue one: dx squared plus dy squared equals d squared. It only shows when A and B are in different rows and columns.",
+      "try": "Switch it on and move B. Check that the two small areas always add to the big one."
+    },
+    {
+      "at": "ctl:Challenge",
+      "title": "Distance challenges",
+      "text": "Pick a target distance, such as AB = 5, and place B to hit it. The readout shows how many different leg pairs work, and says whether the squares add up to too little or too much if you miss.",
+      "try": "Choose AB = 5 and find two different places for B that work."
+    },
+    {
+      "at": "ctl:Try a box",
+      "title": "Try a box",
+      "text": "In 3D box mode, use the Length, Width and Height sliders, or pick a preset or a challenge. The readout works the box out in two right triangles: first the base diagonal f, then the long diagonal d.",
+      "try": "Pick Preset 3 x 4 x 12. The longest rod is exactly 13."
+    },
+    {
+      "at": "ctl:Pick a story",
+      "title": "Pick a story",
+      "text": "Stories are a ladder on a wall, the longest rod in a box, blocks across town and the diagonal of a screen. Each has stages. At each stage the yellow side is the unknown.",
+      "try": "Choose A ladder on a wall and read the question first."
+    },
+    {
+      "at": "ctl:Add squares",
+      "title": "Add or subtract",
+      "text": "If the unknown side is the hypotenuse, add the squares of the legs. If it is a leg, subtract. Choose one. A wrong choice shows why it fails, and a right one moves to the next stage. Start over resets the story.",
+      "try": "Choose the wrong operation on purpose to read the explanation."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why and you can try again."
+    }
+  ],
+  "teacher": "Project step 2 with squares on and ask what the three areas show. Then challenge AB = 5 and ask how many ways it can be done. Common slip in stories: adding squares when the unknown is a leg. Ask 'is the yellow side the longest side?' first."
+}

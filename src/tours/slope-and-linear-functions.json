@@ -1,0 +1,36 @@
+{
+  "purpose": "This tool lets you tilt a line and slide a small triangle along it. You see that rise divided by run is the same everywhere on a straight line, and that is what slope means.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Line and triangle",
+      "text": "The blue line is the graph. The triangle has a green run (how far right) and a red rise (how far up). Drag its left corner to slide it, its right corner to tilt the line, or the yellow dot to move the line up or down.",
+      "try": "Drag the left corner along the line. Does rise divided by run change?"
+    },
+    {
+      "at": "ctl:Slope m",
+      "title": "Slope",
+      "text": "Slope is how steep the line is. Positive climbs to the right, negative falls, and 0 is flat. It is the same as dragging the triangle's right corner, which tilts the line around the left corner.",
+      "try": "Set slope to 0, then to a negative number."
+    },
+    {
+      "at": "ctl:Intercept b",
+      "title": "Intercept",
+      "text": "The intercept b is the height where the line crosses the y-axis, at the yellow dot. Changing it slides the whole line up or down. The slope stays the same.",
+      "try": "Drag b up and down. The rise and run numbers stay put."
+    },
+    {
+      "at": "ctl:Run",
+      "title": "Run of the triangle",
+      "text": "This sets how wide the triangle is, from 1 to 4. A wider triangle has a bigger rise, but the rise divided by run is the same number.",
+      "try": "Change Run from 1 to 4 and read the Slope line in the readout."
+    },
+    {
+      "at": "ctl:Show rise",
+      "title": "Hide the triangle",
+      "text": "Turn this off to see only the line and the yellow intercept dot. Turning the triangle off also removes its handles, so you cannot drag the corners until you turn it on again.",
+      "try": "Turn it off and guess the slope, then turn it on to check."
+    }
+  ],
+  "teacher": "Project step 2 and slide the triangle while the readout stays the same: this is the idea of a constant ratio. Ask a student to predict the rise for a run of 4. Misconception: students read slope as the up number only, so keep changing the run."
+}

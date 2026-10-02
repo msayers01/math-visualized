@@ -1,0 +1,52 @@
+{
+  "purpose": "This turns two equations into arrows and a parallelogram. You solve the system by comparing areas, which is exactly what Cramer's rule does. You also see why the rule breaks when the parallelogram goes flat.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Arrows and areas",
+      "text": "The green arrow u and red arrow v are the columns of numbers on the left. The blue arrow w is the right side. The yellow parallelogram of u and v has area D. Nothing is dragged here. Change the numbers with the sliders.",
+      "try": "Make u and v point the same way and watch the yellow shape flatten."
+    },
+    {
+      "at": "ctl:a: x in equation 1",
+      "title": "The six numbers",
+      "text": "These sliders set a, b, c, d, e, f in ax + by = e and cx + dy = f. The arrows, the area D and the equations at the top all update at once. They stay live in every step except practice.",
+      "try": "Change e and f only. Which arrow moves, and does D change?"
+    },
+    {
+      "at": "ctl:Slide the top edge",
+      "title": "A slide that reads x",
+      "text": "In step 2, answer the prediction first. Then this slider is unlocked. The violet parallelogram of w and v slides along v until it sits on x copies of u. Sliding does not change its area, so x equals that area divided by D.",
+      "try": "Drag it back and forth. Does the area label ever change?"
+    },
+    {
+      "at": "ctl:Replace the x column",
+      "title": "Swap a column",
+      "text": "In step 3, choose Find x or Find y, then replace that unknown's column with the right side. The matching violet parallelogram appears and its area is the top number of the fraction.",
+      "try": "Pick Find x, then press Replace the x column. Compare with the y one."
+    },
+    {
+      "at": "ctl:Check my numbers",
+      "title": "Do the arithmetic",
+      "text": "Set Bottom number D and Top number with the two sliders, then press this. It tells you which one is wrong and why, such as adding where you should subtract. Solve both x and y to see the walk to w.",
+      "try": "Check one wrong answer on purpose to read the hint."
+    },
+    {
+      "at": "ctl:Exactly one solution",
+      "title": "When D is zero",
+      "text": "In step 4, the parallelogram is flat. Decide between one solution, no solution or infinitely many, then read why. It depends on whether the right side w sits on the line through u and v.",
+      "try": "Change e and f so that w lies on the line, then choose again."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 introduces the arrows and D. Step 2 reads x from a slide. Step 3 builds the rule with the sliders. Step 4 uses a flat parallelogram with no unique answer."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains itself and you can try again."
+    }
+  ],
+  "teacher": "Project step 2 and have students predict x before the slide. Then ask why sliding does not change the area (same base, same height). Common slip: students swap the wrong column, or add the cross products instead of subtracting. Step 4 shows why dividing by D = 0 fails."
+}

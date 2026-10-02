@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you build a triangle from a few facts and see whether it must be similar to a target triangle. You find which facts are enough (AA, SAS, SSS) and which are not (SSA), then use similar triangles to measure what you cannot reach.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Build triangle DEF",
+      "text": "The small box at top left is the target triangle ABC. The big triangle DEF is yours. Drag the ringed points F or E to reshape it. A dashed blue copy of ABC sits on your side DE to compare.",
+      "try": "Drag F and watch the numbers on the sides and angles change."
+    },
+    {
+      "at": "ctl:Criteria",
+      "title": "Four activities",
+      "text": "Criteria builds DEF from facts. Shadows and mirrors measures a tree. Parallel segment cuts a triangle with a line parallel to BC. Practice gives seven problems with feedback. The steps open the one that fits.",
+      "try": "Press Parallel segment and drag D along AB."
+    },
+    {
+      "at": "ctl:AA",
+      "title": "Choose the facts",
+      "text": "AA, SAS, SSS and SSA are the four sets of facts. Each one shows its own sliders. Press one, build DEF with only those facts, and ask if the shape is forced to match the target. SSA is the trap.",
+      "try": "Press SSS, then press SSA and compare."
+    },
+    {
+      "at": "ctl:Facts you give",
+      "title": "Facts you give",
+      "text": "AA and SAS only. Choose the full set of facts, or only some of them, such as one angle only. With too few facts, DEF can take different shapes, and the ghost triangles show all of them.",
+      "try": "Choose One angle only and look at how many shapes fit."
+    },
+    {
+      "at": "ctl:Show every triangle",
+      "title": "Show every triangle",
+      "text": "Turns on the ghost triangles: every triangle that fits your facts. One ghost means the facts fix the shape. Several mean they do not. In SSA, ghosts stay hidden until you predict yes or no.",
+      "try": "Turn it off and on while changing a slider."
+    },
+    {
+      "at": "ctl:Method",
+      "title": "Shadows and mirrors",
+      "text": "In this activity you measure a tree with a stick. Method chooses sun shadow or a mirror on the ground. Drag the glowing dot on the ground, or use the slider for the stick's shadow. Answer the questions to find the height.",
+      "try": "Switch the method to Mirror on the ground and answer the questions."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows AA. Step 2 shows SAS. Step 3 is the SSA trap, with a prediction first. Step 4 opens the shadow measurement."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and ask for the yes or no prediction before the ghosts appear. Common mistake: believing two sides and any angle make a triangle's shape fixed. Ask: where must the angle sit for SAS to work? Step 4 links to shadows and similar triangles in real life."
+}

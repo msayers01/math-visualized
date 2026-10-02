@@ -1,0 +1,42 @@
+{
+  "purpose": "This tool turns a system of equations into one matrix equation, A X = B. You treat the matrix A as a machine that moves points, and look for the point X that lands on the target B. You see why the inverse of A solves it.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Lines or a moving plane",
+      "text": "In lines view, blue and red are the two equations and a violet dot is where they cross. In map view, A tilts the grid: a green arrow is where (1, 0) goes, a red arrow where (0, 1) goes. Yellow ring is B. Drag the ringed point X.",
+      "try": "From step 2, drag X until the blue dot AX lands on the yellow ring."
+    },
+    {
+      "at": "ctl:Map view",
+      "title": "Two views",
+      "text": "Map view shows what A does to the whole plane. Two-lines view shows the same system as two lines. They are the same problem seen two ways. These buttons are hidden on step 1, which only uses lines.",
+      "try": "Switch views and check that the answer point is the same."
+    },
+    {
+      "at": "ctl:X, first",
+      "title": "Move X exactly",
+      "text": "These two sliders set the two entries of X, x and y, in steps of 0.5. They do the same thing as dragging the point. The readout below shows X, AX, B and the gap B minus AX. Gap (0, 0) means you solved it.",
+      "try": "Use the sliders to shrink the gap to (0, 0)."
+    },
+    {
+      "at": "panel",
+      "title": "Your turn questions",
+      "text": "Each step asks a few questions. Some say Predict first and move the picture only after you answer. Some are locked until you move X, and the Locked note tells you what to do. Wrong answers explain why. Hint buttons appear when there is one.",
+      "try": "Answer the first question, then read why the other choices were wrong."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds the equation from two receipts. Step 2 shows A moving the plane. Step 3 finds the inverse. Step 4 uses a matrix with determinant 0, where the plane is squashed flat and there is no single answer.",
+      "try": "On step 4, predict what A does to the plane before you answer."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Starts a set of problems in map view. Pick an answer and read why. The picture and sliders show each system, so you can test an answer by moving X. Back to the lesson returns you.",
+      "try": "Press Start practice and test an answer with the X sliders."
+    }
+  ],
+  "teacher": "Project step 2 in map view and ask the class to steer X onto the yellow ring before any algebra. Then show that the inverse jumps straight there. Misconception: students think A X = B can be solved by dividing by A, so ask what dividing by a matrix would mean, and what happens when det is 0."
+}

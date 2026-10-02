@@ -1,0 +1,40 @@
+{
+  "purpose": "This lets you move and reshape a parabola and see its equation change at the same time. You will learn what a, h and k each do, and when the curve crosses the x-axis.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Drag the parabola",
+      "text": "The blue curve is the parabola. Drag the yellow dot (the vertex) to move the whole curve. Drag the white ring one step to its right to stretch or flip it. The dashed violet line is the axis of symmetry. Green dots are zeros.",
+      "try": "Drag the yellow dot to the right and watch the dashed line follow it."
+    },
+    {
+      "at": "ctl:a (stretch",
+      "title": "a: stretch and flip",
+      "text": "Controls how steep the curve is. Bigger a (ignoring the sign) makes it narrower. A negative a flips it so it opens downward. The ring on the figure is exactly a units above the vertex's right side.",
+      "try": "Slide a from 1 down to -1 and watch the curve flip."
+    },
+    {
+      "at": "ctl:h (vertex x)",
+      "title": "h: slide left or right",
+      "text": "Moves the vertex sideways. In the equation it shows up as x minus h inside the bracket. That is why a positive h moves the curve right, which feels backward at first.",
+      "try": "Set h to 2 and check that the readout says (x - 2)^2."
+    },
+    {
+      "at": "ctl:k (vertex y)",
+      "title": "k: slide up or down",
+      "text": "Moves the vertex up or down. If the vertex is above the axis and the curve opens upward, the green zeros disappear, because the curve never reaches y = 0.",
+      "try": "Set k to 2 with a = 1 and read what the Zeros line says."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is y = x^2. Step 2 moves the vertex to (2, -4). Step 3 flips the curve with a = -1. Step 4 focuses on the zeros."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions on reading the vertex and zeros. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask students to predict the equation before dragging the vertex. Common misconception: they think y = (x - 2)^2 moves left because of the minus sign. Have them test it with the h slider and read the readout, which also gives the standard form."
+}

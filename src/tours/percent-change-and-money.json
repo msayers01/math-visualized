@@ -1,0 +1,40 @@
+{
+ "purpose": "This tool turns money stories into bars you can check: markups, percent change, interest, errors and tax. You will see why a percent always needs a base, the amount that counts as 100%.",
+ "stops": [
+  {
+   "at": "stage",
+   "title": "Bars and price tag",
+   "text": "Each amount is a bar, and a dashed line marks the base you are measuring from. The price tag at the bottom fills in as you finish steps. When a step asks you to place a marker, drag it along the strip and let go to check it.",
+   "try": "Press Try it yourself, then answer step 1 and see how the bars change."
+  },
+  {
+   "at": "ctl:Mark up, mark down",
+   "title": "Choose a job",
+   "text": "Five kinds of money problem: mark up and mark down, percent change, simple interest, percent error, and tax, tips and pay. Switching starts that job's first problem. The steps below also switch it.",
+   "try": "Press Simple interest and read the first problem."
+  },
+  {
+   "at": "ctl:Problem",
+   "title": "Pick a problem",
+   "text": "Each job has several problems. Each one begins with a worked example. Press Try it yourself to solve it step by step. A wrong answer says why. Some problems ask you to find the base or the rate backward.",
+   "try": "Open the list and pick a problem that says Find the old price."
+  },
+  {
+   "at": "ctl:Try it yourself",
+   "title": "Worked example first",
+   "text": "A problem opens with the answer worked out, so you see the method. Try it yourself clears it and asks you to do each step. You choose from options, or place a marker. Start this problem over resets it.",
+   "try": "Read the worked example, then press Try it yourself and do it."
+  },
+  {
+   "at": "steps",
+   "title": "What Next does",
+   "text": "Step 1 is a markup then a markdown. Step 2 is percent change. Step 3 is simple interest. Step 4 is percent error. Each step opens a worked example for that job, which you can then try yourself."
+  },
+  {
+   "at": "check",
+   "title": "Quick check",
+   "text": "Two questions at the end. A wrong answer explains why."
+  }
+ ],
+ "teacher": "Project step 1 and ask: a 20% markup then a 20% markdown, is the price back where it started? Many say yes. Show the bars. In step 2, ask which price is the base for percent change, then for percent error. The base is the old price, or the true value."
+}

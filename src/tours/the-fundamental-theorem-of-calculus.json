@@ -1,0 +1,47 @@
+{
+  "purpose": "This lets you build the area function A(x) from a curve f(x), then see that the slope of A at any point equals the height of f there. That link is why integrals can be computed with antiderivatives.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two graphs, one story",
+      "text": "The top graph is f(x), with the area from a to x shaded (yellow positive, red negative). The bottom graph is A(x), the running total of that area. Drag the x handle in either graph and both update together.",
+      "try": "Drag x past a point where f crosses zero and watch A turn around."
+    },
+    {
+      "at": "ctl:1 Accumulate",
+      "title": "Four parts of the theorem",
+      "text": "These buttons switch the mode. 1 builds the area function. 2 shows its slope matches f. 3 asks you to pick which graph is A. 4 uses an antiderivative to compute an area. The steps on the left set these for you.",
+      "try": "Click 2 Slope of A, then come back to 1 and compare."
+    },
+    {
+      "at": "ctl:Function f",
+      "title": "Choose the function",
+      "text": "Try different curves f. Most are smooth. Steps has jumps and Corner has a sharp point, which show what happens to A when f is not smooth. Mode 3 only uses two of them.",
+      "try": "Pick Steps and look at the shape of A. Is it smooth or does it have corners?"
+    },
+    {
+      "at": "ctl:Strip width dx",
+      "title": "Shrink the strip",
+      "text": "Only in mode 2. A thin strip of width dx sits at x. The readout compares the true change in A divided by dx with the height f(x). The smaller dx is, the closer these two numbers get.",
+      "try": "Slide dx from 1.00 down to 0.05 and watch the ratio approach f(x)."
+    },
+    {
+      "at": "ctl:Graph 1",
+      "title": "Which graph is A?",
+      "text": "Only in mode 3. Four candidate graphs for A appear. Use what you learned: where f is positive, A rises. Where f is zero, A is flat. Click a graph to choose. A wrong choice is explained, and you can try again.",
+      "try": "Drag x along f first, and look at where A should rise or fall."
+    },
+    {
+      "at": "ctl:4 F(b)",
+      "title": "Mode 4: antiderivative",
+      "text": "Press this to compute an area. Drag the yellow a and b on the graph, choose an antiderivative F from the four offered, then pick the value of F(b) minus F(a). The readout then compares it with the shaded area.",
+      "try": "Pick two different antiderivatives that differ by a constant. Is the answer the same?"
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and let students shrink dx while you ask what number the ratio is heading to. Many students think the area function and f are the same graph, so use mode 3 to make them separate the two. Try Corner or Steps to discuss where A has no slope."
+}

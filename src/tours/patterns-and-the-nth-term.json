@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool shows a pattern of figures that grow. You predict the next figure, build it, then find a rule for any figure number n. You will see why some patterns grow by the same amount each time and others do not.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figures",
+      "text": "The figure is on top, with a graph of the counts below. Each dot is one figure. After you answer Predict, dotted slots appear. Click a slot to add that piece. New pieces turn green in the change view.",
+      "try": "Answer Predict first, then click the dotted slots to build Figure 5."
+    },
+    {
+      "at": "ctl:Choose a pattern",
+      "title": "Choose a pattern",
+      "text": "Pick the pattern to study. The toothpick squares and the tile border grow by the same amount each time, so they are linear. The staircase and the square numbers do not. Your progress is kept per pattern.",
+      "try": "Switch to Tile border and predict its next figure."
+    },
+    {
+      "at": "ctl:Look at",
+      "title": "Look at",
+      "text": "This switches the job: predict and build, see the change, name the nth term, or test for a straight line. The steps below also switch it. Each view asks you to predict first.",
+      "try": "Choose See the change and predict whether the new part stays the same size."
+    },
+    {
+      "at": "ctl:Figure n",
+      "title": "Figure n",
+      "text": "This picks which figure is shown, from 1 to 10. Use it to check your prediction for a far figure, like Figure 10. In the rule view it also tells you which figure the rule is worked out for.",
+      "try": "Predict Figure 10 first, then slide to 10 and count."
+    },
+    {
+      "at": "ctl:Add a piece",
+      "title": "Build help",
+      "text": "Add a piece places the next missing piece for you, but only after you have answered the prediction. Start again clears the figure so you can rebuild it. You can also click the dotted slots yourself.",
+      "try": "Press Start again, then rebuild the figure in a different order."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds Figure 5. Step 2 looks at what is new each time. Step 3 writes the nth term, two ways. Step 4 uses the staircase, where the changes grow, to test for a straight line."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask for the Figure 5 count, then Figure 100, before showing any rule. Students who answer by drawing will see why they need a rule. A common mistake is 4n for the toothpicks, because neighbouring squares share a stick. Step 4 shows a pattern that is not linear."
+}

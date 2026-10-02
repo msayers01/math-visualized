@@ -1,0 +1,46 @@
+{
+  "purpose": "This shows how the angle made by two lines and a circle depends on the arcs they cut off. Play with it until you can say when to add arcs, when to subtract them, and why there is always a half.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The circle and its arcs",
+      "text": "Gold and purple arcs show the pieces of the circle the angle looks at, with their sizes written beside them. The green label is the angle measured live. Drag the big rings (B, C, D, P, or the ring on the line).",
+      "try": "Drag a ring slowly and watch the green angle and the arc numbers change together."
+    },
+    {
+      "at": "ctl:Look at",
+      "title": "Pick a situation",
+      "text": "Seven views. 1 and 2 are about tangents and radii. 3, 4 and 5 are the angle rules: vertex on, inside, and outside the circle. 6 compares all five. 7 puts them in real situations. Other controls change with the view.",
+      "try": "Choose view 4, then view 5, and compare how the two pictures differ."
+    },
+    {
+      "at": "ctl:Predict, then see",
+      "title": "Predict first",
+      "text": "Views 1, 3 and 5 have this button. It hides the answer and asks a multiple choice question. After you pick, the angle is revealed so you can see if you were right. A wrong choice explains why.",
+      "try": "Press it in view 3 and guess the angle before you look."
+    },
+    {
+      "at": "ctl:Near arc",
+      "title": "Near arc and far arc",
+      "text": "In view 5, the near arc is the piece between the two lines close to P. The far arc is the big piece on the other side. Move them and the angle is half of (far minus near). The menu above switches to tangents.",
+      "try": "Raise the near arc up to the far arc. What happens to the angle?"
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice problems",
+      "text": "Eight fixed problems about finding an angle or an arc. The figure controls are hidden while you practise. Use Leave practice to go back to the playground.",
+      "try": "Start one, work it out on paper, then pick your answer."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step sets the view for you: tangent touching once, vertex on the circle, vertex inside (add), vertex outside (subtract). Steps 1, 2 and 4 start with a prediction box."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short check at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and step 4 side by side and ask: why add here but subtract there? Students often forget the half, or subtract when the vertex is inside. Use Predict before revealing, and use view 6 (Match the formulas) as a quick whole-class review."
+}

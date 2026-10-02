@@ -1,0 +1,53 @@
+{
+  "purpose": "This is a circle where you cut out a pizza slice (a sector) and watch its arc, area and perimeter change. You see that arc length and area are the same fraction of the whole circle, and learn why they grow differently.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The sector",
+      "text": "The yellow slice is the sector. The thick blue curve is its arc. Drag the ring on the rim to open or close the angle (it snaps to 5 degrees). The bar at the bottom fills to show what fraction of 360 the slice is.",
+      "try": "Drag the ring until the slice is a quarter of the circle."
+    },
+    {
+      "at": "ctl:Central angle",
+      "title": "Angle and radius",
+      "text": "Central angle is the size of the slice at the centre. The -15 and +15 buttons nudge it. Radius r makes the circle bigger or smaller. Both change every number in the readout below.",
+      "try": "Set the angle to 180. Is the slice exactly half?"
+    },
+    {
+      "at": "ctl:Look at",
+      "title": "Look at",
+      "text": "Switches what the lesson measures: fraction of the circle, arc length, sector area, perimeter, real situations, and work backwards. The Next button in the steps also changes it.",
+      "try": "Choose 4. Perimeter of a sector and see which parts are added."
+    },
+    {
+      "at": "ctl:Show the rest",
+      "title": "The rest of the circle",
+      "text": "Shades the part of the circle that is not in your slice, with its own angle. The slice and the rest always add to the whole: 360 degrees, the full circumference, the full area.",
+      "try": "Turn it on in the arc view and compare the two arcs."
+    },
+    {
+      "at": "ctl:Unroll the arc",
+      "title": "Unroll the arc",
+      "text": "In the Arc length step, this straightens the curved edge into a bar under the circle. You can compare it to the whole circumference and see it is the same fraction.",
+      "try": "Unroll it, then drag the ring and watch the bar change."
+    },
+    {
+      "at": "ctl:Double the radius",
+      "title": "Double it",
+      "text": "In the Arc length and Sector area steps, these buttons double the angle or the radius and show the old sector as a dashed outline. The readout says how many times bigger the arc and the area became.",
+      "try": "Double the radius. Arc doubles, area gets four times bigger."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Eight problems on arcs, areas, perimeters, a pizza and a pie chart. Pictures are not always drawn to scale. Nothing is saved.",
+      "try": "Start practice and aim for the first problem without a hint."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why and you can try again."
+    }
+  ],
+  "teacher": "Project the Sector area step and press Double the radius: students expect the area to double and are surprised by four times. Ask them to explain it with units. The common slip in perimeter is giving only the arc and forgetting the two radii."
+}

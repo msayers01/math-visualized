@@ -1,0 +1,42 @@
+{
+  "purpose": "This tool shows a square root as the side of a square with a given area. You trap it between decimals on a zoomable number line, and see that some roots never end or repeat.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Square and number line",
+      "text": "Top: a square on a grid, with yellow area n. Its side is the root. Drag in it to resize. Bottom: a number line with the yellow dot at the root. A green mark and a red mark trap it from below and above.",
+      "try": "Drag the top corner until the area is 2. Where does the root land?"
+    },
+    {
+      "at": "ctl:Area n",
+      "title": "Area n",
+      "text": "Sets the area of the square, from 1 up. The readout tells you if n is a perfect square (a whole-number side) or not. If it is not, the root is irrational: its decimal never ends and never repeats.",
+      "try": "Slide n from 1 to 10 and note which ones are perfect squares."
+    },
+    {
+      "at": "ctl:Zoom: ticks",
+      "title": "Zoom the number line",
+      "text": "Each zoom level makes the ticks ten times finer. The green and red squares show the two decimals whose squares are just below and just above n. The Zoom in and Zoom out buttons do the same thing.",
+      "try": "Choose n = 2 and zoom in three times. How many digits do you pin down?"
+    },
+    {
+      "at": "ctl:Compare",
+      "title": "Compare with something",
+      "text": "Compare the root with another square root (a second slider appears) or with a decimal you choose. A dashed violet square and a violet dot show the other number. The readout explains the order by comparing areas.",
+      "try": "Pick Another square root and make m bigger than n."
+    },
+    {
+      "at": "ctl:Add a whole number",
+      "title": "Estimate a + root",
+      "text": "Adds a whole number a to the root, shown as a hollow yellow ring on the number line. This is for estimating sums like 3 + root 5. Off means it is hidden.",
+      "try": "Set a to 3 with n = 5 and read the estimate range."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 uses a perfect square. Step 2 uses n = 2, which is not. Step 3 zooms in, compares and estimates. Step 4 uses a square garden to show that squaring and roots undo each other.",
+      "try": "After each step, change n yourself and see if the pattern holds."
+    }
+  ],
+  "teacher": "Project n = 2 and zoom in step by step, asking where the root must be before each zoom. Link it to areas: if the area is between 4 and 9 the side is between 2 and 3. Misconception: a long decimal shown on a calculator is the root, but it is only an approximation."
+}

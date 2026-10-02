@@ -1,0 +1,45 @@
+{
+  "purpose": "This tool shows what it means for a point to solve an inequality. You test points, see the boundary line appear, and learn to shade the true side, then work backwards from a picture to the inequality.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Testing points",
+      "text": "In the first activity, click or drag on the graph to place a test point. A green dot means the inequality is true there. A red cross means false. The dots stay, so you build up a picture of the true region.",
+      "try": "Answer the prediction, then click about ten places. Where do the green dots gather?"
+    },
+    {
+      "at": "ctl:Choose an activity",
+      "title": "Six activities",
+      "text": "Test points, dashed or solid, shade a side, build from a picture (drag the yellow intercept ring and the white slope ring), rewrite first (with a negative number), and a budget story. Each starts with a prediction or a question.",
+      "try": "Pick Build from a picture and drag the two rings."
+    },
+    {
+      "at": "ctl:Test every whole point",
+      "title": "Test every point",
+      "text": "Tests all whole-number points from -6 to 6 at once, so green and red dots fill the grid. The two groups are split by the boundary line. Clear the dots starts over.",
+      "try": "Press it, then turn on the boundary line toggle below."
+    },
+    {
+      "at": "ctl:Show the boundary line",
+      "title": "Boundary line",
+      "text": "Draws the line where the two sides are equal. Points on the line are neither above nor below, so whether they count depends on the symbol. The shade toggle then colours the whole true region.",
+      "try": "Switch the line on, then the shading, and look for any red cross inside."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 tests points. Step 2 decides dashed or solid. Step 3 shades a side after testing the origin. Step 4 goes backwards from the picture. Rewrite and Budget story are only in the menu."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Seven short problems. Press the same button to go back to the lesson. Nothing is saved or scored."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with explained answers."
+    }
+  ],
+  "teacher": "Have students predict whether the origin works before testing. Ask: why is a point on the line sometimes allowed and sometimes not? Misconception: shading above whenever you see a greater-than sign, which fails after dividing by a negative. Project Rewrite first."
+}

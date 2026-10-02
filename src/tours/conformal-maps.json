@@ -1,0 +1,36 @@
+{
+  "purpose": "This bends the complex plane with a function and shows what the function does to a grid. The grid curves a lot, but little right angles stay right angles. You see why, by zooming in on one point with a small probe.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The bending grid",
+      "text": "Blue and yellow lines are the grid. The hollow circle is your probe z0. Tap or drag anywhere to move it. The small green and red cross at the probe shows what a tiny plus sign becomes. The grey dashed line joins z0 to where it lands.",
+      "try": "Drag the probe around. Does the green and red cross always stay a right angle?"
+    },
+    {
+      "at": "ctl:Function",
+      "title": "Pick a function",
+      "text": "Each choice is a different map: z squared, e to the z, 1 over z, sin z, the Joukowski map and the Cayley map. Choosing one resets the grid and plays the bend straight away.",
+      "try": "Choose e^z, then Polar grid, and see circles and rays swap roles."
+    },
+    {
+      "at": "ctl:Grid",
+      "title": "Grid type",
+      "text": "Rectangular shows horizontal and vertical lines. Polar shows circles and rays through the origin. Both cross at right angles, so you can see the bending in two different ways.",
+      "try": "Switch to Polar and apply z squared."
+    },
+    {
+      "at": "ctl:Progress",
+      "title": "Apply the map",
+      "text": "Progress slides every point from where it starts (0 percent) to where the function sends it (100 percent). Drag it by hand to freeze a moment, or use the Apply the map button to play. The same button then undoes it.",
+      "try": "Drag Progress slowly and watch the cross while the grid bends."
+    },
+    {
+      "at": "panel",
+      "title": "The readout",
+      "text": "Under the controls, the readout gives the probe z0 and its image f(z0). It also says how much the function scales and rotates near z0. Where the scale is 0, angles are not preserved.",
+      "try": "Choose z squared, drag the probe as close to the middle (0, 0) as you can."
+    }
+  ],
+  "teacher": "Project the z squared map with the probe near the origin: the right angle opens to a straight line because angles double. Ask why this does not break the rule, since f'(0) = 0. Common misconception: conformal does not mean the grid squares keep their shape, only the angles."
+}

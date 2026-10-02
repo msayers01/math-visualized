@@ -1,0 +1,35 @@
+{
+  "purpose": "This is three tools in one. You count factors of 10 to see exponent rules, slide a ruler from a virus to the Sun, and multiply or compare numbers in scientific notation. Use Next and Back to switch tools.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two panes",
+      "text": "Step 1: the top is a number line where each tick is one more factor of 10. Green and red arrows are your two exponents, yellow is the answer. The bottom shows the factors as circles, green for a, red for b, with a bar for cancelling.",
+      "try": "Slide a and b. Watch the arrows and the circles together."
+    },
+    {
+      "at": "ctl:Multiply",
+      "title": "Pick an exponent rule",
+      "text": "Multiply adds the exponents. Divide cancels matching circles above and below the bar. Power groups circles, and Zero and negative shows a ladder where each step down divides by 10.",
+      "try": "Press Divide, then slide b up to 3 to cancel everything."
+    },
+    {
+      "at": "ctl:First exponent a",
+      "title": "Exponent sliders",
+      "text": "Slide a and b to change the two powers of 10. The result line above the figure updates and the readout below spells out the rule with your numbers. In Power mode the sliders are called inner and outer exponent.",
+      "try": "Set a to 3 and b to 3 in Divide. Why is the result 10 to the 0?"
+    },
+    {
+      "at": "steps",
+      "title": "Next switches tools",
+      "text": "Step 1 is exponent rules. Steps 2 and 3 show a ruler of real sizes: tap an object or drag the ruler, with Zoom and window sliders, then a coefficient and exponent you choose. Step 4 multiplies, divides and compares.",
+      "try": "Press Next once. Tap the Sun on the ruler, then drag the ruler."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket. Each answer is explained."
+    }
+  ],
+  "teacher": "Project step 1 in Divide mode and ask students to predict the answer before sliding b. Ask: why is 10 to the 0 equal to 1? Watch for adding exponents when dividing, and for answers like 20 x 10^5 that are not yet in scientific notation (step 4)."
+}

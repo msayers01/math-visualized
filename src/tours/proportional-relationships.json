@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool shows one relationship as a table and as a graph. You will learn to find the unit rate k, and to tell a proportional relationship from one that only grows, by checking a table and a line through the origin.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Table and graph",
+      "text": "The top is a table: x in green, y in red, and a blue row showing k times x for your line. Below is the graph. Each yellow dot is one table column. In step 1, drag the ringed point at x = 1 up or down to aim the blue line.",
+      "try": "Drag the ringed point until the blue line goes through every dot."
+    },
+    {
+      "at": "ctl:Situation",
+      "title": "Situation",
+      "text": "Pick a story: tickets, recipes, walking, taxi, pool membership and more. Some are proportional and some are not. In the not-proportional ones, no line through the origin can hit every dot. Step 1 only.",
+      "try": "Choose Taxi ride and try to hit every dot. Why can you not?"
+    },
+    {
+      "at": "ctl:Unit rate k",
+      "title": "Unit rate k",
+      "text": "k is the cost of one thing, or the height of the line at x = 1. The slider and the ringed point do the same job. The panel tells you how many dots the line hits, and whether it is above or below.",
+      "try": "Move k until the readout says the line goes through every dot."
+    },
+    {
+      "at": "ctl:Show the y ÷ x row",
+      "title": "The y over x row",
+      "text": "This adds a row to the table that divides y by x in each column. If every column gives the same number, that number is k, and the relationship is proportional. Different numbers mean it is not.",
+      "try": "Turn it on and compare the row for Movie tickets and Taxi ride."
+    },
+    {
+      "at": "ctl:Connect the dots",
+      "title": "Connect and extend",
+      "text": "This joins the dots with a line and runs it back to x = 0. A proportional line goes through the origin (0, 0). A line that crosses the y axis higher up is not proportional. The next switch draws a triangle to show k.",
+      "try": "Turn it on and see where the line meets the y axis."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 sets k by hand. Step 2 uses k to fill in a missing table entry. Step 3 asks if a table, graph or story is proportional. Step 4 matches words, table, graph and equation. Next question moves on inside a step."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask students to fix the line, then switch to Taxi ride. Many say the taxi is proportional because it grows. Ask what it costs to ride 0 miles. In step 3, ask for the test in words before anyone answers: the same y divided by x, and through the origin."
+}

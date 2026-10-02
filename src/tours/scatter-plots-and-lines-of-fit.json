@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you look at real-style data as dots, name the pattern, and fit a straight line by eye. You see how far each dot misses the line, find a good line, and use it to predict.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Dots, line, handles",
+      "text": "Each dark dot is one data point. The blue line is your line of fit. Drag the ringed handle on the left end (b) up or down to move the line. Drag the ringed handle on the right end (m) to tilt it. Red segments show each dot's miss.",
+      "try": "Drag the right handle up and watch the average miss number change."
+    },
+    {
+      "at": "ctl:Dataset",
+      "title": "Choose a dataset",
+      "text": "Six data sets: some rise, some fall, one has no pattern, one is an arch and one has clusters. Picking one resets the line. The pizza data set has an outlier, and a switch appears to leave it out.",
+      "try": "Pick the shoe size data and see what pattern the readout names."
+    },
+    {
+      "at": "ctl:Slope m",
+      "title": "Slope m and intercept b",
+      "text": "Slope m is the steepness (points per extra hour in the study data). Intercept b is where the line starts at x = 0. They match the right and left handles. Flat means slope 0: y never changes.",
+      "try": "Set m to 0, then change b until the misses balance above and below."
+    },
+    {
+      "at": "ctl:Show a good line",
+      "title": "Show a good line",
+      "text": "Animates the line to a best-fit line with the smallest overall miss. It is one good line, not the only one. Start over puts the line flat again so you can try by eye.",
+      "try": "Fit by eye first, then press it and compare average misses."
+    },
+    {
+      "at": "ctl:Misses (vertical gaps)",
+      "title": "Show switches",
+      "text": "These switches hide or show the line and its handles, the red misses, and a pattern name. You can hide the pattern name to guess it yourself, then switch it on to check.",
+      "try": "Turn off Name the pattern, guess, then turn it on."
+    },
+    {
+      "at": "ctl:Predict at x",
+      "title": "Prediction guide",
+      "text": "Turn on Prediction guide to see a yellow vertical guide. The slider sets x, and the readout gives the line's prediction. You can also drag the guide on the figure. Far outside the data a line can give silly answers.",
+      "try": "Predict at 12 hours in the study data. Is 106 possible?"
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 names the pattern. Step 2 shows a thrown ball, where no line fits. Step 3 gives a rough line to improve. Step 4 uses the good line to predict."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and have students tilt and slide the line to get the average miss under 4 before pressing Show a good line. Ask: is there only one good line? Watch for students reading the slope as the y value, or trusting a line far outside the data, as in the 12-hour prediction in step 4."
+}

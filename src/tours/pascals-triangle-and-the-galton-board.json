@@ -1,0 +1,46 @@
+{
+  "purpose": "This is a board of pegs where balls bounce left or right and pile up in bins. You will see that the numbers in Pascal's triangle count the paths, and that many random bounces make a bell shape.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The board",
+      "text": "Nothing to drag here. Yellow balls fall through the grey pegs and land in the bins at the bottom. The blue bars count the balls in each bin. The small number on each peg is how many paths lead to it.",
+      "try": "Press Drop 1 a few times and watch where each ball ends up."
+    },
+    {
+      "at": "ctl:Rows of pegs",
+      "title": "Rows of pegs",
+      "text": "More rows means more bounces for each ball and more bins. Changing it clears the pile and starts again. At 10 rows the pile is a bell shape. Paths in all is 2 multiplied by itself once per row.",
+      "try": "Set 10 rows, then press Drop 100."
+    },
+    {
+      "at": "ctl:Chance of bouncing right",
+      "title": "Tilt the board",
+      "text": "At 50% a ball goes left or right equally. Lower it and the pile shifts left. Raise it and the pile shifts right. Paths are no longer equally likely. Changing it clears the pile.",
+      "try": "Set 30%, drop 100 balls, and see which side the pile leans."
+    },
+    {
+      "at": "ctl:Drop 10",
+      "title": "Drop balls",
+      "text": "Drop 1, 10 or 100 balls. They are random, so every pile is a little different. Clear empties the bins. The readout shows how many fell and how the fullest bin compares with the theory.",
+      "try": "Drop 100 twice with the same settings and compare the two piles."
+    },
+    {
+      "at": "ctl:Expected counts",
+      "title": "Show the theory",
+      "text": "This draws a red ring on each bin where the balls should land, worked out from Pascal's numbers. Real piles wobble around the rings. The more balls you drop, the closer the bars get to the rings.",
+      "try": "Switch it on, then drop 100 balls three times."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows 4 rows with the path counts. Step 2 drops 80 balls. Step 3 uses 10 rows and 300 balls, and turns on the rings. Step 4 tilts the board to 30% right."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask how many paths reach the middle bin, before dropping balls. Then drop 100 and compare. Students expect the pile to be flat, since each bounce is a coin flip. Ask why the edges are rare. In step 4, ask why the pile is lopsided."
+}

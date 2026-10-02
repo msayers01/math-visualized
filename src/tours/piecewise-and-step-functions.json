@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool shows functions that use a different rule on different stretches, like a taxi fare or parking. You will see what open and closed dots mean, build a graph from a story, and see why step functions jump.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The graph",
+      "text": "Each rule is drawn in its own colour. A closed dot means the value is used. An open circle means it is not. A dashed vertical line marks the input x. When it is unlocked, drag its dot along the axis, or the dot on the graph, to change x.",
+      "try": "Drag the dashed line across the point where the rule changes."
+    },
+    {
+      "at": "ctl:Choose a scene",
+      "title": "Choose a scene",
+      "text": "Six scenes: a taxi story, notation and open circles, building a graph, step functions, domain and range, and absolute value as pieces. Each scene has its own controls. The steps jump to the first four.",
+      "try": "Open Domain and range or Absolute value as pieces, which have no step."
+    },
+    {
+      "at": "ctl:Miles driven",
+      "title": "Taxi: predict, then slide",
+      "text": "Taxi scene. Answer the prediction first. Then the Miles driven slider unlocks, and the cost is plotted as you move it. Compare the cost at 3 miles and 6 miles. The price per mile drops after a few miles.",
+      "try": "Slide miles from 3 to 6 and see if the cost doubles."
+    },
+    {
+      "at": "ctl:Breakpoint",
+      "title": "Build the graph",
+      "text": "Build scene. Set where the rule changes, then the slope and intercept of each piece. A gap between the pieces would mean the cost jumps. Check my graph compares yours with the story and says where it differs.",
+      "try": "Set both slopes, then press Check my graph and read the hint."
+    },
+    {
+      "at": "ctl:Make the pieces meet",
+      "title": "Make the pieces meet",
+      "text": "Build scene. This switch sets the second intercept for you, so piece 2 starts exactly where piece 1 ends. Then there is no gap. Some stories do have a jump, so it is not always right to turn it on.",
+      "try": "Turn it on and watch the intercept slider move."
+    },
+    {
+      "at": "ctl:Time",
+      "title": "Step functions",
+      "text": "Step functions scene. Slide the time and see the cost jump at whole hours. The x = buttons go straight to values near a jump, like 3 and 3.01. The Situation menu swaps parking for bike hire, which round differently.",
+      "try": "Press x = 3, then x = 3.01, and compare the costs."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is the taxi story. Step 2 is notation and open circles at x = 3. Step 3 builds a graph yourself. Step 4 is step functions. Start practice gives eight problems and is not scored."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask what f(3) is, before pressing anything. Students often read the open circle as the value. In step 3, let teams build the graph and press Check my graph. A typical mistake is a gap at the breakpoint, which the checker names."
+}

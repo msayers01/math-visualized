@@ -1,0 +1,46 @@
+{
+  "purpose": "This is a workshop for listing every possible outcome of two-stage experiments, like two coin flips or a coin and a die. You build the list, table or tree yourself, then mark the outcomes that fit an event and find its probability.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Tap to build",
+      "text": "Everything in the picture is tapped, not dragged. In a list you tap a first result, then a second to add an outcome. In a table you tap cells. In a tree you tap a node, then add a branch. Tap an outcome in your list to remove it.",
+      "try": "In step 1, tap a first result, then a second result. That outcome joins your list."
+    },
+    {
+      "at": "ctl:Choose an experiment",
+      "title": "Pick an experiment",
+      "text": "Switch between coins, a coin and a die, an outfit, two dice, marbles with or without putting one back, and a spinner. The marble and spinner ones show a stage that changes, or outcomes that are not equally likely.",
+      "try": "Pick the marbles you do not put back and watch the tree lose a branch."
+    },
+    {
+      "at": "ctl:Table",
+      "title": "List, table or tree",
+      "text": "These three buttons show the same sample space in three ways. The list is easiest for small cases, the table is best for two dice, and the tree is best when stages change. Some experiments only allow some views.",
+      "try": "Build the coin flips as a list, then try Table and Tree."
+    },
+    {
+      "at": "ctl:Find an event",
+      "title": "Build or find an event",
+      "text": "Build it is for making the full sample space. Find an event gives you a sentence such as 'the sum is 7'. You tap every outcome that fits it. The readout shows marked outcomes over total outcomes as a fraction and a percent.",
+      "try": "Choose Find an event on the two dice table and mark every sum of 7."
+    },
+    {
+      "at": "ctl:Check",
+      "title": "Check your work",
+      "text": "Tells you what is missing, repeated or not possible, and explains why. Undo removes your last tap. Start over clears everything. A wrong answer is fine.",
+      "try": "Leave one outcome out on purpose and press Check."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds a coin-flip list. Step 2 builds a tree and meets the counting principle. Step 3 marks a sum of 7 on a table. Step 4 uses an uneven spinner where leaves are not equally likely."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions to finish. A wrong answer explains itself and you can try again."
+    }
+  ],
+  "teacher": "Project step 4 and ask: the tree has 4 leaves and 3 of them have a blue, so is the chance 3/4? The readout shows 3/4 by counting but 7/16 by the leaf chances. Students often count leaves when leaves are not equally likely."
+}

@@ -1,0 +1,47 @@
+{
+  "purpose": "This shows why we needed new kinds of numbers: natural, integers, rational and real. You sort numbers into nested rings, zoom in on the number line, and test which sets are closed under adding and multiplying.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The number rings",
+      "text": "In step 2 the picture shows four rings inside each other: N inside Z inside Q inside R. The numbers to place sit in a tray below. Tap a number, then drag it into the smallest ring that holds it. In other steps the stage is a number line.",
+      "try": "In step 2, drag 7 into the ring you think holds it, after you answer the prediction."
+    },
+    {
+      "at": "ctl:Choose an equation",
+      "title": "Pick an equation",
+      "text": "Only in step 1. Each equation has a solution that may not exist in a smaller set. Pick one, then press the smallest set (N, Z, Q or R) that holds the solution, or None yet. The number line changes to that set.",
+      "try": "Pick x + 3 = 1 style equations and press N. Read why it is not enough."
+    },
+    {
+      "at": "ctl:Next number",
+      "title": "Choose and place",
+      "text": "Only in step 2. You must answer the prediction first. Then use Previous and Next to choose a number, and press N, Z, Q or R for the innermost set that holds it. You can also drag it on the picture. A wrong choice says why.",
+      "try": "Try 0 and the square root of 9. Both surprise many students."
+    },
+    {
+      "at": "ctl:Check the sets",
+      "title": "Also belongs to",
+      "text": "Only in step 2, after you place a number. Tick every set that contains the chosen number, then check. Because the rings are nested, a number in one ring is also in every ring around it.",
+      "try": "Place 2/3, then tick Q and R only and check."
+    },
+    {
+      "at": "ctl:Left half",
+      "title": "Zoom in on the line",
+      "text": "Only in step 3. Each button halves the window on the number line. The readout shows a rational and an irrational number inside the window. However far you zoom, both kinds are still there, and the square root of 2 sits in a gap.",
+      "try": "Press Half that holds square root of 2 eight times and read the numbers."
+    },
+    {
+      "at": "ctl:Next example",
+      "title": "Does it stay inside?",
+      "text": "Only in step 4. Each example adds or multiplies two numbers. Decide: is the result rational, irrational, or does it depend? Next example moves on. The picture shows where the result lands on the line.",
+      "try": "Find an example where two irrational numbers give a rational one."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "There is no menu to switch parts. Each step changes the whole tool: 1 equations, 2 nested rings, 3 zoom, 4 closure. Use Back and Next to move between them."
+    }
+  ],
+  "teacher": "Project step 2 and ask the class to predict before anyone drags. Students often think a square root is always irrational, so keep the square root of 9 and 22/7 in view. Use step 3 to ask whether the rationals have gaps even though they are everywhere."
+}

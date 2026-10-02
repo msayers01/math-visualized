@@ -1,0 +1,53 @@
+{
+  "purpose": "This lets you cut shapes into pieces and slide or turn the pieces to build a rectangle. You see why the area of a parallelogram, triangle or trapezoid comes from base times height, and how to find the area of an L-shaped room.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The shape",
+      "text": "The green bar is the base. The red dashed line is the height, straight up, not the slanted side. Round handles on the corners can be dragged. In the first two steps they stay locked until you answer the prediction.",
+      "try": "Answer the prediction, then drag the top right corner of the shape."
+    },
+    {
+      "at": "ctl:Slide the piece",
+      "title": "Cut and slide",
+      "text": "In step 1 the cut line and this slider replay how a triangle is cut from one end and slid to the other. It turns the parallelogram into a rectangle with the same area. Drag the cut handle to the top corner first.",
+      "try": "Move Cut line to the top corner, then drag Slide the piece to 100%."
+    },
+    {
+      "at": "ctl:Turn the copy",
+      "title": "Turn the copy",
+      "text": "In steps 2 and 3, a violet copy of the triangle or trapezoid turns half way round and snaps onto the shape. Together they make a parallelogram, so one shape is half of base times height.",
+      "try": "Turn the copy fully, then change the base and turn it again."
+    },
+    {
+      "at": "ctl:L-shaped room",
+      "title": "Pick a room",
+      "text": "In step 4 you choose a room shape: an L-shaped room or the front of a house. The side lengths are found by subtracting grid coordinates, shown next to each side.",
+      "try": "Press House front, then press L-shaped room to go back."
+    },
+    {
+      "at": "ctl:Cut across",
+      "title": "Choose your plan",
+      "text": "Cut across or Cut up and down splits the L into two rectangles. Fill the corner, then subtract uses one big rectangle minus the missing corner. Drag the cut handle to the corner of the notch.",
+      "try": "Try Fill the corner, then subtract. Do you get the same area?"
+    },
+    {
+      "at": "ctl:Check my areas",
+      "title": "Check your areas",
+      "text": "Set the Piece 1 and Piece 2 area sliders, then press this. It says which piece is wrong and why. The cut has to make two shapes you know, or it asks you to move the cut first.",
+      "try": "Set the areas using length times width, then check."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Six short problems. One has you drag a triangle's top corner to make a target area. Nothing here is saved or scored.",
+      "try": "Start practice. Press Back to the lesson to return."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why and you can try again."
+    }
+  ],
+  "teacher": "Project step 2 and have students predict whether the area changes as the top corner slides. Many say it gets bigger when it leans. The slant side is the usual trap in step 1: students multiply base by slant. Ask which line is the height."
+}

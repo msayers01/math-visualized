@@ -1,0 +1,34 @@
+{
+  "purpose": "This tool lets you test whether a game is worth playing. You build the expected value from chances times prizes, then run the game many times and watch the average settle near it.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The picture",
+      "text": "The picture changes with each activity. In the first one you see a spinner with coloured sectors, a table of prize, chance and chance times prize, and below it a graph of your average net per spin. Nothing on the picture is draggable.",
+      "try": "Answer question 1 in the panel. A table row fills in."
+    },
+    {
+      "at": "ctl:Choose an activity",
+      "title": "Eight activities",
+      "text": "1 builds an expected value. 2a to 2c compare options and place them on a number line. 3 uses data from free throws. 4a to 4c let you set a prize, price or ticket count with a slider to reach a goal.",
+      "try": "Pick 4a and move the prize slider until the game is fair."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step jumps to the start of a group: build it, decide between games, use data, then set a number to reach a goal. The questions in the panel are the same for steps and menu."
+    },
+    {
+      "at": "ctl:Play 100",
+      "title": "Play the game",
+      "text": "Play 1 spins once. The bigger buttons spin many times at once. The average net so far moves toward the expected net. A few spins swing a lot. Reset clears the plays.",
+      "try": "Press Play 1 five times, then Play 1,000. Compare the averages."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket. Each answer is explained."
+    }
+  ],
+  "teacher": "Have students predict whether the game is fair before building the bars, then use Play 1,000 to show the average approaching the expected net. Ask: does a negative expected net mean you lose every time? Misconception: expecting the average of a few plays to match exactly."
+}

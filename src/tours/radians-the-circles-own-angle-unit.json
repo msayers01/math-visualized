@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool measures angles with the circle's own ruler: the radius. You lay radius-length strings along the edge and see why a half turn is about 3.14 strings, and how radians, arc length and sector area connect.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The circle and the handle",
+      "text": "The blue circle has a green radius r. Drag the round brown handle on the circle to change the angle. The green arc is the string laid along the edge, and the yellow arc marks the angle at the centre. The heading shows the angle.",
+      "try": "Drag the handle once around the circle and watch the heading change."
+    },
+    {
+      "at": "ctl:Strings laid along",
+      "title": "Strings along the arc",
+      "text": "Step 1 only. The number is how many radius-long strings fit along the arc so far. That number is the angle in radians. It can be a fraction, like 2.5 strings.",
+      "try": "Press the Half turn button and read how many strings that took."
+    },
+    {
+      "at": "ctl:Radius r",
+      "title": "Change the radius",
+      "text": "Steps 2 and 4. A bigger circle has a longer arc for the same angle. The angle stays the same, because it is the arc divided by the radius. That is why a radian is the same on any circle.",
+      "try": "In step 2, change r and watch the angle stay at 1 radian."
+    },
+    {
+      "at": "ctl:Angle \u03b8 in radians",
+      "title": "Set the angle",
+      "text": "Step 2. This sets the angle by number. The readout shows the arc, and the angle in degrees too. The buttons below jump to useful angles such as 1 radian or pi.",
+      "try": "Press the button for pi and see the degrees in the readout."
+    },
+    {
+      "at": "ctl:Show decimals",
+      "title": "Show decimals",
+      "text": "Step 3. The answer buttons show pi forms such as pi/6. Turn this on to see decimals such as 0.52 instead. The strip of cells fills as you visit each angle by dragging, pressing a cell or using Previous and Next.",
+      "try": "Fill the whole strip by pressing Next again and again."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Opens eight short problems with their own diagrams. Nothing is saved or scored. The button then says Back to the lesson, and the handle is switched off while you practise.",
+      "try": "Start practice, answer one wrong on purpose and read the explanation."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 lays strings and asks you to predict. Step 2 gives s = r times theta. Step 3 converts degrees and radians. Step 4 finds sector area and meets the unit circle."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions. A wrong answer explains the mistake."
+    }
+  ],
+  "teacher": "Project step 1 and have students predict how many strings fit in a half circle before pressing anything. Typical mistake: using degrees in s = r times theta (see the degree trap in step 2 and Practice). Ask: why does the angle stay the same when the circle gets bigger?"
+}

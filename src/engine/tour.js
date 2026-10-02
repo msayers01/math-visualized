@@ -15,7 +15,9 @@ const Tour = (() => {
   const markSeen = id => { try { const s = seenSet(); if (!s.includes(id)) { s.push(id); localStorage.setItem(SEEN, JSON.stringify(s)); } } catch (e) {} };
   const norm = s => String(s).replace(/\s+/g, ' ').trim().toLowerCase();
   /* find the element a stop points at */
-  function resolve(at) {
+  const shown = e => !!(e && e.getClientRects().length && e.getBoundingClientRect().width > 0);
+  function resolve(at) { const e = find(at); return shown(e) ? e : null; }
+  function find(at) {
     const q = s => document.querySelector(s);
     if (at === 'stage') return q('.workbench .stage');
     if (at === 'steps') return q('.panel .steps');
@@ -60,7 +62,7 @@ const Tour = (() => {
     close(false);
     const t = tourFor(v), canTeach = typeof TeacherMode !== 'undefined' && TeacherMode.configured && TeacherMode.active();
     const stops = [{ at: 'stage', title: 'What this is for', text: t.purpose || v.blurb || '', first: true }]
-      .concat((t.stops || []).filter(s => s.at !== 'stage' || !t.purpose))
+      .concat(t.stops || [])
       .concat(canTeach && t.teacher ? [{ at: 'panel', title: 'For teachers', text: t.teacher, teacher: true }] : [])
       .map(s => ({ ...s, el: null }));
     let i = 0;
@@ -102,8 +104,12 @@ const Tour = (() => {
         try {
           if (innerWidth <= 700 && s.at !== 'stage') {   /* phone: keep the target between the pinned figure and the bottom card */
             const st = document.querySelector('.workbench .stage'), top = st ? st.getBoundingClientRect().bottom + 12 : 70;
-            scrollBy(0, s.el.getBoundingClientRect().top - top);
-          } else s.el.scrollIntoView({ block: s.at === 'stage' ? 'nearest' : 'center', behavior: 'auto' });
+            const fix = n => {   /* the pinned figure shifts the layout as the page moves, so measure again until the target sits still */
+              const st2 = document.querySelector('.workbench .stage'), want = (st2 ? st2.getBoundingClientRect().bottom : 58) + 12, d = s.el.getBoundingClientRect().top - want;
+              if (Math.abs(d) > 4 && n < 5) { scrollBy({ top: d, behavior: 'instant' }); requestAnimationFrame(() => fix(n + 1)); } else place();
+            };
+            scrollBy({ top: s.el.getBoundingClientRect().top - top, behavior: 'instant' }); requestAnimationFrame(() => fix(0));
+          } else s.el.scrollIntoView({ block: s.at === 'stage' ? 'nearest' : 'center', behavior: 'instant' });
         } catch (e) {}
       }
       place(); requestAnimationFrame(place);

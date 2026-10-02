@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you move a triangle by slides, flips, turns and stretches, and checks what stays the same. You learn which moves keep the shape exactly (rigid) and why two shapes are called congruent.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Preimage and image",
+      "text": "The faint triangle ABC is where you start. The solid blue triangle A'B'C' is the result of your moves. Nothing on the grid is dragged. You choose a move in the panel and press Apply move. A dashed violet line shows the mirror for a flip.",
+      "try": "Press Apply move once and watch the blue triangle glide into place."
+    },
+    {
+      "at": "ctl:Choose a move",
+      "title": "Choose a move",
+      "text": "Slide moves every point the same way. Flip mirrors over a line. Turn spins around a center. Dilate stretches from a center. The sliders below change to match your choice.",
+      "try": "Open the menu and pick Turn. Notice the new controls."
+    },
+    {
+      "at": "ctl:Move right",
+      "title": "Slide amounts",
+      "text": "Slide only. These set how far right and how far up. Negative numbers go left or down. The readout lists the rule in coordinates, such as (x + 3, y - 2).",
+      "try": "Set 3 right and 2 down, press Apply move, and read each corner."
+    },
+    {
+      "at": "ctl:Mirror line",
+      "title": "Mirror line",
+      "text": "Flip only. Choose the line to mirror over. Each corner jumps to the other side, the same distance from the line. The readout shows that the order A, B, C turns from counterclockwise to clockwise.",
+      "try": "Try y = x and see where corner A lands."
+    },
+    {
+      "at": "ctl:Dilation factor",
+      "title": "Dilation factor",
+      "text": "Dilate only. A factor of 2 doubles every side, and 1 changes nothing. The readout says Not rigid when the sizes change. Center x and center y set the point the shape stretches or turns from. They also work for Turn.",
+      "try": "Dilate by 2, then read the side lengths in the readout."
+    },
+    {
+      "at": "ctl:Apply move",
+      "title": "Apply, Undo, Reset",
+      "text": "Apply move adds your move to the figure you see now, up to three in a row. Undo takes back the last one. Reset clears all. The readout compares lengths, angles and direction before and after each move.",
+      "try": "Stack a flip and a slide, then Undo one."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows a slide. Step 2 shows a flip. Step 3 shows a dilation that is not rigid. Step 4 asks if the order of two moves matters, using a prediction and your own tests."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 4 and ask for a prediction first: does flip then slide land in the same place as slide then flip? Have students test both orders. Typical misconception: dilation counts as a rigid motion because the shape looks the same. Ask which numbers in the readout changed."
+}

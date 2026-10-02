@@ -1,0 +1,48 @@
+{
+  "purpose": "This shows a road (the transversal) crossing two tracks and making eight angles. You tilt the road and the tracks to discover which angles are always equal, which add to 180 degrees, and which rules need parallel lines.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The eight angles",
+      "text": "The blue lines are tracks m and n. The violet line is the road t. Click any angle to pick it (yellow). Its partners light up green if equal to it, red if they add to 180. Drag the ring at the top of the road to tilt it.",
+      "try": "Click angle 3, then drag the ring and watch the green and red partners keep their rules."
+    },
+    {
+      "at": "ctl:Angle of the transversal",
+      "title": "Tilt the road",
+      "text": "This slider does the same job as dragging the ring on the road. It sets angle 2 between 45 and 135 degrees, and every other size follows from it.",
+      "try": "Set it to 90. What happens to all eight angles?"
+    },
+    {
+      "at": "ctl:Lines m and n are parallel",
+      "title": "Parallel on or off",
+      "text": "Switching this off tilts track n. Dashed grey arcs mean a rule only works for parallel lines. Vertical angles and linear pairs still work on any lines.",
+      "try": "Switch it off and see which partners turn grey."
+    },
+    {
+      "at": "ctl:Show the sizes",
+      "title": "Show the sizes",
+      "text": "Turns the degree numbers on the angles on and off. Hide them to test yourself: guess an angle's size from its partner, then turn them back on to check.",
+      "try": "Hide the sizes, pick an angle, guess its partners, then show them."
+    },
+    {
+      "at": "ctl:Ray angle",
+      "title": "The extra ray",
+      "text": "This appears in the Complementary angles step. A dashed ray splits the square corner of angle 2 into a (green) and b (red). The slider, or the ring on the ray, moves it. a + b always stays 90.",
+      "try": "Drag the ray and watch a grow while b shrinks."
+    },
+    {
+      "at": "ctl:They are equal",
+      "title": "Predict first",
+      "text": "In the Predict step, you choose how angles 2 and 6 compare before the sizes show. After you answer, the sizes appear. Then switch off parallel to tilt track n.",
+      "try": "Pick an answer, then switch off parallel and watch angle 6."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Eight short problems: name a pair of angles, chase a missing angle with a reason for each step, and solve for x. Every answer explains itself.",
+      "try": "Press Start practice and name the yellow and violet pair."
+    }
+  ],
+  "teacher": "Project step 4 with parallel on, pick angle 3 and ask which angles are equal to it and why. Then turn parallel off. Students often say 'alternate interior' angles are always equal, so show that only vertical and linear pairs survive."
+}

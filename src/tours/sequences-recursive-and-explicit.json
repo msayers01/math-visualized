@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool builds a number list one box at a time, then jumps straight to any term with a formula. You learn the difference between a recursive rule (step by step) and an explicit rule (jump), and how to tell arithmetic from geometric lists.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Boxes and dots",
+      "text": "Each box is one term: a1, a2, a3 and so on, joined by arrows. A graph below plots the terms as dots. In step 3, click two neighboring boxes to compare them. The dots lie on a line for adding lists and on a curve for multiplying lists.",
+      "try": "In step 3, click two boxes next to each other to see their difference and ratio."
+    },
+    {
+      "at": "ctl:Choose a list",
+      "title": "Choose a list",
+      "text": "Pick the sequence to explore: adding lists, multiplying lists, Fibonacci, or stories such as savings, a growing town and a bouncing ball. Picking a new list starts you over from its first term.",
+      "try": "Pick Tripling and build the first three boxes."
+    },
+    {
+      "at": "ctl:Which term in the list",
+      "title": "Which term?",
+      "text": "Step 2. Predict first, then this slider unlocks. It jumps to the nth term using the explicit formula, with no need to build every box. The readout shows the formula and the answer.",
+      "try": "Predict the 10th term, then slide to the 50th and read the formula."
+    },
+    {
+      "at": "ctl:Count from n = 0",
+      "title": "Count from n = 0",
+      "text": "Step 2. Some books start counting at n = 0 rather than n = 1. This switch changes the formula to match, but the list of numbers stays the same. It shows why you see n minus 1 in one version and n in the other.",
+      "try": "Switch it on and check how the formula changes."
+    },
+    {
+      "at": "ctl:Pair of neighbors",
+      "title": "Compare neighbors",
+      "text": "Step 3. This slider picks two terms next to each other, like clicking their boxes. The figure shows the difference (add) and ratio (multiply). Compare at least 3 pairs, then decide arithmetic, geometric or neither.",
+      "try": "Check all pairs in Tripling. Which stays the same, difference or ratio?"
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Opens eight short problems. Nothing is saved or scored. The button then says Back to the lesson. Use it after you have played with each step.",
+      "try": "Start practice and try one problem."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds a list with a recursive rule. Step 2 jumps to a term with a formula. Step 3 sorts arithmetic, geometric and neither. Step 4 looks at rules that are neither, like Fibonacci."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask students to predict the 10th term before sliding. Common mistake: using 3n instead of 5 + 3(n - 1), or n instead of n - 1 steps. Step 3 builds the habit of testing differences and ratios before naming a type."
+}

@@ -1,0 +1,42 @@
+{
+  "purpose": "This lesson has four activities about data. You sort questions, build displays of real data yourself, choose the best display for a question, and read a display without claiming too much.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The canvas",
+      "text": "The canvas shows what the activity needs: a question, data, or a display. In Build, tap above a number to add a dot, tap the top of a stack to remove one, and drag the ring on top of a histogram bar to set its height.",
+      "try": "In Build with the dot plot, tap above a size to place a dot, then tap it again."
+    },
+    {
+      "at": "ctl:Sort",
+      "title": "Sort",
+      "text": "You see a question and choose Statistical or Not statistical. A statistical question expects different answers. Then you say if the data is Numbers or Categories. Wrong answers are explained and you tap the right choice to go on.",
+      "try": "Answer the first question, then read the feedback even if you were right."
+    },
+    {
+      "at": "ctl:Build",
+      "title": "Build",
+      "text": "Pick a data set, then a display: Table, Dot plot, Stem and leaf, Histogram or Box plot. For dot plots and histograms you build it yourself. Buttons check your work, fill it in for you, or clear it. A slider changes the histogram bin width.",
+      "try": "Build the shoe-size dot plot and press Check my dot plot."
+    },
+    {
+      "at": "ctl:Match",
+      "title": "Match",
+      "text": "You read a question, pick the display that fits best, then pick the reason it is best. Each wrong display explains what it hides. The questions repeat when you reach the end.",
+      "try": "Pick a display you are unsure about to read what it does well."
+    },
+    {
+      "at": "ctl:Read",
+      "title": "Read",
+      "text": "You see a finished display and choose the one sentence that is true about this data, says how the values vary, and does not claim more than the display shows.",
+      "try": "Find the sentence that talks about people outside the data and see why it is wrong."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step opens an activity: sort questions, build a dot plot, build a histogram, then match and read. The same four buttons let you jump to any activity yourself.",
+      "try": "On step 3, change the bin width and see which bars change."
+    }
+  ],
+  "teacher": "Use Sort first as a quick vote: students hold up statistical or not before you click. In Build, project one data set and switch between displays so students see the same data tell different stories. Misconception: a question with one fixed answer, like how many days in a week, is not statistical."
+}

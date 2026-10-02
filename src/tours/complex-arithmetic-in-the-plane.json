@@ -1,0 +1,46 @@
+{
+  "purpose": "This plane shows complex numbers as points. You multiply, take conjugates and divide, and see each operation as a move on the plane. You find out that multiplying turns and stretches, and a number times its conjugate is always real.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The complex plane",
+      "text": "Across is the real part and up is the imaginary part. Each number is an arrow with a dot at the tip. In steps 2 and 3, drag the dot with the brass ring (z). It snaps to whole numbers from -3 to 3. Red shows the result.",
+      "try": "In step 2, drag z and watch the red result point move with it."
+    },
+    {
+      "at": "ctl:Example 1",
+      "title": "FOIL examples",
+      "text": "In step 1, choose one of three products. Then answer each multiple-choice step: First, Outer, Inner, Last, then the real and imaginary parts. A wrong answer says why, and you try again.",
+      "try": "Do Example 1, then press Example 2 for a new one."
+    },
+    {
+      "at": "ctl:Multiply z by",
+      "title": "Multiply z by",
+      "text": "In step 2, pick a multiplier w (i, 2, 1+i and more). The readout lists the modulus (distance from 0) and angle of z, w and zw. You will see the distances multiply and the angles add.",
+      "try": "Choose i and see zw turn a quarter turn from z."
+    },
+    {
+      "at": "ctl:Choose a task",
+      "title": "Divide and solve",
+      "text": "In step 4, choose one of three tasks: a division and two equations. Each is a multiple-choice walk. For division you multiply the top and bottom by the conjugate of the bottom.",
+      "try": "Pick the division, then do the same with Solve z + 3."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is FOIL multiplying. Step 2 shows multiplying as a move. Step 3 is conjugates, where you try at least five different z. Step 4 is dividing and solving."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Seven short problems. Pick an answer and read why. Use Hint if you are stuck. Press Back to the lesson to return. Nothing is saved.",
+      "try": "Press Start practice, then try Hint on the first problem."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions to finish. A wrong answer explains itself."
+    }
+  ],
+  "teacher": "Project step 2 and have students test at least three pairs before saying the rule: moduli multiply and angles add. Misconception: students think the conjugate product z times z-bar can be negative or imaginary. Step 3 lets them try five z values to see it never is."
+}

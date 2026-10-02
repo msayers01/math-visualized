@@ -1,0 +1,30 @@
+{
+  "purpose": "This lesson shows an inequality as a whole range of answers. You test numbers, watch a scale and a mirrored number line, then solve and check inequalities yourself. You see why a negative flips the symbol.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The picture changes",
+      "text": "The figure changes on each step. Step 1: a number line with a brass test ring you drag. Green dot means true, red cross means false. Step 2: a tilted scale. Step 3: two number lines, before and after. Step 4: your graph.",
+      "try": "On step 1, drag the ring along the number line and watch TRUE and FALSE."
+    },
+    {
+      "at": "panel",
+      "title": "Predict, then play",
+      "text": "Steps 1 to 3 start with a question: pick an answer first, then the buttons unlock the moves. Step 1 has a slider and a button to show the whole solution set. Step 2 has Add, Take, Double and Halve. Step 3 has Add 4 through Multiply by -2.",
+      "try": "Answer the prediction on each step before you press any move."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step swaps the figure and the controls. Step 1 tests numbers, step 2 is the scale, step 3 mirrors the number line, and step 4 is the workbench where you choose each move and decide whether to flip the symbol.",
+      "try": "On step 4, divide by a negative and choose flip or keep, then press Check my answer."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "This opens seven short problems: one step, two steps, a negative number, x on both sides, choosing a graph, a real situation, and spotting a missing flip. Nothing is saved or scored.",
+      "try": "Press Start practice, then press Back to the lesson to leave it."
+    }
+  ],
+  "teacher": "Project step 3 and have students predict whether the symbol flips before each button. On step 4, pick a division by a negative number and let the class argue flip or keep: Check my answer tests numbers in the original and exposes a missed flip. Misconception: flipping when you add or subtract a negative."
+}

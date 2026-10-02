@@ -1,0 +1,47 @@
+{
+  "purpose": "This lets you fit a bell curve to real data, then use it to estimate percentages from just a mean and a standard deviation. You also learn when the bell curve is a bad model and should not be trusted.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Bars and a bell curve",
+      "text": "The bars count real data. The blue curve is the normal curve you control. In step 1, drag the top handle left or right to move the center, and the side handle to change the width. In step 2 and 3, drag the yellow handles on the axis.",
+      "try": "Drag the top handle until the curve sits on top of the tallest bars."
+    },
+    {
+      "at": "ctl:Center",
+      "title": "Center and width",
+      "text": "Center is the mean: where the middle of the bell sits. Width is the standard deviation: how spread out the data is. Only in step 1. The sliders do the same as the handles. The curve fits when it follows the bars.",
+      "try": "Set the width too small, then too big. Which fits the bars better?"
+    },
+    {
+      "at": "ctl:Show the data",
+      "title": "Reveal the answer",
+      "text": "Only in step 1. When this is on, the data's true mean and standard deviation are marked, so you can check your curve. Turn it off if you want to fit the curve by eye first.",
+      "try": "Turn it off, fit by eye, then turn it on to check."
+    },
+    {
+      "at": "ctl:Region shaded",
+      "title": "Choose a region",
+      "text": "Only in steps 2 and 3. Shade between two cutoffs, above one, or below one. The shaded area under the curve is the share of the data in that region. In step 3 it is set for each question.",
+      "try": "Pick Above a cutoff and drag the handle to see the share change."
+    },
+    {
+      "at": "ctl:Show the 68-95-99.7",
+      "title": "The 68-95-99.7 bands",
+      "text": "Shows bands 1, 2 and 3 standard deviations from the mean. About 68%, 95% and 99.7% of the data fall inside them. Use these to estimate a percentage without a calculator.",
+      "try": "Turn on the bands, then drag the cutoffs to the band edges."
+    },
+    {
+      "at": "ctl:Good fit",
+      "title": "Is the curve a good model?",
+      "text": "Only in step 4. Look at four data sets. Choose Good fit, or the way it goes wrong: skewed, two peaks, or a pile-up at a wall. Next data set appears after you get one right.",
+      "try": "Look for one peak, balance on both sides, and no hard limit."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Next changes what you do, not just the numbers. Step 1 fits a curve. Step 2 explores the rule. Step 3 asks four percentage questions. Step 4 judges four data sets. There are no buttons to switch between these, so use Back and Next."
+    }
+  ],
+  "teacher": "Project step 3 and ask students to say the cutoff in standard deviations before they pick an answer. Students often think every data set is normal because it has a mean, so spend time on step 4 and the two-peak and wall examples."
+}

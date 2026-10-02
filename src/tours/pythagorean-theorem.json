@@ -1,0 +1,46 @@
+{
+  "purpose": "This shows why a^2 + b^2 = c^2 using area. You cut and slide pieces of one square and see that nothing is lost, so the tilted square must equal the two small squares together.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The big square",
+      "text": "A big square holds four blue copies of your right triangle and a tilted yellow square labelled c squared. There is nothing to drag on the figure. The sliders and the button on the right move everything.",
+      "try": "Look for the four blue triangles and the tilted yellow outline in the middle."
+    },
+    {
+      "at": "ctl:Leg a",
+      "title": "Leg a",
+      "text": "Sets the length of the short side along the bottom. The big square, the triangles and the tilted square all resize to match.",
+      "try": "Slide it to 6 and see how thin the other triangle side looks."
+    },
+    {
+      "at": "ctl:Leg b",
+      "title": "Leg b",
+      "text": "Sets the other leg. Together with Leg a it decides the long side c. Try different pairs and watch the readout at the bottom.",
+      "try": "Find legs where c comes out as a whole number, like 3 and 4."
+    },
+    {
+      "at": "ctl:Progress",
+      "title": "Slide the pieces",
+      "text": "Progress runs from 0 to 100 percent. At 0 the yellow shape is one tilted square c squared. At 100 three triangles have slid over and it is two squares, a squared and b squared. Same area, same pieces.",
+      "try": "Drag Progress slowly back and forth and watch the labels swap."
+    },
+    {
+      "at": "ctl:Rearrange triangles",
+      "title": "Play the slide",
+      "text": "This button plays the slide for you. After it runs, the button turns into Put them back. The triangles only move. They never turn or stretch.",
+      "try": "Press it, then press it again to undo."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows the 3, 4, 5 triangle. Step 2 slides the triangles. Step 3 gives a lopsided triangle (a = 5, b = 2). Step 4 makes both legs equal, which gives the diagonal of a square."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions: one finds a hypotenuse, one asks why the areas match. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask: the pieces only moved, so what must be true about the two yellow shapes? Students often think the theorem is only a formula for 3, 4, 5. Use step 3 with odd legs to show it works for any right triangle."
+}

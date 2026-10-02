@@ -1,0 +1,30 @@
+{
+  "purpose": "This lesson solves two equations by writing one inside the other, so only one letter is left. The graph shows what each step means: two lines, and the one point they share.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two lines, one point",
+      "text": "Blue is equation A and red is B. On step 1, drag the ring along the blue line, or use the slider, to see if it is on red too. Later: a green dashed line is the value you found, a yellow ring is a point to test, a violet dot is the solution.",
+      "try": "On step 1, slide the ring until it sits on both lines."
+    },
+    {
+      "at": "panel",
+      "title": "The workbench",
+      "text": "From step 2 the panel is a workbench with cards for A and B. In the Replace phase, click the y in card B (the dashed underlined letter) or press Replace. Your work is listed below, and a coach line explains each move.",
+      "try": "Click the y in card B, then read the coach text."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 explores points on a line. Step 2 substitutes and solves. Step 3 starts with an equation that is not solved for a letter, so you rearrange first. Step 4 shows lines with no solution or infinitely many, using the two example buttons.",
+      "try": "On step 4, use the No-solution example and Same-line example buttons."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "This opens six short problems in the same workbench, ending with a question about what the answer means. Wrong choices are explained and nothing is saved or scored. Press Back to the lesson to leave.",
+      "try": "Press Start practice and solve the first problem."
+    }
+  ],
+  "teacher": "On step 1 ask students to find a point on A that is also on B by sliding, then show that substitution finds it exactly. In the workbench ask the class which letter to click before they do it. Misconception: forgetting parentheses when replacing, so ask what happens to a minus sign."
+}

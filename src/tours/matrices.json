@@ -1,0 +1,28 @@
+{
+  "purpose": "This tool teaches matrices by asking questions and letting you answer on the picture. You read, add, scale and multiply tables of numbers, and see which entries combine to make each answer.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Tap the picture",
+      "text": "The figure draws matrices as grids of numbers in blue brackets, with labelled rows and columns. In many questions you answer by tapping a cell, a row or a column right on the picture. Tapped parts light up, and the result cell is yellow.",
+      "try": "In the first question, tap the cell for Store B and notebooks."
+    },
+    {
+      "at": "panel",
+      "title": "Tabs, questions, answers",
+      "text": "The tabs at the top of the panel split each step into short parts. Below them is the question, then answer choices. Every choice, right or wrong, gets a reason. A button appears when you can move on, such as Next question.",
+      "try": "Choose a wrong answer on purpose and read the reason."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is reading a matrix and its size, and building one. Step 2 adds, subtracts and scales. Step 3 multiplies using a row and a column. Step 4 uses the product, compares AB with BA, and moves a triangle."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with explained answers."
+    }
+  ],
+  "teacher": "In step 3, ask students to tap the row and column before choosing the calculation. Ask: why can a 2 by 3 matrix not be added to a 2 by 2? Misconception: multiplying matching entries the way you add them. Show on the Order tab that AB and BA differ."
+}

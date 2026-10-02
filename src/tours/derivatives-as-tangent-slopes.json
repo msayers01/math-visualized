@@ -1,0 +1,52 @@
+{
+  "purpose": "This shows a derivative as the slope you get when two points on a curve squeeze together. You watch a secant line turn into a tangent line, and the lower graph draws the slope at every x, so you can see where a derivative exists and where it fails.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two graphs",
+      "text": "Top: the curve f with the yellow point P and the violet point Q on the same curve. The violet line through them is the secant. Bottom: a violet dot plots that secant's slope at P's x. Drag P or Q on the top graph, or drag along the bottom.",
+      "try": "Drag P along the curve and watch the violet dot trace the slope graph."
+    },
+    {
+      "at": "ctl:Step h",
+      "title": "Step h",
+      "text": "h is the gap from P to Q along x. Make it small and Q slides toward P, so the secant slope settles near the true slope. The table shows slopes for h = 1, 0.5, 0.1 and 0.01 from the right and left. At h = 0 there is no secant.",
+      "try": "Slide h from 1 down to 0.01 and watch the slope number settle."
+    },
+    {
+      "at": "ctl:Show the other side",
+      "title": "The other side",
+      "text": "Adds a dashed secant to the point at x - h, on the left of P. A derivative exists only when the left and right secants agree as h shrinks. Show the tangent line adds the dashed tangent for smooth curves.",
+      "try": "Switch it on, choose |x| (corner) and put P at 0. Do the two sides agree?"
+    },
+    {
+      "at": "ctl:Sketch f",
+      "title": "Sketch the derivative",
+      "text": "Switches to a challenge. Drag across the lower graph to draw your guess for f prime, or move P and press Pin slope to pin a measured value. Check my sketch overlays the true derivative in blue and says where you differ. Clear starts over.",
+      "try": "Sketch the slope graph of x cubed, then press Check my sketch."
+    },
+    {
+      "at": "ctl:Pin slope",
+      "title": "Pin slope",
+      "text": "In Sketch mode, this copies the current secant slope onto your sketch at P's x. Use a small h first so it is close to the tangent slope. Move P and pin again to build your graph from measurements.",
+      "try": "Set h to 0.01, move P along, and pin five slopes."
+    },
+    {
+      "at": "ctl:Mark this x as bad",
+      "title": "Find the bad point",
+      "text": "In Explore mode, pick |x|, cube root of x or the jump, then move P to where the slope fails. Press this when the left and right slopes do not settle on one number, or No bad point if the graph is smooth. You get an explanation either way.",
+      "try": "Choose the jump at 0, move P to 0, then press Mark this x as bad."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is a secant on x squared. Step 2 squeezes h down and reveals the tangent. Step 3 asks you to sketch f prime for x cubed. Step 4 hunts for points where the slope does not exist."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why and you can try again."
+    }
+  ],
+  "teacher": "Project step 2 and drag P while h is small so students see the lower graph trace itself. Ask what the slope graph of x squared will look like before showing it. Common slip: thinking a corner has a slope of 0 or an average of the two sides. The table shows 1 and -1 never merge."
+}

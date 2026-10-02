@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool shows what happens when numbers wrap around, like a clock. You will see why remainders repeat, why some numbers have inverses, and how weeks and secret codes use the same idea.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The clock",
+      "text": "The picture changes with the step. Step 1: a clock. Click a position to answer the question at the top of the panel. Step 2: drag the number x along the spiral. Step 3: click cells of a table. Step 4: click days or letters.",
+      "try": "In step 1, click the position where the hand lands after adding 5."
+    },
+    {
+      "at": "ctl:Number of positions n",
+      "title": "Modulus",
+      "text": "This is how many positions the clock has. n = 12 is a normal clock. A bigger n means the numbers wrap later. A smaller n wraps sooner. The whole picture redraws for the new n.",
+      "try": "Set n to 7, then to 6, and watch the picture change."
+    },
+    {
+      "at": "ctl:Question",
+      "title": "Two questions",
+      "text": "Step 1 only. Choose between finding where the hand lands, or finding the amount to add that brings the hand back to 0. Then use the Start position and Amount sliders to build your own problem. Negative amounts go backward.",
+      "try": "Pick a negative amount and see the hand go back past 0."
+    },
+    {
+      "at": "ctl:Practice",
+      "title": "Explore or practice",
+      "text": "Step 2 only. Explore lets you drag x and see its remainder. Read asks you to click the remainder on the outer rim. True or false asks if two numbers are congruent. A wrong answer says why.",
+      "try": "Drag x past 0 into the negatives. The remainder stays from 0 up."
+    },
+    {
+      "at": "ctl:Task",
+      "title": "Table tasks",
+      "text": "Step 3 only. The table shows a times b, mod n. Pick a task: probe a cell, mark every number with an inverse, find zero divisors, or solve a x = b. Check marks your answer. Try a modulus that is not prime.",
+      "try": "Find inverses at n = 7, then switch n to 6 and compare."
+    },
+    {
+      "at": "ctl:Activity",
+      "title": "Weeks and codes",
+      "text": "Step 4 only. Days of the week uses a clock of 7. The Caesar wheel encodes a word letter by letter, or decodes a message by sliding the Shift until it reads as a real word. Press This is it to check.",
+      "try": "Choose Caesar wheel: decode and slide Shift until it makes a word."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 adds on a clock. Step 2 wraps the number line into a spiral. Step 3 shows multiplication tables and inverses. Step 4 uses mod 7 for days and mod 26 for letters. Each step resets the question."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask for the landing spot before anyone clicks. Then show a negative amount. A common mistake is thinking a remainder can be negative: ask where -3 sits on a clock of 5. In step 3, ask why some numbers have no inverse when n is 6."
+}

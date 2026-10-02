@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you estimate the area under a curve by adding up thin rectangles. You change the number of rectangles and the sampling rule, and see the sum close in on the exact integral.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Curve, rectangles, handles",
+      "text": "The blue curve has yellow rectangles under it. Red rectangles are below the axis. Small yellow dots on the curve show where each height is taken. Drag the two yellow handles a and b on the axis to change where the area starts and ends.",
+      "try": "Drag the handle b to the right and watch rectangles appear."
+    },
+    {
+      "at": "ctl:Curve",
+      "title": "Choose a curve",
+      "text": "Pick the function to measure. Some rise, some fall, one crosses the axis, one is a step function with jumps, and one is a car's velocity. The readout shows the formula.",
+      "try": "Pick the step function and watch how the rectangles fit its jumps."
+    },
+    {
+      "at": "ctl:Sample rule",
+      "title": "Sample rule",
+      "text": "Each rectangle's height is the curve at one point in its strip: left edge, right edge, middle or a random point. Trapezoids use both edges. New random points redraws the random picks. The rule changes the error a lot at small n.",
+      "try": "At n = 4 compare Left, Right and Midpoints. Which error is smallest?"
+    },
+    {
+      "at": "ctl:Number of rectangles",
+      "title": "Number of rectangles",
+      "text": "More rectangles means thinner strips and less error. The readout shows the sum, the exact integral and the error. For a rising curve the left sum is always too small.",
+      "try": "Slide n from 1 up to 100 and watch the error shrink toward 0."
+    },
+    {
+      "at": "ctl:Start a",
+      "title": "Start and end",
+      "text": "These sliders do the same as the two yellow handles. They set the interval [a, b]. They stay in the range allowed for the chosen curve, and a is always left of b.",
+      "try": "Set a to 1 and b to 2 and see the exact integral change."
+    },
+    {
+      "at": "ctl:Submit this n",
+      "title": "The four challenges",
+      "text": "The numbered buttons 1 to 4 under the readout switch between four challenges. Challenge 1 asks for the smallest n that gets within a target. Submit checks it. Reset graph restores the setup. Next target gives a new one.",
+      "try": "In challenge 1, find the smallest n for the left rule, then try midpoints."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 sets up x^2 with n = 4. Step 2 asks if left and right sums are too big or too small, and hides the sum until you answer. Step 3 is a car's velocity. Step 4 lets n grow to see the limit."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 (predict over or under) then step 4. Ask: what happens to the gap between left and right sums as n grows? Watch for the idea that the sum is the integral. It is only an estimate, and the integral is the number the sums approach. Step 3 shows signed area versus total distance."
+}

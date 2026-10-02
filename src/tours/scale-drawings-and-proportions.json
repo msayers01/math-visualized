@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool shows that a scale is a multiplier. You read maps, draw plans to fit a sheet, and convert units, and a double number line and a ratio table show what you multiply or divide by at each step.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Ruler, plan, number line",
+      "text": "Map: drag the rings at the ruler's ends onto two places. Design: drag the plan's corner. Units: drag the ring on the top line. Under the figure, a double number line and a table show what you multiply or divide by.",
+      "try": "In a map question, drag both ruler ends onto two towns."
+    },
+    {
+      "at": "ctl:Map",
+      "title": "Four kinds of question",
+      "text": "Map reads a scale. Design draws a plan on a sheet. Units treats a conversion like a scale. Multi-step needs two scale steps in a row. The Next steps open the one that fits.",
+      "try": "Press Units, then come back to Map."
+    },
+    {
+      "at": "ctl:Question",
+      "title": "Question menu",
+      "text": "Each mode has several questions, from easy to harder. Pick one from this menu. Start over resets the current question, and Next question moves on.",
+      "try": "Open the menu and pick a slanted measure, like Port to Fort."
+    },
+    {
+      "at": "ctl:Next question",
+      "title": "Move on or start over",
+      "text": "Next question goes to the next one in the list. Start over clears your ruler, marker and answers for this question. You can try a question as many times as you like.",
+      "try": "Answer wrongly on purpose and see where it lands on the number line."
+    },
+    {
+      "at": "ctl:Marker",
+      "title": "Marker slider",
+      "text": "Units questions only. It does the same as the ring on the top line. It snaps to the ticks, so you can land on exactly 30 in. The lower line then shows the same length in the other unit.",
+      "try": "Set the marker to 24 in and read how many feet that is."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 reads a map scale with the ruler. Step 2 goes from real size to a drawing and picks the best scale. Step 3 treats 1 ft = 12 in as a scale. Step 4 finds an unlabelled scale in two steps."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask which scale makes the biggest drawing that still fits. Common mistake: multiplying when going from real life to a drawing, when you should divide by what 1 inch stands for. The wrong-answer display on the double number line shows where each wrong calculation lands."
+}

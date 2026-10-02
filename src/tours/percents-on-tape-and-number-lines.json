@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool draws a percent as a bar with two number lines: one counts percent and one counts dollars. You will see how to find a part, a percent or a whole by cutting the bar into equal pieces.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The tape",
+      "text": "The bar is the whole, which is 100%. The top line counts percent and the bottom line counts the real amount. Drag the round marker along the bar to see the matching numbers. In a problem, drag it to the answer and let go to check it.",
+      "try": "Drag the marker to 50% and read the amount below it."
+    },
+    {
+      "at": "ctl:Find the part",
+      "title": "Choose a job",
+      "text": "Find the part: you know the percent and the whole. Find the percent: you know the part and the whole. Find the whole: you know the part and its percent. Fractions and decimals is a free converter.",
+      "try": "Press Find the whole and read the first problem."
+    },
+    {
+      "at": "ctl:Problem",
+      "title": "Pick a problem",
+      "text": "Each job has a few real stories: discounts, tips, commission, scores. The first screen is a worked example, so you can see the method. Press Try it yourself to do the same moves. Wrong answers explain why.",
+      "try": "Pick a different story and press Try it yourself."
+    },
+    {
+      "at": "ctl:Try it yourself",
+      "title": "Try it yourself",
+      "text": "This clears the worked example and asks you to choose how many equal pieces to cut the bar into, then place the marker, then say what it means. The bar shows your cuts. A hint tells you which way to move.",
+      "try": "Choose a cut, then drag the marker to the answer."
+    },
+    {
+      "at": "ctl:Top number",
+      "title": "Fraction, decimal, percent",
+      "text": "Only in Fractions and decimals. Set a fraction with the top number and the bottom number, a decimal, or a percent. The other two update and the marker moves to match. Or drag the marker. Practice sets a question.",
+      "try": "Set 3 over 8 and read the decimal and the percent."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 finds a part: 25% off $60. Step 2 finds a percent: $10 off $50. Step 3 finds a whole from a part. Step 4 is the fraction, decimal and percent converter. Each step shows a worked example."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask students to find 25% of 60 by cutting the bar into four equal pieces, before pressing anything. Students often mix up which number is the whole. Ask which line shows the whole, and where 100% sits. Step 3 works backward from a part, which is the hardest."
+}

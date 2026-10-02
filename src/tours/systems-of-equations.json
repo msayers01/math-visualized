@@ -1,0 +1,36 @@
+{
+  "purpose": "This tool shows two lines on one graph. Move them around to see the three things that can happen: they cross once, never cross, or are the same line. The crossing point solves both equations at once.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two lines",
+      "text": "The blue line is A and the red line is B. Each has two rings. Drag the ring on the y-axis to slide a line up or down. Drag the ring at x = 3 to tilt it. A violet dot marks where the lines cross.",
+      "try": "Drag a ring until the lines are parallel. What happens to the violet dot?"
+    },
+    {
+      "at": "ctl:Slope",
+      "title": "Slope sliders",
+      "text": "There is a Slope slider for each line, in the same order as the line colors: Line A (blue) first, then Line B (red). Equal slopes make parallel lines.",
+      "try": "Give both lines the same slope."
+    },
+    {
+      "at": "ctl:Intercept",
+      "title": "Intercept sliders",
+      "text": "Each Intercept slider moves one line up or down without tilting it. If the slopes are equal, the intercepts decide if the lines are apart (no solution) or on top of each other (all points).",
+      "try": "With equal slopes, give both lines the same intercept."
+    },
+    {
+      "at": "panel",
+      "title": "The readout",
+      "text": "It writes both equations and the answer: one solution (the crossing point), no solution, or infinitely many. When the lines are the same, the red one is drawn dashed so you can see both.",
+      "try": "Find a setting where it says no solution."
+    },
+    {
+      "at": "steps",
+      "title": "Next and Back",
+      "text": "The steps start with two phone plans, then show one crossing, parallel lines and the same line. Each step just sets the sliders, so you can change them afterwards.",
+      "try": "Go to step 3 and nudge a line to get the crossing back."
+    }
+  ],
+  "teacher": "Project step 2 and ask what the violet dot means in the plan story (the day both plans cost the same). Then ask how to get zero solutions without calculating. Misconception: students look for crossing by eye. Equal slopes with different intercepts is the sure test."
+}
