@@ -43809,11 +43809,11 @@ register({
     const R = (a, b, ac, bc) => ({ ivs: [I(a, b, ac, bc)] });
     const r = {
       up: { f: x => (x - h) ** 2 + k, eq: `f(x) = ${sq}${addK(k)}`, dom: ALL, ran: R(k, INF, true, false), hp: [h, k],
-        why: `A square is never negative, so f(x) is never below ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the vertex.` },
+        why: `A square is never negative, so f(x) is never below ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the vertex, and it rises without limit on both sides, so every height from ${num(k)} up is reached.` },
       down: { f: x => -((x - h) ** 2) + k, eq: `f(x) = −${sq}${addK(k)}`, dom: ALL, ran: R(-INF, k, false, true), hp: [h, k],
-        why: `Minus a square is never positive, so f(x) is never above ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the vertex.` },
+        why: `Minus a square is never positive, so f(x) is never above ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the vertex, and it falls without limit on both sides, so every height from ${num(k)} down is reached.` },
       abs: { f: x => Math.abs(x - h) + k, eq: `f(x) = |${inner(h)}|${addK(k)}`, dom: ALL, ran: R(k, INF, true, false), hp: [h, k],
-        why: `|${inner(h)}| is never negative, so f(x) is never below ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the corner.` },
+        why: `|${inner(h)}| is never negative, so f(x) is never below ${num(k)}. It equals ${num(k)} exactly at x = ${num(h)}, the corner, and it rises without limit on both sides, so every height from ${num(k)} up is reached.` },
       root: { f: x => Math.sqrt(x - h) + k, eq: `f(x) = ${h === 0 ? '√x' : `√(${inner(h)})`}${addK(k)}`, dom: R(h, INF, true, false), ran: R(k, INF, true, false), hp: [h, k],
         why: `A square root is 0 or more, so f(x) is never below ${num(k)}. It needs x ≥ ${num(h)}, and it keeps growing, so every height from ${num(k)} up is reached.` },
       recip: { f: x => 1 / (x - h) + k, eq: `f(x) = 1/${h === 0 ? 'x' : `(${inner(h)})`}${addK(k)}`, dom: { ivs: [I(-INF, h, false, false), I(h, INF, false, false)] }, ran: { ivs: [I(-INF, k, false, false), I(k, INF, false, false)] }, hp: [h, k],
@@ -43888,7 +43888,7 @@ register({
       ivs: [I(0, 4, true, true)], dom: { ivs: [I(0, 4, true, true)] }, ran: { ivs: [I(0, 20, true, true)] }, dots: null,
       valid: t => t >= 0 && t <= 4, why: t => (t < 0 ? 'The ball has not been thrown yet.' : 'The ball has already landed. The formula would put it underground.'), tag: 'time', unit: '',
       sub: t => `h(${num(t)}) = 20(${num(t)}) ${MI} 5(${num(t)})² = ${num(20 * t - 5 * t * t)}`,
-      dq: { q: 'The ball is thrown from the ground at t = 0 and lands at t = 4 seconds. It is in the air at 0.5 seconds too. Which set of times t is valid?', ch: [
+      dq: { q: 'The ball is on the ground at t = 0 (the throw) and again at t = 4 seconds (the landing), and both of those moments count. It is in the air at 0.5 seconds too. Which set of times t is valid?', ch: [
         ['[0, ∞)', 'After t = 4 the ball has landed. The formula keeps going, but the ball does not.'],
         ['[0, 4]', 'From the throw to the landing, with both ends included, since the ball is at height 0 at both. Time is continuous, so it is an interval.'],
         ['(−∞, ∞)', 'Negative times are before the throw. The formula accepts them, but the story does not.'],
@@ -44491,6 +44491,7 @@ register({
         if (st.mode === 'machine') loadMach(); else if (st.mode === 'formula') loadForm(); else if (st.mode === 'range') { loadRPred(); loadRan(); } else loadCtx();
       };
       const loadRPred = () => {
+        st.rs = 'up'; st.h = 0; st.k = 1; if (selRs) selRs.value = 'up'; if (hS && hS.set) hS.set(0); if (kS && kS.set) kS.set(1);
         qRPred.load({ key: 'r', lock: true, q: 'Predict first. The graph is f(x) = x² + 1, with vertex (0, 1). Which heights can it reach?', ch: [
           ['Every height, (−∞, ∞)', 'The domain is every number, but the heights are not: x² is never negative, so x² + 1 is never below 1.'],
           ['Every height from 0 up, [0, ∞)', 'The graph is the parabola x² moved up 1. Its lowest point is the vertex at height 1, not 0.'],
