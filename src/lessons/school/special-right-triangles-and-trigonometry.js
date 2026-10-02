@@ -60,7 +60,7 @@
   /* ---------- scenes for "Real situations" ---------- */
   const SCN = {
     tree: { name: 'Height of a tree', l1: 'Distance from the tree (ft)', r1: [10, 50, 5], d1: 30, l2: 'Angle of elevation', r2: [10, 70, 5], d2: 35,
-      ok: 'tan', unk: 'the height of the tree', cap: 'Angle of elevation: measured up from level ground',
+      ok: 'tan', unk: 'the height of the tree', cap: 'Angle of elevation: measured up from level ground (ignore eye height)',
       val: (a, b) => a * Math.tan(b * D2R),
       known: (a, b) => `angle of elevation ${b}°, distance ${a} ft`,
       set: (a, b) => `tan ${b}° = height ÷ ${a}`,
@@ -119,7 +119,7 @@
       q: 'A 30-60-90 triangle has hypotenuse 14 cm. How long is the leg that touches the 30° angle?',
       ch: [['7 cm', 'That is the short leg, across from the 30° angle (half the hypotenuse). The leg that touches 30° is the long leg.'],
         ['14√3 ≈ 24.25 cm', 'That multiplies the hypotenuse by √3, which is longer than the hypotenuse itself. The √3 factor goes with the short leg: 7 × √3.'],
-        ['14 ÷ √3 ≈ 8.08 cm', 'Dividing by √3 would go from the long leg down to the short leg. Here you go from the short leg (7) up to the long leg: 7 × √3.'],
+        ['14 ÷ √3 ≈ 8.08 cm', 'Dividing by √3 only works when you start from the long leg. Here you start from the short leg (7) and go up to the long leg: 7 × √3.'],
         ['7√3 ≈ 12.12 cm', 'Yes. The short leg is half of 14, which is 7. The long leg is the short leg times √3: 7√3 ≈ 12.12 cm.', 1]] },
     { fig: { al: 12, ab: 'ramp 5 m', ac: '', bc: 'rise = ?', A: '12°', B: '' },
       q: 'A ramp is 5 m long and makes a 12° angle with level ground. How high does it rise? Pick the setup and the answer.',
@@ -182,7 +182,7 @@
         text: String.raw`<p>Pick an angle \(\theta\). The side across from it is the <b>opposite</b>, the side touching it is the <b>adjacent</b>, and the slanted side is the <b>hypotenuse</b>. Sine, cosine and tangent are ratios of these (SOH CAH TOA).</p><p>Predict the opposite side, then press <b>θ is the angle at B</b>. The labels swap.</p>`,
         set: { mode: 'trig', at: 'A', q: 1, rev: false, al: 30, hyp: 10 } },
       { title: 'Solve a real problem',
-        text: String.raw`<p>You stand 30 ft from a tree and look up at \(35^\circ\). Choose the ratio that links the angle, the side you know and the side you want. Then read off the height.</p><p>Try the other scenes. Then open <b>Is it a right triangle?</b> to test side lengths with the converse of Pythagoras.</p>`,
+        text: String.raw`<p>You stand 30 ft from a tree and look up at \(35^\circ\) (ignore the height of your eyes). Choose the ratio that links the angle, the side you know and the side you want. Then read off the height.</p><p>Try the other scenes. Then open <b>Is it a right triangle?</b> to test side lengths with the converse of Pythagoras.</p>`,
         set: { mode: 'apply', scene: 'tree', q: 0, rev: false, p1: 30, p2: 35 } }
     ],
     formal: String.raw`
@@ -270,7 +270,7 @@
         p.label('leg ' + num(s), s / 2, 0, { size: ls, italic: false, color: pal.green, dy: 22 });
         p.label('leg ' + num(s), 0, s / 2, { size: ls, italic: false, color: pal.red, dx: -12, align: 'right' });
         p.label('hypotenuse', s / 2, s / 2, { size: ls, italic: false, color: pal.blue, dx: 14, dy: -24, align: 'left' });
-        p.label(hide ? '?' : co(s) + '√2 ≈ ' + num(s * R2), s / 2, s / 2, { size: ls, italic: false, color: pal.blue, dx: 14, dy: -4, align: 'left' });
+        p.label(hide ? '?' : (Math.abs(s * 100 - Math.round(s * 100)) < 1e-6 ? co(s) + '√2 ≈ ' : '') + num(s * R2), s / 2, s / 2, { size: ls, italic: false, color: pal.blue, dx: 14, dy: -4, align: 'left' });
         p.label('square of side ' + num(s), g + s / 2, s, { size: ls, italic: false, color: pal.muted, dy: -18, alpha: 1 - st.cut });
         handle(p, 0, s);
       };

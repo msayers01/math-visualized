@@ -53,7 +53,7 @@
     SSS: [['de', 'Side DE', 2, 8, 1, 0], ['df', 'Side DF', 3, 12, 1, 0], ['ef', 'Side EF', 2, 12, .5, 0]],
     SSA: [['de', 'Side DE', 3, 12, 1.5, 0], ['ef', 'Side EF', 2, 12, .5, 0], ['dA', 'Angle D (not between DE and EF)', 20, 90, 5, 1]]
   };
-  const DEF = { AA: { dA: 55, eA: 60, de: 9 }, SAS: { de: 6, df: 9, dA: 65 }, SSS: { de: 6, df: 9, ef: 6 }, SSA: { de: 6, ef: 4.5, dA: 40 } };
+  const DEF = { AA: { dA: 55, eA: 60, de: 9 }, SAS: { de: 6, df: 9, dA: 65 }, SSS: { de: 6, df: 9, ef: 7.5 }, SSA: { de: 6, ef: 4.5, dA: 40 } };
   const FLAGS = ['mode', 'test', 'facts', 'ghosts', 'pred', 'method'];
   let uid = 0;
 
@@ -266,7 +266,7 @@
       <h3>Why they work, in words</h3>
       <p>Resize \(DEF\) until \(DE\) is as long as \(AB\), then slide it so \(D\) sits on \(A\) and \(E\) on \(B\). We only have to show that \(F\) lands exactly on \(C\).</p>
       <p><b>AA.</b> The angles at \(D\) and \(E\) equal those at \(A\) and \(B\), so side \(DF\) lies along ray \(AC\) and side \(EF\) lies along ray \(BC\). Two rays that start at the ends of a segment and lean the same way cross at only one point. So \(F\) is \(C\).<br>
-      <b>SAS.</b> After resizing, \(DF\) has the same length as \(AC\) and leaves \(D\) at the same angle. A segment with a fixed start, direction and length has a fixed end, so \(F\) is \(C\).<br>
+      <b>SAS.</b> Because \(DF/DE=AC/AB\), resizing so that \(DE=AB\) makes \(DF=AC\), and \(DF\) leaves \(D\) at the same angle as \(AC\) leaves \(A\). A segment with a fixed start, direction and length has a fixed end, so \(F\) is \(C\).<br>
       <b>SSS.</b> \(F\) must be exactly \(AC\) from \(A\) and \(BC\) from \(B\). Two circles like that meet in one point above the line (and one mirror point below it), so \(F\) is \(C\) or its mirror image. A mirror image is still similar.</p>
       <h3>Why SSA is not a test</h3>
       <p>Fix side \(DE\) and the angle at \(D\). Then \(F\) must lie on a ray from \(D\). The side \(EF\) says that \(F\) is a certain distance from \(E\), which is a circle around \(E\). A circle can cut a ray in two places. Example: \(AB=6\), \(BC=4.5\), \(A=40^\circ\) gives \(AC\approx6.91\) or \(AC\approx2.28\). Two different triangles fit the same facts, so SSA proves nothing. (AAA also works, but it is just AA with a free extra check.)</p>
@@ -287,11 +287,11 @@
                   'Two pairs of equal angles'], answer: 3,
         why: String.raw`Two equal angles force the third (\(180^\circ\) minus the two), so all three angles match. That is AA. One angle plus one side ratio, or two side ratios with no angle, leave the shape free. Two side ratios with an angle that is not between them is SSA, which can fit two different triangles.`,
         hint: 'Only AA, SAS and SSS are tests. Check that each choice matches one of them exactly.' },
-      { q: 'Triangle ABC has AB = 6, BC = 9 and angle B = 50°. Triangle PQR has PQ = 8, QR = 12 and angle Q = 50°. The side AC is 7.5. How long is PR?',
-        choices: ['9.5', '10', '5.6', '11.25'], answer: 1,
-        why: String.raw`Compare the sides around the equal angles: \(8\div6=\tfrac43\) and \(12\div9=\tfrac43\). The equal ratios and the equal angle between them prove \(\triangle ABC\sim\triangle PQR\) (SAS), with \(B\) matching \(Q\). So \(AC\) matches \(PR\) and \(PR=7.5\times\tfrac43=10\).`,
+      { q: 'Triangle ABC has AB = 6, BC = 8 and angle B = 90°, so AC = 10. Triangle PQR has PQ = 9, QR = 12 and angle Q = 90°. How long is PR?',
+        choices: ['12', '15', '6.67', '13.33'], answer: 1,
+        why: String.raw`Compare the sides around the equal angles: \(9\div6=\tfrac32\) and \(12\div8=\tfrac32\). The equal ratios and the equal angle between them prove \(\triangle ABC\sim\triangle PQR\) (SAS), with \(B\) matching \(Q\). So \(AC\) matches \(PR\) and \(PR=10\times\tfrac32=15\). Dividing by the ratio (6.67) or using the wrong ratio (13.33) misses, and 12 is just \(QR\).`,
         hint: 'First show the triangles are similar and find which sides match. B matches Q, so AC matches PR. Then multiply by the scale factor.' },
-      { q: String.raw`A student writes: "In triangle ABC, AB = 6, BC = 8 and angle A = 30°. In triangle DEF, DE = 9, EF = 12 and angle D = 30°. Since 9 ÷ 6 = 12 ÷ 8 = 1.5 and the angles are equal, the triangles are similar by SAS." What is wrong with this argument?`,
+      { q: String.raw`A student writes: "In triangle ABC, AB = 8, BC = 5 and angle A = 30°. In triangle DEF, DE = 12, EF = 7.5 and angle D = 30°. Since 12 ÷ 8 = 7.5 ÷ 5 = 1.5 and the angles are equal, the triangles are similar by SAS." What is wrong with this argument?`,
         choices: ['Nothing is wrong. SAS applies.',
                   'The ratios should both have been 1, not 1.5.',
                   'The 30° angle is not between the two sides. AB and BC meet at B, so this is SSA, which does not prove similarity.',
@@ -707,7 +707,7 @@
           if (st.test === 'SSA' && st.pred) {
             const right = st.guess === 0;
             predFb.className = 'q-fb ' + (right ? 'ok' : 'no');
-            predFb.innerHTML = `<b>${right ? 'Right.' : 'Not this time.'}</b> The violet ghosts show it: with the angle outside the sides, point F can land in two places. Only one of them gives the target’s shape, so SSA does not force similarity.`;
+            predFb.innerHTML = `<b>${right ? 'Right.' : 'Not this time.'}</b> The violet ghosts show it: with the facts at the target’s values, the angle is outside the two sides and point F can land in two places. Only one of them gives the target’s shape, so SSA does not force similarity.`;
           }
         } else if (st.mode === 'shadow') {
           const mir = st.method === 'mirror', v = st.sv, hh = st.rev ? '6 m' : '?';
