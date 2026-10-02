@@ -106,6 +106,8 @@
     "lessons/school/polar-form-and-roots-of-unity.js",
     "lessons/school/fractals-self-similarity-and-dimension.js",
     "lessons/school/the-mandelbrot-and-julia-sets.js",
+    "lessons/school/arc-length-and-sectors.js",
+    "lessons/school/radians-the-circles-own-angle-unit.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],

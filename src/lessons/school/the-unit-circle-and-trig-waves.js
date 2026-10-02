@@ -68,7 +68,7 @@ register({
       why: String.raw`\(\sin^2\theta = 1-0.6^2 = 0.64\), and sine is positive in the first quadrant, so \(\sin\theta=0.8\).`,
       hint: String.raw`Use \(\cos^2\theta+\sin^2\theta=1\).` }
   ],
-  links: { prereq: ['pythagorean-theorem'], next: ['fourier-series-as-epicycles'], related: ['linear-transformations', 'similarity-and-scaling'] },
+  links: { prereq: ['pythagorean-theorem', 'radians-the-circles-own-angle-unit'], next: ['fourier-series-as-epicycles'], related: ['linear-transformations', 'similarity-and-scaling'] },
 
   mount({ stage, controls: C }) {
     const st = { th: .9, showCos: false };
