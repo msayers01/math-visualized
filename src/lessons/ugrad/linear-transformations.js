@@ -77,7 +77,7 @@ register({
 
     C.title('Matrix entries');
     C.hint('Columns are where î and ĵ land. You can also drag the arrow tips.');
-    const S = ['a (î, x)', 'c (î, y)', 'b (ĵ, x)', 'd (ĵ, y)'].map((label, j) => {
+    const S = ['î lands at x (a)', 'î lands at y (c)', 'ĵ lands at x (b)', 'ĵ lands at y (d)'].map((label, j) => {
       const i = [0, 2, 1, 3][j];
       return { i, s: C.slider({ label, min: -3, max: 3, step: .1, value: st.M[i], format: v => fmt(v, 1),
         onInput: v => { cancel(); st.M[i] = v; st.t = 1; upd(); P.requestDraw(); } }) };

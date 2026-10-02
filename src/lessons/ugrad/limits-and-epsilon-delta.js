@@ -372,7 +372,9 @@
         }
         ro.innerHTML = html;
       };
+      let chUI = null;   /* the Challenge title and buttons: shown only in Challenge mode */
       const sync = () => {
+        if (chUI) chUI.forEach(e => { e.hidden = st.mode !== 'challenge'; });
         fnS.value = st.fn; modeS.value = st.mode; sideS.value = st.side; altT.checked = st.alt; autoT.checked = st.auto;
         const put = (sl, v) => { if (Math.abs(sl.get() - v) > .025) sl.set(v); };
         put(epsS, Math.log10(st.eps)); put(delS, Math.log10(st.del)); put(LS, st.n); put(zS, Math.log10(st.z));
@@ -409,11 +411,13 @@
       const zS = C.slider({ label: 'Zoom', min: 0, max: 3, step: .02, value: 0, format: s => '×' + N(sig(Math.pow(10, s), 2)),
         onInput: stage1(s => { st.z = Math.pow(10, s); st.auto = false; }) });
       C.title('Challenge');
-      C.buttons([
+      const chBtns = C.buttons([
         { label: 'Check my δ', onClick: stage1(chCheck) },
         { label: 'No δ works', onClick: stage1(chNone) },
         { label: 'Next ε', onClick: stage1(chNext) }
       ]);
+      chUI = [chBtns[0].parentElement.previousElementSibling, chBtns[0].parentElement];
+      chUI.forEach(e => { e.hidden = st.mode !== 'challenge'; });
       const ro = C.readout();
       C.hint('Drag the point, the green edges, the violet edges or the yellow dot L. Pick a mode first.');
 
