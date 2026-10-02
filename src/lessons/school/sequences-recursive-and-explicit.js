@@ -57,11 +57,11 @@
     mkG(2, 3, { name: 'Tripling: 2, 6, 18, …', kmax: 10, ruleAt: 4 }),
     mkG(48, .5, { name: 'Halving: 48, 24, 12, …', kmax: 7, ruleAt: 4 }),
     mkO(2, { name: 'Double and add 1: 2, 5, 11, …', step: p => rd(2 * p + 1), sym: '2 · a_{n-1} + 1', sub: p => `2 · ${vt(p)} + 1`, op: '×2 +1', ruleAt: 4 }),
-    mkF(1, 1, { name: 'Fibonacci: 1, 1, 2, 3, …', ruleAt: 4 }),
-    mkA(100, 50, { name: 'Savings: $100, plus $50 a month', pre: '$', kmax: 50, ruleAt: 3, story: 'You open an account with $100 and add $50 every month.' }),
-    mkG(10000, 1.1, { name: 'Town: 10,000 people, +10% a year', max: 5, cn: 5, kmax: 8, ruleAt: 3, story: 'A town has 10,000 people and grows 10% every year.',
+    mkF(1, 1, { name: 'Fibonacci: 1, 1, 2, 3, …', ruleAt: 5 }),
+    mkA(100, 50, { name: 'Savings: $100, plus $50 a month', pre: '$', kmax: 50, ruleAt: 3, story: 'You open an account with $100 and add $50 every month. a_1 is the amount at the start.' }),
+    mkG(10000, 1.1, { name: 'Town: 10,000 people, +10% a year', max: 5, cn: 5, kmax: 8, ruleAt: 3, story: 'A town has 10,000 people and grows 10% every year. a_1 is the population at the start.',
       rx: ['a_{1} = 10000, a_{n} = 0.1 · a_{n-1}', 'That keeps only the 10% of growth and throws away the 100% the town already had. Test it: 0.1 · 10000 = 1000, but the second term is 11000. Growing 10% means 100% + 10% = 110% of last year, which is 1.1 times.'] }),
-    mkG(100, .6, { name: 'Ball: 100 cm drop, bounces to 60%', max: 5, cn: 5, kmax: 6, ruleAt: 3, story: 'A ball is dropped from 100 cm. Each bounce reaches 60% of the last height.',
+    mkG(100, .6, { name: 'Ball: 100 cm drop, bounces to 60%', max: 5, cn: 5, kmax: 6, ruleAt: 3, story: 'Dropped from 100 cm. Each bounce reaches 60% of the last.',
       rx: ['a_{1} = 100, a_{n} = 0.4 · a_{n-1}', 'The ball keeps 60% of its height. 0.4 is the 40% it loses. Test it: 0.4 · 100 = 40, but the second term is 60.'] })
   ];
 
@@ -214,7 +214,7 @@
     check: [
       { q: 'A recursive formula for a sequence must give which two things?',
         choices: [String.raw`A formula using only the term number \(n\), such as \(a_n=5+3n\)`, 'The common difference and the common ratio', 'The starting term (or terms) and a rule that gets each new term from the term or terms before it', 'The 50th term and the 49th term'], answer: 2,
-        why: String.raw`A recursive formula needs a place to start and a rule for the next step, for example \(a_1=5\) and \(a_n=a_{n-1}+3\). A formula that uses only \(n\) is explicit. A list is not both arithmetic and geometric, so it does not have both a difference and a ratio.`,
+        why: String.raw`A recursive formula needs a place to start and a rule for the next step, for example \(a_1=5\) and \(a_n=a_{n-1}+3\). A formula that uses only \(n\) is explicit. A recursive rule is a start plus a step, so you need both to rebuild the list.`,
         hint: 'Think of building the list box by box. Where do you begin, and what do you do to get each next box?' },
       { q: String.raw`A sequence has \(a_1=7\), and each term is 4 more than the term before it. Use the explicit formula to find the 30th term, \(a_{30}\).`,
         choices: ['123', '127', '116', '210'], answer: 0,
@@ -539,7 +539,7 @@
         const seed = (m * 2 + st.seq) % (wr.length + 1);
         const all = wr.slice(); all.splice(seed, 0, right);
         return {
-          prompt: rh(st.showRule ? `Rule: ${ruleStr(sq)}. What is a_{${m}}?` : `What do you think a_{${m}} is? Look for the pattern in the terms so far.`),
+          prompt: rh(st.showRule ? `Rule: ${ruleStr(sq)}. What is a_{${m}}?` : `Make a guess for a_{${m}}. With few terms more than one answer can fit, so the next terms will tell.`),
           opts: all.map(o => ({ label: lab(sq, o[0]), ok: o === right, fb: rh(o[1]) })),
           onRight: fb => { carry = fb; st.n = m; st.last = m; popIn(); }
         };

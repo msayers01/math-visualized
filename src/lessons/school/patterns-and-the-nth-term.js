@@ -134,7 +134,7 @@
                  ['No, it shrinks each time', 'The new bottom row gets longer, not shorter: 2, 3, 4 tiles.']] } },
     { f5: { q: 'Figures 1 to 4 of the square pattern use 1, 4, 9 and 16 tiles. How many tiles will Figure 5 need?', a: 0,
             o: [['25 tiles', 'Figure 5 is a 5 by 5 square: 5 × 5 = 25. The new L-shaped part has 9 tiles: 16 + 9 = 25.'],
-                ['20 tiles', 'That adds 4 again. But the new L-shaped part grows: 3, 5, 7, 9. So 16 + 9 = 25.'],
+                ['20 tiles', 'That adds 4 again. But the changes are growing: 3, 5, 7, 9. So 16 + 9 = 25.'],
                 ['24 tiles', 'That adds 8. The new L-shaped part of Figure 5 has 9 tiles: 16 + 9 = 25.']] },
       f10: { q: 'How many tiles will Figure 10, a 10 by 10 square, need?', a: 2,
              o: [['20 tiles', '2 × 10 = 20 adds instead of multiplying. A 10 by 10 square has 10 × 10 = 100 tiles.'],
@@ -532,7 +532,7 @@
 
       /* predictions */
       const renderPred = () => {
-        const kind = st.view === 'change' ? 'chg' : (got('f5') && reveal5() ? 'f10' : 'f5'), key = ak(kind);
+        const kind = st.view === 'change' ? 'chg' : (got('f5') && (reveal5() || st.n >= 10) ? 'f10' : 'f5'), key = ak(kind);
         const D = PRED[st.pat][kind];
         if (predKey !== key) {
           predKey = key; predQ.textContent = D.q; predRow.replaceChildren();
