@@ -32,7 +32,7 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
   const mk = async (opts = {}) => {
     const c = await browser.newContext({ viewport: { width: 1280, height: 900 }, ...opts }), page = await c.newPage(), errs = [];
     await page.route('**/*', r => { const u = r.request().url(); u.startsWith('file:') ? r.continue() : r.abort(); });
-    page.on('pageerror', e => errs.push('pageerror: ' + e.message));
+    page.on('pageerror', e => errs.push('pageerror: ' + e.message + ' @ ' + String(e.stack || '').split('\n').slice(1, 3).join(' <- ').replace(/file:\/\/\S*\//g, '')));
     page.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|net::ERR/.test(m.text())) errs.push('console: ' + m.text()); });
     return { page, errs, c };
   };

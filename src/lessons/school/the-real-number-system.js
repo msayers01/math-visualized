@@ -130,7 +130,7 @@
     if (cur) out.push(cur); c.restore(); return out;
   };
   const rr = (c, x, y, w, h, r) => {
-    r = Math.min(r, w / 2, h / 2);
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
     c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
     c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
   };
@@ -177,7 +177,7 @@
       const m = 6, dx = W * .085, dy = H * .11;
       for (let i = 0; i < 4; i++) {
         const k = 3 - i, x = m + dx * i, y = m + dy * i, w = W - 2 * (m + dx * i), h = H - 2 * (m + dy * i) + (i ? dy * .35 * i : 0);
-        rr(c, x, y, w, Math.max(h, 10), 7); c.fillStyle = alpha(cols[k], .16); c.fill(); c.strokeStyle = cols[k]; c.lineWidth = 2; c.stroke();
+        rr(c, x, y, Math.max(w, 10), Math.max(h, 10), 7); c.fillStyle = alpha(cols[k], .16); c.fill(); c.strokeStyle = cols[k]; c.lineWidth = 2; c.stroke();
         c.save(); c.font = font(Math.max(11, H * .13), 700); c.textAlign = 'left'; c.textBaseline = 'top'; c.fillStyle = pal.text; c.fillText(L[i], x + 10, y + 6); c.restore();
       }
     },

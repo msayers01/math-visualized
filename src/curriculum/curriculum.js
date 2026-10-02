@@ -94,6 +94,7 @@ const ALIGN = [
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
   { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
   { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
+  { id: 'domain-and-range-of-functions', course: 'algebra1', skill: 'mid', standards: ['9.3.7.6'] },
   { id: 'why-the-square-root-of-2-is-irrational', course: 'algebra1', skill: 'adv', standards: [], enrichment: true },
   { id: 'set-and-interval-notation', course: 'algebra1', skill: 'intro', standards: [] },
   { id: 'the-real-number-system', course: 'algebra1', skill: 'mid', standards: ['8.3.5.1', '9.3.5.3'] },
