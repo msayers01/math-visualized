@@ -400,7 +400,7 @@
           btns.forEach(b => { b.disabled = true; }); btns[ord.indexOf(o)].classList.add('primary');
           fbk.innerHTML = o[1]
             ? good('Yes.') + ` The area of w and v is ${num(g.Aw)}, and D is ${num(g.D)}. The edge w is x copies of u plus some of v, and the v part adds no area, so ${num(g.Aw)} = x · ${pn(g.D)} and x = ${right}. Watch the slide.`
-            : bad('Not quite.') + ' ' + o[1] + ` The answer is x = ${right}. Watch the slide.`;
+            : bad('Not quite.') + ' ' + o[2] + ` The answer is x = ${right}. Watch the slide.`;
           st.gateOpen = true; cancel(); cancel = animateTo(st, { sh: 1 }, 1700, sync); sync();
         }));
         row.append(...btns);

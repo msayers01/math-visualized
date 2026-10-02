@@ -100,7 +100,7 @@
         { t: 'rows (1, −1) and (−2, 3)', ok: true, G: [[1, -1], [-2, 3]], why: 'det = 3·1 − 1·2 = 1. Swap the two diagonal entries 3 and 1, and change the signs of the other two (1 and 2). Dividing by 1 changes nothing. The violet F lands exactly on the start.' },
         { t: 'rows (1, 1) and (2, 3)', G: [[1, 1], [2, 3]], why: 'You swapped 3 and 1 but forgot to change the signs of 1 and 2. The violet F does not come home.' },
         { t: 'rows (3, −1) and (−2, 1)', G: [[3, -1], [-2, 1]], why: 'You changed the signs of 1 and 2 but forgot to swap 3 and 1. The violet F does not come home.' },
-        { t: 'rows (1, −2) and (−1, 3)', G: [[1, -2], [-1, 3]], why: 'The right numbers, but 1 and 2 keep their places (top right and bottom left). Only the diagonal entries swap. The violet F does not come home.' }], 3) },
+        { t: 'rows (1, −2) and (−1, 3)', G: [[1, -2], [-1, 3]], why: 'The diagonal swap is right, but the entries 1 and 2 traded places. They must stay where they are (top right and bottom left) and only change sign. The violet F does not come home.' }], 3) },
     { tag: 'Area scale factor', A: [[1, 2], [2, 1]], free: [], view: { tri: true },
       q: 'A triangle has area 2. A matrix with rows (1, 2) and (2, 1) moves it. What is the area of the image?',
       choices: place([
@@ -175,7 +175,7 @@
       <h3>The sign</h3>
       <p>At the start the red arrow is a quarter turn to the left of the green arrow. If \(\det A&gt;0\) it stays on that side and the F keeps its handedness. If \(\det A&lt;0\) the arrows have changed sides and the picture is flipped like a mirror. The area scale factor is \(|\det A|\), because an area is never negative. Example: \(\begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}\) has \(\det=-1\): same size, flipped.</p>
       <h3>When the determinant is 0</h3>
-      <p>If \(\det A=0\) the two columns point along the same line (or one is zero). The parallelogram has no width, so the whole plane lands on one line, or on one point. Take \(A=\begin{pmatrix} 1 & 2 \\ 3 & 6 \end{pmatrix}\). The points \((1,0)\) and \((3,-1)\) both land on \((1,3)\): \(3\cdot1+2\cdot(-1)\) and \(3\cdot3+6\cdot(-1)\) give \(1\) and \(3\). If two different inputs have the same output, no rule can tell which one you came from, so <b>no matrix can undo \(A\)</b>.</p>
+      <p>If \(\det A=0\) the two columns point along the same line (or one is zero). The parallelogram has no width, so the whole plane lands on one line, or on one point. Take \(A=\begin{pmatrix} 1 & 2 \\ 3 & 6 \end{pmatrix}\). The points \((1,0)\) and \((3,-1)\) both land on \((1,3)\). For \((3,-1)\): row one gives \(1\cdot3+2\cdot(-1)=1\) and row two gives \(3\cdot3+6\cdot(-1)=3\). If two different inputs have the same output, no rule can tell which one you came from, so <b>no matrix can undo \(A\)</b>.</p>
       <h3>The inverse</h3>
       <p>The <b>identity</b> matrix \(I=\begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}\) moves nothing, and \(AI=IA=A\). The <b>inverse</b> of \(A\) is the matrix \(A^{-1}\) with \(AA^{-1}=A^{-1}A=I\). For a \(2\times2\) matrix with \(ad-bc\neq0\),
       \[ A^{-1} = \frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}. \]
@@ -542,7 +542,7 @@
         if (st.done) return;
         const pb = prob(), ch = pb.choices[k]; st.tries++;
         if (ch.G) st.G = cp(ch.G); else if (pb.G) st.G = cp(pb.G);
-        if (ch.set) { const M = A(); toMatrix([[M[0][0], ch.set.b ?? M[0][1]], [M[1][0], M[1][1]]], 500); }
+        if (ch.set) { toMatrix([[pb.A[0][0], ch.set.b ?? pb.A[0][1]], [pb.A[1][0], pb.A[1][1]]], 500); }
         if (ch.ok) {
           st.rev = true;
           pFb.innerHTML = `${ok('Correct.')} ${ch.why}${st.tries === 1 ? ' Right on the first try.' : ''}`;
