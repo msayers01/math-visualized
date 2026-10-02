@@ -85,11 +85,17 @@ const ALIGN = [
   { id: 'parallel-and-perpendicular-lines', course: 'grade8', skill: 'mid', standards: ['8.2.4.2'] },
   { id: 'distance-and-the-pythagorean-theorem', course: 'grade8', skill: 'mid', standards: ['8.2.3.2', '8.2.3.3'] },
   { id: 'solving-equations-with-a-balance', course: 'grade8', skill: 'mid', standards: ['8.3.6.1', '8.3.6.3', '9.3.5.7'] },
+  { id: 'absolute-value-equations-and-inequalities', course: 'grade8', skill: 'mid', standards: ['8.3.6.8'] },
+  { id: 'solving-linear-inequalities', course: 'grade8', skill: 'mid', standards: ['7.3.6.2', '8.3.6.7'] },
 
   /* Algebra 1 */
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
   { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
   { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
+  { id: 'piecewise-and-step-functions', course: 'algebra1', skill: 'mid', standards: ['9.3.7.6'] },
+  { id: 'sequences-recursive-and-explicit', course: 'algebra1', skill: 'mid', standards: ['9.3.7.4', '9.3.7.5'] },
+  { id: 'systems-of-linear-inequalities', course: 'algebra1', skill: 'mid', standards: ['9.3.7.1'] },
+  { id: 'graphing-linear-inequalities', course: 'algebra1', skill: 'mid', standards: ['9.3.7.1'] },
   { id: 'modeling-with-systems', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9', '9.3.7.1'] },
   { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'solving-systems-by-substitution', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
