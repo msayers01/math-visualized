@@ -127,7 +127,7 @@
     { f: [1, 2, 5], view: V7(-4.5, 12), q: 'For x² + 2x + 5 = 0 we have a = 1, b = 2, c = 5. Work out D = b² − 4ac. How many real roots does the equation have?',
       opts: [['Two real roots', 'D = 4 − 20 = −16 is not positive. Two real roots need D > 0.'],
              ['One real root', 'One root needs D = 0 exactly. Here D = 2² − 4(1)(5) = 4 − 20 = −16.'],
-             ['No real roots: two complex roots', 'D = 4 − 20 = −16 is negative, so no real roots. The parabola has its vertex (−1, 4) above the x-axis. The two non-real roots are −1 + 2i and −1 − 2i.'],
+             ['No real roots: two non-real complex roots', 'D = 4 − 20 = −16 is negative, so no real roots. The parabola has its vertex (−1, 4) above the x-axis. The two non-real roots are −1 + 2i and −1 − 2i.'],
              ['D = 24, so two real roots', 'The formula subtracts 4ac: 4 − 20 = −16. (24 would come from 4 + 20.)']], ans: 2 },
     { f: [1, 0, 4], view: V7(-3.5, 12), q: 'Solve x² + 4 = 0. (Here a = 1, b = 0, c = 4.)',
       opts: [['x = 2 and x = −2', 'Check: 2² + 4 = 8, not 0. A real number squared is never negative, so x² = −4 has no real solution.'],
@@ -503,7 +503,7 @@
           if (s === 0) return 'x = 1 (one root)';
           const t = Math.abs(s), r = Math.sqrt(t), exact = Math.abs(r - Math.round(r)) < 1e-9;
           if (s > 0) return exact ? `x = ${num(1 - r)} and x = ${num(1 + r)}` : `x = 1 ± √${t} ≈ ${num(1 - r)} and ${num(1 + r)}`;
-          return exact ? `x = 1 ± ${r === 1 ? '' : r}i` : `x = 1 ± i√${t} (about 1 ± ${num(r)}i)`;
+          return exact ? `x = 1 ± ${r === 1 ? '' : r}i` : `x = 1 ± ${t === 8 ? '2i√2' : 'i√' + t} (about 1 ± ${num(r)}i)`;
         }
         const so = solve(1, -2, c);
         return so.real ? `x ≈ ${num(so.r1)} and ${num(so.r2)}` : `x ≈ 1 ± ${num(so.im)}i`;

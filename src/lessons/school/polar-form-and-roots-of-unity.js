@@ -42,7 +42,7 @@
   const dg = x => (x < 0 ? MI : '') + fd(Math.abs(x)) + '°';
   const piF = deg => {
     const x = deg / 180;
-    for (const q of [1, 2, 3, 4, 6, 12]) {
+    for (const q of [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 24]) {
       const p = Math.round(x * q);
       if (Math.abs(x * q - p) < 1e-6) { if (p === 0) return '0'; const ap = Math.abs(p); return (p < 0 ? MI : '') + (ap === 1 ? 'π' : ap + 'π') + (q > 1 ? '/' + q : ''); }
     }
@@ -594,6 +594,7 @@
                 L.push(`tan⁻¹(b/a) = tan⁻¹(${ex(b / a)}) = ${A(al)}`);
                 if (a < 0) L.push(`a is negative: add ${A(180)}. ${kk('θ')} = ${A(m360(al + 180))}`);
                 else if (b < 0) L.push(`b is negative: add ${A(360)} to stay between 0 and a full turn. ${kk('θ')} = ${A(th)}`);
+                else if (b === 0) L.push(`On the positive real axis. ${kk('θ')} = ${A(th)}`);
                 else L.push(`Both positive: first quadrant. ${kk('θ')} = ${A(th)}`);
               }
             } else L.push(`${kk('θ')} = ${A(th)}`);
@@ -617,7 +618,7 @@
             L.push(`|z${sup(n)}| = r${sup(n)} = ${ex(mm)}`);
             L.push(`Angle = ${n} × ${A(th)} = ${A(n * th)}${m360(n * th) !== n * th ? ' = ' + A(m360(n * th)) + ' after full turns' : ''}`);
             L.push(`${kk('z' + sup(n))} ≈ ${cd(v)}`);
-            L.push(Math.abs(r - 1) < 1e-9 ? 'r = 1: every power has modulus 1, so the points stay on the unit circle.' : r > 1 ? 'r is above 1: the modulus grows, so the points spiral outward.' : 'r is below 1: the modulus shrinks, so the points spiral inward.');
+            L.push(Math.abs(r - 1) < 1e-9 ? 'r = 1: every power has modulus 1, so the points stay on the unit circle.' : r > 1 ? 'r is above 1: the modulus grows, so the points move farther from 0, turning by θ each time.' : 'r is below 1: the modulus shrinks, so the points spiral inward.');
           } else L.push('Predict |z⁸| and the angle of z⁸ first.');
         } else {
           const n = st.rn, R = st.wR, phi = st.wphi, rho = Math.pow(R, 1 / n);

@@ -46367,7 +46367,7 @@ register({
     { f: [1, 2, 5], view: V7(-4.5, 12), q: 'For x² + 2x + 5 = 0 we have a = 1, b = 2, c = 5. Work out D = b² − 4ac. How many real roots does the equation have?',
       opts: [['Two real roots', 'D = 4 − 20 = −16 is not positive. Two real roots need D > 0.'],
              ['One real root', 'One root needs D = 0 exactly. Here D = 2² − 4(1)(5) = 4 − 20 = −16.'],
-             ['No real roots: two complex roots', 'D = 4 − 20 = −16 is negative, so no real roots. The parabola has its vertex (−1, 4) above the x-axis. The two non-real roots are −1 + 2i and −1 − 2i.'],
+             ['No real roots: two non-real complex roots', 'D = 4 − 20 = −16 is negative, so no real roots. The parabola has its vertex (−1, 4) above the x-axis. The two non-real roots are −1 + 2i and −1 − 2i.'],
              ['D = 24, so two real roots', 'The formula subtracts 4ac: 4 − 20 = −16. (24 would come from 4 + 20.)']], ans: 2 },
     { f: [1, 0, 4], view: V7(-3.5, 12), q: 'Solve x² + 4 = 0. (Here a = 1, b = 0, c = 4.)',
       opts: [['x = 2 and x = −2', 'Check: 2² + 4 = 8, not 0. A real number squared is never negative, so x² = −4 has no real solution.'],
@@ -46743,7 +46743,7 @@ register({
           if (s === 0) return 'x = 1 (one root)';
           const t = Math.abs(s), r = Math.sqrt(t), exact = Math.abs(r - Math.round(r)) < 1e-9;
           if (s > 0) return exact ? `x = ${num(1 - r)} and x = ${num(1 + r)}` : `x = 1 ± √${t} ≈ ${num(1 - r)} and ${num(1 + r)}`;
-          return exact ? `x = 1 ± ${r === 1 ? '' : r}i` : `x = 1 ± i√${t} (about 1 ± ${num(r)}i)`;
+          return exact ? `x = 1 ± ${r === 1 ? '' : r}i` : `x = 1 ± ${t === 8 ? '2i√2' : 'i√' + t} (about 1 ± ${num(r)}i)`;
         }
         const so = solve(1, -2, c);
         return so.real ? `x ≈ ${num(so.r1)} and ${num(so.r2)}` : `x ≈ 1 ± ${num(so.im)}i`;
@@ -46864,7 +46864,7 @@ register({
   const dg = x => (x < 0 ? MI : '') + fd(Math.abs(x)) + '°';
   const piF = deg => {
     const x = deg / 180;
-    for (const q of [1, 2, 3, 4, 6, 12]) {
+    for (const q of [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 24]) {
       const p = Math.round(x * q);
       if (Math.abs(x * q - p) < 1e-6) { if (p === 0) return '0'; const ap = Math.abs(p); return (p < 0 ? MI : '') + (ap === 1 ? 'π' : ap + 'π') + (q > 1 ? '/' + q : ''); }
     }
@@ -47416,6 +47416,7 @@ register({
                 L.push(`tan⁻¹(b/a) = tan⁻¹(${ex(b / a)}) = ${A(al)}`);
                 if (a < 0) L.push(`a is negative: add ${A(180)}. ${kk('θ')} = ${A(m360(al + 180))}`);
                 else if (b < 0) L.push(`b is negative: add ${A(360)} to stay between 0 and a full turn. ${kk('θ')} = ${A(th)}`);
+                else if (b === 0) L.push(`On the positive real axis. ${kk('θ')} = ${A(th)}`);
                 else L.push(`Both positive: first quadrant. ${kk('θ')} = ${A(th)}`);
               }
             } else L.push(`${kk('θ')} = ${A(th)}`);
@@ -47439,7 +47440,7 @@ register({
             L.push(`|z${sup(n)}| = r${sup(n)} = ${ex(mm)}`);
             L.push(`Angle = ${n} × ${A(th)} = ${A(n * th)}${m360(n * th) !== n * th ? ' = ' + A(m360(n * th)) + ' after full turns' : ''}`);
             L.push(`${kk('z' + sup(n))} ≈ ${cd(v)}`);
-            L.push(Math.abs(r - 1) < 1e-9 ? 'r = 1: every power has modulus 1, so the points stay on the unit circle.' : r > 1 ? 'r is above 1: the modulus grows, so the points spiral outward.' : 'r is below 1: the modulus shrinks, so the points spiral inward.');
+            L.push(Math.abs(r - 1) < 1e-9 ? 'r = 1: every power has modulus 1, so the points stay on the unit circle.' : r > 1 ? 'r is above 1: the modulus grows, so the points move farther from 0, turning by θ each time.' : 'r is below 1: the modulus shrinks, so the points spiral inward.');
           } else L.push('Predict |z⁸| and the angle of z⁸ first.');
         } else {
           const n = st.rn, R = st.wR, phi = st.wphi, rho = Math.pow(R, 1 / n);
