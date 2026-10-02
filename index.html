@@ -2421,7 +2421,7 @@ register({
 register({
   id: 'pythagorean-theorem', level: 'school',
   title: 'The Pythagorean theorem',
-  blurb: 'Slide four triangles inside a square and watch c² become a² + b².',
+  blurb: 'Slide triangles inside a square and watch c² become a² + b².',
   thumb(c, p) {
     const a = 3, b = 4, s = 7, pal = p.pal; p.cx = 3.5; p.cy = 3.5; p.span = 4.3;
     p.path([[0,0],[s,0],[s,s],[0,s]], { fill: alpha(pal.yellow, .26) });
@@ -2462,7 +2462,7 @@ register({
       choices: ['7', '13', '17', '169'], answer: 1,
       why: String.raw`\(5^2+12^2 = 25+144 = 169 = 13^2\), so \(c = 13\).`,
       hint: String.raw`Add the squares of the legs first, then take a square root.` },
-    { q: 'Why does the tilted square have the same area as the two smaller squares?',
+    { q: 'Four copies of a right triangle (legs a and b, long side c) fit inside a square of side a + b and leave a tilted square of side c in the middle. Sliding three of the triangles shows that the same leftover area is also two squares, with sides a and b. Why does the tilted square have the same area as those two squares together?',
       choices: ['The triangles are all the same shape', 'The same four triangles and the same big square are used, so the leftover area is unchanged',
                 'Because c is the longest side', 'Because a and b are equal'], answer: 1,
       why: 'Only the positions of the triangles change. Total area minus the four triangles is the same in both arrangements.',
@@ -2903,7 +2903,7 @@ register({
     const upd = () => {
       const g = geo();
       ro.innerHTML = `<span class="k">Central angle</span> ${Math.round(g.len)}°<br>` +
-        `<span class="k">Inscribed angle APB</span> ${g.ins == null ? '—' : g.ins.toFixed(1) + '°'}<br><span class="k">Central ÷ inscribed</span> ${g.ins ? (g.len / g.ins).toFixed(2) : '—'}`;
+        `<span class="k">Inscribed angle APB</span> ${g.ins == null ? '–' : g.ins.toFixed(1) + '°'}<br><span class="k">Central ÷ inscribed</span> ${g.ins ? (g.len / g.ins).toFixed(2) : '–'}`;
     };
     const sync = () => { aS.set(mod(st.a)); bS.set(mod(st.b)); pS.set(mod(st.p)); P.draw(); upd(); };
     const edit = key => v => { cancel(); st[key] = v; P.requestDraw(); upd(); };
@@ -3391,7 +3391,7 @@ register({
       const upd = () => {
         const n = cum.length, s = n ? cum[n - 1] : 0;
         ro.innerHTML = `<span class="k">Trials</span> ${n.toLocaleString('en')} &nbsp; <span class="k">Successes</span> ${s.toLocaleString('en')}<br>` +
-          `<span class="k">Fraction</span> ${n ? (s / n).toFixed(3) : '—'} <span class="k">(p = ${num(st.p)})</span><br>` +
+          `<span class="k">Fraction</span> ${n ? (s / n).toFixed(3) : '–'} <span class="k">(p = ${num(st.p)})</span><br>` +
           `<span class="k">At least one in ${st.k}</span> ${(atLeast(st.p, st.k) * 100).toFixed(1)}%` + (sim && sim.p === st.p && sim.k === st.k ? ` <span class="k">(sim ${(sim.frac * 100).toFixed(1)}%)</span>` : '');
       };
       const draw = () => { P1.draw(); P2.draw(); upd(); };
@@ -3451,7 +3451,7 @@ register({
     hook: String.raw`Balls bounce left or right at random as they fall through a board of pegs. Why do they pile up in a smooth bell shape instead of spreading evenly?`,
     steps: [
       { title: 'Count the paths',
-        text: String.raw`<p>At every peg a ball goes left or right. The number on each peg counts the different paths that lead there. Each is the sum of the two numbers above it.</p><p>The bottom row, \(1,4,6,4,1\), is row 4 of <b>Pascal's triangle</b>. There are \(2^4=16\) paths in all.</p>`,
+        text: String.raw`<p>At every peg a ball goes left or right. The number on each peg counts the different paths that lead there. Each number is the sum of the two numbers above it.</p><p>The bottom row, \(1,4,6,4,1\), is row 4 of <b>Pascal's triangle</b>. There are \(2^4=16\) paths in all.</p>`,
         set: { rows: 4, p: .5, reset: true, nums: true, theory: false, drop: 0 } },
       { title: 'Drop some balls',
         text: String.raw`<p>Press <b>Drop 10</b> or <b>Drop 100</b>. The middle bin gets the most balls because \(6\) of the \(16\) paths end there, while each edge bin has only \(1\).</p><p>With equally likely paths, more paths means more balls.</p>`,
@@ -10797,7 +10797,7 @@ register({
         <tr><th style="text-align:left;padding:4px 14px 4px 0;font-weight:500">percent</th><td style="padding:4px 14px;border-bottom:1px solid var(--line-strong)">100</td><td style="padding:4px 14px;border-bottom:1px solid var(--line-strong)">50</td><td style="padding:4px 14px;border-bottom:1px solid var(--line-strong)">25</td><td style="padding:4px 14px;border-bottom:1px solid var(--line-strong)">5</td><td style="padding:4px 14px;border-bottom:1px solid var(--line-strong)">1</td></tr>
         <tr><th style="text-align:left;padding:4px 14px 4px 0;font-weight:500">dollars</th><td style="padding:4px 14px">60</td><td style="padding:4px 14px">30</td><td style="padding:4px 14px">15</td><td style="padding:4px 14px">3</td><td style="padding:4px 14px">0.60</td></tr>
       </table>
-      <p>Every column is the same ratio: divide both numbers in a column by the same number (here \(2\), then \(2\), then \(5\), then \(5\)) to get the next one. The third column says that \(25\%\) of \(\$60\) is \(\$15\).</p>
+      <p>Every column is the same ratio. Divide both numbers in a column by the same number (here \(2\), then \(2\), then \(5\), then \(5\)) to get the next column. The third column says that \(25\%\) of \(\$60\) is \(\$15\).</p>
       <h3>Finding the part</h3>
       <p>Part \(=\) percent (as a decimal) \(\times\) whole. For \(25\%\) of \(\$60\): cut into \(4\) pieces to get \(60 \div 4 = 15\), or compute \(0.25 \times 60 = 15\).</p>
       <p>When the percent is not a whole number of big pieces, build it. For \(35\%\) of \(\$80\): \(10\%\) is \(80 \div 10 = 8\), so \(30\%\) is \(3 \times 8 = 24\). Half of \(10\%\) is \(5\%\), which is \(4\). Then \(35\% = 24 + 4 = \$28\). For \(12\%\) of \(\$200\), find \(1\%\) first: \(200 \div 100 = 2\), so \(12\% = 12 \times 2 = \$24\).</p>
@@ -13480,7 +13480,7 @@ register({
     hook: String.raw`Which is colder, −8 °C or −3 °C? The number 8 is bigger than 3, so how can −8 be the smaller number?`,
     steps: [
       { title: 'Opposites and the meaning of 0',
-        text: String.raw`<p>Some numbers describe opposite directions. Above zero is positive. Below zero is negative. The marker shows 4 degrees below zero, so the temperature is −4 °C.</p><p>Its opposite is +4 °C, which is 4 degrees above zero. The dashed marker shows it: the same distance from 0, on the other side. Zero is the starting point between the two directions. On this thermometer it is the freezing point of water.</p><p>Drag the marker and try the other situations. Zero means something different in each one. Then press <b>Try a question</b>.</p>`,
+        text: String.raw`<p>Some numbers describe opposite directions. Above zero is positive. Below zero is negative. The marker shows 4 degrees below zero, so the temperature is −4 °C.</p><p>Its opposite is +4 °C, 4 degrees above zero. The dashed marker shows it: the same distance from 0, on the other side. Zero is the starting point between the two directions. On this thermometer it is the freezing point of water.</p><p>Drag the marker and try the other situations. Zero means something different in each one. Then press <b>Try a question</b>.</p>`,
         set: { mode: 'zero', ctx: 0, pos: -4 } },
       { title: 'Place numbers on the number line',
         text: String.raw`<p>Every number has a place on the number line, not only whole numbers. Positive numbers are to the right of 0. Negative numbers are to the left. The marker is at −2.5, which is also −2 1/2 and −5/2. Three names, one spot.</p><p>It is half way from −2 to −3, which is 2.5 steps to the left of 0. Drag the marker to see decimals, mixed numbers and fractions. Then place the numbers in the questions.</p>`,
@@ -13489,7 +13489,7 @@ register({
         text: String.raw`<p>The number farther to the left is the lesser number. Marker A is at −8 and marker B is at −3. A is left of B, so −8&nbsp;&lt;&nbsp;−3. That looks odd because 8 is bigger than 3. But −8 is farther along the negative side, so it is farther left.</p><p>Now press <b>Distance from 0</b> for a second idea. The <b>absolute value</b> of a number is how far it is from 0. A distance is never negative, so |−8| = 8. Drag the markers, then try the questions.</p>`,
         set: { mode: 'compare', pos: -8, pb: -3 } },
       { title: 'Plot points on a coordinate grid',
-        text: String.raw`<p>Two number lines that cross at 0 make a coordinate grid. A point has two numbers, written (x, y). The first number, x, tells how far to go right or left. The second number, y, tells how far to go up or down.</p><p>The point (−2.5, 1.5) is 2.5 to the left and 1.5 up. That puts it in Quadrant II, where x is negative and y is positive. The four quadrants have these signs: I (+, +), II (−, +), III (−, −), IV (+, −).</p><p>Drag the point to see how the numbers change. The green line shows x and the red line shows y.</p>`,
+        text: String.raw`<p>Two number lines that cross at 0 make a coordinate grid. A point is written (x, y). The first number, x, tells how far to go right or left. The second, y, tells how far to go up or down.</p><p>The point (−2.5, 1.5) is 2.5 to the left and 1.5 up. That puts it in Quadrant II, where x is negative and y is positive. The four quadrants have these signs: I (+, +), II (−, +), III (−, −), IV (+, −).</p><p>Drag the point to see how the numbers change. The green line shows x and the red line shows y.</p>`,
         set: { mode: 'grid', pos: -2.5, pb: 1.5 } }
     ],
     formal: String.raw`
@@ -14763,7 +14763,7 @@ register({
     hook: String.raw`A bike costs $200. The shop adds 20%, then takes 20% off. Is the bike back to $200?`,
     steps: [
       { title: 'Plus 20%, minus 20%',
-        text: String.raw`<p>A bike shop buys a bike for $200 and marks the price up by 20%. The markup is 20% of $200 = $40, so the tag says $240. Then the bike goes on sale for 20% off.</p><p>The sale takes 20% off the price on the tag, which is $240. That is 20% of $240 = $48, so a customer pays $192. It is not back at $200, because the second 20% is a part of a bigger amount.</p><p>A multiplier does each step in one move. Markup: × 1.20. Sale: × 0.80. Both together: 1.20 × 0.80 = 0.96, and 0.96 × $200 = $192. Press <b>Try it yourself</b> to pick the multipliers.</p>`,
+        text: String.raw`<p>A bike shop buys a bike for $200 and marks the price up by 20%. The markup is 20% of $200 = $40, so the tag says $240. Then the bike goes on sale for 20% off the tag price, $240. That is 20% of $240 = $48, so a customer pays $192. It is not back at $200, because the second 20% is a part of a bigger amount.</p><p>A multiplier does each step in one move. Markup: × 1.20. Sale: × 0.80. Both together: 1.20 × 0.80 = 0.96, and 0.96 × $200 = $192. Press <b>Try it yourself</b> to pick the multipliers.</p>`,
         set: { mode: 'chain', pi: 0, show: true } },
       { title: 'Percent change: use the old amount',
         text: String.raw`<p>A video game costs $40 in March and $50 in April. The price changed by $50 − $40 = $10.</p><p>A percent change compares the change with the old price, where the price started. $10 ÷ $40 = 0.25, so the price went up 25%. The label on the new bar says +25% of $40 = +$10.</p><p>The dashed red bar shows a common mistake. If you divide by the new price, you get $10 ÷ $50 = 20%. But 20% of $40 is only $8, which would make the new price $48, not $50.</p>`,
@@ -14802,7 +14802,7 @@ register({
       <p>A <em>fee</em> is a flat amount of money, such as \(\$4\) per ticket. As a percent of the price it changes: \(\dfrac{4}{20} = 20\%\) for a \(\$20\) ticket and \(\dfrac{4}{50} = 8\%\) for a \(\$50\) ticket. A <em>commission</em> is a percent of sales: commission \(=\) rate \(\times\) sales. A tip is a percent of the bill. If you know the commission, the sales are commission \(\div\) rate: \(24 \div 0.08 = \$300\).</p>
       <h3>Percent error</h3>
       <p>\[ \text{percent error} = \frac{|\text{measured} - \text{true}|}{\text{true}} \times 100\%. \]
-      The vertical bars in the top mean "the size of", so the error is never negative. Divide by the <em>true</em> value, the standard. A rope that is truly \(50\) cm and measures \(40\) cm has an error of \(10\) cm and a percent error of \(\dfrac{10}{50} = 20\%\). It has the same shape as percent change, with the true value as the base and the direction ignored.</p>
+      The vertical bars in the top of the fraction mean "the size of", so the error is never negative. Divide by the <em>true</em> value, the standard. A rope that is truly \(50\) cm and measures \(40\) cm has an error of \(10\) cm and a percent error of \(\dfrac{10}{50} = 20\%\). It has the same shape as percent change, with the true value as the base and the direction ignored.</p>
       <h3>Sales tax and income tax</h3>
       <p><em>Sales tax</em> is a percent of the price of something you buy. The register adds it: total \(=\) price \(\times\) \((1 + \text{rate})\). A \(\$25\) notebook with \(8\%\) sales tax costs \(\$27\). <em>Income tax</em> is a percent of the wages a person earns. The employer withholds it from each paycheck, so take-home pay \(=\) gross pay \(-\) tax withheld. With gross pay of \(\$400\) and \(15\%\) withheld, the tax is \(\$60\) and the take-home pay is \(\$340\), which is \(85\%\) of the gross pay.</p>
       <h3>The whole, the part and the percent</h3>
@@ -15382,7 +15382,7 @@ register({
       const P = new Plane(stage, { span: 5 }), cv = P.canvas;
       if (P.coordEl) P.coordEl.style.display = 'none';
       cv.tabIndex = 0; cv.setAttribute('role', 'img');
-      cv.setAttribute('aria-label', 'Matrices drawn as bracketed grids. Tap a cell, a row or a column on the canvas, or answer in the panel beside it. The panel reads out each number and explains each answer.');
+      cv.setAttribute('aria-label', 'Matrices drawn as bracketed grids. Tap a cell, a row or a column in the picture, or answer in the panel beside it. The panel reads out each number and explains each answer.');
 
       /* ---------- state ---------- */
       const st = {
@@ -17008,7 +17008,7 @@ register({
         text: String.raw`<p>Now a stretch of the number line is wrapped into a spiral around a clock with \(5\) positions. Every integer on the spiral sits above its remainder. Drag the number \(x\), the one with the brass ring. Here \(x=-3\) and \(-3 \bmod 5 = 2\).</p><p>All numbers on one spoke have the same remainder. Then use <b>Practice</b>: read the remainder yourself, or decide if \(a \equiv b \pmod{5}\) is true or false.</p>`,
         set: { mode: 'cong', n: 5, x: -3, practice: 'explore' } },
       { title: 'Tables, inverses and zero divisors',
-        text: String.raw`<p>This table shows \(a \times b\) with the remainder mod \(7\). Row \(a\), column \(b\). Click any cell to see how it is worked out.</p><p>An <b>inverse</b> of \(a\) is a number \(x\) with \(a\times x=1\) (mod \(7\) here). Mark every number that has one, then press Check. Then change the modulus to \(6\) and look again. Try the other tasks: zero divisors, and solving equations by scanning a row, for example \(3x\equiv 1\) at modulus \(7\), and \(4x\equiv 2\) at modulus \(6\), where there are two solutions.</p>`,
+        text: String.raw`<p>This table shows \(a \times b\) with the remainder mod \(7\). Row \(a\), column \(b\). Click any cell to see how it is worked out.</p><p>An <b>inverse</b> of \(a\) is a number \(x\) with \(a\times x=1\) (mod \(7\) here). Mark every number that has one, then press Check. Then change the modulus to \(6\) and look again. Try the other tasks: zero divisors, and solving an equation by scanning a row (for example \(3x\equiv 1\) at modulus \(7\), or \(4x\equiv 2\) at modulus \(6\), which has two solutions).</p>`,
         set: { mode: 'tab', n: 7, task: 'inv', op: 'mul', eqA: 3, eqB: 1 } },
       { title: 'Weeks and secret codes',
         text: String.raw`<p>Weeks repeat every \(7\) days. A day of the week is a number mod \(7\). Choose the modulus \(7\) with the slider, then find what day it will be.</p><p>Then switch the activity to the Caesar wheel. A shift of \(3\) turns A into D. When the shift runs past Z, it wraps around, mod \(26\). Encode a word, then decode a message by trying shifts.</p>`,
@@ -23874,7 +23874,7 @@ register({
       calc: 'C(10, 4) = 10 × 9 × 8 × 7 ÷ 4! = 5040 ÷ 24 = 210',
       calcWhy: 'Ordered draws: 10 × 9 × 8 × 7 = 5040. Each set of 4 numbers shows up in 4! = 24 orders, so there are 5040 ÷ 24 = 210 different tickets.',
       wrong: [[5040, '5040 = P(10, 4) counts ordered draws. Each set of 4 numbers is counted 24 times, so divide by 4! = 24.'],
-        [10000, '10⁴ = 10 000 lets numbers repeat and counts order.'],
+        [10000, '10⁴ = 10,000 lets numbers repeat and counts order.'],
         [40, '10 × 4 = 40 is not a counting rule here: the number of choices shrinks from draw to draw.']] }
   ];
   const TOOLS = [['MUL', 'Multiplication principle'], ['ADD', 'Addition principle'], ['P', 'Permutation P(n, r)'], ['C', 'Combination C(n, r)'], ['POW', 'Power n<sup>r</sup>']];
@@ -27747,7 +27747,7 @@ register({
     hook: 'How much paper does it take to wrap a box, and how can you be sure you counted every part of it?',
     steps: [
       { title: 'Unfold a box',
-        text: String.raw`<p>A gift box is 5 cm long, 3 cm wide and 4 cm tall. Its <b>surface area</b> is the total area of all its faces, the paper that covers it.</p><p>Answer <b>Predict</b>, then unfold the box into a <b>net</b>. Click each of the six faces to add its area. The total should reach \(94\).</p>`,
+        text: String.raw`<p>A gift box is 5 cm long, 3 cm wide and 4 cm tall. Its <b>surface area</b> is the total area of all its faces, the paper that covers it.</p><p>Answer the <b>Predict, then see</b> question, then unfold the box into a <b>net</b>. Click each of the six faces to add its area. The total should reach \(94\).</p>`,
         set: { solid: 'rect', l: 5, w: 3, h: 4, u: 0, rot: 30, sel: [] } },
       { title: 'A tent has triangles',
         text: String.raw`<p>A model tent is a triangular prism: two triangles and three rectangles. Each rectangle is as wide as one side of a triangle.</p><p>A triangle is half a rectangle, so each end is \(\tfrac12\times 6\times 4=12\). Click all five faces. The total should reach \(152\).</p>`,
@@ -34568,7 +34568,7 @@ register({
         ['The lines cross at a negative number of shirts, which is impossible. For every number of shirts that is 0 or more, the revenue is below the cost, so she never breaks even.', 'Negative shirts cannot be sold. For x = 0 or more, the revenue line stays below the cost line.']], ans: 3,
       eqs: [{ a: -5, b: 1, c: 60 }, { a: -4, b: 1, c: 0 }], xl: 'shirts', yl: 'dollars', view: { x0: -80, x1: 40, y0: -300, y1: 300, sx: 20, sy: 100 }, say: true },
     { name: 'Parallel plans', q: 'Plan A costs y = 15x + 40 dollars after x months. Plan B costs y = 15x + 25. After how many months do the two plans cost the same?',
-      ch: [['After 1 month.', 'At 1 month plan A costs 55 and plan B costs 40. They are still $15 apart.'],
+      ch: [['After 1 month.', 'At 1 month plan A costs $55 and plan B costs $40. They are still $15 apart.'],
         ['After 15 months.', '15 is the monthly price, not a number of months. At 15 months the plans are still $15 apart.'],
         ['They are the same plan.', 'The plans start at different amounts, 40 and 25, so they are different plans.'],
         ['Never: the monthly price is the same, so the $15 gap at the start never changes.', 'Setting 15x + 40 = 15x + 25 gives 40 = 25, which is false. The lines are parallel.']], ans: 3,
@@ -34594,7 +34594,7 @@ register({
     hook: String.raw`Gym A charges $45 to join and $20 a month. Gym B has no joining fee but charges $30 a month. Which gym should you pick, and when does your answer change?`,
     steps: [
       { title: 'Guess before you graph',
-        text: String.raw`<p>Gym A costs $45 to join and $20 a month. Gym B has no joining fee but costs $30 a month. Gym B costs more every month.</p><p>Make your prediction in the panel: will Gym B ever be the cheaper gym in total? Then the graph shows what happens, and you can move the prices.</p>`,
+        text: String.raw`<p>Gym A costs $45 to join and $20 a month. Gym B has no joining fee but costs $30 a month. Gym B has the higher monthly fee.</p><p>Make your prediction in the panel: will Gym B ever be the cheaper gym in total? Then the graph shows what happens, and you can move the prices.</p>`,
         set: { mode: 'predict', story: 'gym', stage: 0 } },
       { title: 'Name the unknowns, then build',
         text: String.raw`<p>A story is not an equation yet. First decide what you do not know, and give it a letter. Then build each equation from the story: click the phrase that gives each number.</p><p>Try it on the ticket story in the panel. Pick \(x\) and \(y\) first.</p>`,
@@ -34985,7 +34985,7 @@ register({
 
       /* ---------- predict ---------- */
       const renderPredict = () => {
-        const sd = ST.gym, S = SS.gym, els = [ttl('Predict first'), para('Gym B costs more every month. Will Gym B ever cost less than Gym A in total?')];
+        const sd = ST.gym, S = SS.gym, els = [ttl('Predict first'), para('Gym B has the higher monthly fee. Will Gym B ever cost less than Gym A in total?')];
         const OPT = [['Never: it costs more every month.', 'It costs more each month, but Gym A starts $45 higher. Watch the lines: the starting gap matters.'],
           ['Yes: for the first few months.', 'Gym B has no joining fee, so it starts at $0 while Gym A starts at $45. B is cheaper until the lines cross at 4.5 months. After that, A is cheaper.'],
           ['Yes: but only after many months.', 'It is the other way round. B costs more each month, so over time B falls behind. Its advantage is at the start, because Gym A charges a joining fee up front.']];
@@ -37363,7 +37363,7 @@ register({
             L.push(`${kk('Point')} ${pt(st.tx, st.ty)}`, `${kk('Test')} y &gt; 2x − 1.` + ' ' + howText(sc, st.tx, st.ty));
             if (onLine(sc, st.tx, st.ty)) L.push('This point is ON the line. It makes y = 2x − 1 true, but y &gt; 2x − 1 needs y to be strictly greater, so it is false.');
           } else L.push('Click or drag on the graph, or use the sliders, to test a point.');
-          L.push(`${kk('Tested')} ${tested.size} points: ${t} true (green dots), ${f} false (red crosses)` + (o ? `, ${o} exactly on the line.` : '.'));
+          L.push(`${kk('Tested')} ${tested.size} point${tested.size === 1 ? '' : 's'}: ${t} true (green dots), ${f} false (red crosses)` + (o ? `, ${o} exactly on the line.` : '.'));
           if (tested.size >= 12 && !st.showLine) L.push('Do the green and red dots form two groups? Turn on the boundary line to see what separates them.');
           if (st.showLine && !st.showShade && tested.size >= 12) L.push('The line separates the true points from the false ones. Turn on the shading to mark the whole true region.');
           return lines(L);
@@ -39300,10 +39300,10 @@ register({
            ['0 ≤ y ≤ 5', 'The 5 is the biggest x (the domain), not a height. The highest point on the graph is at height 4.']], ans: 1 },
     { name: 'Discrete or continuous?', view: { xa: -1, xb: 7, ya: -2, yb: 20, gx: 1, gy: 4 }, xl: 'muffins bought (x)', yl: 'cost in dollars', lab: 0,
       sc: (pv, ok) => ({ pieces: ok ? [0, 1, 2, 3, 4, 5, 6].map(k => pcs(k, k, 3, 0, 1, 1, { n: 'a dot' })) : [pcs(0, 6, 3, 0, 1, 1, { n: 'a line' })], marks: [] }),
-      q: 'Muffins cost $3 each and are sold whole. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The canvas shows the tempting graph, a solid line. Which statement is correct?',
+      q: 'Muffins cost $3 each and are sold whole. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The graph first shows a solid line, which is tempting. Which statement is correct?',
       ch: [['The graph is a solid line from 0 to 6, so 2.5 muffins would cost $7.50.', 'The rule 3x gives 7.5 at x = 2.5, but the bakery does not sell half a muffin here. The input is a count, so the points between whole numbers have no meaning.'],
            ['The graph is 7 separate dots, and the range is every number from 0 to 18.', 'The dots are at heights 0, 3, 6, 9, 12, 15, 18 only. A height like 4 can never happen, so the range is not every number.'],
-           ['The graph is 7 separate dots at x = 0 to 6, and the range is 0, 3, 6, 9, 12, 15, 18.', 'The input is a count, so only whole numbers 0 to 6 are valid: that is discrete. Each gives one cost, so there are seven outputs. The canvas now shows the dots.']], ans: 2 },
+           ['The graph is 7 separate dots at x = 0 to 6, and the range is 0, 3, 6, 9, 12, 15, 18.', 'The input is a count, so only whole numbers 0 to 6 are valid: that is discrete. Each gives one cost, so there are seven outputs. The graph now shows the dots.']], ans: 2 },
     { name: 'Absolute value as two pieces', view: { xa: -3, xb: 7, ya: -1, yb: 6, gx: 1, gy: 1 }, xl: 'x', yl: 'f(x)', lab: 0,
       sc: () => ({ pieces: [pcs(-INF, 2, -1, 2, 0, 0, { n: 'Piece 1' }), pcs(2, INF, 1, -2, 1, 0, { n: 'Piece 2' })], marks: [] }),
       q: 'f(x) = |x − 2| is the distance from x to 2. Which pair of rules is the same function?',
@@ -39318,7 +39318,7 @@ register({
       ch: [['k = 3', 'Piece 1 heads toward 2 × 3 = 6. Piece 2 starts at 3 + k, so 3 + k = 6 and k = 3. The pieces meet at (3, 6).'],
            ['k = 6', 'Then Piece 2 starts at 3 + 6 = 9, three higher than 6. There is a jump of 3 at x = 3. (6 is the height where they should meet, not k.)'],
            ['k = 0', 'Then Piece 2 starts at 3 + 0 = 3, which is 3 below 6. There is a jump of 3 down.'],
-           ['k = −3', 'Then Piece 2 starts at 3 − 3 = 0, which is 6 below 6. There is a big jump down.']], ans: 0,
+           ['k = −3', 'Then Piece 2 starts at 3 − 3 = 0, which is 6 below the height 6 where Piece 1 ends. There is a big jump down.']], ans: 0,
       pv: [[3], [6], [0], [-3]] }
   ];
 
@@ -39342,10 +39342,10 @@ register({
         text: String.raw`<p>A taxi charges a $3 flag fall plus $2 per mile for the first 3 miles. After that it charges $1 per mile. The graph bends at the <b>breakpoint</b>, 3 miles.</p><p>Blue is Rule 1 and red is Rule 2. Predict first, then drag the dot or use the slider. The rule in use is drawn thick. At 2 miles you pay $7.</p>`,
         set: { scene: 'taxi', x: 2 } },
       { title: 'Notation and open circles',
-        text: String.raw`<p>Now the rules have names: \(f(x)=2x\) when \(x&lt;3\), and \(f(x)=x+1\) when \(x\ge 3\). The sign \(&lt;\) leaves 3 out. The sign \(\ge\) keeps it in.</p><p>An <b>open circle</b> means that point is not used. A <b>closed dot</b> means it is used. At \(x=3\), choose the rule first, then the value.</p>`,
+        text: String.raw`<p>Here is a new function with named rules: \(f(x)=2x\) when \(x&lt;3\), and \(f(x)=x+1\) when \(x\ge 3\). The sign \(&lt;\) leaves 3 out. The sign \(\ge\) keeps it in.</p><p>An <b>open circle</b> means that point is not used. A <b>closed dot</b> means it is used. At \(x=3\), choose the rule first, then the value.</p>`,
         set: { scene: 'eval', x: 3 } },
       { title: 'Build one yourself',
-        text: String.raw`<p>Bike rental: $5 per hour for the first 3 hours, then $2 per hour. There is no start fee.</p><p>Set the breakpoint and the rule on each piece, then press Check. Watch the violet <b>gap</b> at the breakpoint. When the gap is 0 the pieces meet. When it is not, the cost would jump, and a bike rental has no jump.</p>`,
+        text: String.raw`<p>Bike rental: $5 per hour for the first 3 hours, then $2 per hour. There is no start fee.</p><p>Set the breakpoint and the rule on each piece, then press <b>Check my graph</b>. Watch the violet <b>gap</b> at the breakpoint. When the gap is 0 the pieces meet. When it is not, the cost would jump, and a bike rental has no jump.</p>`,
         set: { scene: 'build', task: 0, a: 2, m1: 4, b1: 0, m2: 1, b2: 0 } },
       { title: 'Step functions',
         text: String.raw`<p>Parking costs $3 for each hour or part of an hour. A <b>step function</b> stays flat, then jumps.</p><p>At 2.5 hours you pay $9, because part of the third hour counts as a whole one. Each step has an open circle on its left end and a closed dot on its right. Press the x = 3 and x = 3.01 buttons and say why the cost jumps. Then explore the scene menu.</p>`,
@@ -39372,7 +39372,7 @@ register({
       \[ |t|=\begin{cases} t & \text{if } t\ge 0,\\ -t & \text{if } t&lt;0. \end{cases} \]
       Putting \(t=x-a\) gives \(|x-a|=x-a\) when \(x\ge a\), and \(-(x-a)=a-x\) when \(x&lt;a\). The breakpoint is where \(x-a\) changes sign, at \(x=a\), and it is the distance from \(x\) to \(a\) on the number line. For \(f(x)=|x-2|+1\), the pieces are \(f(x)=-x+3\) for \(x&lt;2\) and \(f(x)=x-1\) for \(x\ge 2\), which meet at the corner \((2,1)\). The domain is every real number and the range is \([1,\infty)\).</p>`,
     check: [
-      { q: 'A piecewise function has an open circle at (2, 3) and a closed dot at (2, 6) on its graph. Both are above x = 2. What is f(2)?',
+      { q: 'The graph of a piecewise function shows an open circle at (2, 3) and a closed dot at (2, 6). Both are above x = 2. What is f(2)?',
         choices: ['f(2) = 3, because the first point drawn is the output', 'f(2) is undefined, because there are two points above x = 2', 'f(2) = 6, because the closed dot is the point that is used', 'f(2) = 9, because both points count and you add them'], answer: 2,
         why: String.raw`A function has exactly one output for each input. An open circle means "this point is not used" and a closed dot means "this point is used". So the only point on the graph above \(x=2\) is the closed dot, and \(f(2)=6\). The open circle only shows where the other piece stops.`,
         hint: 'Which of the two marks says "this point is used"? Only one point can be on the graph above x = 2.' },
@@ -39383,7 +39383,7 @@ register({
       { q: 'Dana rewrites |x − 3| as two pieces: "x − 3 when x ≥ 0, and 3 − x when x < 0". Which statement about her answer is true?',
         choices: ['It is correct, because |x| changes rule at 0.', 'It is wrong, because |x − 3| = x − 3 for every x.', 'It is wrong, because 3 − x should be x + 3.', 'It is wrong, because the rule changes where x − 3 changes sign, at x = 3, not at 0.'], answer: 3,
         why: String.raw`The expression inside the bars is \(x-3\), and it changes sign at \(x=3\). So \(|x-3|=x-3\) for \(x\ge 3\) and \(3-x\) for \(x&lt;3\). Test \(x=1\): \(|1-3|=2\), but Dana's first rule gives \(1-3=-2\), and a distance cannot be negative. The split at 0 only works for \(|x|\), with nothing subtracted inside.`,
-        hint: 'Try x = 1 in both the original and in Dana’s first rule. Where does x − 3 change from negative to positive?' }
+        hint: 'Try x = 1 in both the original and in Dana\'s first rule. Where does x − 3 change from negative to positive?' }
     ],
     links: { prereq: ['absolute-value-equations-and-inequalities', 'what-is-a-function', 'domain-and-range-of-functions'], related: ['functions-as-transformations', 'slope-and-linear-functions', 'forms-of-a-linear-equation', 'sequences-recursive-and-explicit', 'exponential-growth'] },
 
@@ -40203,7 +40203,7 @@ register({
     hook: String.raw`A row of toothpick squares uses 4 sticks for one square, 7 for two and 10 for three. How many sticks does a row of 100 squares need, and how can you know without building it?`,
     steps: [
       { title: 'Predict, then build',
-        text: String.raw`<p>Each figure is a row of toothpick squares. Figures 1 to 4 use \(4, 7, 10\) and \(13\) sticks.</p><p>Predict Figure 5. Then click the dotted slots to build it and count. After that, predict Figure 10 and drag the <b>Figure</b> slider to check.</p>`,
+        text: String.raw`<p>Each figure is a row of toothpick squares. Figures 1 to 4 use \(4, 7, 10\) and \(13\) sticks.</p><p>Predict Figure 5. Then click the dotted slots to build it and count. After that, predict Figure 10 and drag the <b>Figure n</b> slider to check.</p>`,
         set: { pat: 0, view: 'build', n: 5 } },
       { title: 'How is it changing?',
         text: String.raw`<p>Look at what is <b>new</b> from one figure to the next. Predict first: will the new part stay the same size?</p><p>Then the new sticks turn green and the table shows the change. A change that is always the same means a <b>linear</b> pattern. Try the staircase in the pattern menu.</p>`,
@@ -40250,7 +40250,7 @@ register({
       { q: 'Mia has the counts 6, 10, 14 and 18 for Figures 1 to 4. She says: "The rate is 4 and the start is 6, so the nth term is 6 + 4n." Which statement is true?',
         choices: ['Mia is right: 6 + 4n gives 10, 14, 18, which are the next counts.', 'The rate is wrong. It should be 6, the first count.', 'Mia has used n instead of n − 1. The rule should be 6 + 4(n − 1), which is 4n + 2.', 'The start is not needed. The rule should be 4n.'], answer: 2,
         why: String.raw`Test Figure 1: \(6+4(1)=10\), but Figure 1 has 6 dots. Mia's rule is one step ahead. The 6 belongs to Figure 1, so only \(n-1\) steps of 4 come after it: \(6+4(n-1)=4n+2\). Check: \(4(1)+2=6\) and \(4(2)+2=10\). The rate 4 is right. \(4n\) alone would give 4 for Figure 1.`,
-        hint: 'Put n = 1 into Mia’s rule. Does it give the count of Figure 1?' }
+        hint: 'Put n = 1 into Mia\'s rule. Does it give the count of Figure 1?' }
     ],
     links: { prereq: ['slope-and-linear-functions', 'what-is-a-function'], next: ['sequences-recursive-and-explicit'], related: ['exponential-growth', 'forms-of-a-linear-equation', 'variables-and-relationships', 'solving-equations-with-a-balance', 'proportional-relationships'] },
 
@@ -40388,7 +40388,7 @@ register({
           const k2 = ak(kd), a2 = st.ans[k2]; if (a2 === undefined) return '';
           const D2 = PRED[st.pat][kd], right = a2 === D2.a, rev = kd === 'chg' || (kd === 'f5' && reveal5()) || (kd === 'f10' && st.n === 10);
           if (rev) return kk(kd === 'f5' ? 'Figure 5' : kd === 'f10' ? 'Figure 10' : 'Your prediction') + ' ' + (right ? good('Right.') : bad('Not quite.')) + ' ' + D2.o[a2][1];
-          return `You predicted ${D2.o[a2][0]}. ` + (kd === 'f5' ? (cur().nested ? 'Now build Figure 5: click the dotted slots, or press Add a piece, and count.' : 'Now set the Figure slider to 5 and count the tiles.') : 'Now set the Figure slider to 10 to check.');
+          return `You predicted ${D2.o[a2][0]}. ` + (kd === 'f5' ? (cur().nested ? 'Now build Figure 5: click the dotted slots, or press Add a piece, and count.' : 'Now set the Figure n slider to 5 and count the tiles.') : 'Now set the Figure n slider to 10 to check.');
         };
         const fb = st.view === 'chg' || st.view === 'change' ? fbFor('chg') : lines([fbFor('f5'), fbFor('f10')]);
         predFb.innerHTML = fb;
@@ -44817,7 +44817,7 @@ register({
       <p><b>The trap.</b> The rule \(\sqrt a\cdot\sqrt b=\sqrt{ab}\) is only safe when \(a\) and \(b\) are not negative. If you use it on \(\sqrt{-4}\cdot\sqrt{-9}\) you get \(\sqrt{36}=6\), which is wrong. Put \(i\) first:
       \[ \sqrt{-4}\cdot\sqrt{-9}=2i\cdot3i=6i^2=-6. \]</p>
       <h3>Powers of i</h3>
-      <p>\(i¹=i\), \(i^2=-1\), \(i^3=i^2\cdot i=-i\), \(i^4=i^2\cdot i^2=1\). Then \(i^5=i^4\cdot i=i\), and everything repeats with period 4. So \(i^n=i^r\), where \(r\) is the remainder when \(n\) is divided by 4. Example: \(103=4\cdot25+3\), so
+      <p>\(i^1=i\), \(i^2=-1\), \(i^3=i^2\cdot i=-i\), \(i^4=i^2\cdot i^2=1\). Then \(i^5=i^4\cdot i=i\), and everything repeats with period 4. So \(i^n=i^r\), where \(r\) is the remainder when \(n\) is divided by 4. Example: \(103=4\cdot25+3\), so
       \[ i^{103}=(i^4)^{25}\cdot i^3=1\cdot(-i)=-i. \]</p>
       <h3>The complex plane</h3>
       <p>Draw the number \(a+bi\) as the point \((a,b)\). The horizontal axis is the <em>real axis</em> (the real numbers). The vertical axis is the <em>imaginary axis</em> (multiples of \(i\)). Then \(3-2i\) is the point \((3,-2)\), the number \(-4\) is \((-4,0)\) and \(2i\) is \((0,2)\).</p>
@@ -47099,7 +47099,7 @@ register({
       \[ \alpha_k=\frac{\varphi+360^\circ k}{n},\qquad k=0,1,\dots,n-1. \]
       Taking \(k=n\) adds a full turn to \(\alpha\) and repeats the first root, so there are exactly \(n\) roots: \(n\) equally spaced points on the circle of radius \(\sqrt[n]{R}\), the first at angle \(\varphi/n\). Slips to avoid: the root's angle is \(\varphi/n\) (not \(n\varphi\)), and its modulus is \(\sqrt[n]{R}\) (not \(R/n\)).</p>
       <p><b>Roots of unity</b> (\(R=1,\ \varphi=0\)): \(z_k=\cos\tfrac{360^\circ k}{n}+i\sin\tfrac{360^\circ k}{n}\). For \(n=3\): \(1,\ -\tfrac12\pm\tfrac{\sqrt3}{2}i\). For \(n=4\): \(1,\ i,\ -1,\ -i\). Cubing a cube root gives back \(1\): \(\big(\cos120^\circ+i\sin120^\circ\big)^3=\cos360^\circ+i\sin360^\circ=1\).</p>
-      <p><b>The roots add to zero</b> (for \(n\ge2\)). Let \(\omega\) be the root at angle \(360^\circ/n\); the roots are \(1,\omega,\dots,\omega^{n-1}\). Then \((1-\omega)(1+\omega+\dots+\omega^{n-1})=1-\omega^n=0\), and \(\omega\ne1\), so the sum is \(0\). In the picture, the polygon balances on its centre.</p>
+      <p><b>The roots add to zero</b> (for \(n\ge2\)). Let \(\omega\) be the root at angle \(360^\circ/n\); the roots are \(1,\omega,\dots,\omega^{n-1}\). Then \((1-\omega)(1+\omega+\dots+\omega^{n-1})=1-\omega^n=0\), and \(\omega\ne1\), so the sum is \(0\). In the picture, the polygon balances on its center.</p>
       <p><b>Examples.</b> Cube roots of \(8\): \(\rho=2\) and angles \(0^\circ,120^\circ,240^\circ\), so \(2,\ -1+\sqrt3\,i,\ -1-\sqrt3\,i\). Fourth roots of \(-16\): \(\rho=2\), first angle \(180^\circ/4=45^\circ\), then \(135^\circ,225^\circ,315^\circ\): the four numbers \(\pm\sqrt2\pm\sqrt2\,i\). Check one: \((\sqrt2+\sqrt2\,i)^4\) has modulus \(2^4=16\) and angle \(4\cdot45^\circ=180^\circ\), which is \(-16\).</p>
       <h3>A notation for later</h3>
       <p>The expression \(\cos\theta+i\sin\theta\) is written \(e^{i\theta}\). Then the rule above reads \(e^{it_1}e^{it_2}=e^{i(t_1+t_2)}\), like a law of exponents. Here this is only a notation; why it is justified comes later, in Euler's formula.</p>`,

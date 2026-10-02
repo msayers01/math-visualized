@@ -172,7 +172,7 @@
       <p><b>The trap.</b> The rule \(\sqrt a\cdot\sqrt b=\sqrt{ab}\) is only safe when \(a\) and \(b\) are not negative. If you use it on \(\sqrt{-4}\cdot\sqrt{-9}\) you get \(\sqrt{36}=6\), which is wrong. Put \(i\) first:
       \[ \sqrt{-4}\cdot\sqrt{-9}=2i\cdot3i=6i^2=-6. \]</p>
       <h3>Powers of i</h3>
-      <p>\(i¹=i\), \(i^2=-1\), \(i^3=i^2\cdot i=-i\), \(i^4=i^2\cdot i^2=1\). Then \(i^5=i^4\cdot i=i\), and everything repeats with period 4. So \(i^n=i^r\), where \(r\) is the remainder when \(n\) is divided by 4. Example: \(103=4\cdot25+3\), so
+      <p>\(i^1=i\), \(i^2=-1\), \(i^3=i^2\cdot i=-i\), \(i^4=i^2\cdot i^2=1\). Then \(i^5=i^4\cdot i=i\), and everything repeats with period 4. So \(i^n=i^r\), where \(r\) is the remainder when \(n\) is divided by 4. Example: \(103=4\cdot25+3\), so
       \[ i^{103}=(i^4)^{25}\cdot i^3=1\cdot(-i)=-i. \]</p>
       <h3>The complex plane</h3>
       <p>Draw the number \(a+bi\) as the point \((a,b)\). The horizontal axis is the <em>real axis</em> (the real numbers). The vertical axis is the <em>imaginary axis</em> (multiples of \(i\)). Then \(3-2i\) is the point \((3,-2)\), the number \(-4\) is \((-4,0)\) and \(2i\) is \((0,2)\).</p>

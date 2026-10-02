@@ -98,7 +98,7 @@ register({
     const upd = () => {
       const g = geo();
       ro.innerHTML = `<span class="k">Central angle</span> ${Math.round(g.len)}°<br>` +
-        `<span class="k">Inscribed angle APB</span> ${g.ins == null ? '—' : g.ins.toFixed(1) + '°'}<br><span class="k">Central ÷ inscribed</span> ${g.ins ? (g.len / g.ins).toFixed(2) : '—'}`;
+        `<span class="k">Inscribed angle APB</span> ${g.ins == null ? '–' : g.ins.toFixed(1) + '°'}<br><span class="k">Central ÷ inscribed</span> ${g.ins ? (g.len / g.ins).toFixed(2) : '–'}`;
     };
     const sync = () => { aS.set(mod(st.a)); bS.set(mod(st.b)); pS.set(mod(st.p)); P.draw(); upd(); };
     const edit = key => v => { cancel(); st[key] = v; P.requestDraw(); upd(); };

@@ -211,10 +211,10 @@
            ['0 ≤ y ≤ 5', 'The 5 is the biggest x (the domain), not a height. The highest point on the graph is at height 4.']], ans: 1 },
     { name: 'Discrete or continuous?', view: { xa: -1, xb: 7, ya: -2, yb: 20, gx: 1, gy: 4 }, xl: 'muffins bought (x)', yl: 'cost in dollars', lab: 0,
       sc: (pv, ok) => ({ pieces: ok ? [0, 1, 2, 3, 4, 5, 6].map(k => pcs(k, k, 3, 0, 1, 1, { n: 'a dot' })) : [pcs(0, 6, 3, 0, 1, 1, { n: 'a line' })], marks: [] }),
-      q: 'Muffins cost $3 each and are sold whole. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The canvas shows the tempting graph, a solid line. Which statement is correct?',
+      q: 'Muffins cost $3 each and are sold whole. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The graph first shows a solid line, which is tempting. Which statement is correct?',
       ch: [['The graph is a solid line from 0 to 6, so 2.5 muffins would cost $7.50.', 'The rule 3x gives 7.5 at x = 2.5, but the bakery does not sell half a muffin here. The input is a count, so the points between whole numbers have no meaning.'],
            ['The graph is 7 separate dots, and the range is every number from 0 to 18.', 'The dots are at heights 0, 3, 6, 9, 12, 15, 18 only. A height like 4 can never happen, so the range is not every number.'],
-           ['The graph is 7 separate dots at x = 0 to 6, and the range is 0, 3, 6, 9, 12, 15, 18.', 'The input is a count, so only whole numbers 0 to 6 are valid: that is discrete. Each gives one cost, so there are seven outputs. The canvas now shows the dots.']], ans: 2 },
+           ['The graph is 7 separate dots at x = 0 to 6, and the range is 0, 3, 6, 9, 12, 15, 18.', 'The input is a count, so only whole numbers 0 to 6 are valid: that is discrete. Each gives one cost, so there are seven outputs. The graph now shows the dots.']], ans: 2 },
     { name: 'Absolute value as two pieces', view: { xa: -3, xb: 7, ya: -1, yb: 6, gx: 1, gy: 1 }, xl: 'x', yl: 'f(x)', lab: 0,
       sc: () => ({ pieces: [pcs(-INF, 2, -1, 2, 0, 0, { n: 'Piece 1' }), pcs(2, INF, 1, -2, 1, 0, { n: 'Piece 2' })], marks: [] }),
       q: 'f(x) = |x − 2| is the distance from x to 2. Which pair of rules is the same function?',
@@ -229,7 +229,7 @@
       ch: [['k = 3', 'Piece 1 heads toward 2 × 3 = 6. Piece 2 starts at 3 + k, so 3 + k = 6 and k = 3. The pieces meet at (3, 6).'],
            ['k = 6', 'Then Piece 2 starts at 3 + 6 = 9, three higher than 6. There is a jump of 3 at x = 3. (6 is the height where they should meet, not k.)'],
            ['k = 0', 'Then Piece 2 starts at 3 + 0 = 3, which is 3 below 6. There is a jump of 3 down.'],
-           ['k = −3', 'Then Piece 2 starts at 3 − 3 = 0, which is 6 below 6. There is a big jump down.']], ans: 0,
+           ['k = −3', 'Then Piece 2 starts at 3 − 3 = 0, which is 6 below the height 6 where Piece 1 ends. There is a big jump down.']], ans: 0,
       pv: [[3], [6], [0], [-3]] }
   ];
 
@@ -253,10 +253,10 @@
         text: String.raw`<p>A taxi charges a $3 flag fall plus $2 per mile for the first 3 miles. After that it charges $1 per mile. The graph bends at the <b>breakpoint</b>, 3 miles.</p><p>Blue is Rule 1 and red is Rule 2. Predict first, then drag the dot or use the slider. The rule in use is drawn thick. At 2 miles you pay $7.</p>`,
         set: { scene: 'taxi', x: 2 } },
       { title: 'Notation and open circles',
-        text: String.raw`<p>Now the rules have names: \(f(x)=2x\) when \(x&lt;3\), and \(f(x)=x+1\) when \(x\ge 3\). The sign \(&lt;\) leaves 3 out. The sign \(\ge\) keeps it in.</p><p>An <b>open circle</b> means that point is not used. A <b>closed dot</b> means it is used. At \(x=3\), choose the rule first, then the value.</p>`,
+        text: String.raw`<p>Here is a new function with named rules: \(f(x)=2x\) when \(x&lt;3\), and \(f(x)=x+1\) when \(x\ge 3\). The sign \(&lt;\) leaves 3 out. The sign \(\ge\) keeps it in.</p><p>An <b>open circle</b> means that point is not used. A <b>closed dot</b> means it is used. At \(x=3\), choose the rule first, then the value.</p>`,
         set: { scene: 'eval', x: 3 } },
       { title: 'Build one yourself',
-        text: String.raw`<p>Bike rental: $5 per hour for the first 3 hours, then $2 per hour. There is no start fee.</p><p>Set the breakpoint and the rule on each piece, then press Check. Watch the violet <b>gap</b> at the breakpoint. When the gap is 0 the pieces meet. When it is not, the cost would jump, and a bike rental has no jump.</p>`,
+        text: String.raw`<p>Bike rental: $5 per hour for the first 3 hours, then $2 per hour. There is no start fee.</p><p>Set the breakpoint and the rule on each piece, then press <b>Check my graph</b>. Watch the violet <b>gap</b> at the breakpoint. When the gap is 0 the pieces meet. When it is not, the cost would jump, and a bike rental has no jump.</p>`,
         set: { scene: 'build', task: 0, a: 2, m1: 4, b1: 0, m2: 1, b2: 0 } },
       { title: 'Step functions',
         text: String.raw`<p>Parking costs $3 for each hour or part of an hour. A <b>step function</b> stays flat, then jumps.</p><p>At 2.5 hours you pay $9, because part of the third hour counts as a whole one. Each step has an open circle on its left end and a closed dot on its right. Press the x = 3 and x = 3.01 buttons and say why the cost jumps. Then explore the scene menu.</p>`,
@@ -283,7 +283,7 @@
       \[ |t|=\begin{cases} t & \text{if } t\ge 0,\\ -t & \text{if } t&lt;0. \end{cases} \]
       Putting \(t=x-a\) gives \(|x-a|=x-a\) when \(x\ge a\), and \(-(x-a)=a-x\) when \(x&lt;a\). The breakpoint is where \(x-a\) changes sign, at \(x=a\), and it is the distance from \(x\) to \(a\) on the number line. For \(f(x)=|x-2|+1\), the pieces are \(f(x)=-x+3\) for \(x&lt;2\) and \(f(x)=x-1\) for \(x\ge 2\), which meet at the corner \((2,1)\). The domain is every real number and the range is \([1,\infty)\).</p>`,
     check: [
-      { q: 'A piecewise function has an open circle at (2, 3) and a closed dot at (2, 6) on its graph. Both are above x = 2. What is f(2)?',
+      { q: 'The graph of a piecewise function shows an open circle at (2, 3) and a closed dot at (2, 6). Both are above x = 2. What is f(2)?',
         choices: ['f(2) = 3, because the first point drawn is the output', 'f(2) is undefined, because there are two points above x = 2', 'f(2) = 6, because the closed dot is the point that is used', 'f(2) = 9, because both points count and you add them'], answer: 2,
         why: String.raw`A function has exactly one output for each input. An open circle means "this point is not used" and a closed dot means "this point is used". So the only point on the graph above \(x=2\) is the closed dot, and \(f(2)=6\). The open circle only shows where the other piece stops.`,
         hint: 'Which of the two marks says "this point is used"? Only one point can be on the graph above x = 2.' },
@@ -294,7 +294,7 @@
       { q: 'Dana rewrites |x − 3| as two pieces: "x − 3 when x ≥ 0, and 3 − x when x < 0". Which statement about her answer is true?',
         choices: ['It is correct, because |x| changes rule at 0.', 'It is wrong, because |x − 3| = x − 3 for every x.', 'It is wrong, because 3 − x should be x + 3.', 'It is wrong, because the rule changes where x − 3 changes sign, at x = 3, not at 0.'], answer: 3,
         why: String.raw`The expression inside the bars is \(x-3\), and it changes sign at \(x=3\). So \(|x-3|=x-3\) for \(x\ge 3\) and \(3-x\) for \(x&lt;3\). Test \(x=1\): \(|1-3|=2\), but Dana's first rule gives \(1-3=-2\), and a distance cannot be negative. The split at 0 only works for \(|x|\), with nothing subtracted inside.`,
-        hint: 'Try x = 1 in both the original and in Dana’s first rule. Where does x − 3 change from negative to positive?' }
+        hint: 'Try x = 1 in both the original and in Dana\'s first rule. Where does x − 3 change from negative to positive?' }
     ],
     links: { prereq: ['absolute-value-equations-and-inequalities', 'what-is-a-function', 'domain-and-range-of-functions'], related: ['functions-as-transformations', 'slope-and-linear-functions', 'forms-of-a-linear-equation', 'sequences-recursive-and-explicit', 'exponential-growth'] },
 

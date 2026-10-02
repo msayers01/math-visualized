@@ -263,7 +263,7 @@
     hook: 'How much paper does it take to wrap a box, and how can you be sure you counted every part of it?',
     steps: [
       { title: 'Unfold a box',
-        text: String.raw`<p>A gift box is 5 cm long, 3 cm wide and 4 cm tall. Its <b>surface area</b> is the total area of all its faces, the paper that covers it.</p><p>Answer <b>Predict</b>, then unfold the box into a <b>net</b>. Click each of the six faces to add its area. The total should reach \(94\).</p>`,
+        text: String.raw`<p>A gift box is 5 cm long, 3 cm wide and 4 cm tall. Its <b>surface area</b> is the total area of all its faces, the paper that covers it.</p><p>Answer the <b>Predict, then see</b> question, then unfold the box into a <b>net</b>. Click each of the six faces to add its area. The total should reach \(94\).</p>`,
         set: { solid: 'rect', l: 5, w: 3, h: 4, u: 0, rot: 30, sel: [] } },
       { title: 'A tent has triangles',
         text: String.raw`<p>A model tent is a triangular prism: two triangles and three rectangles. Each rectangle is as wide as one side of a triangle.</p><p>A triangle is half a rectangle, so each end is \(\tfrac12\times 6\times 4=12\). Click all five faces. The total should reach \(152\).</p>`,

@@ -512,7 +512,7 @@
         ['The lines cross at a negative number of shirts, which is impossible. For every number of shirts that is 0 or more, the revenue is below the cost, so she never breaks even.', 'Negative shirts cannot be sold. For x = 0 or more, the revenue line stays below the cost line.']], ans: 3,
       eqs: [{ a: -5, b: 1, c: 60 }, { a: -4, b: 1, c: 0 }], xl: 'shirts', yl: 'dollars', view: { x0: -80, x1: 40, y0: -300, y1: 300, sx: 20, sy: 100 }, say: true },
     { name: 'Parallel plans', q: 'Plan A costs y = 15x + 40 dollars after x months. Plan B costs y = 15x + 25. After how many months do the two plans cost the same?',
-      ch: [['After 1 month.', 'At 1 month plan A costs 55 and plan B costs 40. They are still $15 apart.'],
+      ch: [['After 1 month.', 'At 1 month plan A costs $55 and plan B costs $40. They are still $15 apart.'],
         ['After 15 months.', '15 is the monthly price, not a number of months. At 15 months the plans are still $15 apart.'],
         ['They are the same plan.', 'The plans start at different amounts, 40 and 25, so they are different plans.'],
         ['Never: the monthly price is the same, so the $15 gap at the start never changes.', 'Setting 15x + 40 = 15x + 25 gives 40 = 25, which is false. The lines are parallel.']], ans: 3,
@@ -538,7 +538,7 @@
     hook: String.raw`Gym A charges $45 to join and $20 a month. Gym B has no joining fee but charges $30 a month. Which gym should you pick, and when does your answer change?`,
     steps: [
       { title: 'Guess before you graph',
-        text: String.raw`<p>Gym A costs $45 to join and $20 a month. Gym B has no joining fee but costs $30 a month. Gym B costs more every month.</p><p>Make your prediction in the panel: will Gym B ever be the cheaper gym in total? Then the graph shows what happens, and you can move the prices.</p>`,
+        text: String.raw`<p>Gym A costs $45 to join and $20 a month. Gym B has no joining fee but costs $30 a month. Gym B has the higher monthly fee.</p><p>Make your prediction in the panel: will Gym B ever be the cheaper gym in total? Then the graph shows what happens, and you can move the prices.</p>`,
         set: { mode: 'predict', story: 'gym', stage: 0 } },
       { title: 'Name the unknowns, then build',
         text: String.raw`<p>A story is not an equation yet. First decide what you do not know, and give it a letter. Then build each equation from the story: click the phrase that gives each number.</p><p>Try it on the ticket story in the panel. Pick \(x\) and \(y\) first.</p>`,
@@ -929,7 +929,7 @@
 
       /* ---------- predict ---------- */
       const renderPredict = () => {
-        const sd = ST.gym, S = SS.gym, els = [ttl('Predict first'), para('Gym B costs more every month. Will Gym B ever cost less than Gym A in total?')];
+        const sd = ST.gym, S = SS.gym, els = [ttl('Predict first'), para('Gym B has the higher monthly fee. Will Gym B ever cost less than Gym A in total?')];
         const OPT = [['Never: it costs more every month.', 'It costs more each month, but Gym A starts $45 higher. Watch the lines: the starting gap matters.'],
           ['Yes: for the first few months.', 'Gym B has no joining fee, so it starts at $0 while Gym A starts at $45. B is cheaper until the lines cross at 4.5 months. After that, A is cheaper.'],
           ['Yes: but only after many months.', 'It is the other way round. B costs more each month, so over time B falls behind. Its advantage is at the start, because Gym A charges a joining fee up front.']];

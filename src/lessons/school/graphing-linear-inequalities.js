@@ -613,7 +613,7 @@
             L.push(`${kk('Point')} ${pt(st.tx, st.ty)}`, `${kk('Test')} y &gt; 2x − 1.` + ' ' + howText(sc, st.tx, st.ty));
             if (onLine(sc, st.tx, st.ty)) L.push('This point is ON the line. It makes y = 2x − 1 true, but y &gt; 2x − 1 needs y to be strictly greater, so it is false.');
           } else L.push('Click or drag on the graph, or use the sliders, to test a point.');
-          L.push(`${kk('Tested')} ${tested.size} points: ${t} true (green dots), ${f} false (red crosses)` + (o ? `, ${o} exactly on the line.` : '.'));
+          L.push(`${kk('Tested')} ${tested.size} point${tested.size === 1 ? '' : 's'}: ${t} true (green dots), ${f} false (red crosses)` + (o ? `, ${o} exactly on the line.` : '.'));
           if (tested.size >= 12 && !st.showLine) L.push('Do the green and red dots form two groups? Turn on the boundary line to see what separates them.');
           if (st.showLine && !st.showShade && tested.size >= 12) L.push('The line separates the true points from the false ones. Turn on the shading to mark the whole true region.');
           return lines(L);

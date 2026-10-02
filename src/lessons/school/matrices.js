@@ -262,7 +262,7 @@
       const P = new Plane(stage, { span: 5 }), cv = P.canvas;
       if (P.coordEl) P.coordEl.style.display = 'none';
       cv.tabIndex = 0; cv.setAttribute('role', 'img');
-      cv.setAttribute('aria-label', 'Matrices drawn as bracketed grids. Tap a cell, a row or a column on the canvas, or answer in the panel beside it. The panel reads out each number and explains each answer.');
+      cv.setAttribute('aria-label', 'Matrices drawn as bracketed grids. Tap a cell, a row or a column in the picture, or answer in the panel beside it. The panel reads out each number and explains each answer.');
 
       /* ---------- state ---------- */
       const st = {
