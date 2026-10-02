@@ -101,15 +101,15 @@
     return X;
   };
   /* one interval drawn on a number line: bar, circles, arrow for infinity, bracket glyphs */
-  const piece = (c, p, B, X, s, col, { a = 1, r = 9, glyph = false, fs = 14, bar = 8 } = {}) => {
+  const piece = (c, p, B, X, s, col, { a = 1, r = 9, glyph = false, fs = 14, bar = 8, ring = true } = {}) => {
     if (isEmpty(s) || a <= .01) return;
     const xl = s.lo === -INF ? B.x0 - 8 : X(s.lo), xr = s.hi === INF ? B.x1 + 8 : X(s.hi), pt = s.lo === s.hi;
     c.globalAlpha = a;
     if (!pt) line(c, xl, B.y, xr, B.y, col, bar);
     if (s.lo === -INF) head(c, xl - 2, B.y, -1, 12, col);
     if (s.hi === INF) head(c, xr + 2, B.y, 1, 12, col);
-    if (s.lo !== -INF) circ(c, p, xl, B.y, r, col, s.lc);
-    if (s.hi !== INF && !pt) circ(c, p, xr, B.y, r, col, s.hc);
+    if (ring && s.lo !== -INF) circ(c, p, xl, B.y, r, col, s.lc);
+    if (ring && s.hi !== INF && !pt) circ(c, p, xr, B.y, r, col, s.hc);
     if (glyph) {
       const g = fs * 1.9;
       if (s.lo !== -INF) T(c, p, s.lc ? '[' : '(', xl, B.y - r - 14, { size: g, color: col, serif: true, halo: false });
@@ -197,7 +197,7 @@
       ch: [['The set of all x such that x is at most 4', '"At most 4" means x ≤ 4, which includes 4. The rule here is the strict x &lt; 4.'],
            ['The set that contains only the number 4', 'A rule after the bar describes many numbers. A set with only 4 in it would be written { 4 }.'],
            ['The set of all x such that x is less than 4', 'The bar means "such that", and the rule is x &lt; 4: every number below 4. The graph has an open circle at 4, because 4 is not less than 4.'],
-           ['The set of all x such that x is greater than 4', 'The symbol &lt; points at the smaller side, so x &lt; 4 means x is smaller than 4, not bigger.']] },
+           ['The set of all x such that x is greater than 4', 'x &lt; 4 reads "x is smaller than 4", so it does not mean bigger than 4.']] },
     { name: 'In or out', top: '{ x | −2 < x ≤ 5 }', rows: [{ lab: 'Graph', sets: [iv(-2, 5, false, true)], col: 'blue', rv: true }], ans: 1,
       q: 'True or false: −2 ∈ { x | −2 < x ≤ 5 }. (∈ means "is an element of".)',
       ch: [['True', 'Test −2 in the rule: is −2 &lt; −2? No, a number is not less than itself. So −2 fails the rule.'],
@@ -214,7 +214,7 @@
       q: 'Which graph shows (−∞, 2]? Each graph is also described in words on its button.',
       ch: [['Graph A: closed circle at 2, shaded to the right', 'That is [2, ∞): it starts at 2 and runs right. In (−∞, 2] the −∞ comes first, so the set runs from the far left up to 2.'],
            ['Graph B: closed circle at 2, shaded to the left', 'The −∞ end means the shading goes left forever. The ] after the 2 means 2 is included, so the circle is closed.'],
-           ['Graph C: open circle at 2, shaded to the left', 'The direction is right, but the bracket ] means 2 is included. The circle must be closed.'],
+           ['Graph C: open circle at 2, shaded to the left', 'The shading direction (left) is correct, but the bracket ] means 2 is included. The circle must be closed.'],
            ['Graph D: open circle at 2, shaded to the right', 'The direction is wrong and so is the circle. This one is (2, ∞).']] },
     { name: 'A bracket trap', top: '', rows: [{ lab: 'Graph of x ≥ 3', sets: [iv(3, INF, true, false)], col: 'blue' }], ans: 3,
       q: 'A student writes the set x ≥ 3 as [3, ∞]. What is wrong, and what is the fix?',
@@ -450,7 +450,7 @@
           const y0 = topH + i * rh, B = box(p, y0 + rh * .56, lo, hi);
           T(c, p, r.lab, 32, y0 + Math.min(20, rh * .2), { size: fs, align: 'left', weight: 700, color: r.col ? pal[r.col] : pal.text, halo: false });
           const X = axis(c, p, B, fs - .5, r.labels !== false);
-          (r.ghost || []).forEach(g => piece(c, p, B, X, g[0], pal[g[1]], { a: .22, bar: 6, r: 8 }));
+          (r.ghost || []).forEach(g => piece(c, p, B, X, g[0], pal[g[1]], { a: .22, bar: 6, r: 8, ring: false }));
           if (!r.hide) (r.sets || []).forEach(s => piece(c, p, B, X, s, pal[r.col || 'blue'], { fs, r: 8, bar: 7 }));
           if (r.hide) T(c, p, r.msg || '?', W / 2, B.y - rh * .22, { size: fs + 2, weight: 700, color: pal.muted, halo: false });
         });
@@ -582,7 +582,7 @@
         const opts = [['Only −1', 'Not quite. x > −1 does not allow −1, so that circle is open. It is 4 that x ≤ 4 allows.'],
           ['Only 4', ok('Yes.') + ' −1 &lt; x is strict, so −1 is not included: open circle, parenthesis. x ≤ 4 allows equal, so 4 is included: closed circle, square bracket. That gives (−1, 4].'],
           ['Both ends', 'Not quite. The left rule is −1 &lt; x with a strict symbol, so −1 is left out. Only 4 is included.'],
-          ['Neither end', 'Not quite. x ≤ 4 has a "or equal" part, so 4 is included. Only −1 is left out.']];
+          ['Neither end', 'Not quite. x ≤ 4 has an "or equal" part, so 4 is included. Only −1 is left out.']];
         opts.forEach((o, i) => gateRow.append(mkBtn(o[0], () => {
           if (st.gate) return;
           st.gate = true; st.gateAns = i; st.a = -1; st.b = 4; st.lc = false; st.hc = true;
@@ -593,6 +593,7 @@
         if (st.gate) { Array.from(gateRow.children).forEach((b, j) => { b.disabled = true; if (j === st.gateAns) b.classList.add('primary'); }); }
       };
       const stepEnd = (k, d) => {
+        gateFb.innerHTML = '';
         if (!st.gate) return;
         const L = k === 'a' ? LV : RV;
         let i = L.indexOf(st[k]) + d; i = clamp(i, 0, L.length - 1); st[k] = L[i];
@@ -600,7 +601,7 @@
         if (st.b === INF) st.hc = false;
         st.rev = 1; sync();
       };
-      const setBr = (k, v) => { if (!st.gate) return; if ((k === 'lc' && st.a === -INF) || (k === 'hc' && st.b === INF)) return; st[k] = v; sync(); };
+      const setBr = (k, v) => { gateFb.innerHTML = ''; if (!st.gate) return; if ((k === 'lc' && st.a === -INF) || (k === 'hc' && st.b === INF)) return; st[k] = v; sync(); };
       const ivText2 = () => {
         const s = curIv(), L = [];
         if (!st.gate) return 'Make your prediction first. Then the steppers and bracket buttons unlock.';

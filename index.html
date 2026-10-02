@@ -41388,7 +41388,7 @@ register({
     { lab: '3.14', set: 2, why: '3.14 = 314/100 = 157/50, a fraction of integers, so it is rational: Q. It is only an approximation of π, not π itself.' }
   ];
   const PRED = [
-    ['22/7', 'Not quite. 22/7 is a fraction of two integers, so it is rational. It only looks like π.'],
+    ['22/7', 'Not quite. 22/7 is a fraction of two integers, so it is rational. It only looks like π. The irrational one is √2: 2 is not a perfect square.'],
     ['√9', 'Not quite. √9 = 3, because 3 × 3 = 9. It is a whole number.'],
     ['0.333…', 'Not quite. The 3s repeat, and a repeating decimal is a fraction: 0.333… = 1/3.'],
     ['√2', good('Yes.') + ' 2 is not a perfect square, so √2 is irrational. Now sort all twelve numbers to see where the others belong.']
@@ -41538,7 +41538,7 @@ register({
       <h3>Why there are several kinds of numbers</h3>
       <p>Each set of numbers was made to solve equations that the smaller set could not:
       \[ \begin{aligned} x+3&=5 &&\Rightarrow\ x=2 &&\in \mathbb N=\{1,2,3,\dots\}\\ x+5&=2 &&\Rightarrow\ x=-3 &&\in \mathbb Z=\{\dots,-2,-1,0,1,2,\dots\}\\ 2x&=3 &&\Rightarrow\ x=\tfrac32 &&\in \mathbb Q\\ x^2&=2 &&\Rightarrow\ x=\pm\sqrt2 &&\in \mathbb R\\ x^2&=-1 &&\Rightarrow\ x=\pm i &&\in \mathbb C \end{aligned} \]
-      The <em>whole numbers</em> \(\mathbb W=\{0,1,2,\dots\}\) are the natural numbers together with \(0\). The <em>rational numbers</em> are all fractions \(\tfrac pq\) of integers with \(q\ne0\): \(\mathbb Q=\{\tfrac pq \mid p,q\in\mathbb Z,\ q\ne0\}\). The <em>real numbers</em> \(\mathbb R\) are all the points of the number line: the rational numbers and the irrational numbers together. The last equation has no real solution, because a real number squared is never negative. The <em>complex numbers</em> \(\mathbb C\) add a number \(i\) with \(i^2=-1\). This lesson only names them. Every number you meet in this course is real.</p>
+      The <em>whole numbers</em> \(\mathbb W=\{0,1,2,\dots\}\) are the natural numbers together with \(0\). The <em>rational numbers</em> are all fractions \(\tfrac pq\) of integers with \(q\ne0\): \(\mathbb Q=\{\tfrac pq \mid p,q\in\mathbb Z,\ q\ne0\}\). The <em>real numbers</em> \(\mathbb R\) are all the points of the number line: the rational numbers and the irrational numbers together. The last equation has no real solution, because a real number squared is never negative. The <em>complex numbers</em> \(\mathbb C\) add a number \(i\) with \(i^2=-1\). This lesson only names them. Almost every number you meet in this course is real.</p>
       <h3>Nested sets</h3>
       <p>Every natural number is an integer, every integer \(n\) is the fraction \(\tfrac n1\), and every rational number is real:
       \[ \mathbb N\subset\mathbb Z\subset\mathbb Q\subset\mathbb R . \]
@@ -41566,7 +41566,7 @@ register({
         choices: ['Z, because the solutions are 4 and −4', 'N, because the only solution is 8', 'None of these, because a square can never equal 8', 'R, because the solutions are √8 and −√8, which are irrational'], answer: 3,
         why: String.raw`Add \(1\) to both sides: \(2x^2=16\). Divide by \(2\): \(x^2=8\). So \(x=\sqrt8\) or \(x=-\sqrt8\). Since \(2^2=4\) and \(3^2=9\), \(8\) is not a perfect square, so \(\sqrt8\approx2.83\) is irrational. The smallest set holding both solutions is \(\mathbb R\). Getting \(\pm4\) comes from forgetting to divide 16 by 2 before the square root. Squares can be positive, and the equation does have real solutions.`,
         hint: 'Get x² alone first: add 1, then divide by 2. Then ask whether the number is a perfect square.' },
-      { q: 'Which statement is true for ALL numbers it describes?',
+      { q: 'Which statement is always true?',
         choices: ['The sum of two irrational numbers is irrational.', 'The product of a rational number and an irrational number is irrational.', 'The sum of a rational number and an irrational number is irrational.', 'The sum of two irrational numbers is rational.'], answer: 2,
         why: String.raw`If a rational \(r\) plus an irrational \(s\) were a rational \(q\), then \(s=q-r\) would be rational, which is false. So the sum is always irrational. The others fail: \(\sqrt2+(-\sqrt2)=0\) is rational and \(\sqrt2+\sqrt2=2\sqrt2\) is irrational, so two irrational numbers can go either way. And \(0\times\sqrt2=0\) is rational, so the product rule fails when the rational number is zero.`,
         hint: 'Try to find a counterexample for each choice: use √2, −√2 and 0.' }
@@ -41875,7 +41875,7 @@ register({
         PRED.forEach((o, i) => predRow.append(mkBtn(o[0], () => {
           if (st.pred) return; st.pred = true;
           Array.from(predRow.children).forEach((b, j) => { b.disabled = true; if (j === i) b.classList.add('primary'); });
-          predFb.innerHTML = o[1]; sync();
+          predFb.innerHTML = o[1]; if (nfb) nfb.innerHTML = ''; sync();
         })));
         C.title('Sort the numbers');
         addTo(h('p', { class: 'hint' }, 'Choose a number, then press the innermost set that holds it. (You can also drag it on the picture.)'));
@@ -42167,15 +42167,15 @@ register({
     return X;
   };
   /* one interval drawn on a number line: bar, circles, arrow for infinity, bracket glyphs */
-  const piece = (c, p, B, X, s, col, { a = 1, r = 9, glyph = false, fs = 14, bar = 8 } = {}) => {
+  const piece = (c, p, B, X, s, col, { a = 1, r = 9, glyph = false, fs = 14, bar = 8, ring = true } = {}) => {
     if (isEmpty(s) || a <= .01) return;
     const xl = s.lo === -INF ? B.x0 - 8 : X(s.lo), xr = s.hi === INF ? B.x1 + 8 : X(s.hi), pt = s.lo === s.hi;
     c.globalAlpha = a;
     if (!pt) line(c, xl, B.y, xr, B.y, col, bar);
     if (s.lo === -INF) head(c, xl - 2, B.y, -1, 12, col);
     if (s.hi === INF) head(c, xr + 2, B.y, 1, 12, col);
-    if (s.lo !== -INF) circ(c, p, xl, B.y, r, col, s.lc);
-    if (s.hi !== INF && !pt) circ(c, p, xr, B.y, r, col, s.hc);
+    if (ring && s.lo !== -INF) circ(c, p, xl, B.y, r, col, s.lc);
+    if (ring && s.hi !== INF && !pt) circ(c, p, xr, B.y, r, col, s.hc);
     if (glyph) {
       const g = fs * 1.9;
       if (s.lo !== -INF) T(c, p, s.lc ? '[' : '(', xl, B.y - r - 14, { size: g, color: col, serif: true, halo: false });
@@ -42263,7 +42263,7 @@ register({
       ch: [['The set of all x such that x is at most 4', '"At most 4" means x ≤ 4, which includes 4. The rule here is the strict x &lt; 4.'],
            ['The set that contains only the number 4', 'A rule after the bar describes many numbers. A set with only 4 in it would be written { 4 }.'],
            ['The set of all x such that x is less than 4', 'The bar means "such that", and the rule is x &lt; 4: every number below 4. The graph has an open circle at 4, because 4 is not less than 4.'],
-           ['The set of all x such that x is greater than 4', 'The symbol &lt; points at the smaller side, so x &lt; 4 means x is smaller than 4, not bigger.']] },
+           ['The set of all x such that x is greater than 4', 'x &lt; 4 reads "x is smaller than 4", so it does not mean bigger than 4.']] },
     { name: 'In or out', top: '{ x | −2 < x ≤ 5 }', rows: [{ lab: 'Graph', sets: [iv(-2, 5, false, true)], col: 'blue', rv: true }], ans: 1,
       q: 'True or false: −2 ∈ { x | −2 < x ≤ 5 }. (∈ means "is an element of".)',
       ch: [['True', 'Test −2 in the rule: is −2 &lt; −2? No, a number is not less than itself. So −2 fails the rule.'],
@@ -42280,7 +42280,7 @@ register({
       q: 'Which graph shows (−∞, 2]? Each graph is also described in words on its button.',
       ch: [['Graph A: closed circle at 2, shaded to the right', 'That is [2, ∞): it starts at 2 and runs right. In (−∞, 2] the −∞ comes first, so the set runs from the far left up to 2.'],
            ['Graph B: closed circle at 2, shaded to the left', 'The −∞ end means the shading goes left forever. The ] after the 2 means 2 is included, so the circle is closed.'],
-           ['Graph C: open circle at 2, shaded to the left', 'The direction is right, but the bracket ] means 2 is included. The circle must be closed.'],
+           ['Graph C: open circle at 2, shaded to the left', 'The shading direction (left) is correct, but the bracket ] means 2 is included. The circle must be closed.'],
            ['Graph D: open circle at 2, shaded to the right', 'The direction is wrong and so is the circle. This one is (2, ∞).']] },
     { name: 'A bracket trap', top: '', rows: [{ lab: 'Graph of x ≥ 3', sets: [iv(3, INF, true, false)], col: 'blue' }], ans: 3,
       q: 'A student writes the set x ≥ 3 as [3, ∞]. What is wrong, and what is the fix?',
@@ -42516,7 +42516,7 @@ register({
           const y0 = topH + i * rh, B = box(p, y0 + rh * .56, lo, hi);
           T(c, p, r.lab, 32, y0 + Math.min(20, rh * .2), { size: fs, align: 'left', weight: 700, color: r.col ? pal[r.col] : pal.text, halo: false });
           const X = axis(c, p, B, fs - .5, r.labels !== false);
-          (r.ghost || []).forEach(g => piece(c, p, B, X, g[0], pal[g[1]], { a: .22, bar: 6, r: 8 }));
+          (r.ghost || []).forEach(g => piece(c, p, B, X, g[0], pal[g[1]], { a: .22, bar: 6, r: 8, ring: false }));
           if (!r.hide) (r.sets || []).forEach(s => piece(c, p, B, X, s, pal[r.col || 'blue'], { fs, r: 8, bar: 7 }));
           if (r.hide) T(c, p, r.msg || '?', W / 2, B.y - rh * .22, { size: fs + 2, weight: 700, color: pal.muted, halo: false });
         });
@@ -42648,7 +42648,7 @@ register({
         const opts = [['Only −1', 'Not quite. x > −1 does not allow −1, so that circle is open. It is 4 that x ≤ 4 allows.'],
           ['Only 4', ok('Yes.') + ' −1 &lt; x is strict, so −1 is not included: open circle, parenthesis. x ≤ 4 allows equal, so 4 is included: closed circle, square bracket. That gives (−1, 4].'],
           ['Both ends', 'Not quite. The left rule is −1 &lt; x with a strict symbol, so −1 is left out. Only 4 is included.'],
-          ['Neither end', 'Not quite. x ≤ 4 has a "or equal" part, so 4 is included. Only −1 is left out.']];
+          ['Neither end', 'Not quite. x ≤ 4 has an "or equal" part, so 4 is included. Only −1 is left out.']];
         opts.forEach((o, i) => gateRow.append(mkBtn(o[0], () => {
           if (st.gate) return;
           st.gate = true; st.gateAns = i; st.a = -1; st.b = 4; st.lc = false; st.hc = true;
@@ -42659,6 +42659,7 @@ register({
         if (st.gate) { Array.from(gateRow.children).forEach((b, j) => { b.disabled = true; if (j === st.gateAns) b.classList.add('primary'); }); }
       };
       const stepEnd = (k, d) => {
+        gateFb.innerHTML = '';
         if (!st.gate) return;
         const L = k === 'a' ? LV : RV;
         let i = L.indexOf(st[k]) + d; i = clamp(i, 0, L.length - 1); st[k] = L[i];
@@ -42666,7 +42667,7 @@ register({
         if (st.b === INF) st.hc = false;
         st.rev = 1; sync();
       };
-      const setBr = (k, v) => { if (!st.gate) return; if ((k === 'lc' && st.a === -INF) || (k === 'hc' && st.b === INF)) return; st[k] = v; sync(); };
+      const setBr = (k, v) => { gateFb.innerHTML = ''; if (!st.gate) return; if ((k === 'lc' && st.a === -INF) || (k === 'hc' && st.b === INF)) return; st[k] = v; sync(); };
       const ivText2 = () => {
         const s = curIv(), L = [];
         if (!st.gate) return 'Make your prediction first. Then the steppers and bracket buttons unlock.';

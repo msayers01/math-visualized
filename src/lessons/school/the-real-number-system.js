@@ -50,7 +50,7 @@
     { lab: '3.14', set: 2, why: '3.14 = 314/100 = 157/50, a fraction of integers, so it is rational: Q. It is only an approximation of π, not π itself.' }
   ];
   const PRED = [
-    ['22/7', 'Not quite. 22/7 is a fraction of two integers, so it is rational. It only looks like π.'],
+    ['22/7', 'Not quite. 22/7 is a fraction of two integers, so it is rational. It only looks like π. The irrational one is √2: 2 is not a perfect square.'],
     ['√9', 'Not quite. √9 = 3, because 3 × 3 = 9. It is a whole number.'],
     ['0.333…', 'Not quite. The 3s repeat, and a repeating decimal is a fraction: 0.333… = 1/3.'],
     ['√2', good('Yes.') + ' 2 is not a perfect square, so √2 is irrational. Now sort all twelve numbers to see where the others belong.']
@@ -200,7 +200,7 @@
       <h3>Why there are several kinds of numbers</h3>
       <p>Each set of numbers was made to solve equations that the smaller set could not:
       \[ \begin{aligned} x+3&=5 &&\Rightarrow\ x=2 &&\in \mathbb N=\{1,2,3,\dots\}\\ x+5&=2 &&\Rightarrow\ x=-3 &&\in \mathbb Z=\{\dots,-2,-1,0,1,2,\dots\}\\ 2x&=3 &&\Rightarrow\ x=\tfrac32 &&\in \mathbb Q\\ x^2&=2 &&\Rightarrow\ x=\pm\sqrt2 &&\in \mathbb R\\ x^2&=-1 &&\Rightarrow\ x=\pm i &&\in \mathbb C \end{aligned} \]
-      The <em>whole numbers</em> \(\mathbb W=\{0,1,2,\dots\}\) are the natural numbers together with \(0\). The <em>rational numbers</em> are all fractions \(\tfrac pq\) of integers with \(q\ne0\): \(\mathbb Q=\{\tfrac pq \mid p,q\in\mathbb Z,\ q\ne0\}\). The <em>real numbers</em> \(\mathbb R\) are all the points of the number line: the rational numbers and the irrational numbers together. The last equation has no real solution, because a real number squared is never negative. The <em>complex numbers</em> \(\mathbb C\) add a number \(i\) with \(i^2=-1\). This lesson only names them. Every number you meet in this course is real.</p>
+      The <em>whole numbers</em> \(\mathbb W=\{0,1,2,\dots\}\) are the natural numbers together with \(0\). The <em>rational numbers</em> are all fractions \(\tfrac pq\) of integers with \(q\ne0\): \(\mathbb Q=\{\tfrac pq \mid p,q\in\mathbb Z,\ q\ne0\}\). The <em>real numbers</em> \(\mathbb R\) are all the points of the number line: the rational numbers and the irrational numbers together. The last equation has no real solution, because a real number squared is never negative. The <em>complex numbers</em> \(\mathbb C\) add a number \(i\) with \(i^2=-1\). This lesson only names them. Almost every number you meet in this course is real.</p>
       <h3>Nested sets</h3>
       <p>Every natural number is an integer, every integer \(n\) is the fraction \(\tfrac n1\), and every rational number is real:
       \[ \mathbb N\subset\mathbb Z\subset\mathbb Q\subset\mathbb R . \]
@@ -228,7 +228,7 @@
         choices: ['Z, because the solutions are 4 and −4', 'N, because the only solution is 8', 'None of these, because a square can never equal 8', 'R, because the solutions are √8 and −√8, which are irrational'], answer: 3,
         why: String.raw`Add \(1\) to both sides: \(2x^2=16\). Divide by \(2\): \(x^2=8\). So \(x=\sqrt8\) or \(x=-\sqrt8\). Since \(2^2=4\) and \(3^2=9\), \(8\) is not a perfect square, so \(\sqrt8\approx2.83\) is irrational. The smallest set holding both solutions is \(\mathbb R\). Getting \(\pm4\) comes from forgetting to divide 16 by 2 before the square root. Squares can be positive, and the equation does have real solutions.`,
         hint: 'Get x² alone first: add 1, then divide by 2. Then ask whether the number is a perfect square.' },
-      { q: 'Which statement is true for ALL numbers it describes?',
+      { q: 'Which statement is always true?',
         choices: ['The sum of two irrational numbers is irrational.', 'The product of a rational number and an irrational number is irrational.', 'The sum of a rational number and an irrational number is irrational.', 'The sum of two irrational numbers is rational.'], answer: 2,
         why: String.raw`If a rational \(r\) plus an irrational \(s\) were a rational \(q\), then \(s=q-r\) would be rational, which is false. So the sum is always irrational. The others fail: \(\sqrt2+(-\sqrt2)=0\) is rational and \(\sqrt2+\sqrt2=2\sqrt2\) is irrational, so two irrational numbers can go either way. And \(0\times\sqrt2=0\) is rational, so the product rule fails when the rational number is zero.`,
         hint: 'Try to find a counterexample for each choice: use √2, −√2 and 0.' }
@@ -537,7 +537,7 @@
         PRED.forEach((o, i) => predRow.append(mkBtn(o[0], () => {
           if (st.pred) return; st.pred = true;
           Array.from(predRow.children).forEach((b, j) => { b.disabled = true; if (j === i) b.classList.add('primary'); });
-          predFb.innerHTML = o[1]; sync();
+          predFb.innerHTML = o[1]; if (nfb) nfb.innerHTML = ''; sync();
         })));
         C.title('Sort the numbers');
         addTo(h('p', { class: 'hint' }, 'Choose a number, then press the innermost set that holds it. (You can also drag it on the picture.)'));
