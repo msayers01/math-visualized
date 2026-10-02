@@ -479,7 +479,7 @@
 
       /* pointer drag turns the solid */
       let drag = null; const cv = P.canvas; cv.style.cursor = 'grab';
-      cv.addEventListener('pointerdown', e => { drag = e.clientX; cv.setPointerCapture(e.pointerId); e.preventDefault(); });
+      cv.addEventListener('pointerdown', e => { drag = e.clientX; cv.setPointerCapture(e.pointerId); });
       cv.addEventListener('pointermove', e => { if (drag == null) return; st.rot = wrapDeg(st.rot + (e.clientX - drag) * .6); drag = e.clientX; rotS.set(Math.round(st.rot / 5) * 5); P.requestDraw(); });
       const endDrag = () => { drag = null; }; cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
 

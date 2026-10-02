@@ -164,8 +164,10 @@ a.topic:hover::before { transform: scaleY(1); }
 .lede { font-size: 1.1rem; color: var(--muted); max-width: 60ch; margin: 14px 0 0; }
 
 .workbench { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
-.stage { position: relative; height: min(72vh, 680px); min-height: 320px; border: 1px solid var(--line-strong); border-radius: 4px;
-  overflow: hidden; touch-action: none; background: var(--stage); }
+.stage { position: relative; height: min(72vh, 680px); height: min(72dvh, 680px); min-height: 320px; border: 1px solid var(--line-strong); border-radius: 4px;
+  overflow: hidden; touch-action: pan-y pinch-zoom; background: var(--stage);
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+.stage canvas { touch-action: pan-y pinch-zoom; }
 .stage canvas { display: block; }
 .tick { position: absolute; width: 14px; height: 14px; z-index: 2; pointer-events: none; border: 0 solid var(--brass); }
 .tick.tl { top: 10px; left: 10px; border-top-width: 1.5px; border-left-width: 1.5px; }
@@ -180,7 +182,7 @@ a.topic:hover::before { transform: scaleY(1); }
   border: 1px solid var(--line-strong); border-radius: 4px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
 @media (max-width: 900px) {
   .workbench { grid-template-columns: minmax(0, 1fr); } .panel { position: static; }
-  .stage { height: min(62vh, 540px); min-height: 280px; }
+  .stage { height: min(62vh, 540px); height: min(62dvh, 540px); min-height: 280px; }
 }
 
 /* ---------- Controls ---------- */
@@ -219,6 +221,31 @@ a.topic:hover::before { transform: scaleY(1); }
 .readout { font-size: .9rem; line-height: 1.7; font-variant-numeric: tabular-nums; border-top: 1px solid var(--line); padding-top: 14px; }
 .readout .k { color: var(--muted); }
 .hint { font-size: .86rem; color: var(--muted); margin: -6px 0 0; line-height: 1.45; }
+
+
+/* ---------- Touch and iOS details ---------- */
+/* Notch and home-indicator insets (the viewport meta uses viewport-fit=cover). */
+.wrap { padding-left: max(clamp(18px, 4vw, 48px), env(safe-area-inset-left, 0px)); padding-right: max(clamp(18px, 4vw, 48px), env(safe-area-inset-right, 0px)); }
+body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* No double-tap zoom delay on controls; no grey tap flash. */
+button, .btn, a, select, label, summary, .choice, .dot, input[type=checkbox] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+@media (pointer: coarse) {
+  /* iOS Safari zooms the page when a control under 16px takes focus. */
+  select, textarea, input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=button]) { font-size: 16px; }
+  .ctl.slider input[type=range] { height: 40px; }
+  .ctl input[type=range]::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: -12px; }
+  .ctl input[type=range]::-moz-range-thumb { width: 22px; height: 22px; }
+}
+
+/* Short landscape screens (phones turned sideways): stage and panel side by side, each scrolls on its own, so the
+   figure stays in view while a slider moves. */
+@media (max-height: 520px) and (orientation: landscape) and (min-width: 560px) {
+  .viz { padding-top: 12px; }
+  .viz-head { padding: 8px 0 14px; }
+  .viz-head h1 { font-size: 1.7rem; }
+  .workbench { grid-template-columns: minmax(0, 1fr) minmax(250px, 38%); gap: 14px; }
+  .stage { height: calc(100vh - 80px); height: calc(100dvh - 80px); min-height: 240px; }
+}
 /* ---------- Prose & pager ---------- */
 .prose { max-width: 68ch; font-family: var(--sans); font-size: 1.08rem; line-height: 1.72; padding: 56px 0 24px; }
 .prose h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.035em; margin: 1.5em 0 .45em; }
@@ -240,7 +267,7 @@ a.topic:hover::before { transform: scaleY(1); }
 /* ---------- Lesson format: hook, guided steps, quick check, connections ---------- */
 .lede.hook { font-family: var(--display); font-weight: 300; font-size: clamp(1.15rem, 2.2vw, 1.55rem); line-height: 1.4; letter-spacing: -.025em;
   color: var(--text); max-width: 46ch; border-left: 2px solid var(--lvl, var(--brass)); padding-left: 16px; }
-.panel { max-height: calc(100vh - 104px); overflow-y: auto; overscroll-behavior: contain; }
+.panel { max-height: calc(100vh - 104px); max-height: calc(100dvh - 104px); overflow-y: auto; overscroll-behavior: contain; }
 @media (max-width: 900px) { .panel { max-height: none; overflow: visible; } }
 
 .steps { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
@@ -294,6 +321,15 @@ a.link:hover { border-color: var(--brass); }
 .stage.split { display: flex; flex-direction: column; }
 .stage .pane { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; }
 .stage .pane + .pane { border-top: 1px solid var(--line); }
+
+/* Wide content inside narrow pages: tables and display equations scroll sideways instead of widening the page; long
+   unbreakable strings wrap. */
+.prose table { display: block; max-width: 100%; overflow-x: auto; }
+.step-text mjx-container[display="true"], .q-stem mjx-container[display="true"], .q-fb mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.step-text, .q-stem, .q-fb, .prose p, .choice, .hint, .readout { overflow-wrap: anywhere; }
+@media (max-height: 520px) and (orientation: landscape) and (min-width: 560px) {
+  .panel { position: sticky; top: 64px; padding: 14px; gap: 12px; max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto; overscroll-behavior: contain; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
@@ -1093,15 +1129,36 @@ class Plane {
   }
 }
 
+/* Finger-sized hit radius: on coarse pointers (touch) every near() test uses at least 28 px. */
+const COARSE_PTR = typeof matchMedia === 'function' ? matchMedia('(pointer: coarse)') : null;
+const MIN_TOUCH_R = 28;
 /* True when pixel (px, py) is within r pixels of the math point (x, y). */
-const near = (plane, x, y, px, py, r = 17) => Math.hypot(plane.X(x) - px, plane.Y(y) - py) < r;
+const near = (plane, x, y, px, py, r = 17) =>
+  Math.hypot(plane.X(x) - px, plane.Y(y) - py) < (COARSE_PTR && COARSE_PTR.matches ? Math.max(r, MIN_TOUCH_R) : r);
 
-/* Pointer dragging on a Plane. hit(px,py) returns a handle or null. */
+/* Pointer dragging on a Plane. hit(px,py) returns a handle or null.
+   The stage allows vertical page scrolling (touch-action: pan-y), so a swipe that starts on empty canvas scrolls
+   the page. A non-passive touchstart that lands on a handle calls preventDefault, which stops the browser from
+   starting a scroll, so the drag keeps receiving pointer events. */
 function draggable(plane, { hit, move, hover }) {
   const cv = plane.canvas; let active = null;
   const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  /* Touch hit test: the lesson's own test first, then a ring of probes 9 and 18 px around the finger, so lessons that
+     hard-code a small radius (Math.hypot(...) < 22) still get a finger-sized target without editing them. */
+  const fatHit = (px, py) => {
+    const d = hit(px, py); if (d != null) return d;
+    for (const rr of [9, 18]) for (let k = 0; k < 8; k++) {
+      const a = k * Math.PI / 4, q = hit(px + rr * Math.cos(a), py + rr * Math.sin(a)); if (q != null) return q;
+    }
+    return null;
+  };
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1 || !e.cancelable) return;
+    const [px, py] = pos(e.touches[0]);
+    if (fatHit(px, py) != null) e.preventDefault();
+  }, { passive: false });
   cv.addEventListener('pointerdown', e => {
-    const [px, py] = pos(e); const hd = hit(px, py);
+    const [px, py] = pos(e); const hd = e.pointerType === 'touch' ? fatHit(px, py) : hit(px, py);
     if (hd == null) return;
     active = hd; cv.setPointerCapture(e.pointerId); e.preventDefault();
     move(active, ...plane.toMath(px, py));
@@ -1109,11 +1166,26 @@ function draggable(plane, { hit, move, hover }) {
   cv.addEventListener('pointermove', e => {
     const [px, py] = pos(e);
     if (active != null) move(active, ...plane.toMath(px, py));
-    else cv.style.cursor = (hover ? hover(px, py) : hit(px, py) != null) ? 'grab' : 'default';
+    else if (e.pointerType !== 'touch') cv.style.cursor = (hover ? hover(px, py) : hit(px, py) != null) ? 'grab' : 'default';
   });
   const end = () => { active = null; };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
 }
+
+/* Lessons with their own canvas pointer code (not draggable) get the same behavior without edits: a pointerdown that
+   a lesson handled with preventDefault() (the signal that "this touch is a drag or a press on a control") arms the
+   touchstart that follows in the same gesture (Chrome and Safari fire pointerdown first), and that touchstart is
+   cancelled so the browser does not start scrolling. A pointerdown the lesson ignored leaves the swipe free to scroll. */
+(function () {
+  let armed = false;
+  addEventListener('pointerdown', e => {
+    armed = e.pointerType === 'touch' && e.defaultPrevented && !!(e.target.closest && e.target.closest('.stage'));
+  });
+  document.addEventListener('touchstart', e => {
+    if (armed && e.cancelable && e.touches.length === 1) e.preventDefault();
+    armed = false;
+  }, { passive: false });
+})();
 
 /* =====================================================================
    CONTROLS: builds the side panel
@@ -28682,7 +28754,7 @@ register({
 
       /* pointer drag turns the solid */
       let drag = null; const cv = P.canvas; cv.style.cursor = 'grab';
-      cv.addEventListener('pointerdown', e => { drag = e.clientX; cv.setPointerCapture(e.pointerId); e.preventDefault(); });
+      cv.addEventListener('pointerdown', e => { drag = e.clientX; cv.setPointerCapture(e.pointerId); });
       cv.addEventListener('pointermove', e => { if (drag == null) return; st.rot = wrapDeg(st.rot + (e.clientX - drag) * .6); drag = e.clientX; rotS.set(Math.round(st.rot / 5) * 5); P.requestDraw(); });
       const endDrag = () => { drag = null; }; cv.addEventListener('pointerup', endDrag); cv.addEventListener('pointercancel', endDrag);
 
