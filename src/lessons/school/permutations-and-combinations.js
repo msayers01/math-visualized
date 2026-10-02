@@ -91,7 +91,7 @@
       whyOrder: 'ABC and CBA are different codes, so the order matters.',
       whyRep: 'The new rule says no letter twice, so a used letter leaves the pool.',
       calc: 'P(5, 3) = 5 × 4 × 3 = 60',
-      calcWhy: 'The first position has 5 letters, the second has 4, the third has 3: 5 × 4 × 3 = 60. That is 25 fewer than the 125 codes when letters could repeat.',
+      calcWhy: 'The first position has 5 letters, the second has 4, the third has 3: 5 × 4 × 3 = 60. That is 65 fewer than the 125 codes when letters could repeat.',
       wrong: [[125, '5³ = 125 lets a letter repeat. The new rule forbids that.'],
         [10, 'C(5, 3) = 10 ignores order, but ABC and CBA are different codes. Each set of 3 letters gives 3! = 6 codes, so 10 × 6 = 60.'],
         [15, '5 + 4 + 3 = 15 adds. The positions are filled one after another, so multiply.']] },
@@ -169,7 +169,7 @@
         text: String.raw`<p>A committee of \(3\) is chosen from \(5\) students. Tap three students. The sixty ordered picks are laid out below, and the ones with exactly your three students are highlighted. They are all the same committee.</p><p>Count them, then press the button to group the same committees and divide. Afterwards switch the menu to Pascal's triangle to see the symmetry \(C(n,r)=C(n,n-r)\).</p>`,
         set: { mode: 'comb', view: 'group' } },
       { title: 'Choose the right tool',
-        text: String.raw`<p>Each situation asks for a count. Decide whether order matters and whether repeats are allowed, choose the tool, then compute the count. The map shows where your answers lead.</p><p>The last situation is a lottery. Its count is the size of the sample space, so the chance of winning with one ticket is one over that number.</p>`,
+        text: String.raw`<p>Each situation asks for a count. Decide whether order matters and whether repeats are allowed (some situations ask you to combine counts, or to choose between two kinds), choose the tool, then compute the count. The map shows where your answers lead.</p><p>The last situation is a lottery. Its count is the size of the sample space, so the chance of winning with one ticket is one over that number.</p>`,
         set: { mode: 'tool', round: 0 } }
     ],
     formal: String.raw`
@@ -198,7 +198,7 @@
       Check: \(C(5,2)=\dfrac{5\cdot 4}{2}=10=C(5,3)\).</p>
       <h3>Pascal's triangle</h3>
       <p>Write \(C(n,r)\) in row \(n\), position \(r\), counting both from \(0\). Row \(5\) reads \(1,5,10,10,5,1\). Each entry is the sum of the two above it:
-      \[ C(n,r)=C(n-1,r-1)+C(n-1,r). \]
+      \[ C(n,r)=C(n-1,r-1)+C(n-1,r) \qquad (1\le r\le n-1). \]
       Reason: fix one person. Committees that include that person need \(r-1\) more from the other \(n-1\) people: \(C(n-1,r-1)\) of them. Committees that leave that person out choose all \(r\) from the other \(n-1\): \(C(n-1,r)\) of them. The two kinds do not overlap, so the addition principle adds them. <em>Example.</em> \(C(5,2)=C(4,1)+C(4,2)=4+6=10\).</p>
       <h3>Which tool?</h3>
       <p>Ask two questions. Does the order matter? Can an item be used again? Order matters and no repeats: \(P(n,r)\). Order matters and repeats are allowed: \(n^r\). Order does not matter and no repeats: \(C(n,r)\). Separate menus chosen together: multiply. Either-or options: add.</p>

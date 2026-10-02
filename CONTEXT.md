@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v45
+**Version:** v46
 **Last updated:** 2026-10-01
 
 ## ⚠️ Current priority: middle & high school ONLY
@@ -59,8 +59,8 @@ Adding a lesson = one new file in `src/lessons/<level>/`, one line in `src/manif
 - In the artifact viewer (frame), copy-link buttons copy only the token and the print button is hidden; on its own address they copy full links.
 - Lessons by parallel builders: `src/lessons/school/<id>.js` must keep ALL helpers inside one `{ }` block (everything is one script), and TeX must not contain `<` before a letter.
 
-## Lessons built (45)
-School (39), in computed display order:
+## Lessons built (46)
+School (40), in computed display order:
 - Grade 6: statistical-questions-and-data-displays, sample-spaces-and-probability, negative-numbers-and-absolute-value, ratios-and-equivalent-ratios, variables-and-relationships, unit-rates-and-best-buys, percents-on-tape-and-number-lines
 - Grade 7: area-of-a-circle, percent-change-and-money, samples-and-populations, compound-events-and-tree-diagrams, proportional-relationships, scale-drawings-and-proportions
 - Grade 8: pythagorean-theorem, slope-and-linear-functions, what-is-a-function, scatter-plots-and-lines-of-fit, square-roots-and-irrational-numbers, distance-and-the-pythagorean-theorem, exponents-and-scientific-notation, solving-equations-with-a-balance, systems-of-equations, forms-of-a-linear-equation, parallel-and-perpendicular-lines
@@ -68,7 +68,7 @@ School (39), in computed display order:
 - Geometry: similarity-and-scaling, inscribed-angles
 - Algebra 2: matrices
 - Precalculus & Trigonometry: the-unit-circle-and-trig-waves
-- Statistics & Probability: mean-median-and-spread, probability-with-repeated-trials, correlation-and-causation, the-normal-distribution, two-way-tables-and-conditional-probability, expected-value, pascals-triangle-and-the-galton-board
+- Statistics & Probability: mean-median-and-spread, probability-with-repeated-trials, correlation-and-causation, the-normal-distribution, two-way-tables-and-conditional-probability, expected-value, permutations-and-combinations, pascals-triangle-and-the-galton-board
 
 All use the full lesson format (hook, 4 guided steps, formal math, 2 quick-check questions, links).
 Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-slopes, riemann-sums-and-the-integral, the-fundamental-theorem-of-calculus (full format); Linear Algebra: linear-transformations (legacy format). Graduate (1): conformal-maps. The two legacy-format lessons (`explain` prose only), untouched since v0.4 apart from carrying a course and skill level.
@@ -103,6 +103,7 @@ Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-sl
 - **Done:** Batch 2 (v0.11): solving-equations-with-a-balance, forms-of-a-linear-equation, parallel-and-perpendicular-lines, distance-and-the-pythagorean-theorem; independent tag audit applied (added 8.3.7.6 and 9.3.5.7); Grade 8 coverage 30 of 38, 56 of 185 benchmarks tagged overall; prerequisite links set so the Grade 8 order teaches equations before systems and forms
 - **Done (owner's request, 2026-10-01): Grade 6 and 7 foundations, not a full course** (the owner will expand each course later, when the site is near production level). Audience: students working alone AND teachers assigning lessons, so every lesson teaches by itself (feedback explains why), is pitched at ages 11 to 13, and has two check questions that work as a self-contained paper exit ticket. Plan in ARCHITECTURE.md section 9: batch F-A (done and audited: ratios-and-equivalent-ratios, unit-rates-and-best-buys, percents-on-tape-and-number-lines (Grade 6), proportional-relationships (Grade 7)); batch F-B (done and audited): variables-and-relationships, negative-numbers-and-absolute-value (Grade 6), scale-drawings-and-proportions, percent-change-and-money (Grade 7).
 - **Paused (owner's request, 2026-10-01):** Grade 8 work. Batch 3 (inequalities-and-absolute-value, patterns-and-the-nth-term) is not started; Grade 8 stands at 30 of 38 benchmarks.
+- **Done (pushed, not merged; waiting for the owner): permutations-and-combinations lesson** (Statistics & Probability, intermediate, 9.1.2.1; independent review applied; 46 lessons).
 - **Done and merged (PR #16): matrices lesson** (Algebra 2, intermediate, 9.3.5.4; independent review applied; 45 lessons, 89 of 185 benchmarks tagged).
 - **Done: Enrichment tag and the modular-arithmetic lesson** (Algebra 1, introductory; `enrichment: true` in ALIGN; Type filter and chip; independent math review applied).
 - **Done: batch S2, high-school statistics** (two-way-tables-and-conditional-probability, the-normal-distribution, correlation-and-causation, expected-value; tag audit applied; 88 of 185 benchmarks tagged). **Next, waiting for the owner:** S3 (bias-and-study-design, misleading-graphs) or another area.
