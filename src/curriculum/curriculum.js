@@ -118,6 +118,7 @@ const ALIGN = [
   /* Geometry */
   { id: 'similarity-and-scaling',      course: 'geometry', skill: 'mid', standards: ['7.2.4.2', '7.2.4.3', '9.2.3.9'] },
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
+  { id: 'arc-length-and-sectors', course: 'geometry', skill: 'mid', standards: ['7.2.3.3'] },
   { id: 'fractals-self-similarity-and-dimension', course: 'geometry', skill: 'adv', standards: [], enrichment: true },
   { id: 'angles-in-triangles-and-polygons', course: 'geometry', skill: 'intro', standards: ['6.2.4.1', '6.2.4.2', '9.2.4.2', '9.2.4.3'] },
   { id: 'special-right-triangles-and-trigonometry', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
@@ -130,6 +131,7 @@ const ALIGN = [
   /* Precalculus & Trigonometry. Radians and periodic waves go beyond the 9-11 benchmarks; 9.2.3.8 (acute-angle
      trigonometric ratios) is the nearest one, and the lesson extends it rather than teaching it. */
   { id: 'the-unit-circle-and-trig-waves', course: 'precalc', skill: 'adv', standards: ['9.2.3.8'] },
+  { id: 'radians-the-circles-own-angle-unit', course: 'precalc', skill: 'intro', standards: [] },
   { id: 'the-mandelbrot-and-julia-sets', course: 'precalc', skill: 'adv', standards: [], enrichment: true },
   { id: 'polar-form-and-roots-of-unity', course: 'precalc', skill: 'mid', standards: [] },
 

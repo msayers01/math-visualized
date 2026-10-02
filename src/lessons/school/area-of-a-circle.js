@@ -50,7 +50,7 @@ register({
       why: String.raw`\(A=\pi\cdot 5^2 = 25\pi \approx 78.5\), which rounds to \(79\). (\(31\) is the circumference \(10\pi\) and \(157\) is \(50\pi\).)`,
       hint: String.raw`Use \(A=\pi r^2\), not \(2\pi r\).` }
   ],
-  links: { next: ['similarity-and-scaling'], related: ['pythagorean-theorem', 'riemann-sums-and-the-integral', 'inscribed-angles'] },
+  links: { next: ['arc-length-and-sectors', 'similarity-and-scaling'], related: ['pythagorean-theorem', 'riemann-sums-and-the-integral', 'inscribed-angles'] },
 
   mount({ stage, controls: C }) {
     const st = { n: 8, t: 0, r: 2 };
