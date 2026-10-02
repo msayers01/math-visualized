@@ -37,7 +37,7 @@
   };
   /* "2 × 3 + 1" : the arithmetic of one rule at one input */
   const evT = (pc, x) => (pc.m === 0 ? num(pc.c)
-    : `${num(pc.m)} × ${par(x)}` + (pc.c === 0 ? '' : (pc.c < 0 ? ' − ' : ' + ') + num(Math.abs(pc.c))));
+    : `${pc.m === 1 ? '' : num(pc.m) + ' × '}${par(x)}` + (pc.c === 0 ? '' : (pc.c < 0 ? ' − ' : ' + ') + num(Math.abs(pc.c))));
   const sub = a => (a === 0 ? '' : a > 0 ? ` − ${a}` : ` + ${-a}`);
 
   /* ---------- the fixed scenes ---------- */
@@ -80,7 +80,7 @@
         ['m2', 'After the breakpoint each hour costs $2, so Piece 2 has slope 2.'],
         ['b2', 'Piece 2 has to start where Piece 1 ends: after 3 hours you have paid 5 × 3 = $15. So 2 × 3 + b = 15, which gives b = 9. The "Make the pieces meet" switch finds b for you.']] },
     { name: 'Phone data plan', yb: 40, gy: 5,
-      story: 'Phone plan: $20 a month includes the first 4 GB. After that each extra GB costs $5, and the total is counted from 0 GB. Build the graph of the monthly bill, from 0 to 8 GB.',
+      story: 'Phone plan: $20 a month includes the first 4 GB. After that each extra GB costs $5, so 5 GB costs $25. Build the graph of the monthly bill, from 0 to 8 GB.',
       f: x => (x <= 4 ? 20 : 5 * x), ans: { a: 4, m1: 0, b1: 20, m2: 5, b2: 0 }, unit: 'GB',
       hints: [
         ['a', 'The plan covers the first 4 GB, so the rule changes at 4.'],
@@ -191,7 +191,7 @@
       sc: (pv, ok) => ({ pieces: [pcs(0, 4, 2, 0, 1, 1, { n: 'first 4 units' })].concat(pv ? [pcs(4, 8, pv[0], pv[1], 0, 1, { n: 'chosen rule', k: ok ? 0 : 1 })] : []), marks: [] }),
       q: 'A water bill charges $2 per unit for the first 4 units, so the cost is 2x there. Each unit after 4 costs $3. Which rule gives the total cost f(x) when x > 4? Each choice draws its Piece 2.',
       ch: [['f(x) = 3x', 'That charges $3 for the first 4 units too: f(4) would be 12, but the first 4 units only cost 2 × 4 = $8. The pieces do not meet.'],
-           ['f(x) = 3x + 8', 'That adds the first $8 and also charges $3 for every unit, so the first 4 units get counted twice. At x = 4 it gives 20, not 8.'],
+           ['f(x) = 3x + 8', 'That adds the first $8 and also charges $3 for every unit, so every unit costs $3 plus the extra $8 on top. At x = 4 it gives 20, not 8.'],
            ['f(x) = x + 4', 'The slope is 1, so each extra unit would cost $1. The story says $3. (It does give 8 at x = 4, so it meets the first piece, but it climbs too slowly.)'],
            ['f(x) = 3x − 4', 'The first 4 units cost $8. Each unit beyond 4 adds 3: 8 + 3(x − 4) = 3x − 4. At x = 4 it gives 8, so the pieces meet.']], ans: 3,
       pv: [[3, 0], [3, 8], [1, 4], [3, -4]] },
@@ -205,13 +205,13 @@
     { name: 'Range from a graph', view: { xa: -1, xb: 6, ya: -1, yb: 5, gx: 1, gy: 1 }, xl: 'x', yl: 'f(x)', lab: 2,
       sc: () => ({ pieces: P5, marks: [] }),
       q: 'f(x) = 2x for 0 ≤ x < 2, and f(x) = 6 − x for 2 ≤ x ≤ 5. What is the range, the set of heights the graph reaches?',
-      ch: [['0 ≤ y < 4', 'The open circle at (2, 4) is only half the story: Piece 2 has a closed dot at (2, 4), and 6 − 2 = 4. So 4 is an output.'],
+      ch: [['0 ≤ y < 4', 'Piece 1 stops just short of 4, but Piece 2 includes x = 2 and gives 6 − 2 = 4 (the closed dot at (2, 4)). So 4 is an output.'],
            ['0 ≤ y ≤ 4', 'Piece 1 gives heights from 0 up to (not including) 4. Piece 2 goes from 4 down to 1, and includes 4. Together: every height from 0 to 4, written [0, 4].'],
            ['1 ≤ y ≤ 4', 'That uses Piece 2 only. Piece 1 also reaches heights from 0 to 4.'],
            ['0 ≤ y ≤ 5', 'The 5 is the biggest x (the domain), not a height. The highest point on the graph is at height 4.']], ans: 1 },
     { name: 'Discrete or continuous?', view: { xa: -1, xb: 7, ya: -2, yb: 20, gx: 1, gy: 4 }, xl: 'muffins bought (x)', yl: 'cost in dollars', lab: 0,
       sc: (pv, ok) => ({ pieces: ok ? [0, 1, 2, 3, 4, 5, 6].map(k => pcs(k, k, 3, 0, 1, 1, { n: 'a dot' })) : [pcs(0, 6, 3, 0, 1, 1, { n: 'a line' })], marks: [] }),
-      q: 'Muffins cost $3 each. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The canvas shows the tempting graph, a solid line. Which statement is correct?',
+      q: 'Muffins cost $3 each and are sold whole. f(x) = 3x is the cost of x muffins, and you can buy 0 to 6 of them. The canvas shows the tempting graph, a solid line. Which statement is correct?',
       ch: [['The graph is a solid line from 0 to 6, so 2.5 muffins would cost $7.50.', 'The rule 3x gives 7.5 at x = 2.5, but the bakery does not sell half a muffin here. The input is a count, so the points between whole numbers have no meaning.'],
            ['The graph is 7 separate dots, and the range is every number from 0 to 18.', 'The dots are at heights 0, 3, 6, 9, 12, 15, 18 only. A height like 4 can never happen, so the range is not every number.'],
            ['The graph is 7 separate dots at x = 0 to 6, and the range is 0, 3, 6, 9, 12, 15, 18.', 'The input is a count, so only whole numbers 0 to 6 are valid: that is discrete. Each gives one cost, so there are seven outputs. The canvas now shows the dots.']], ans: 2 },
@@ -267,7 +267,7 @@
       \[ f(x)=\begin{cases} 2x & \text{if } x&lt;3,\\ x+1 & \text{if } x\ge 3. \end{cases} \]
       Every allowed input belongs to exactly one stretch, so it has exactly one output. To evaluate, first decide which condition is true, then use that rule only.</p>
       <h3>The breakpoint and the trap</h3>
-      <p>The input where the rule changes is the <em>breakpoint</em>. The symbols \(&lt;\) and \(&gt;\) leave the endpoint out. The symbols \(\le\) and \(\ge\) keep it in. Exactly one of the two pieces must keep it. On the graph, the piece that keeps the endpoint has a <em>closed dot</em>. The piece that leaves it out has an <em>open circle</em>. In the example, \(f(3)=3+1=4\), not \(2\cdot 3=6\). The point \((3,6)\) is an open circle, so it is not on the graph.</p>
+      <p>The input where the rule changes is the <em>breakpoint</em>. The symbols \(&lt;\) and \(&gt;\) leave the endpoint out. The symbols \(\le\) and \(\ge\) keep it in. If the pieces jump apart at the breakpoint, exactly one piece keeps it. On the graph, the piece that keeps the endpoint has a <em>closed dot</em>. The piece that leaves it out has an <em>open circle</em>. In the example, \(f(3)=3+1=4\), not \(2\cdot 3=6\). The point \((3,6)\) is an open circle, so it is not on the graph.</p>
       <h3>Do the pieces meet?</h3>
       <p>A graph is <em>continuous</em> at the breakpoint if the two pieces meet, so you could draw it without lifting your pencil. Otherwise there is a <em>jump</em>. To make the pieces meet, make both rules give the same output at the breakpoint. For \(f(x)=2x\) when \(x&lt;3\) and \(f(x)=x+k\) when \(x\ge 3\): the first rule heads toward \(2\cdot 3=6\), so \(3+k=6\) and \(k=3\). A taxi fare meets at its breakpoint, because the cost cannot jump just because you passed 3 miles. A rule with a different intercept makes a jump.</p>
       <p>Example. A taxi costs \(2x+3\) dollars for \(0\le x\le 3\) miles and \(x+6\) dollars after that. At the breakpoint, \(2\cdot3+3=9\) and \(3+6=9\), so the pieces meet. For 6 miles, use the second rule: \(6+6=12\) dollars. Twice the cost of 3 miles is \(2\cdot 9=18\), so 6 miles costs less than double: the flag fall is paid once, and the rate drops.</p>
@@ -332,7 +332,7 @@
           default: {  /* abs */
             const a = st.va, k = st.vk, inner = a === 0 ? 'x' : `(x${sub(a)})`, kt = k === 0 ? '' : ` + ${k}`;
             return { pieces: [pcs(-INF, a, -1, a + k, 0, 0, { n: 'Piece 1', u: `−${inner}${kt}` }), pcs(a, INF, 1, k - a, 1, 0, { n: 'Piece 2', u: `${inner}${kt}` })],
-              view: { xa: -6, xb: 6, ya: -1, yb: 8, gx: 1, gy: 1 }, xl: 'x', yl: 'f(x)', lab: 2, useX: 1, bp: a, money: 0, dist: 1, marks: [] };
+              view: { xa: -6, xb: 6, ya: -1, yb: Math.max(8, 7 + Math.abs(a) + k), gx: 1, gy: 1 }, xl: 'x', yl: 'f(x)', lab: 2, useX: 1, bp: a, money: 0, dist: 1, marks: [] };
           }
         }
       };
@@ -567,7 +567,7 @@
       const buildVal = x => (x <= st.a ? st.m1 * x + st.b1 : st.m2 * x + st.b2);
       const doBuildCheck = () => {
         const T = TASKS[st.task]; let mis = null;
-        for (let x = 0; x <= 8; x++) if (Math.abs(buildVal(x) - T.f(x)) > 1e-9) { mis = x; break; }
+        for (let x = 0; x <= 8; x += 0.25) if (Math.abs(buildVal(x) - T.f(x)) > 1e-9) { mis = x; break; }
         if (mis == null) {
           const A = T.ans;
           bFb = good('Right.') + ` The cost is f(x) = ${rt(A.m1, A.b1)} for 0 ≤ x ≤ ${A.a}, and f(x) = ${rt(A.m2, A.b2)} for x > ${A.a}. At x = ${A.a} the first piece gives ${usd(A.m1 * A.a + A.b1)} and the second gives ${usd(A.m2 * A.a + A.b2)}: the same, so the pieces meet and the gap is 0. The story has no jump.`;
