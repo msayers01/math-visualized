@@ -85,6 +85,7 @@ const ALIGN = [
   { id: 'parallel-and-perpendicular-lines', course: 'grade8', skill: 'mid', standards: ['8.2.4.2'] },
   { id: 'distance-and-the-pythagorean-theorem', course: 'grade8', skill: 'mid', standards: ['8.2.3.2', '8.2.3.3'] },
   { id: 'solving-equations-with-a-balance', course: 'grade8', skill: 'mid', standards: ['8.3.6.1', '8.3.6.3', '9.3.5.7'] },
+  { id: 'patterns-and-the-nth-term', course: 'grade8', skill: 'mid', standards: ['8.3.7.2'] },
   { id: 'absolute-value-equations-and-inequalities', course: 'grade8', skill: 'mid', standards: ['8.3.6.8'] },
   { id: 'solving-linear-inequalities', course: 'grade8', skill: 'mid', standards: ['7.3.6.2', '8.3.6.7'] },
 
