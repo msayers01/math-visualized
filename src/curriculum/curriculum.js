@@ -91,7 +91,7 @@ const ALIGN = [
   { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
   { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
   { id: 'modeling-with-systems', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9', '9.3.7.1'] },
-  { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9', '9.3.7.1'] },
+  { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'solving-systems-by-substitution', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4'] },
   { id: 'systems-of-three-equations', course: 'algebra2', skill: 'mid', standards: ['9.3.7.1'] },

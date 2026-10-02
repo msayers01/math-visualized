@@ -157,8 +157,10 @@
         <li>Put the answer back into the equation where the variable was alone to get the other coordinate.</li>
         <li>Check the point in <em>both</em> original equations.</li>
       </ol>
+      <h3>Worked example: the gym question</h3>
+      <p>Gym A: \(y=5x+20\). Gym B: \(y=9x\), where \(x\) is months and \(y\) is the total cost. Gym B says \(y=9x\), so replace \(y\) in A: \(9x=5x+20\). Then \(4x=20\) and \(x=5\). Put it back: \(y=9\cdot5=45\). After 5 months both cost $45.</p>
       <h3>Why you may substitute</h3>
-      <p>Suppose \((x_0,y_0)\) is a solution. Equation A says \(y_0=2x_0-1\), so the number \(y_0\) and the number \(2x_0-1\) are the same number. Writing one name for the same number cannot change whether B is true. So B, with \(y\) replaced, is still true at \(x_0\), and \(x_0\) must solve the one-variable equation. Solving that equation leaves only one possible \(x_0\), and A then gives \(y_0\). Checking in both equations closes the loop: the point really is on both lines.</p>
+      <p>Suppose \((x_0,y_0)\) is a solution. Equation A says \(y_0=2x_0-1\), so the number \(y_0\) and the number \(2x_0-1\) are the same number. Writing one name for the same number cannot change whether B is true. So B, with \(y\) replaced, is still true at \(x_0\), and \(x_0\) must solve the one-variable equation. When the variable survives, solving that equation leaves only one possible \(x_0\), and A then gives \(y_0\). Checking in both equations closes the loop: the point really is on both lines.</p>
       <h3>Worked example</h3>
       <p>Solve \(x+2y=7\) and \(3x-2y=5\). From the first, \(x=7-2y\). Substitute into the second and simplify:
       \[ 3(7-2y)-2y=5 \;\Rightarrow\; 21-6y-2y=5 \;\Rightarrow\; -8y+21=5. \]

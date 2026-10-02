@@ -68,7 +68,7 @@
     { name: 'D. Parallel lines', eq: [[1, 2, 4], [2, 4, 14]], sol: null,
       q: 'Eq 1 is x + 2y = 4 and Eq 2 is 2x + 4y = 14. Double Eq 1, then subtract Eq 2. What will be left?',
       opts: [['One solution, like x = 3', 'Both the x terms and the y terms match after doubling, so both will cancel. No x is left to solve for.'],
-             ['A statement that is never true, like 0 = 6', good('Yes.') + ' Doubling Eq 1 gives 2x + 4y = 8. Eq 2 has the same left side but a right side of 14. Subtracting leaves 0 = −6.'],
+             ['A statement that is never true, like 0 = −6', good('Yes.') + ' Doubling Eq 1 gives 2x + 4y = 8. Eq 2 has the same left side but a right side of 14. Subtracting leaves 0 = −6.'],
              ['A statement that is always true, 0 = 0', 'That needs the right sides to match too. Doubling Eq 1 gives a right side of 8, but Eq 2 has 14.']], ans: 1 },
     { name: 'E. The same line', eq: [[3, -1, 5], [6, -2, 10]], sol: null,
       q: 'Eq 1 is 3x − y = 5 and Eq 2 is 6x − 2y = 10. Double Eq 1, then subtract Eq 2. What will be left?',
@@ -88,14 +88,14 @@
     { name: 'Subtract', kind: 'move', eq: [[2, 1, 10], [2, -3, 2]], sol: [4, 2],
       q: 'Eq 1 is 2x + y = 10 and Eq 2 is 2x − 3y = 2. Choose Add or Subtract so that one variable cancels. Leave the multipliers at 1 if you can. Then press Check my move.',
       fin: [['(x, y) = (2, 4)', 'You swapped the numbers. x comes first. Check Eq 1: 2(2) + 4 = 8, not 10.'],
-            ['(x, y) = (4, 2)', 'Eq 1 minus Eq 2 gives 4y = 8, so y = 2. Then 2x + 2 = 10 gives x = 4. Check Eq 2: 2(4) − 3(2) = 2.'],
+            ['(x, y) = (4, 2)', 'For example, Eq 1 minus Eq 2 gives 4y = 8, so y = 2. Then 2x + 2 = 10 gives x = 4. Check Eq 2: 2(4) − 3(2) = 2.'],
             ['(x, y) = (1, 8)', 'It works in Eq 1 (2 + 8 = 10) but not in Eq 2 (2 − 24 = −22, not 2). A solution must work in both.'],
             ['(x, y) = (4, 0)', 'Eq 1 gives y = 10 − 2(4) = 2, not 0. Always finish by finding the second coordinate.']], ans: 1 },
     { name: 'Multiply one equation', kind: 'move', eq: [[1, 2, 8], [3, -4, 4]], sol: [4, 2],
       q: 'Eq 1 is x + 2y = 8 and Eq 2 is 3x − 4y = 4. Neither variable cancels yet. Multiply one equation, choose Add or Subtract, then press Check my move.',
       fin: [['(x, y) = (20, 2)', 'If the new equation is 5x = 20, divide by 5: x = 4. The 20 is the right side before dividing.'],
             ['(x, y) = (2, 3)', 'It works in Eq 1 (2 + 6 = 8) but not in Eq 2 (6 − 12 = −6, not 4). A solution must work in both.'],
-            ['(x, y) = (4, 2)', 'x = 4 from the new equation. Then Eq 1 gives 4 + 2y = 8, so y = 2. Check Eq 2: 3(4) − 4(2) = 4.'],
+            ['(x, y) = (4, 2)', 'Whichever valid move you chose, x = 4. Then Eq 1 gives 4 + 2y = 8, so y = 2. Check Eq 2: 3(4) − 4(2) = 4.'],
             ['(x, y) = (4, 8)', 'x = 4 is right. Eq 1 gives 4 + 2y = 8, so 2y = 4 and y = 2. The 8 is the right side of Eq 1, not y.']], ans: 2 },
     { name: 'Multiply both equations', kind: 'move', eq: [[3, 2, 13], [2, 5, 16]], sol: [3, 2],
       q: 'Eq 1 is 3x + 2y = 13 and Eq 2 is 2x + 5y = 16. You need a multiplier for each equation. Pick them, choose Add or Subtract, then press Check my move.',
@@ -368,7 +368,7 @@
         const q = CASES[st.cs], w = work(), L = [], R = w.R, sgn = st.op === 'add' ? '+' : MI;
         L.push(`${kk('Eq 1')} ${eqText(q.eq[0])}` + (st.m1 !== 1 ? `, times ${par(st.m1)}: <b>${eqText(w.e1)}</b>` : ''));
         L.push(`${kk('Eq 2')} ${eqText(q.eq[1])}` + (st.m2 !== 1 ? `, times ${par(st.m2)}: <b>${eqText(w.e2)}</b>` : ''));
-        if (st.oops && (st.m1 !== 1 || st.m2 !== 1)) L.push(bad('Only the left side was multiplied.') + ' The dashed copy is a different line, and it no longer goes through the solution dot.');
+        if (st.oops && (st.m1 !== 1 || st.m2 !== 1)) L.push(bad('Only the left side was multiplied.') + ' The dashed copy is a different line from the real equation, so it is no longer the same equation.');
         if (!st.pred) { L.push('Make your prediction first. Then the sliders and buttons unlock.'); return lines(L); }
         if (w.kind === 'zero') { L.push(bad('A multiplier of 0 is not allowed.') + ' It turns the equation into 0 = 0 and forgets everything it said.'); return lines(L); }
         if (w.kind === 'wait') { L.push('Set the multipliers, then press Add or Subtract.'); return lines(L); }
@@ -376,7 +376,7 @@
         L.push(`<b>New equation: ${eqText(R)}</b>`);
         if (w.kind === 'vert') L.push(good('y cancelled.') + ` The new line is vertical, so it reads off x: x = ${num(R[2])} ÷ ${par(R[0])} = ${num(R[2] / R[0])}.`);
         else if (w.kind === 'horiz') L.push(good('x cancelled.') + ` The new line is horizontal, so it reads off y: y = ${num(R[2])} ÷ ${par(R[1])} = ${num(R[2] / R[1])}.`);
-        else if (w.kind === 'both') L.push(bad('This still has both x and y.') + ` The new line is tilted. It does pass through the solution, but it does not name x or y. To cancel, a pair of terms must be opposites (when you add) or equal (when you subtract). Now the x terms are ${num(w.e1[0])} and ${num(w.e2[0])}, and the y terms are ${num(w.e1[1])} and ${num(w.e2[1])}.`);
+        else if (w.kind === 'both') L.push(bad('This still has both x and y.') + ` The new line is tilted. If the system has a solution, this line passes through it, but the line does not name x or y. To cancel, a pair of terms must be opposites (when you add) or equal (when you subtract). Now the x terms are ${num(w.e1[0])} and ${num(w.e2[0])}, and the y terms are ${num(w.e1[1])} and ${num(w.e2[1])}.`);
         else if (w.kind === 'void') L.push(good('Both cancelled.') + ` What is left, 0 = ${num(R[2])}, is never true. No x and y fit it, so the two lines have no point in common: no solution.` + (st.oops ? ' (If you forgot the right side, check that this is real.)' : ''));
         else if (w.kind === 'same') L.push(good('Both cancelled.') + ' What is left, 0 = 0, is always true. The two equations describe the same line, so every point on it is a solution.');
         return lines(L);
