@@ -90,7 +90,13 @@ const ALIGN = [
   { id: 'exponential-growth',          course: 'algebra1', skill: 'mid', standards: ['8.3.5.6', '8.3.7.7', '8.3.7.8', '8.3.7.9', '9.3.7.1'] },
   { id: 'functions-as-transformations', course: 'algebra1', skill: 'mid', standards: ['9.3.7.3'] },
   { id: 'quadratics-and-the-parabola', course: 'algebra1', skill: 'mid', standards: ['9.3.6.2', '9.3.6.3', '9.3.6.5', '9.3.7.3'] },
+  { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9', '9.3.7.1'] },
+  { id: 'solving-systems-by-substitution', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4'] },
+  { id: 'systems-of-three-equations', course: 'algebra2', skill: 'mid', standards: ['9.3.7.1'] },
+  { id: 'cramers-rule', course: 'algebra2', skill: 'mid', standards: ['9.3.7.1'] },
+  { id: 'solving-systems-with-matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4', '9.3.7.1'] },
+  { id: 'determinants-and-inverse-matrices', course: 'algebra2', skill: 'mid', standards: [], enrichment: true },
   { id: 'modular-arithmetic', course: 'algebra1', skill: 'intro', standards: [], enrichment: true },
 
   /* Geometry */
