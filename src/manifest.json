@@ -73,6 +73,13 @@
     "lessons/school/correlation-and-causation.js",
     "lessons/school/expected-value.js",
     "lessons/school/permutations-and-combinations.js",
+    "lessons/school/angle-relationships-and-parallel-lines.js",
+    "lessons/school/rigid-motions-and-congruence.js",
+    "lessons/school/area-by-decomposition.js",
+    "lessons/school/similar-triangles-aa-sas-sss.js",
+    "lessons/school/nets-and-surface-area.js",
+    "lessons/school/volume-of-prisms-pyramids-and-cones.js",
+    "lessons/school/special-right-triangles-and-trigonometry.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
