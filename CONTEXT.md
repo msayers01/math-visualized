@@ -1,6 +1,6 @@
 # Continuum: Context Window
 
-**Version:** v59 (lesson tours: How this works, see ARCHITECTURE 0.33; teacher mode with password gate; classroom polish pass: touch, layout, accessibility, resilience, search; see ARCHITECTURE 0.31)
+**Version:** v60 (tour follow-up fixes; lesson tours: How this works, see ARCHITECTURE 0.33; teacher mode with password gate; classroom polish pass: touch, layout, accessibility, resilience, search; see ARCHITECTURE 0.31)
 **Last updated:** 2026-10-02
 
 ## ⚠️ Current priority: middle & high school ONLY

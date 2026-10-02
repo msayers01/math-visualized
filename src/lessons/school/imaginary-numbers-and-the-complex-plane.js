@@ -258,6 +258,11 @@
       };
 
       const zlabR = (p, a, b, text, col, sz) => p.label(text, a, b, { size: sz, italic: false, color: col, align: 'left', dx: 15, dy: b >= 0 ? -19 : 19 });
+      /* in the add tool the dashed sides run from each arrow tip toward the sum, so put the label on the side away from them */
+      const addLab = (p, a, b, text, col, sz, sum) => {
+        const right = a >= sum[0] / 2, up = b >= sum[1] / 2;   /* away from the middle of the parallelogram */
+        p.label(text, a, b, { size: sz, italic: false, color: col, align: right ? 'left' : 'right', dx: right ? 15 : -15, dy: up ? -19 : 19 });
+      };
       /* --- the parabola --- */
       const drawPara = (c, p) => {
         const pal = p.pal, b = p.bounds(), sz = clamp(p.scale * .62, 15, 20);
@@ -435,10 +440,10 @@
           if (!st.practice) { if (st.sel === 'z') ring(p, a, b); else ring(p, d, e); }
           else ring(p, d, e);
           if (!st.practice) {
-            zlabR(p, a, b, 'z = ' + cx(a, b), pal.blue, sz);
-            if (a !== d || b !== e) zlabR(p, d, e, 'w = ' + cx(d, e), pal.red, sz); else p.label('w = z', d, e, { size: sz, italic: false, color: pal.red, dy: 36 });
+            addLab(p, a, b, 'z = ' + cx(a, b), pal.blue, sz, sum);
+            if (a !== d || b !== e) addLab(p, d, e, 'w = ' + cx(d, e), pal.red, sz, sum); else p.label('w = z', d, e, { size: sz, italic: false, color: pal.red, dy: 36 });
             if (sub) p.label('−w', wx, wy, { size: sz, italic: false, color: alpha(pal.red, .9), dy: wy >= 0 ? -17 : 17 });
-          } else { zlabR(p, a, b, 'z = ' + cx(a, b), pal.blue, sz); zlabR(p, d, e, 'w = ' + cx(d, e), pal.red, sz); }
+          } else { addLab(p, a, b, 'z = ' + cx(a, b), pal.blue, sz, sum); addLab(p, d, e, 'w = ' + cx(d, e), pal.red, sz, sum); }
           void hasW;
         } else if (kind === 'mod' || kind === 'modp') {
           const A = kind === 'modp' ? 5 : a, Bv = kind === 'modp' ? -12 : b, M = modText(A, Bv);

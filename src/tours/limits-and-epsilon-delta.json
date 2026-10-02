@@ -1,53 +1,47 @@
 {
-  "purpose": "This tool turns the idea of a limit into a game. You see what close means: someone picks a tolerance on the output, and you find how near to a you must stay to keep f(x) inside it.",
-  "stops": [
-    {
-      "at": "stage",
-      "title": "The graph and its bands",
-      "text": "The blue curve is f, and the yellow-ringed point sits at your chosen x. In the game modes a violet band is the allowed range of f(x), and a green band is the x values you choose. Red parts of the curve escape the violet band.",
-      "try": "Drag the ringed point, or any ring on a band edge. Each handle is an open ring at the edge."
-    },
-    {
-      "at": "ctl:Mode",
-      "title": "Three modes",
-      "text": "Approach shows a table of values closing in on a. Play with epsilon and delta shows both bands to set. Challenge gives you a violet band and you find a green one. The Function and Side menus change the example.",
-      "try": "Pick Play with epsilon and delta, then drag a green edge until no red is inside."
-    },
-    {
-      "at": "ctl:Step closer",
-      "title": "Step closer",
-      "text": "Moves your x ten times nearer to a, and the table adds a row. Other side jumps to the other side of a. Reset sets x back to 0.1 away. These matter in Approach mode.",
-      "try": "Press Step closer four times. Watch f(x) settle."
-    },
-    {
-      "at": "ctl:violet band",
-      "title": "Epsilon, the output tolerance",
-      "text": "How far f(x) may be from the candidate limit L. A smaller epsilon is a stricter test, and the violet band gets narrower. You can also drag the violet edge on the graph.",
-      "try": "Make it very small and see how the curve escapes the band."
-    },
-    {
-      "at": "ctl:green band",
-      "title": "Delta, the input distance",
-      "text": "How close to a you stay, shown as the green band. The point x = a itself is skipped. If the curve stays inside the violet band over the whole green band, your delta works.",
-      "try": "Shrink delta until the red parts disappear."
-    },
-    {
-      "at": "ctl:Candidate limit L",
-      "title": "Candidate limit L",
-      "text": "Your guess for the limit. Its height is the centre of the violet band. Drag the yellow dot or use this slider. A wrong L means no delta works, however small.",
-      "try": "On the jump function, move L to 1 and set Side to Left only."
-    },
-    {
-      "at": "ctl:Check my",
-      "title": "Challenge buttons",
-      "text": "Only used in Challenge mode. Check my delta tests your green band. No delta works says that none can. Next epsilon gives a new violet band.",
-      "try": "Switch to Challenge, find a delta, then press Check."
-    },
-    {
-      "at": "steps",
-      "title": "What Next does",
-      "text": "Step 1 approaches 2 for x squared. Step 2 shows the value at a does not matter. Step 3 plays the epsilon and delta game. Step 4 is a jump where no delta works."
-    }
-  ],
-  "teacher": "Project step 3 and ask students to choose a delta for epsilon 0.1 before dragging. Ask: if delta works for epsilon, does a smaller delta also work? Misconception: that the limit is f(a). Step 2 shows a missing or changed value at a changes nothing."
+ "purpose": "This tool turns the idea of a limit into a game. You see what close means: someone picks a tolerance on the output, and you find how near to a you must stay to keep f(x) inside it.",
+ "stops": [
+  {
+   "at": "stage",
+   "title": "The graph and its bands",
+   "text": "The blue curve is f, and the yellow-ringed point sits at your chosen x. In the game modes a violet band is the allowed range of f(x), and a green band is the x values you choose. Red parts of the curve escape the violet band.",
+   "try": "Drag the ringed point, or any ring on a band edge. Each handle is an open ring at the edge."
+  },
+  {
+   "at": "ctl:Mode",
+   "title": "Three modes",
+   "text": "Approach shows a table of values closing in on a. Play with epsilon and delta shows both bands. Challenge gives you epsilon and you find a green band, using the Check my delta, No delta works and Next epsilon buttons that appear.",
+   "try": "Switch to Challenge, find a delta, then press Check my delta."
+  },
+  {
+   "at": "ctl:Step closer",
+   "title": "Step closer",
+   "text": "Moves your x ten times nearer to a, and the table adds a row. Other side jumps to the other side of a. Reset sets x back to 0.1 away. These matter in Approach mode.",
+   "try": "Press Step closer four times. Watch f(x) settle."
+  },
+  {
+   "at": "ctl:violet band",
+   "title": "Epsilon, the output tolerance",
+   "text": "How far f(x) may be from the candidate limit L. A smaller epsilon is a stricter test, and the violet band gets narrower. You can also drag the violet edge on the graph.",
+   "try": "Make it very small and see how the curve escapes the band."
+  },
+  {
+   "at": "ctl:green band",
+   "title": "Delta, the input distance",
+   "text": "How close to a you stay, shown as the green band. The point x = a itself is skipped. If the curve stays inside the violet band over the whole green band, your delta works.",
+   "try": "Shrink delta until the red parts disappear."
+  },
+  {
+   "at": "ctl:Candidate limit L",
+   "title": "Candidate limit L",
+   "text": "Your guess for the limit. Its height is the centre of the violet band. Drag the yellow dot or use this slider. A wrong L means no delta works, however small.",
+   "try": "On the jump function, move L to 1 and set Side to Left only."
+  },
+  {
+   "at": "steps",
+   "title": "What Next does",
+   "text": "Step 1 approaches 2 for x squared. Step 2 shows the value at a does not matter. Step 3 plays the epsilon and delta game. Step 4 is a jump where no delta works."
+  }
+ ],
+ "teacher": "Project step 3 and ask students to choose a delta for epsilon 0.1 before dragging. Ask: if delta works for epsilon, does a smaller delta also work? Misconception: that the limit is f(a). Step 2 shows a missing or changed value at a changes nothing."
 }

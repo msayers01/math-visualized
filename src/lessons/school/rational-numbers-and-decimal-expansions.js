@@ -151,7 +151,7 @@
         text: String.raw`<p>Test the fractions with denominators 2 to 20. Predict the rule, then choose a numerator and a denominator and read the verdict.</p><p>Always reduce first. \(\tfrac{6}{15}\) is \(\tfrac25\), and 5 is fine, so it stops. The reason: a stopping decimal is a fraction over 10, 100, 1000, and those have only the prime factors 2 and 5.</p>`,
         set: { mode: 1, gn: 1, gd: 3 } },
       { title: 'From a repeating decimal to a fraction',
-        text: String.raw`<p>Let \(x=0.333\ldots\) Then \(10x=3.333\ldots\) The tails match, so \(10x-x=3\). That means \(9x=3\) and \(x=\tfrac13\).</p><p>Choose the bigger line and the line to take away so the tails cancel. A wrong choice leaves a tail. Then try \(0.4\overline{3}\) and \(0.\overline{9}\).</p>`,
+        text: String.raw`<p>Let \(x=0.333\ldots\) Then \(10x=3.333\ldots\) The tails match, so \(10x-x=3\). That means \(9x=3\) and \(x=\tfrac13\).</p><p>Choose two lines whose repeating tails match digit for digit, with the bigger line first. For \(0.333\ldots\) every pair of lines matches, so use \(10x\) and \(x\). When the repeating block is longer, as in \(0.\overline{36}\), only lines shifted by the whole block match. A wrong choice leaves a tail. Then try \(0.4\overline{3}\) and \(0.\overline{9}\).</p>`,
         set: { mode: 2, ti: 0 } },
       { title: 'Decimals that never repeat',
         text: String.raw`<p>The digits of \(\sqrt2\) and \(\pi\) do not stop, and no repeat shows up. Pick a repeat length L and see where it breaks. We can only see so many digits, so this shows but does not prove. A proof for \(\sqrt2\) is in another lesson.</p><p>Use the View menu for \(\pi\) against \(\tfrac{22}{7}\) and 3.14, and for sorting cards.</p>`,
