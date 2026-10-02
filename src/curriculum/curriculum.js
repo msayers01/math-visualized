@@ -118,6 +118,7 @@ const ALIGN = [
   /* Geometry */
   { id: 'similarity-and-scaling',      course: 'geometry', skill: 'mid', standards: ['7.2.4.2', '7.2.4.3', '9.2.3.9'] },
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
+  { id: 'exact-trig-values-and-special-triangles', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
   { id: 'trigonometric-ratios-sine-cosine-tangent', course: 'geometry', skill: 'mid', standards: ['9.2.3.8'] },
   { id: 'tangent-and-secant-angles', course: 'geometry', skill: 'mid', standards: ['9.2.4.9'] },
   { id: 'arc-length-and-sectors', course: 'geometry', skill: 'mid', standards: ['7.2.3.3'] },
