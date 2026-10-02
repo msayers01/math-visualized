@@ -29570,7 +29570,7 @@ register({
 
   const byAng = (a, b, c) => Math.max(a, b, c) > 90 ? 'obtuse (one angle is over 90°)' : Math.max(a, b, c) === 90 ? 'right (one angle is 90°)' : 'acute (every angle is under 90°)';
   const bySide = (a, b, c) => a === b && b === c ? 'equilateral (3 equal angles, so 3 equal sides)'
-    : (a === b || b === c || a === c) ? 'isosceles (2 equal angles, so 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
+    : (a === b || b === c || a === c) ? 'isosceles (exactly 2 equal angles, so exactly 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
 
   /* ----- canvas helpers ----- */
   const sector = (p, x, y, r, a0, sw, fill, stroke, lw = 2.4, dash) => {
@@ -29625,7 +29625,7 @@ register({
       q: 'This polygon has 7 sides. Click corners to draw diagonals from the yellow corner, then choose the sum of all its angles.',
       choices: ['720°', '1260°', '1080°', '900°'], answer: 3,
       no: ['720° is 4 triangles, the answer for 6 sides. With 7 sides the fan has one more triangle.',
-           '1260° is 7 × 180°, one triangle for every side. But the two sides that touch the yellow corner never get a triangle of their own. Only 7 − 2 = 5 triangles fit.',
+           '1260° is 7 × 180°, one triangle for every side. But the two sides at the yellow corner do not start a triangle, because no diagonal is drawn to them. Only 7 − 2 = 5 triangles fit.',
            '1080° is 6 triangles. The fan from one corner makes 7 − 2 = 5 triangles, not 6.', null],
       why: 'Diagonals from one corner cut a 7-sided polygon into 7 − 2 = 5 triangles. Each triangle has 180°, so the angles add to 5 × 180° = 900°.' },
     { kind: 'ext', n: 9,
@@ -29645,7 +29645,7 @@ register({
     { kind: 'quad',
       q: 'Three angles of a four-sided shape are 90°, 70° and 90°. How big is the fourth angle?',
       choices: ['20°', '110°', '290°', '90°'], answer: 1,
-      no: ['20° would be 270° − 250°. A four-sided shape has two triangles, so its angles add to 360°, not 270°.', null,
+      no: ['20° is 180° − 90° − 70°, which is the rule for three sides. A four-sided shape has two triangles, so its angles add to 360°.', null,
            '290° comes from 540° − 250°, but 540° is the sum for 5 sides. Four sides make 2 triangles: 360°.',
            'Check it: 90° + 70° + 90° + 90° = 340°, which is 20° short of 360°.'],
       why: 'A four-sided shape splits into 4 − 2 = 2 triangles, so its angles add to 360°. The three known angles make 250°, and 360° − 250° = 110°.' }
@@ -29676,7 +29676,7 @@ register({
         text: String.raw`<p>Cut the three corners off a paper triangle and line them up. Try it here.</p><p>First pick a guess in the panel: what do the three angles add up to? Then drag each corner down to the straight line, or press its <b>Tear</b> button. Next press <b>Missing-angle puzzle</b> and find the hidden angle.</p>`,
         set: { mode: 'tear', A: 50, B: 70, tA: 0, tB: 0, tC: 0 } },
       { title: 'Equal sides, equal angles',
-        text: String.raw`<p>A triangle with two equal sides is <b>isosceles</b>. With three equal sides it is <b>equilateral</b>. With none it is <b>scalene</b>. The tick marks show equal sides.</p><p>Guess each base angle, then check. Press <b>Fold</b>: the two base angles land on each other, so they are equal.</p>`,
+        text: String.raw`<p>A triangle with at least two equal sides is <b>isosceles</b>. With three equal sides it is <b>equilateral</b>. With none it is <b>scalene</b>. The tick marks show equal sides.</p><p>Guess each base angle, then check. Press <b>Fold along the middle</b>: the two base angles land on each other, so they are equal.</p>`,
         set: { mode: 'iso', th: 40, fold: 0 } },
       { title: 'Cut into triangles',
         text: String.raw`<p>A <b>polygon</b> is a closed shape with straight sides. Click the other corners to draw <b>diagonals</b> from the yellow corner. Each diagonal is a straight cut across the shape.</p><p>Every triangle has 180°. Fill in the table, then look for the pattern.</p>`,
@@ -29860,7 +29860,7 @@ register({
 
       /* ---------- tear: puzzles ---------- */
       const startPuz = () => {
-        fl.puz = (fl.puz + 1) % MISS.length; fl.puzOk = false; stopKeys(['tA', 'tB', 'tC']);
+        fl.puz = (fl.puz + 1) % MISS.length; fl.puzOk = false; fl.guessT = true; stopKeys(['tA', 'tB', 'tC']);
         const [a, b] = MISS[fl.puz];
         go({ A: a, B: b, tA: 0, tB: 0, tC: 0 }, 700);
         refreshQuiz(MISS[fl.puz]);
@@ -30171,7 +30171,7 @@ register({
           p.path([v, [v[0] + d1[0], v[1] + d1[1]]], { stroke: pal.muted, width: 2, dash: [5, 5] });
           sector(p, v[0], v[1], .75, a0, x * q, alpha(pal.red, .35), pal.red, 2.2);
           if (q > .99) {
-            const d = dirv(a0 + x / 2, n >= 9 ? 1.45 : 1.3); txt(p, dgs(x), v[0] + d[0], v[1] + d[1], { size: p.fs, color: pal.text });
+            const d = dirv(a0 + x / 2, n >= 9 ? 1.45 : 1.3); if (!o.noLab) txt(p, dgs(x), v[0] + d[0], v[1] + d[1], { size: p.fs, color: pal.text });
             if (o.inside) { const L = Math.hypot(v[0], v[1]), dd = [-v[0] / L, -v[1] / L]; txt(p, dgs(180 - x), v[0] + dd[0] * 1.0, v[1] + dd[1] * 1.0, { size: p.fs - 1, w: 600, color: pal.muted }); }
           }
         }
@@ -30204,7 +30204,7 @@ register({
           const tris = drawPoly(p, { arcs: arcsOf(7, true), diags: pr.pd, click: true });
           cap(p, [tris.length === 5 ? '5 triangles × 180° = 900°' : 'Triangles so far: ' + tris.length + ' of 5'], 'bottom', pal.text);
         } else if (q.kind === 'ext') {
-          drawExt(p, { arcs: arcsOf(q.n, true), w: q.n, noBar: true, noWalker: true });
+          drawExt(p, { arcs: arcsOf(q.n, true), w: q.n, noBar: true, noWalker: true, noLab: !solved });
           cap(p, ['Every turn is 40°.'], 'bottom', pal.muted);
         } else if (q.kind === 'reg') {
           drawPoly(p, { arcs: arcsOf(5, true), diags: [], labels: [null, solved ? '108°' : '?', null, null, null] });
@@ -30260,7 +30260,7 @@ register({
         } else if (m === 'ext') {
           const n = fl.nE, arcs = arcsOf(n, fl.reg), W = walkInfo(arcs, Math.min(st.w, n));
           rows.push(`<span class="k">Sides</span> ${n}`, `<span class="k">Corners turned</span> ${W.done}`, `<span class="k">Turned so far</span> ${dgs(W.turned)}`);
-          if (fl.reg) rows.push(`<span class="k">Each turn</span> 360 ÷ ${n} = ${dgs(360 / n)}`, `<span class="k">Each inside angle</span> 180° − ${dgs(360 / n)} = ${dgs(180 - 360 / n)}`);
+          if (fl.reg) rows.push(`<span class="k">Each turn</span> 360 ÷ ${n} ${360 % n ? '≈' : '='} ${dgs(360 / n)}`, `<span class="k">Each inside angle</span> 180° − ${dgs(360 / n)} ${360 % n ? '≈' : '='} ${dgs(180 - 360 / n)}`);
           else rows.push(`<span class="k">The turns differ:</span> ${arcs.map((_, i) => dg(extOf(arcs, i + 1))).join(', ')} (they add to 360°)`);
         } else {
           rows.push('<span class="k">Practice mode.</span> Use the Practice box below the readout.');
@@ -30284,7 +30284,9 @@ register({
 
       /* ---------- practice ---------- */
       const startPrac = () => {
-        stopAll(); fl.mode = 'prac'; pr.on = true; showGroups(); refreshPrac(); sync();
+        stopAll(); fl.mode = 'prac'; pr.on = true;
+        if (pr.first.length <= pr.i) { pr.solved = false; pr.pd = []; pr.tries = 0; }
+        showGroups(); refreshPrac(); sync();
       };
       const refreshPrac = () => {
         if (pr.i >= PRAC.length) {
