@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool lets you build every arrangement and every group by hand. You will see why counting ordered lists gives a bigger number than counting groups, and how to decide which one a problem needs.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The tiles and slots",
+      "text": "Coloured tokens (runners, letters, students) sit in a tray. Tap a token, or drag it into the next open slot, to build an arrangement. In step 4 the slots belong to a counting story, and a map below shows where your answers lead.",
+      "try": "In step 1, tap three runners, one after the other, to fill the podium."
+    },
+    {
+      "at": "ctl:Situation",
+      "title": "Situation",
+      "text": "Each step has a Situation menu with its own options. Step 1: a podium, a letter lock or a photo line. Step 2: how many tiles and slots. Step 4: eight different counting stories. A new choice resets the figure.",
+      "try": "In step 1, switch to Photo line, where every friend gets a place."
+    },
+    {
+      "at": "ctl:Clear the slots",
+      "title": "Clear the slots",
+      "text": "Step 1 only. This empties the podium so you can fill it again in a different order. Each place has fewer choices than the one before, because a runner who is placed is no longer in the tray.",
+      "try": "Fill the podium, clear it, and fill it in a different order."
+    },
+    {
+      "at": "ctl:Clear the list",
+      "title": "Clear the list",
+      "text": "Step 2 only. Each arrangement you build flies into a list. Clear the list empties it. AB and BA count as two different arrangements, because order matters. After four, you predict the full length.",
+      "try": "Build AB, then BA, and see they land as two entries."
+    },
+    {
+      "at": "ctl:Activity",
+      "title": "Committees or Pascal",
+      "text": "Step 3 only. Committees: tap three students and see all the ordered picks of those same three get highlighted. Start over resets it. The other option shows Pascal's triangle and its mirror symmetry.",
+      "try": "Pick three students and count the highlighted picks."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 fills slots, one choice at a time. Step 2 counts permutations, where order matters. Step 3 counts combinations, where it does not. Step 4 gives eight stories where you choose the tool and compute."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and ask: how many different committees of 3 can you form from 5 students? Students often say 60, because they count ordered picks. Highlight the six picks that are one committee. In step 4, make the class vote on whether order matters before anyone computes."
+}

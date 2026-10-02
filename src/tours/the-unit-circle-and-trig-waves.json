@@ -1,0 +1,46 @@
+{
+  "purpose": "This lets you spin a point around a circle of radius 1 and see its height and sideways position become the sine and cosine waves. You will see why sine and cosine rise and fall, and why they repeat.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Circle on top, wave below",
+      "text": "On the circle, the yellow arc is the angle, the green line is cos (how far right) and the red line is sin (how high). The graph below draws the red height as a wave. Drag the point around the circle, or drag anywhere on the wave.",
+      "try": "Drag the point once all the way around and watch the red wave being drawn."
+    },
+    {
+      "at": "ctl:θ in degrees",
+      "title": "Set the angle exactly",
+      "text": "This slider sets the angle from 0 to 360 degrees. The readout shows the angle in degrees and radians, plus cos and sin. The last line, cos squared plus sin squared, is always 1.",
+      "try": "Set 30, 45 and 90 degrees and write down the cos and sin values."
+    },
+    {
+      "at": "ctl:Play",
+      "title": "Let it spin",
+      "text": "Spins the point at a steady speed. It stops when you drag, move the slider, or press Pause. Watching it run once is the quickest way to see the wave get drawn.",
+      "try": "Press Play and watch sin reach its top when the point is at the top."
+    },
+    {
+      "at": "ctl:Show cosine wave",
+      "title": "Add the cosine wave",
+      "text": "Adds the green cosine wave to the graph. It is the green sideways distance plotted against the angle. It looks like the red wave slid to the left by a quarter turn.",
+      "try": "Turn it on and find where the two waves cross."
+    },
+    {
+      "at": "ctl:Snap to 15",
+      "title": "Snap to 15 degrees",
+      "text": "When on, dragging jumps to angles that are multiples of 15 degrees. It makes it easy to land on nice angles like 30, 45, 60 and 90 and read their exact values.",
+      "try": "Turn it on and drag around the circle. Which angles do you land on?"
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows the angle as an arc. Step 2 shows the two legs, cos and sin. Step 3 spins once to draw the sine wave. Step 4 turns on the cosine wave."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and press Play. Ask: where on the circle is sin biggest, and where is it zero? Then turn on cosine and ask why one wave is the other shifted. Watch for students who think the wave is a drawing of the circle's edge rather than the height of the point."
+}

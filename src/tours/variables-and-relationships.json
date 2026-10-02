@@ -1,0 +1,41 @@
+{
+ "purpose": "This shows how two changing quantities depend on each other, using a table, a graph and a rule at once. You will learn which one you choose (x), which one responds (y), and how a rule like y = 2x + 5 gives every pair.",
+ "stops": [
+  {
+   "at": "stage",
+   "title": "Table, rule and graph",
+   "text": "Table at the top, graph below, and the rule between them. In step 2, drag anywhere on the graph or tap a table column to move the marker and watch y respond. In step 4 you drag two rings on the line to build a graph.",
+   "try": "In step 2, drag across the graph and watch the table column and the rule update."
+  },
+  {
+   "at": "ctl:Situation",
+   "title": "Three situations",
+   "text": "Only in step 2. Ages adds the same number. Tickets multiplies. Savings jar multiplies and then adds. Each has a challenge such as moving the marker until y hits a target. Picking another situation resets x.",
+   "try": "Pick Tickets and see how y changes compared with Ages."
+  },
+  {
+   "at": "ctl:the one you choose",
+   "title": "Choose x",
+   "text": "Only in step 2. This slider sets x, the quantity you choose. The other number, y, responds. It works the same as dragging on the graph or tapping a column. The label names what x means in the situation.",
+   "try": "Slide x until the challenge is solved."
+  },
+  {
+   "at": "ctl:Show the changes",
+   "title": "See the steady change",
+   "text": "Only in step 2. Shows how y changes each time x goes up by 1. In Ages it goes up 1, in Tickets by the ticket price. A steady change is what makes the graph a straight line.",
+   "try": "Turn it on, then compare the change in Tickets and in Savings jar."
+  },
+  {
+   "at": "ctl:Show what the rule gives",
+   "title": "Compare with the rule",
+   "text": "Only in step 4 when you build a graph from a rule. It adds a row to the table showing what the rule gives, so you can check your line against it. Drag the left ring for the start and the right ring for the steepness.",
+   "try": "Build a line from y = 2x + 1, then turn this on to compare."
+  },
+  {
+   "at": "check",
+   "title": "Quick check",
+   "text": "Two questions at the end. A wrong answer explains why."
+  }
+ ],
+ "teacher": "Use step 2 on the projector and ask: which number did I choose, and which one answered? Students often mix up x and y or think a rule that fits one column is enough, so step 3 is the key one. Let them predict y for a new x before moving the marker."
+}

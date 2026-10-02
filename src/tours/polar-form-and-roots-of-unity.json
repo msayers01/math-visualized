@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool shows a complex number as a point on a plane, named by distance and angle. You will see that multiplying adds angles and multiplies distances, and why a number has several roots spaced round a circle.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The complex plane",
+      "text": "The horizontal axis is real and the vertical axis is imaginary. Each step starts with a Predict first question in the panel. Answer it and the handles unlock. Then drag the ringed point z (or z1 and z2) to move it. It snaps to clean values.",
+      "try": "Answer the prediction, then drag z around and watch the readout."
+    },
+    {
+      "at": "ctl:a, the real part",
+      "title": "Step 1: a and b",
+      "text": "Step 1 only. a is how far right, b is how far up. The readout turns them into r, the distance from 0, and the angle. It shows the work, including what to add when a is negative.",
+      "try": "Set a = -1 and b = 1, and read why the angle is 135."
+    },
+    {
+      "at": "ctl:z₁ modulus",
+      "title": "Step 2: two numbers",
+      "text": "Step 2 only. The modulus is the distance from 0. The angle is turned from the positive real axis. Move z1 and z2 and predict the product. The product's distance multiplies and its angle adds.",
+      "try": "Make z1 at 20 degrees and z2 at 50 degrees. Predict the product's angle."
+    },
+    {
+      "at": "ctl:n, how many powers",
+      "title": "Step 3: powers",
+      "text": "Step 3 only. This draws z, z squared, z cubed, and so on. The r slider is the distance of z. Below 1 the powers spiral in, above 1 they spiral out. The preset buttons on the circle and spiral inward set examples.",
+      "try": "Press On the circle, then Spiral inward, and compare."
+    },
+    {
+      "at": "ctl:Choose w",
+      "title": "Step 4: roots",
+      "text": "Step 4 only. This finds all the solutions of z to the n equals w. Choose w and n. The roots are spaced evenly round a circle. Highlight root number k picks one, or drag on the picture. Tip to tail adds the roots up.",
+      "try": "Choose w = 1 with n = 3. Then switch on the tip to tail switch."
+    },
+    {
+      "at": "ctl:Show angles in radians",
+      "title": "Degrees or radians",
+      "text": "This switch shows the angles in the readout in radians instead of degrees. The picture stays the same, only the way the angle is written changes. 180 degrees is pi radians.",
+      "try": "Turn it on and read the angle of 135 degrees again."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is rectangular to polar form. Step 2 is multiplying. Step 3 is powers. Step 4 is roots of unity. Each one has its own Predict first questions before the controls unlock. Start practice has eight problems."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and have students predict the product's angle before any slider moves. Many multiply the angles. Then move to step 4 and ask how many cube roots of 1 there are, and where they sit. Turn on tip to tail to show they sum to zero."
+}

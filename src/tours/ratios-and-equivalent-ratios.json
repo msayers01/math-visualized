@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool uses an orange drink recipe to show what a ratio is. You make bigger and smaller batches and see that equal ratios taste the same, while adding the same amount to both parts does not keep the taste.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Blocks, number line, table",
+      "text": "Yellow blocks are cups of concentrate and blue blocks are cups of water. Under them, a double number line and a table show the same batches. Drag the round marker along a number line, or tap a table column, to change the batches.",
+      "try": "Drag the marker to 3 batches and see the blocks grow."
+    },
+    {
+      "at": "ctl:Compare",
+      "title": "Three modes",
+      "text": "Scale makes bigger batches of one recipe. Compare puts two mixes side by side and asks which is stronger. Change adds the same amount to both parts and asks if the taste changes. The Next steps pick a mode for you.",
+      "try": "Press Compare, then press Scale to come back."
+    },
+    {
+      "at": "ctl:Challenge",
+      "title": "Challenge menu",
+      "text": "Scale mode only. Each challenge sets a goal, such as 20 cups in all or 5 cups of concentrate. Move the marker or the Batches slider until the goal is met. Next challenge goes to the next one.",
+      "try": "Pick the 20 cups goal and find the number of batches."
+    },
+    {
+      "at": "ctl:Batches (the multiplier)",
+      "title": "Batches slider",
+      "text": "Scale mode. This sets how many copies of the recipe you make. Both amounts are multiplied by the same number, so the ratio stays the same. The readout shows each amount and the total.",
+      "try": "Set 4 batches. Check that concentrate and water stay in the ratio 2 to 3."
+    },
+    {
+      "at": "ctl:Pair of mixes",
+      "title": "Pair of mixes",
+      "text": "Compare mode. Choose two mixes. Decide with the three buttons whether A is stronger, B is stronger or they are the same. A wrong guess still shows the reason. Next pair moves along.",
+      "try": "Pick a pair, guess, and then read why."
+    },
+    {
+      "at": "ctl:Batches of the top mix",
+      "title": "Line the mixes up",
+      "text": "Compare and Change modes. The two sliders make bigger batches of the top and bottom mix, so you can give both the same amount of concentrate and then compare the water. Show the gap shows the red subtraction brackets.",
+      "try": "Give both mixes the same concentrate and compare the water."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows the 2:3 recipe. Step 2 makes 3 batches. Step 3 compares 2:3 with 4:5 and shows the gap. Step 4 adds 1 cup of each part to 2:3 and asks if the taste stays the same."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3, where the gap is the same in both mixes but the taste is not. Ask: how can you line them up so you can compare fairly? Common mistake: students think adding the same amount to both parts keeps the ratio. Use the Change mode to test it."
+}

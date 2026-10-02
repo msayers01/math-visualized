@@ -1,0 +1,47 @@
+{
+  "purpose": "This turns a survey into a table and a Venn diagram, so you can count groups, write chances as fractions, and see why P(A given B) is different from P(B given A). You do the work by tapping the picture.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Tap the picture",
+      "text": "The table and the Venn diagram show the same survey. Rows are A and not A. Columns are B and not B. There are no handles to drag. Tap cells, Venn regions or boxes to do the activity, and a message under the picture explains each result.",
+      "try": "In 'Chance as a fraction', tap a table cell and see the matching Venn region light up."
+    },
+    {
+      "at": "ctl:Build a table",
+      "title": "Four activities",
+      "text": "Build a table sorts 20 students into cells. Events and Venn marks groups like A and B. Chance as a fraction builds fractions such as P(A given B). Independence asks if knowing B changes A. The steps pick one for you.",
+      "try": "Click through all four buttons to see how the controls change."
+    },
+    {
+      "at": "ctl:Number of students",
+      "title": "Fill in the totals",
+      "text": "Only in Build a table. First sort all 20 students by tapping the right cell. Then tap a total box at the edge of the table, set its number with this slider, and press Check totals. The slider is locked until all 20 are sorted.",
+      "try": "Sort all 20, tap the bottom-right box and set the grand total."
+    },
+    {
+      "at": "ctl:Which survey",
+      "title": "Choose a survey",
+      "text": "Only in the three calculating activities. Grade and sport, or Phone and streaming. The question menu below it lists what to find, such as P(A and B), P(A) or P(A given B). Changing the survey clears your marks.",
+      "try": "Pick the other survey and see if the answers feel different."
+    },
+    {
+      "at": "ctl:Top of fraction",
+      "title": "Top and bottom",
+      "text": "Only in Chance as a fraction and Independence. A probability is a fraction. Pick Top, then tap the cells to count in the numerator (yellow). Pick Bottom and tap the cells that form the new sample space, then press the check button.",
+      "try": "For P(A given B), mark the top first, then switch to the bottom."
+    },
+    {
+      "at": "ctl:Not independent",
+      "title": "Your verdict",
+      "text": "Only in Independence. Compare P(A) with P(A given B). If the two numbers are close, say Independent. If they differ clearly, say Not independent. Real surveys are rarely exactly equal.",
+      "try": "Do the phone survey, then the grade and sport survey, and compare."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Use step 3 and ask the class to say what the bottom of the fraction is before touching the cells. The classic mistake is mixing up P(A given B) with P(B given A), so do both on the same table. Project the Venn diagram next to the table so students see the same four groups in both."
+}

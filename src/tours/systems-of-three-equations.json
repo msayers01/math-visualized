@@ -1,0 +1,42 @@
+{
+  "purpose": "This tool shows each equation in three unknowns as a flat sheet in 3D. A solution is a point on all three sheets. You see how sheets can meet in a point, a line or not at all, then solve by elimination.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Sheets in 3D",
+      "text": "Blue, red and green sheets are the three equations (E1, E2, E3). Drag sideways on the picture to turn it, and look for where they cross. A solution is a point on every sheet you can see. Turning it shows how the sheets are really placed.",
+      "try": "Drag left and right on the picture until you can see all three sheets meet."
+    },
+    {
+      "at": "ctl:See the sheets",
+      "title": "Three tabs",
+      "text": "See the sheets shows the 3D picture and asks for a prediction. Solve it is an elimination table where you make two new equations and solve. Story problem is a bakery problem with three receipts. Practice is separate, at the bottom.",
+      "try": "Switch to Solve it, then come back to See the sheets."
+    },
+    {
+      "at": "ctl:Turn",
+      "title": "Turn and tilt",
+      "text": "Turn rotates the picture around the vertical axis. Tilt switches between looking from above and from the side. The Turn left and Turn right buttons move it by 30 degrees. Some cases only make sense from a certain angle.",
+      "try": "Set Tilt low to look from the side along a line of meeting."
+    },
+    {
+      "at": "ctl:Show one more sheet",
+      "title": "Add sheets one by one",
+      "text": "Start with one sheet, then add a second to see a line where they cross, then the third. Hidden equations are marked hidden in the list. You can only predict once all three are on. The System menu holds systems A to H.",
+      "try": "Add the sheets one by one, then answer the Predict question."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows one sheet. Step 2 asks you to predict for three sheets. Step 3 is a new system, C, and the table of all the ways three sheets can meet. Step 4 switches to Solve it with elimination.",
+      "try": "In step 3, try Systems D to H and see which equations are copies or mixes."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Eight short problems. Pick an answer and read why. Nothing is saved or scored, and Back to the lesson takes you out.",
+      "try": "Press Start practice after you have done the Solve it tab."
+    }
+  ],
+  "teacher": "Hold up a book, a folded card and two sheets of paper to show a corner, a line and parallel sheets before projecting System B and C. Ask for the prediction first. Misconception: three equations always give one answer. Systems D to H show when they do not."
+}

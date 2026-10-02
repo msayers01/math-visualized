@@ -1,0 +1,52 @@
+{
+  "purpose": "This is a scatter plot lab for the number r, which says how tightly dots follow a straight line. You guess r, check it, break it with curves and outliers, then practise telling when two things that go together do not cause each other.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The scatter plot",
+      "text": "Each dot is one thing measured twice. In step 1, click or drag along the number line under the plot to place your guess for r. You can also drag any dot. In step 2, drag the yellow dot along the line. The yellow r in the corner is computed.",
+      "try": "Place a guess on the number line before you press anything else."
+    },
+    {
+      "at": "ctl:Straight band",
+      "title": "Reshape the picture",
+      "text": "Straight band uses the slider to make the dots tight or loose, and the Positive and Negative buttons to flip the direction. U shape and Band with an outlier are traps. The ringed outlier dot can be dragged.",
+      "try": "Choose Band with an outlier, drag the ringed dot to a corner and watch r."
+    },
+    {
+      "at": "ctl:Check my guess",
+      "title": "Check my guess",
+      "text": "Reveals the real r, draws the blue line of fit and tells you how far off you were and whether the sign or the strength was wrong. r stays hidden until you press it. Guess again clears your guess.",
+      "try": "Check a guess, then press New picture and try again."
+    },
+    {
+      "at": "ctl:Slope",
+      "title": "Read the line",
+      "text": "In step 2, three buttons switch between questions about slope, intercept and prediction. Pick the sentence that reads the line correctly. Wrong choices fade so you can try the others.",
+      "try": "Drag the yellow guide beyond the data and see the warning in the readout."
+    },
+    {
+      "at": "ctl:Ice cream",
+      "title": "Pick a situation",
+      "text": "In step 3, each button is a real pairing, such as ice cream and drownings. Choose the best explanation: x causes y, y causes x, a lurking variable, or chance. After a right answer, dots may take colours showing the hidden third variable.",
+      "try": "Pick Ice cream, then choose an explanation."
+    },
+    {
+      "at": "ctl:It confuses them",
+      "title": "Check the argument",
+      "text": "In step 4, read a news-style claim and decide if it confuses correlation and causation or is careful. After you are right, you choose the reason. Not every claim is a mistake.",
+      "try": "Read claim 1, decide, then pick the reason."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 estimates r. Step 2 reads a line of fit in real units. Step 3 explores what could explain a correlation. Step 4 checks arguments. Each step changes the picture and the panel."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "In step 1, have students write a guess for r before anyone checks. Project the U shape: r is near 0 but the pattern is clear, so r only measures straight lines. The usual slip is reading r as the slope. In step 3, ask what third thing could cause both."
+}

@@ -1,0 +1,46 @@
+{
+  "purpose": "This is a number line where absolute value means distance. You move a test point and watch its distance from a fixed point, so |x - a| = k and |x - a| < k turn into questions about how far away you are.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The number line",
+      "text": "The violet dot is the fixed number a. The ring with a blue centre is your test point x. The blue bar is the distance between them, and its label says how long it is. The label turns green or red.",
+      "try": "Drag the ring left and right and watch the blue bar grow and shrink."
+    },
+    {
+      "at": "ctl:Test point x",
+      "title": "Test point",
+      "text": "This slider moves the same ring as dragging does, one step at a time. The readout under it works out the distance and tests it against the statement: Yes means x is a solution.",
+      "try": "Find a number where the readout says Yes, then look for a second one."
+    },
+    {
+      "at": "ctl:Between the edges",
+      "title": "Build the graph",
+      "text": "In the Within and beyond step you draw the answer yourself. Pick between or outside, open or closed circles, and set the two edges with the - and + buttons or by dragging the two small circles.",
+      "try": "Press Check my graph. A wrong graph gets a hint, not a penalty."
+    },
+    {
+      "at": "ctl:Open circles",
+      "title": "Open or closed",
+      "text": "An open circle means that exact number is not a solution. A closed circle means it is. Strict signs (< and >) use open circles. Signs with 'or equal' use closed ones.",
+      "try": "Switch the sign at the top to at most, then see which circles Check my graph wants."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 asks you to predict, then mark both solutions of |x-2|=3. Step 2 is graphing inequalities. Step 3 solves an equation with a line inside the bars. Step 4 has stories and no-answer cases."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Seven short problems on the same number line: equations, graphs, a tricky one and a lost-solution puzzle. Nothing is scored or saved.",
+      "try": "Start practice and aim to solve the first one without a hint."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions to finish. A wrong answer shows why, and you can try again."
+    }
+  ],
+  "teacher": "Project step 1 and ask: how many numbers are 3 away from 2? Students often find only 5 and forget -1, which is the lost-solution mistake. In step 2, ask them to test the centre point before choosing between or outside."
+}

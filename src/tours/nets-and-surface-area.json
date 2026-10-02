@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool unfolds a 3D solid into a flat net so you can see every face. You will add up the face areas to find surface area, and see why a pyramid face is taller than the pyramid.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The solid and its net",
+      "text": "Drag left or right on the solid to turn it. Click a face to add its area to your total. Click it again to remove it. A face you have counted stays marked, so you do not count it twice.",
+      "try": "Unfold the solid, then click each face once."
+    },
+    {
+      "at": "ctl:Triangular prism",
+      "title": "Pick a solid",
+      "text": "Box, triangular prism, cylinder or pyramid. Each has its own sliders for the measurements. A solid is made of flat faces, except the can, whose curved side unrolls into a rectangle.",
+      "try": "Choose Cylinder, then unfold it and look at the side."
+    },
+    {
+      "at": "ctl:Unfold",
+      "title": "Unfold",
+      "text": "This slider folds the solid from closed (0%) to a flat net (100%). Drag it slowly to see how the faces hinge. The Unfold flat and Fold up buttons do the same in one press.",
+      "try": "Drag Unfold to 50% and watch the faces swing open."
+    },
+    {
+      "at": "ctl:Turn",
+      "title": "Turn",
+      "text": "This turns the solid so you can see faces that face away. Dragging on the picture does the same. The two arrow buttons turn it a little at a time.",
+      "try": "Turn the closed box until you see the back face."
+    },
+    {
+      "at": "ctl:cm²",
+      "title": "Choose the unit",
+      "text": "Surface area is covered by squares, so its unit is cm squared. Pick cm, cm squared or cm cubed. Your running total shows its unit only after you pick cm squared. Wrong choices say why.",
+      "try": "Pick cm first and read why it is not the right unit."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice",
+      "text": "Six problems on different solids. You click the faces for each solid and press Check faces. Some ask a multiple choice question first. Leave with Back to exploring.",
+      "try": "Start it and do the first problem."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is a box. Step 2 is a tent, a triangular prism. Step 3 is a can, where the side unrolls. Step 4 is a pyramid, where you meet the slant height and a mistake you can switch on."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1, answer the Predict question as a class, then unfold. Ask why a face counted twice would change the total. The common mistake is using the height of the pyramid instead of the slant height. Switch on the mistake toggle in step 4 to show it."
+}

@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool shows why some fractions give decimals that stop and others repeat forever. You do the long division yourself, find the rule for stopping, turn repeating decimals back into fractions, and see what a decimal that never repeats looks like.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figure changes each step",
+      "text": "Step 1 shows long division, with the remainder at the right. Step 2 is a grid of fractions. Step 3 stacks lines like x, 10x and 100x. Step 4 shows digits. Nothing is dragged. In step 2 you can tap a box.",
+      "try": "In step 2, tap a box in the grid to choose that denominator."
+    },
+    {
+      "at": "ctl:Choose a fraction",
+      "title": "Pick a fraction",
+      "text": "Step 1. Choose which fraction to divide, such as 3/8 or 1/7. First answer the stop-or-repeat prediction. Then the Next digit button unlocks and the remainders appear one by one.",
+      "try": "Choose 1/7 and press Next digit until a remainder comes back."
+    },
+    {
+      "at": "ctl:Next digit",
+      "title": "One digit at a time",
+      "text": "Each press brings down a zero and gets one more digit. Watch the remainder. When a remainder repeats, the digits repeat from there. Run to the end does all the steps and Start over clears them.",
+      "try": "Press Run to the end for 7/12 and spot the repeating block."
+    },
+    {
+      "at": "ctl:Denominator (or tap",
+      "title": "Test a fraction",
+      "text": "Step 2. Set a numerator and a denominator, or tap a box in the grid. The grid fills in only after you predict a rule. Then you can read whether the fraction stops or repeats and why.",
+      "try": "Set 6 over 15 and note it stops, since it reduces to 2/5."
+    },
+    {
+      "at": "ctl:Choose a number",
+      "title": "Repeating decimal to fraction",
+      "text": "Step 3. Pick a repeating decimal, then choose a bigger line (blue) and a line to take away (red). If their tails match, subtracting cancels the tail and leaves a whole number to divide.",
+      "try": "Pick 0.3636 and subtract x from 10x. A tail is left. Then use 100x."
+    },
+    {
+      "at": "ctl:What to look at",
+      "title": "Digits that never repeat",
+      "text": "Step 4. This menu switches between three views: digits, pi against 22/7 and 3.14, and a sorting game. In the digits view, Digits shown and the repeat length L slider test whether the digits repeat.",
+      "try": "Choose pi, set L to 2 and find where the pattern breaks."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is long division. Step 2 finds which fractions stop. Step 3 turns repeats into fractions. Step 4 looks at decimals that never repeat. Each step shows its own controls."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask for the prediction before dividing. Watch for students who say a long decimal must be irrational. Ask: if the remainder can only be 0 to 7, what must happen eventually when you divide by 8?"
+}

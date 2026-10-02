@@ -1,0 +1,40 @@
+{
+  "purpose": "This tool lets you aim a line through a point P so it is parallel or perpendicular to a blue line. You will see that parallel lines have equal slopes, and perpendicular slopes multiply to -1.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The graph",
+      "text": "Drag the ring at the end of your line to aim it. Drag P to move the point. Drag the two rings on the blue line: one slides it, one tilts it. Your line turns green when it is parallel and red when it is perpendicular.",
+      "try": "Drag your line's ring until it turns green."
+    },
+    {
+      "at": "ctl:Make it parallel",
+      "title": "Challenge",
+      "text": "These buttons give you a goal. Make it parallel or Make it perpendicular, then drag your line to try. Show me does it for you and explains the moves. New line and point gives you a fresh puzzle.",
+      "try": "Press Make it perpendicular and aim your line."
+    },
+    {
+      "at": "ctl:Horizontal",
+      "title": "Blue line shortcuts",
+      "text": "These turn the blue line flat or upright. A flat line has slope 0 and an upright line has no slope at all. The rule that slopes multiply to -1 does not work for them, so look at what happens instead.",
+      "try": "Press Vertical and see what the perpendicular line becomes."
+    },
+    {
+      "at": "ctl:The parallel through P",
+      "title": "Show helpers",
+      "text": "These switches turn extra things on the graph on and off: the answer lines through P, the slope triangles (rise over run), and the point where your line crosses the y-axis. The last one adds an equation quiz.",
+      "try": "Turn on Slope triangles and compare rise and run on both lines."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is parallel lines. Step 2 turns a triangle a quarter turn to find the perpendicular slope. Step 3 writes the equation through P and asks you to pick it. Step 4 uses flat and upright lines."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask what happens to rise and run when you turn a slope triangle a quarter turn. Many students think perpendicular means the opposite slope, so -2/3 instead of -3/2. Let them aim it and see the line fail to turn red."
+}

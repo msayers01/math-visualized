@@ -1,0 +1,34 @@
+{
+  "purpose": "This is a function tester. You feed in inputs and see which ones work, then you see the set of inputs (the domain) and the set of outputs (the range) as shadows on the axes.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two panes, two shadows",
+      "text": "The top pane shows the formula or story. The bottom pane is the graph. A green bar on the x-axis is the domain (inputs allowed). A red bar on the y-axis is the range (outputs reached). Open ends show a circle, infinite ends an arrow.",
+      "try": "In activity 1, answer the prediction, then drag anywhere in the graph. The green dot on the x-axis is your input."
+    },
+    {
+      "at": "ctl:Choose an activity",
+      "title": "Four activities",
+      "text": "1 tests a machine input by input. 2 finds a domain from a formula. 3 gives you a shape with a movable key point (the yellow ring, drag it) to read the range. 4 asks which inputs a story allows.",
+      "try": "Switch to activity 3. Answer the prediction, then drag the yellow ring up and sideways."
+    },
+    {
+      "at": "steps",
+      "title": "Next changes the activity",
+      "text": "Each step jumps to one activity: machine, formula, shape, then story. The first thing in each is a prediction or a question. Controls and bars stay locked until you answer it."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Eight short problems on domain, range, graph reading, and checking whether an answer fits the story. Each part gives a reason after your choice. Nothing is saved or scored. Press the same button again to go back.",
+      "try": "Start practice and pick a wrong answer on purpose to read the explanation."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions, with a reason after each. Try the third: it asks you to find a mistake in someone else's work."
+    }
+  ],
+  "teacher": "Project activity 2 and have students predict what breaks the formula before tapping. Ask: why is the bracket square at the root's start? Common misconception: confusing domain with range, or writing (2, infinity) when the root of 0 is a fine output."
+}

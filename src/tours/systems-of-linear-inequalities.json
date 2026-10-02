@@ -1,0 +1,36 @@
+{
+  "purpose": "This tool graphs two or more inequalities at once. The part where all the shadings overlap is the solution region. You test points, find its corners, and see the special cases like no overlap or an unbounded region.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Shaded regions",
+      "text": "Each inequality has a color and a boundary line. A dashed line is not included. A solid line is. Where the colors mix, in violet, every inequality is true. Drag the test point P (brass ring) or, in the build part, click a yellow corner.",
+      "try": "Drag P into only blue, only red, and the violet overlap."
+    },
+    {
+      "at": "ctl:Choose a part",
+      "title": "Five parts",
+      "text": "This menu switches the whole tool: overlap of two shadings, build a region and find corners, special cases, a bakery story with whole numbers, and best profit (enrichment). The Next steps open the first four for you.",
+      "try": "Visit part 3, Special cases, and answer its prediction."
+    },
+    {
+      "at": "panel",
+      "title": "Controls change by part",
+      "text": "Overlap: system menu plus P: x and P: y sliders. Build: four on/off limits and a Find a corner box. Special cases: a Predict first question. Bakery: build each inequality, then set Cakes and Pies. Profit: a slider.",
+      "try": "In Build, turn limits on and off and watch the corners appear and vanish."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 is overlap with test point P. Step 2 builds a region and finds its corners. Step 3 shows special cases such as no overlap. Step 4 is the bakery story where only whole number points count.",
+      "try": "In step 2 turn on 2x + y at most 8 and count the corners."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Starts seven short problems, with graphs to compare and systems to test. Nothing is saved or scored. Back to the lesson returns you to where you were.",
+      "try": "Press Start practice, then Back to the lesson to leave."
+    }
+  ],
+  "teacher": "Project part 1 and ask students to place P so that exactly one inequality is true before moving it. Then use the special cases prediction to discuss why the overlap can be empty. Misconception: students shade each inequality correctly but report one single shaded color as the answer instead of the overlap."
+}

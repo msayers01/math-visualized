@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool runs an experiment again and again and graphs what happens. You will see the fraction of successes settle down to the true probability, and see how the chance of at least one success builds up.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two graphs",
+      "text": "Nothing to drag. The top graph: the blue line is the fraction of successes so far, and the dashed line is the true probability p. The bottom graph: the blue curve is the chance of at least one success in k tries.",
+      "try": "Add 10 trials and watch the blue line jump around."
+    },
+    {
+      "at": "ctl:Probability of success p",
+      "title": "Probability p",
+      "text": "This sets the chance of success on each trial, like heads on a coin or a six on a die. The dashed line moves to match. Changing it clears the trials so far.",
+      "try": "Set p to 0.2, add 1,000 trials, and see where the blue line settles."
+    },
+    {
+      "at": "ctl:+10 trials",
+      "title": "Add trials",
+      "text": "Each press runs more random trials and adds them to the same total. The bottom axis is a log scale, so each gridline is ten times more trials. Reset clears everything. Results differ every time.",
+      "try": "Press +10, then +100, then +1,000 and watch the wobble shrink."
+    },
+    {
+      "at": "ctl:Tries k",
+      "title": "Tries k",
+      "text": "This sets how many tries you get. The dot on the lower curve shows the chance of at least one success in k tries. The readout gives it as a percent. It climbs toward 100% but does not reach it.",
+      "try": "Set p to 1/6 (about 0.17) and find k where the chance passes 50%."
+    },
+    {
+      "at": "ctl:Simulate 1,000 attempts",
+      "title": "Simulate",
+      "text": "This plays 1,000 attempts of k tries each and counts how many had at least one success. A red hollow dot appears on the curve at that fraction. It should land close to the blue dot.",
+      "try": "Press it a few times and see how the red dot moves."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 runs 30 coin flips. Step 2 runs 1,000 flips. Step 3 uses a loaded coin with p = 0.2. Step 4 uses a die, with k = 6 tries, and shows a simulation on the lower graph."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask students to predict the line at 1,000 flips before moving on. Ask: after 5 heads in a row, what is next? Many think tails is due. In step 4, ask who thinks 6 rolls guarantees a six, then read the 66% from the lower graph."
+}

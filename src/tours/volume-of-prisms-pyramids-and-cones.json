@@ -1,0 +1,53 @@
+{
+  "purpose": "This lets you build and compare solids to see where volume formulas come from. A prism is identical layers stacked, and a pyramid or cone holds exactly one third of the matching prism. You can also see how doubling a length changes volume.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The 3D solid",
+      "text": "The solid is drawn in 3D with its sizes labelled in cm. Drag left or right on the picture to turn it around. In the pour views you will see a pyramid or cone next to a see-through prism or cylinder with the same base and height.",
+      "try": "Drag on the picture to turn the solid and look at it from all sides."
+    },
+    {
+      "at": "ctl:Choose a solid",
+      "title": "Pick a solid",
+      "text": "Nine solids: boxes, triangles, an L shape, a cylinder, a slanted coin stack, pyramid and cone pours, a doubling view and a sphere. The controls below change to match. The steps on the left pick one for you.",
+      "try": "Pick Coin stack (slanted) and use the Slant slider. Does volume change?"
+    },
+    {
+      "at": "ctl:Layers stacked",
+      "title": "Stack layers",
+      "text": "Only for prisms and cylinders. Each layer holds the same number of unit cubes, the base area. The readout shows layers times base area so far. Use the minus and plus buttons above to change the length, width or height.",
+      "try": "Add one layer at a time and watch the total grow by the same amount."
+    },
+    {
+      "at": "ctl:3 loads",
+      "title": "Guess first",
+      "text": "Only in the pyramid and cone pour views. Choose how many pyramid loads you think will fill the prism. The Pour slider stays locked until you do. After pouring you can see if your guess was right.",
+      "try": "Guess 2, 3 or 4 loads, then pour and count."
+    },
+    {
+      "at": "ctl:Pour",
+      "title": "Pour the loads",
+      "text": "Slide to pour the pyramid into the prism, or press Pour one load. The readout shows loads poured and the level reached. Empty the prism starts again. Three loads fill it exactly.",
+      "try": "Press Pour one load three times and watch the level."
+    },
+    {
+      "at": "ctl:Double radius",
+      "title": "Double a length",
+      "text": "Only in the Double a length view. Compare the original cylinder with one that has double height, double radius, or both. The readout shows how many times as much it holds. Radius counts twice, so doubling it gives four times the base.",
+      "try": "Compare Double height with Double radius and read the B divided by A line."
+    },
+    {
+      "at": "ctl:Rotation",
+      "title": "Turn the solid",
+      "text": "This slider and the Turn buttons spin the solid so you can see all sides. It does the same as dragging on the picture. It does not change any size or volume.",
+      "try": "Turn the pyramid until you can see its base."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and have the class vote on the guess before anyone pours. Then ask why the answer is one third and not one half. Common errors are forgetting the third for pyramids and cones, and thinking doubling the radius doubles the volume, so use step 4."
+}

@@ -1,0 +1,46 @@
+{
+  "purpose": "This shows a 2 by 2 matrix as a machine that moves the whole plane. You change the matrix and watch the grid, a unit square and the letter F move. You discover what the determinant measures and why some matrices cannot be undone.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The moving plane",
+      "text": "The green arrow shows where (1, 0) lands. The red arrow shows where (0, 1) lands. Drag the ring on either arrow tip to change the matrix. Blue lines are the carried grid. The blue F and yellow square ride along.",
+      "try": "Drag the green ring and watch the whole F follow it."
+    },
+    {
+      "at": "panel",
+      "title": "Steppers and predictions",
+      "text": "The a, b, c, d steppers set each entry in steps of one half. Green a and c are the green arrow, red b and d are the red arrow. In steps 2 and 3 the matrix is locked until you answer the predict question.",
+      "try": "Make the F turn a quarter turn to the left by setting the green arrow to (0, 1) and the red to (-1, 0)."
+    },
+    {
+      "at": "ctl:Try a famous matrix",
+      "title": "Famous matrices",
+      "text": "Pick a ready-made move such as the identity, a quarter turn, a shear or a stretch. The arrows glide to their new places, and a note says what the move does. Entries stay locked while a prediction is open.",
+      "try": "Choose a shear. Which arrow stays put, and which one leans?"
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 explores. Step 2 shows the determinant as the area scale, with a flip when it is negative. Step 3 makes it 0 so the plane is squashed flat and two points collide. Step 4 builds the inverse."
+    },
+    {
+      "at": "ctl:Show the formula",
+      "title": "Build the inverse",
+      "text": "In step 4, the violet F is the blue F moved again by your matrix G. Step the four entries of G until the violet F lands home. Show the formula gives the inverse and checks A times it. Use the formula fills G for you.",
+      "try": "Try to find G yourself first. Then press Show the formula."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Seven short problems on the same picture. Pick an answer and read why. Press Back to the lesson to return. Nothing is scored or saved.",
+      "try": "Press Start practice and read the first question."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and ask students to predict d before moving anything. Then show two different points landing on the same spot, which is why no inverse exists. Common slip: thinking a negative determinant means a negative area. It means the F is flipped like a mirror."
+}

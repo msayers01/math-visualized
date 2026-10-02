@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool shows one line written four ways. Drag the line and watch point-slope, slope-intercept and standard form all change together, so you can pick the form that fits the job.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "One line, many forms",
+      "text": "The blue line is the one being described. The ringed handles are the dots you drag, and they snap to whole numbers. Boxes at the top left show the equation. Green is the run and red is the rise of the slope triangle.",
+      "try": "Drag the ringed point A. Watch the slope, and every form in the panel, update."
+    },
+    {
+      "at": "ctl:The line is given by",
+      "title": "How the line is given",
+      "text": "Choose what you control: two points, a point and a slope, the slope and y-intercept, or standard form. Switching keeps the same line and only changes which handles you drag.",
+      "try": "Switch to Slope and y-intercept. The handle on the y-axis is b."
+    },
+    {
+      "at": "ctl:To slope-intercept",
+      "title": "Convert it yourself",
+      "text": "Starts from point-slope form. You choose each algebra move. A wrong move is explained, a right one is applied. You end up at slope-intercept or standard form.",
+      "try": "Press To slope-intercept and pick the first move. Try a wrong one on purpose."
+    },
+    {
+      "at": "ctl:Show on the graph",
+      "title": "What the graph highlights",
+      "text": "Changes the extra marks on the graph: the slope triangle, the y-intercept, both intercepts, or the y over x ratio with a dashed line through the origin for proportional checks.",
+      "try": "Pick the ratio view and drag the y-intercept to 0."
+    },
+    {
+      "at": "ctl:Show a dashed line",
+      "title": "Match a line",
+      "text": "Draws a dashed purple line with two marked points. Move your line to pass through both. The panel counts how many points you hit and gives a hint. Press again for the next target.",
+      "try": "Press it, read the two points, find rise over run, then place your line."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 gives two points and the slope. Step 2 opens the convert box. Step 3 switches to standard form and intercepts. Step 4 compares a proportional line with one that is not."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with explained answers."
+    }
+  ],
+  "teacher": "Project step 2 and ask the class to choose each algebra move before you click. Ask: when would you use standard form instead of slope-intercept? Misconception: a line with a nonzero y-intercept is proportional. Step 4 corrects that."
+}

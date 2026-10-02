@@ -1,0 +1,39 @@
+{
+  "purpose": "This tool lets you build fractals and measure their dimension by counting copies. You see why a shape can have a dimension like 1.26, and how a random game can draw a triangle with holes.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figure changes by shape",
+      "text": "The figure changes with each shape. Shape 1 cuts a line, square and cube into copies, one in yellow. Later shapes show the Koch curve, the Sierpinski triangle, and chaos game dots. Click corners when asked to choose.",
+      "try": "Answer the prediction first. The copy counts for the line, square and cube appear."
+    },
+    {
+      "at": "ctl:Choose a shape",
+      "title": "Five shapes",
+      "text": "1 counts copies when you scale. 2 builds the Koch curve. 3 removes middle triangles. 4 is the chaos game. 5 lets you pick the number of copies and the scale, then shows the dimension. Each begins with a prediction.",
+      "try": "Choose 4, predict the shape, then press Play (4000 dots)."
+    },
+    {
+      "at": "ctl:Scale factor s",
+      "title": "Scale factor",
+      "text": "How many times longer each side becomes. Copies needed follow N = s to the power d, where d is the dimension: 1 for a line, 2 for a square, 3 for a cube. It stays locked until you answer the prediction.",
+      "try": "After predicting, set s to 5 and check the three counts."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 counts copies. Step 2 builds the Koch curve and finds its dimension. Step 3 removes triangles and links to Pascal's triangle. Step 4 is the chaos game. Make your own is only in the menu."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Seven short problems on dimension and building fractals. Press the same button to go back to the lesson. Nothing is saved or scored."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with explained answers."
+    }
+  ],
+  "teacher": "Ask students to predict how many copies a square needs at scale 3 before moving the slider, then ask what d would make 3 to the d equal 4 for the Koch curve. Misconception: thinking the random chaos game should make a random cloud. Project step 4."
+}

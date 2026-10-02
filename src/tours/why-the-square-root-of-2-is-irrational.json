@@ -1,0 +1,53 @@
+{
+  "purpose": "This tries to write the diagonal of a square as a fraction, first by measuring, then by two proofs. You will see that rulers always miss by a little, and why no ruler can ever fit, not even one you have not tried.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The picture changes by part",
+      "text": "In Measure you see a square (blue side), its diagonal (purple) and the red leftover gap. After your prediction, click the bars at the bottom to try rulers. Other parts redraw as you answer. Nothing to drag.",
+      "try": "In Measure, after your prediction, click a bar and see the leftover gap."
+    },
+    {
+      "at": "ctl:Measure",
+      "title": "Four parts",
+      "text": "Measure tests rulers. The proof is the algebra argument. What if tries other square roots. Fold is a second proof with triangles. The steps on the left pick one for you, and you can switch any time.",
+      "try": "Click through the four buttons and see how the panel changes."
+    },
+    {
+      "at": "ctl:The side is q units",
+      "title": "Choose the ruler",
+      "text": "Only in Measure. The side is q units long. If the diagonal were a whole number of units, root 2 would be a fraction. The readout shows how far from whole it is. This unlocks after your prediction.",
+      "try": "Try q = 5, 12 and 29. Which leaves the smallest gap?"
+    },
+    {
+      "at": "ctl:q = 70",
+      "title": "Best rulers so far",
+      "text": "Only in Measure. These buttons jump to the rulers that get closest to a whole number. q = 70 is the best up to 100, but its gap is still not zero. A search is evidence, not proof.",
+      "try": "Press q = 70 and read the line p squared minus 2 q squared."
+    },
+    {
+      "at": "ctl:Restart the proof",
+      "title": "Proof by contradiction",
+      "text": "Only in The proof. You go through 13 stops. At each one you choose the next line or its reason, and a wrong choice says why. Some stops have buttons like Square 3 to test an idea. Restart goes back to stop 1.",
+      "try": "Work through the first example, even and odd, before the main proof."
+    },
+    {
+      "at": "ctl:√3",
+      "title": "Other roots",
+      "text": "Only in What if. Predict whether the same argument ends in a contradiction, then use Next line to see it. Root 3 and root 6 work. Root 4 and root 9 get stuck because they are whole numbers.",
+      "try": "Try root 4 and find the line where the argument gets stuck."
+    },
+    {
+      "at": "ctl:Fold 7, 7, 10",
+      "title": "Fold forever",
+      "text": "Only in Fold, after you finish the questions. Folding a right triangle with equal legs gives a smaller one. These buttons try the near misses 7, 7, 10 and others, which stop after a few folds. A true whole-number triangle would never stop.",
+      "try": "Answer the six questions, then try Fold 5, 5, 7."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "In Measure, make students predict, then show q = 70 and ask why a very small gap is not enough. Proofs are best run as a class vote at each stop. A common mistake is thinking a long decimal that does not seem to repeat is a proof. Project the proof part and let students argue the reasons."
+}

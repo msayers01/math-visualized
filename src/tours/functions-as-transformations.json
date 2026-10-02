@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you move, stretch and flip a graph by changing numbers in a formula. By tracking one point you see exactly what each number does, so you can read a transformation straight from its formula.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two graphs, one point",
+      "text": "The grey curve is the base function f. The blue curve is the transformed g. The ringed point P sits on f. Its red twin P' shows where P lands on g. Drag P along the grey curve.",
+      "try": "Drag P to the left and right. Notice how P' follows."
+    },
+    {
+      "at": "ctl:Base function f",
+      "title": "Base function",
+      "text": "Pick which simple graph you start with: absolute value, square, cube, square root or sine. All four sliders below then change that graph.",
+      "try": "Choose sin x, then change b."
+    },
+    {
+      "at": "ctl:shift right",
+      "title": "h: shift right",
+      "text": "A number inside the brackets with x. Positive h moves the whole graph right. This feels backwards, since the formula says x minus h. Compare P and P' to see it.",
+      "try": "Slide h to 2 and see which way P' moves."
+    },
+    {
+      "at": "ctl:shift up",
+      "title": "k: shift up",
+      "text": "A number added outside. Every point moves up by k, and down if k is negative. This one is not backwards.",
+      "try": "Set k to 1 and read P' against P."
+    },
+    {
+      "at": "ctl:stretch, flip",
+      "title": "a: stretch and flip",
+      "text": "Multiplies every height. Bigger than 1 makes it taller, between 0 and 1 squashes it, and negative flips it upside down across the x-axis.",
+      "try": "Slide a to -2."
+    },
+    {
+      "at": "ctl:squeeze, flip",
+      "title": "b: squeeze and flip",
+      "text": "Multiplies x inside the brackets. Bigger than 1 squeezes the graph sideways, and negative flips it left to right. It is the opposite of a, since it divides the x-distances.",
+      "try": "Slide b to 2 and watch P' move toward the y-axis."
+    },
+    {
+      "at": "ctl:Reset transformation",
+      "title": "Reset",
+      "text": "Puts a, b, h and k back to the plain base graph, so the blue curve lies on the grey one. Your chosen base function stays."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows both graphs equal. Step 2 sets h and k. Step 3 adds a. Step 4 switches to sine with b. Each is a setting you can change."
+    }
+  ],
+  "teacher": "Ask students to predict where P' lands before changing a slider, then check. Good question: why does a plus inside the brackets move the graph left? Common misconception: thinking h and b act like k and a, when they act on x and work backwards."
+}

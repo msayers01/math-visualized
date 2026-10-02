@@ -1,0 +1,11 @@
+{
+  "purpose": "This tool zooms a shape in or out from a point you choose. You find out what changes when a shape is scaled (lengths, area) and what does not (angles).",
+  "stops": [
+    { "at": "stage", "title": "Blue shape, yellow copy", "text": "The blue shape is the original. The yellow shape is its copy after the zoom. Dashed lines join each blue corner to its yellow partner and pass through the brass dot O, the center. Drag O or a blue corner.", "try": "Drag O far away. The copy moves, but does it change shape?" },
+    { "at": "ctl:Shape", "title": "Triangle or square", "text": "Switch between a triangle and a square. The square has fixed corners (only O moves). With a square at k = 2 or 3, grid lines inside the yellow square count the copies of the blue one.", "try": "Pick Square, then set k to 3 and count the small squares." },
+    { "at": "ctl:Scale factor", "title": "Scale factor k", "text": "k is how many times farther each corner goes from O. Above 1 it grows, between 0 and 1 it shrinks, and negative puts the copy on the other side of O, upside down.", "try": "Slide k from 3 down through 0 to -3 and watch the yellow shape." },
+    { "at": "panel", "title": "The readout", "text": "It lists each side before and after (with the triangle, also the angles) and the area before and after. Compare the area ratio with k times k.", "try": "Set k = 2. Is the area ratio 2 or 4?" },
+    { "at": "steps", "title": "Next and Back", "text": "Each step sets the shape and k for one idea: lengths scale by k, areas by k squared, then shrinking and flipping. You can still change anything after each step.", "try": "Press Next, then change k yourself and check the idea still holds." }
+  ],
+  "teacher": "Project the square at k = 3 and ask how many small squares fit in the big one before revealing the area line. Misconception to watch for: students expect area to scale by k. Have them drag O and see that the ratios never depend on where O is."
+}

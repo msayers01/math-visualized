@@ -1,0 +1,40 @@
+{
+  "purpose": "This cuts a circle into slices and rearranges them into a shape that looks like a rectangle. The thinner you cut, the closer it gets, and that is how you can see where the area formula pi times r squared comes from.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The slices",
+      "text": "The circle is cut into slices, with colours alternating blue and yellow. There is nothing to drag here. Use the controls on the right. When the slices are rearranged, the labels pi r (the long side) and r (the height) appear.",
+      "try": "Press the Rearrange slices button and watch every slice turn and fit in."
+    },
+    {
+      "at": "ctl:Slices",
+      "title": "Number of slices",
+      "text": "More slices means thinner slices and smaller bumps. The readout below shows the base of the shape divided by r. As you add slices, that number gets closer and closer to pi.",
+      "try": "Go from 4 slices up to 64 and watch the readout number climb toward 3.1416."
+    },
+    {
+      "at": "ctl:Radius r",
+      "title": "Change the radius",
+      "text": "Changes how big the circle is. The shape rearranges to match, and the area in the readout changes. Doubling r makes the area four times as large, not two times.",
+      "try": "Set r to 1.0, note the area, then set r to 2.0."
+    },
+    {
+      "at": "ctl:Progress",
+      "title": "Rearrange by hand",
+      "text": "Progress shows how far the slices have moved. Drag it yourself to go back and forth slowly, or use the big button to play it. At 100 percent the slices are fully interlocked.",
+      "try": "Drag it halfway and look at how each slice turns."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 cuts 8 slices. Step 2 interlocks them. Step 3 uses 32 slices so the bumps shrink. Step 4 uses 64 slices and reads off the two sides of the rectangle."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask: is the area of this lumpy shape the same as the circle's? Then jump to step 4. Students often think the shape's area is bigger because the edges bump. Ask what happens to the bumps as slices get thinner."
+}

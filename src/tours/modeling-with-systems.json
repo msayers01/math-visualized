@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool turns a word story into two equations, draws them as two lines, and finds where they cross. You will see that the crossing point is the answer to the story.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The graph",
+      "text": "The graph shows the story as lines. The blue line is equation 1 and the red line is equation 2. You do not drag anything on it. Where the lines cross is the answer, and the numbers on the axes carry units.",
+      "try": "In step 1, answer the prediction and watch the two lines draw in."
+    },
+    {
+      "at": "ctl:Choose a story",
+      "title": "Pick a story",
+      "text": "Each story is a different kind of situation: tickets, break-even, gym plans, coins, rowing. The same four moves work on all of them. Your progress is kept separately for each story.",
+      "try": "Switch to Coins in a jar and see the graph and the words change."
+    },
+    {
+      "at": "ctl:1 Unknowns",
+      "title": "The five stages",
+      "text": "These buttons are the path: name the unknowns, build the equations, see the graph, solve, say what it means. A stage unlocks only when you finish the one before it. Press a finished stage to go back to it.",
+      "try": "Pick x and y, press Check my unknowns, then press Next."
+    },
+    {
+      "at": "ctl:Selling price",
+      "title": "Change the numbers",
+      "text": "These sliders appear when the graph is on show. They change the prices or amounts in the story. The lines and the crossing point move right away. Some settings make the lines parallel, or the same line.",
+      "try": "Make the lines parallel and read what the crossing line says."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice",
+      "text": "Start practice gives nine short problems, each a different kind of story. Nothing is saved or scored. A wrong answer tells you why. Press it again to leave practice.",
+      "try": "Try problem 1 and read the reason after a wrong answer."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 asks you to guess about two gyms before graphing. Step 2 builds the equations by clicking phrases in the story. Step 3 lets you move the prices. Step 4 solves by a method you choose."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1, ask for a vote on the gym prediction, then reveal. Students often believe the higher monthly fee means that gym always costs more. In step 2, ask them to say why each number goes where it goes before they click. Step 4 asks for a reason, so ask for it aloud."
+}

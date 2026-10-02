@@ -1,0 +1,51 @@
+{
+  "purpose": "This tool shows where exact trig values like sqrt(3)/2 come from. You read them off two special triangles, then use them on hexagons, nuts and ladders, so you can see why no calculator is needed.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Triangle and table",
+      "text": "In the first scene the left shows a right triangle with the angle at A. Its sides are coloured: adjacent green, opposite red, hypotenuse blue. The right is a 3 by 3 table of sin, cos and tan at 30, 45 and 60 degrees.",
+      "try": "Answer the prediction first. Then click a table cell to load its triangle."
+    },
+    {
+      "at": "ctl:Choose a scene",
+      "title": "Six scenes",
+      "text": "Scenes are: fill the table, a ladder (exact or rounded answers), cut a hexagon, square or triangle into special triangles, choose the reasons in a proof, a unit circle bridge, and practice. The steps below jump between them.",
+      "try": "Pick the unit circle scene and drag the point on the arc."
+    },
+    {
+      "at": "ctl:Angle",
+      "title": "Pick the angle",
+      "text": "This menu and the Ratio menu choose a table cell without clicking the grid. The triangle on the left changes to match, and the matching sides light up.",
+      "try": "Choose 45 degrees. Notice the two legs are the same length."
+    },
+    {
+      "at": "ctl:Ratio",
+      "title": "Pick the ratio",
+      "text": "Sin, cos or tan. The triangle fades the sides that ratio does not use, so you can see which two sides you divide. After you answer, the cell fills with the exact value and a decimal.",
+      "try": "Switch from sin to tan and watch which side fades."
+    },
+    {
+      "at": "ctl:Show the memory pattern",
+      "title": "Memory pattern",
+      "text": "Turns on a small purple line in each filled cell. Sin at 30, 45, 60 is root 1, root 2, root 3, each over 2. Cos runs backwards. It is only a memory aid, the triangles are the reason.",
+      "try": "Fill a few cells, then switch this on."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds the table. Step 2 is the ladder at 60 degrees. Step 3 cuts a hexagonal nut into triangles. Step 4 is the proof reasons, with the unit circle bridge at the end."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice problems",
+      "text": "Eight problems: exact values, hexagon area, a wrench size, a ladder, a diagonal, a height, a proof reason and a trap. Each answer is explained. Nothing is scored or saved."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with reasons after each answer."
+    }
+  ],
+  "teacher": "Project the table scene and have students predict sin 60 against cos 60 before revealing. Ask: why does the hexagon wrench size come out as s times root 3? Watch for mixing up sin 30 and sin 60, and for rounding early in the ladder scene."
+}

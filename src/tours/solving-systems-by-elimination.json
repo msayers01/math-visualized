@@ -1,0 +1,54 @@
+{
+  "purpose": "This tool combines two equations by adding or subtracting them so one variable disappears. You see each combination as a new line through the same crossing point, and learn how to make a variable cancel.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two lines, one new",
+      "text": "Blue is Eq 1 and red is Eq 2. The yellow dot is where they cross, marked ? until you find it. When you add or subtract, a thick violet line appears. It always goes through the yellow dot. The key at top left lists the equations.",
+      "try": "Add the two equations and see the violet line pass through the dot."
+    },
+    {
+      "at": "ctl:Choose a system",
+      "title": "Pick an example",
+      "text": "Five systems. A is ready to add. B needs one multiplier. C needs two. D is parallel lines and E is one line twice, so they show what no solution and infinitely many look like.",
+      "try": "Choose B and answer the prediction question that appears."
+    },
+    {
+      "at": "ctl:Multiply Eq 1 by",
+      "title": "Multipliers",
+      "text": "Multiplying a whole equation by a number keeps the same line (a dashed copy sits on it). The sliders and buttons stay locked until you answer the prediction question above. A multiplier of 0 is not allowed.",
+      "try": "In system B, set the Eq 1 slider to times 2 and watch 2y match -2y."
+    },
+    {
+      "at": "ctl:Add the equations",
+      "title": "Add or subtract",
+      "text": "Add builds the new violet line from the two equations. Subtract does Eq 1 minus Eq 2. If x or y cancels, the line is vertical or flat and the readout gives that coordinate. If neither cancels, it is tilted.",
+      "try": "Pick the wrong operation and read why it did not cancel."
+    },
+    {
+      "at": "ctl:Forget the right side",
+      "title": "A common mistake",
+      "text": "This switch multiplies only the left side of the equation, like a student who forgets the right. The dashed copy then lands on a different line, so the answer comes out wrong.",
+      "try": "Turn it on in B with a multiplier of 2, then add."
+    },
+    {
+      "at": "ctl:Show the fan",
+      "title": "The fan of sums",
+      "text": "The faint violet lines are many other sums and differences of the two equations. They all pass through the crossing point. Elimination just picks the one that is vertical or flat.",
+      "try": "Turn it off and on to see the fan."
+    },
+    {
+      "at": "ctl:Put it into",
+      "title": "Finish the solution",
+      "text": "After one variable cancels, these buttons put its value into Eq 1 or Eq 2 to get the other one. Then Check in both equations tests the pair in the original equations. They stay locked until a variable cancels.",
+      "try": "Solve system A, then check in both equations."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Seven short problems. Some ask you to choose a multiplier, others ask you to make the move with the sliders and then pick the solution. Nothing is saved or scored.",
+      "try": "Press Start practice. Press Back to the lesson to leave."
+    }
+  ],
+  "teacher": "Project system B and have students predict the multiplier before touching a slider. Then show the violet line through the yellow dot to link elimination to the graph. Misconception: multiplying only one term. Turn on Forget the right side to show that the line moves."
+}

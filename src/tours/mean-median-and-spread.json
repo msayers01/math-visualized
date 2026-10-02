@@ -1,0 +1,46 @@
+{
+  "purpose": "This tool lets you move dots on a number line and watch the mean, median and spread react. You learn which number describes a typical value and why one far-away dot can fool the mean.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Dots on a number line",
+      "text": "Each blue dot is one value, stacked when values match. Drag any dot left or right, it snaps to whole numbers from 0 to 20. A yellow triangle marks the mean, a violet dashed line the median, and a green band the standard deviation.",
+      "try": "Drag the rightmost dot far to the right. Which marker moves most?"
+    },
+    {
+      "at": "ctl:Add a point",
+      "title": "Add or remove dots",
+      "text": "Add a point places a new dot at the median. Remove a point takes the last one off. You can have from 3 to 15 dots, then drag to change them.",
+      "try": "Add a point, then drag it far from the others."
+    },
+    {
+      "at": "ctl:Symmetric",
+      "title": "Ready-made data sets",
+      "text": "Symmetric, outlier, wide and skewed load four example sets, and the dots slide into place. Compare how the mean and median agree or disagree in each.",
+      "try": "Press Outlier, then Skewed. Watch the gap between mean and median."
+    },
+    {
+      "at": "ctl:Mean (balance point)",
+      "title": "Mean on or off",
+      "text": "The yellow triangle is the mean, where the dots would balance like a seesaw. Hide it to focus on the median alone. The Median and Standard deviation toggles under it work the same way.",
+      "try": "Turn off the mean and median, then turn them on one at a time."
+    },
+    {
+      "at": "ctl:Standard deviation band",
+      "title": "Standard deviation band",
+      "text": "A green band centred on the mean, as wide as the typical distance of a dot from the mean. Wide data gives a wide band. Read the number sigma in the readout.",
+      "try": "Press Wide, then Symmetric, and compare the band."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step loads a data set and says what to look for: a symmetric set, an outlier that drags the mean, a wide set with the same mean, and a skewed set."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions with explained answers."
+    }
+  ],
+  "teacher": "Load Outlier and ask students to predict which of mean or median will move before dragging the far dot. Ask: when would you report the median instead? Misconception: that the mean is always the typical value. Show that equal means can have very different spreads."
+}

@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool shows four ways to write the same stretch of numbers: a list, a rule, a graph and interval brackets. You test numbers against a rule, build intervals, and combine two sets with and or or.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "What the figure shows",
+      "text": "Step 1 shows number tokens 0 to 7. Tap one to put it in the set or take it out. Steps 2 to 4 show a number line. In step 2, drag the test point along the line. Green means in the set and red means out.",
+      "try": "In step 1, tap a number on the figure and watch the set in braces change."
+    },
+    {
+      "at": "ctl:Test the number",
+      "title": "Test a number",
+      "text": "Step 1. This slider picks a number n, and the readout says if n is in the set or not. The number buttons add or remove numbers. Write it another way shows the same set in other forms. Empty the set clears it.",
+      "try": "Test n = 5, then press 5 in the row to add it and test again."
+    },
+    {
+      "at": "ctl:Test point",
+      "title": "Test point and the rule",
+      "text": "Step 2. The four buttons above pick a rule such as x at least 2 or x greater than 2. Drag the point on the number line or use this slider, and the readout says in or out. Show the whole set draws the full set.",
+      "try": "Test x = 2 with greater than or equal, then switch to greater than."
+    },
+    {
+      "at": "ctl:Build an interval",
+      "title": "Build or read",
+      "text": "Step 3. Answer the prediction first, then the steppers and bracket buttons unlock. Build an interval makes brackets from a graph rule. Read a graph does the reverse: you read a graph and give the notation.",
+      "try": "Predict, then build (-1, 4] with the steppers and bracket buttons."
+    },
+    {
+      "at": "ctl:left: included",
+      "title": "Square and round brackets",
+      "text": "Step 3. A square bracket means the end number is included (closed circle). A round bracket means it is not (open circle). Infinity always gets a round bracket, because you can never reach it.",
+      "try": "Make the left end not included and watch the circle open."
+    },
+    {
+      "at": "ctl:Choose a case",
+      "title": "And, or",
+      "text": "Step 4. Pick a case with two rules, such as x greater than -2 and x at most 3. Press and for the overlap, or for everything in either set. The combined set appears in violet. Then pick its notation.",
+      "try": "Pick case C and try both and and or."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 builds sets of numbers. Step 2 describes a set with a rule. Step 3 writes intervals with brackets. Step 4 combines sets with and, or, and looks at the inputs of 1/x."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 3 and have students predict which end of -1 < x <= 4 is closed. Common mistakes: using a square bracket next to infinity, and mixing up 'and' with 'or' in step 4. Ask: why can 2 be in a set for x >= 2 but not for x > 2?"
+}

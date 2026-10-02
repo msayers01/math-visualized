@@ -1,0 +1,53 @@
+{
+  "purpose": "This shows a function as a machine: one input goes in and exactly one output comes out. You can see it as a rule, a table and a graph at once, and use the vertical line test to tell a function from a rule that is not one.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Machine and graph",
+      "text": "At the top is the function machine: input (green), rule, output (red). Below is the graph. Drag in the graph, or tap a table row, to pick an input. The green dashed line marks the input, the red one the output.",
+      "try": "Drag across the graph and watch the machine show a new input and output."
+    },
+    {
+      "at": "ctl:Choose a rule",
+      "title": "Choose a rule",
+      "text": "Four rules are functions: three straight lines and x squared. The fifth is a circle, which is not a function. For the circle, one input gives two outputs and the machine shows both.",
+      "try": "Pick the circle, then pick x squared. How do the outputs differ?"
+    },
+    {
+      "at": "ctl:Input x",
+      "title": "Choose an input",
+      "text": "This slider picks the input x, from a few set values. It does the same as dragging on the graph or tapping a table row. The readout names the output, or both outputs for the circle.",
+      "try": "Set x to 0 and then to 3 for the circle and compare the outputs."
+    },
+    {
+      "at": "ctl:Table and plotted points",
+      "title": "Table and points",
+      "text": "Shows a table of inputs and outputs, and plots each row as a point on the graph. The highlighted row is your current input. Tap a row to select it. The graph is all these points joined up.",
+      "try": "Turn it on, tap a row, and find the matching point."
+    },
+    {
+      "at": "ctl:Vertical line test",
+      "title": "Vertical line test",
+      "text": "Draws a violet vertical line at your input and counts how many times it crosses the graph. A function crosses once at every input. The circle crosses twice, so it fails the test.",
+      "try": "Turn it on with the circle and drag across. Where does it cross once?"
+    },
+    {
+      "at": "ctl:Equal steps",
+      "title": "Equal steps",
+      "text": "Marks steps of the same size along the input (green) and shows how the output changes each time (red). For a straight line the output steps are always the same. For x squared they are not.",
+      "try": "Turn it on for 2x - 1, then pick x squared and compare the steps."
+    },
+    {
+      "at": "ctl:Step size",
+      "title": "Step size",
+      "text": "Changes how far apart the inputs are, from 1 to 3. For a line, a bigger input step gives a proportionally bigger output step. Moving it turns on Equal steps for you.",
+      "try": "Set the step to 2 on the line 2x - 1. How big is the output step now?"
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and ask: how many outputs does x = 3 have, and what does the violet line tell us? Students often think any graph is a function, or that a function must be a straight line, so also show x squared. Step 4 sets up slope as a constant change."
+}

@@ -1,0 +1,47 @@
+{
+ "purpose": "This is a right triangle you can reshape. It shows that sine, cosine and tangent are ratios of sides that depend only on the angle, not on how big the triangle is, so you can use them to find missing sides and angles.",
+ "stops": [
+  {
+   "at": "stage",
+   "title": "The triangle",
+   "text": "A right triangle with the sides coloured and named: hypotenuse (blue), opposite (red), adjacent (green). Drag the round handle at the top corner. Its direction sets the angle. In the first scene its distance also sets the size.",
+   "try": "Drag the top corner far out, then close in. Watch which numbers change."
+  },
+  {
+   "at": "ctl:Choose a scene",
+   "title": "Six scenes",
+   "text": "Same angle any size, naming the sides, a table of ratios, how the ratios connect, using the ratios to find sides, and practice problems. The steps on the left pick a scene for you. Controls below change with the scene.",
+   "try": "Choose Table of ratios, then go back to Same angle, any size."
+  },
+  {
+   "at": "ctl:Angle (degrees)",
+   "title": "Set the angle",
+   "text": "Sets the angle theta from 5 to 85 degrees. The buttons below nudge it by 1 or 5 degrees. In most scenes the ratio numbers appear only after you answer the predict question. Moving the angle first clears it.",
+   "try": "Pick a prediction, then set the angle to 30 and read the three ratios."
+  },
+  {
+   "at": "ctl:Size (hypotenuse length)",
+   "title": "Size of the triangle",
+   "text": "Only in the first scene. Change the hypotenuse and every side scales. Halve and Double make it quick. The dashed copies show similar triangles. The ratios do not change, only the sides.",
+   "try": "Double every side and check whether opposite divided by hypotenuse changes."
+  },
+  {
+   "at": "ctl:Show similar copies",
+   "title": "Similar copies",
+   "text": "Draws dashed smaller triangles with the same angle inside the big one. They have different side lengths but the same shape, which is why the ratios stay the same.",
+   "try": "Turn it on and compare the ratio for the big and small triangles."
+  },
+  {
+   "at": "ctl:θ is the angle at A",
+   "title": "Which corner is theta?",
+   "text": "Only when naming sides and in the relationships scene. Opposite and adjacent depend on which angle you look from. Switch between A and B and watch the labels swap, while the hypotenuse stays the same.",
+   "try": "Switch to B and say which side is now opposite."
+  },
+  {
+   "at": "check",
+   "title": "Quick check",
+   "text": "A few questions at the end. A wrong answer explains why."
+  }
+ ],
+ "teacher": "Start with step 1 and make students vote on the prediction before revealing. Students often think a bigger triangle has bigger sine, so show that only the angle matters. Watch for opposite and adjacent mixed up when theta moves to the other corner."
+}

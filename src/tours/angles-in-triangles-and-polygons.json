@@ -1,0 +1,52 @@
+{
+  "purpose": "This lets you tear the corners off a triangle, fold an isosceles one, cut polygons into triangles and walk around a shape. You discover for yourself why the angles of every triangle add to 180 degrees and how that grows to any polygon.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figure",
+      "text": "Each step uses the picture differently. Step 1: drag the small ring inside each coloured corner down to the line. Step 2: drag the ring on the bottom right corner. Step 3: click corners to cut. Step 4: use the buttons to walk.",
+      "try": "In step 1, drag one coloured corner down onto the grey line."
+    },
+    {
+      "at": "ctl:Tear A",
+      "title": "Tear the corners",
+      "text": "In step 1, answer the guess question first. Then Tear A, B and C send each corner down to the straight line, and Put back returns them. The three angles always fill the line. Sliders and the top corner reshape the triangle.",
+      "try": "Tear all three, then use the Angle A slider and tear again."
+    },
+    {
+      "at": "ctl:Missing-angle puzzle",
+      "title": "Missing-angle puzzle",
+      "text": "Gives a triangle with two known angles and a ? on the third. Pick the size. A right answer tears the corners onto the line so you can see why it works. Free play goes back to your own triangle.",
+      "try": "Solve one, then press Next puzzle."
+    },
+    {
+      "at": "ctl:Fold along the middle",
+      "title": "Fold the triangle",
+      "text": "In step 2 you answer questions about an isosceles triangle. This button folds it along the dashed middle line. The two base angles land on each other, so they are equal. Drag the ring or use Apex angle.",
+      "try": "Fold it, then make the apex angle 60 and fold again."
+    },
+    {
+      "at": "ctl:Draw next diagonal",
+      "title": "Cut into triangles",
+      "text": "In step 3, answer the guess first. Then click the other corners (the yellow one is the start) or press this button to cut the polygon into triangles. Fill the table and look for the pattern.",
+      "try": "Cut a 6-sided shape, then change Sides and cut again."
+    },
+    {
+      "at": "ctl:Next corner",
+      "title": "Walk and turn",
+      "text": "In step 4 a walker goes round the shape and turns at each corner. The meter at the bottom counts the turn so far. Corners turned also moves it. Switch off Regular shape to try an uneven one.",
+      "try": "Press Walk all the way and watch the meter reach 360."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 tears triangle corners. Step 2 looks at isosceles triangles. Step 3 cuts polygons into triangles. Step 4 walks round a polygon to find its turns."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains itself and you can try again."
+    }
+  ],
+  "teacher": "Project step 1 and have students guess before tearing. Common slip: they think a polygon with more sides has a bigger turn total, or say the angle sum is n times 180. In step 3, ask how many triangles a 10-sided shape needs before anyone cuts."
+}

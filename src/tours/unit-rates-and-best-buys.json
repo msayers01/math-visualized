@@ -1,0 +1,47 @@
+{
+  "purpose": "This turns a ratio into a rate for exactly one unit, like dollars for 1 pound. Use it to compare deals of different sizes and to predict how far a cyclist goes. You will see what the word per tells you to divide.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two number lines",
+      "text": "In Unit rate and Speed, two lines are linked: pounds in green, dollars in red. Drag the ring on the line and the other line shows the matching amount. In Best buy, you tap items on the shelf instead.",
+      "try": "Drag the ring to 1 pound and read the dollar line."
+    },
+    {
+      "at": "ctl:Best buy",
+      "title": "Three activities",
+      "text": "Unit rate finds the cost of one unit. Best buy ranks items from best to worst. Speed uses distance per hour. The steps on the left switch these for you, and each has its own questions.",
+      "try": "Click Best buy, then come back to Unit rate."
+    },
+    {
+      "at": "ctl:Marker",
+      "title": "The marker",
+      "text": "In Unit rate and Speed. The marker slider does the same as dragging the ring. It sets an amount on one line and the other line shows the matching amount. Moving it to 1 gives the unit rate.",
+      "try": "Slide it to 2 pounds, then to 1 pound. How did the dollars change?"
+    },
+    {
+      "at": "ctl:Question",
+      "title": "Pick a question",
+      "text": "In Unit rate and Speed. Each question asks for a rate, such as dollars per pound or pounds per dollar. Move the marker if asked, then choose the calculation. A wrong choice shows why with numbers. Try the questions starts the list.",
+      "try": "Pick Pounds per dollar and note that the division flips."
+    },
+    {
+      "at": "ctl:Shelf",
+      "title": "Best buy shelf",
+      "text": "Only in Best buy. Choose a shelf of items with different sizes and prices. Tap them from best to worst buy. Compare the price for 1 unit, not the total price. The lowest unit price is the best buy, but not always the best choice.",
+      "try": "Tap the three cereal boxes in the order you think, then read the explanation."
+    },
+    {
+      "at": "ctl:Show unit prices",
+      "title": "Unit prices as help",
+      "text": "Only in Best buy. Shows the price per ounce, per pencil or per pound beside each item. Try without help first, then turn it on to check your order.",
+      "try": "Guess the order first, then switch it on to check."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 1 and ask: what does per tell us to divide by? Students often divide the bigger number by the smaller one without thinking, so ask for both unit rates from one ratio (step 2). In Best buy, ask students to commit to an order before turning on help."
+}

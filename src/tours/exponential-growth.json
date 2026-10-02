@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you race two ways of growing: adding the same amount each period and multiplying by the same amount. You see why multiplying always wins in the end, and how decay works.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Blue against red",
+      "text": "The blue curve multiplies each period. The red line adds the same amount each period. A dashed vertical line marks the time you are reading, with a dot on each curve and its value. Nothing on the picture is draggable.",
+      "try": "Use the Read at time t slider and watch the two dots separate."
+    },
+    {
+      "at": "ctl:Start amount",
+      "title": "Start amount",
+      "text": "How much there is at time 0. It scales both curves. A bigger start does not change how fast the blue curve pulls away in percent terms.",
+      "try": "Set it to 100, then look at the axis numbers."
+    },
+    {
+      "at": "ctl:Growth per period",
+      "title": "Growth per period",
+      "text": "The percent added each period. At 100 percent the amount doubles. Negative values make decay, and the readout then shows a half-life instead of a doubling time.",
+      "try": "Slide it below 0 and watch the blue curve fall but never reach 0."
+    },
+    {
+      "at": "ctl:Read at time t",
+      "title": "Read at time t",
+      "text": "Moves the dashed line and updates the readout below. Periods shown, just above, sets how long the timeline runs. Waiting longer reveals how far the curves part.",
+      "try": "Slide to 3.5 and compare the two values in the readout."
+    },
+    {
+      "at": "ctl:Compare with linear",
+      "title": "Linear comparison",
+      "text": "Shows or hides the red line that adds the same amount each period. Hide it to see the curve on its own, with a better scale.",
+      "try": "Switch it off, then on again."
+    },
+    {
+      "at": "ctl:Doubling",
+      "title": "Quick presets",
+      "text": "Doubling, 10% growth and 30% decay set up the three cases from the steps. They animate the sliders to those settings.",
+      "try": "Press 30% decay."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Each step loads one of those cases with the story: add versus multiply, a longer wait, a small percent, then decay."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with reasons after each answer."
+    }
+  ],
+  "teacher": "Project step 2 with 20 periods and ask students to predict both values before you read them. Ask: why does a small percent still win eventually? Misconception: thinking growth of 10 percent means adding 10 each time, which the red line shows is different."
+}

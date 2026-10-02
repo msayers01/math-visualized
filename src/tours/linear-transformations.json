@@ -1,0 +1,36 @@
+{
+  "purpose": "This tool shows a 2 by 2 matrix as a motion of the whole plane. Change the four numbers and watch the grid stretch, turn, flip or squash, and see which directions the matrix only stretches.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The grid being moved",
+      "text": "The blue grid is the plane after the matrix acts. The green arrow is where the first unit vector lands, the red arrow is where the second lands. The yellow square started with area 1. Drag either arrow tip.",
+      "try": "Drag the red arrow tip around. The whole grid follows it."
+    },
+    {
+      "at": "ctl:(î, x)",
+      "title": "The four entries",
+      "text": "The sliders are the matrix numbers, written by column. The first two set where the green arrow lands (across, then up). The next two set the red arrow. Each slider moves an arrow tip, and dragging a tip moves two sliders.",
+      "try": "Slide the third slider (ĵ, x) and watch only the red arrow move sideways."
+    },
+    {
+      "at": "ctl:Shear",
+      "title": "Example matrices",
+      "text": "Each button animates from the identity, where nothing moves, to a classic motion: shear, quarter turn, stretch, reflect, or collapse onto a line. Watch what the determinant label does.",
+      "try": "Press Reflect. The determinant goes negative, since the plane flips over."
+    },
+    {
+      "at": "ctl:Replay from identity",
+      "title": "Replay",
+      "text": "Runs the current matrix again from the start, so you can watch the plane move into place instead of seeing only the end result.",
+      "try": "Press it after setting your own matrix."
+    },
+    {
+      "at": "ctl:Show eigenvectors",
+      "title": "Eigenvector lines",
+      "text": "Violet dashed lines are directions the matrix only stretches or flips, not turns. Each is labelled with its stretch factor. A pure rotation has none, because it turns every direction.",
+      "try": "Press Rotate 90 degrees, then Stretch. Compare how many violet lines you see."
+    }
+  ],
+  "teacher": "Project the Collapse example and ask what the determinant says before you read it. Ask: why does a rotation have no violet line? Misconception: thinking the columns of the matrix are its rows. Notice the sliders are ordered by column, not by row."
+}

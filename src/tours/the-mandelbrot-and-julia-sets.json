@@ -1,0 +1,53 @@
+{
+  "purpose": "This lets you pick a number c and watch what the rule z -> z^2 + c does when you repeat it. Then it colours every c by what happens. You will see how a simple rule makes a shape with endless detail.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The c-plane",
+      "text": "Each point on the picture is one number c. Drag the ring (the c marker) to choose c. Black points never blow up. Coloured points do, and the colour tells you how fast. You can also click the picture and use the arrow keys.",
+      "try": "Drag the ring from the black area out into the blue area and watch the readout."
+    },
+    {
+      "at": "ctl:Orbits",
+      "title": "Choose a part",
+      "text": "Four views of one idea. Orbits follows one c step by step. The set colours every c. Zoom lets you dive into the edge. Julia sets fixes c and colours the starting points instead. The steps on the left set these for you.",
+      "try": "Click through the four buttons and see what the picture does."
+    },
+    {
+      "at": "ctl:Real part of c",
+      "title": "Set c with sliders",
+      "text": "c has a real part (left and right) and an imaginary part (up and down). The sliders give the same result as dragging the ring but with exact numbers. The preset buttons jump to well known values of c.",
+      "try": "Press the preset c = 0.25 and nudge the real part slightly up and down."
+    },
+    {
+      "at": "ctl:Next step",
+      "title": "Step through an orbit",
+      "text": "Only in Orbits. First press a prediction button: will the orbit pass the line |z| = 2? Then press Next step to apply the rule once and see the new dot. Once an orbit passes 2 it never comes back.",
+      "try": "Pick c = 0.5, predict, then press Next step five times."
+    },
+    {
+      "at": "ctl:Zoom in",
+      "title": "Zoom and move",
+      "text": "Only in Zoom. Each zoom level doubles the magnification. The move buttons pan the view, Center on c recentres on your c, and Whole set resets. Click the picture to place c, and its orbit is drawn on top.",
+      "try": "Press Spiral under Places to look, then zoom out one level at a time."
+    },
+    {
+      "at": "ctl:Label the cardioid",
+      "title": "Label the shapes",
+      "text": "Only in The set. This writes names on the big heart shaped part and the round bulb. It also marks the real axis, so you can see where the set meets it.",
+      "try": "Turn it on, then drag c from the cardioid into the bulb."
+    },
+    {
+      "at": "ctl:Sharper",
+      "title": "Sharper picture",
+      "text": "Draws the picture with 4 times as many sample points, so edges look crisper. It takes longer to draw, and the readout under it tells you how long.",
+      "try": "Press it in Julia sets and compare the edge of the shape."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A few questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Start in Orbits with c = 0.5 and c = -1 and ask the class to predict before each Next step. In Julia sets, drag c across the edge of the Mandelbrot set and have students say when the shape breaks into dust. Watch for the idea that the black area is one thing: Mandelbrot colours c, Julia colours z."
+}

@@ -1,0 +1,40 @@
+{
+  "purpose": "This tool lets you move a marker on a thermometer, a number line and a coordinate grid. You will see what negative numbers mean, how to order them, and why absolute value is a distance.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The marker",
+      "text": "Drag the marker to move it. It snaps to clean values. On the thermometer it moves up and down, on the number line left and right. In Compare you drag two markers, A above the line and B below it. On the grid you drag one point.",
+      "try": "Drag the marker below zero and read the words in the panel."
+    },
+    {
+      "at": "ctl:Opposites and 0",
+      "title": "Choose a job",
+      "text": "These five buttons switch the tool: opposites, placing numbers, comparing, distance from 0, and the coordinate grid. Each one has its own picture and its own readout. The step buttons below also switch them.",
+      "try": "Press Distance from 0 and drag the marker to -6."
+    },
+    {
+      "at": "ctl:Situation",
+      "title": "Situation or question",
+      "text": "On the first job this menu picks the situation: temperature, elevation, bank balance or charge. Zero means something different in each. On the other jobs it picks Explore freely or a question to answer.",
+      "try": "Choose Bank balance and see what zero means there."
+    },
+    {
+      "at": "ctl:Try a question",
+      "title": "Try a question",
+      "text": "This starts a question for the job you are on. Drag the marker to the answer and let go, and it is checked. The nudge buttons move the marker one small step if dragging is hard. Wrong answers explain why.",
+      "try": "Press it, drag the marker to the answer, and read the feedback."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows opposites and the meaning of 0. Step 2 places decimals and fractions. Step 3 compares numbers and then finds absolute value. Step 4 plots points on the coordinate grid. Each step switches the job for you."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project Compare and ask which is less, -8 or -3, before dragging. Many students say -3 is less because 3 is smaller. Then press Distance from 0 and ask why |-8| is 8. Use the grid job to name the quadrants aloud."
+}

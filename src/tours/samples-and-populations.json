@@ -1,0 +1,52 @@
+{
+  "purpose": "This tool lets you survey a school of dots and see why a random sample works and a convenient one does not. You draw many samples to see how much answers wobble, and learn how sample size changes how far off you can be.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Dots and the number line",
+      "text": "Each dot is a student. Filled blue dots walk to school, empty ones do not. A yellow ring means the student is in your sample. Under the dots, a number line marks the whole-school answer with a dashed line. Nothing is dragged here.",
+      "try": "Press 20 chosen at random and see where the yellow arrow lands."
+    },
+    {
+      "at": "ctl:First 20 at the front door",
+      "title": "Three ways to sample",
+      "text": "Step 1. The first button takes the front door group, the second the gym group, the third picks at random. Compare each percent to the dashed line. Show every student colors all 200 dots, to see why the groups differ.",
+      "try": "Take the front door sample, then press random five times."
+    },
+    {
+      "at": "ctl:Sample size",
+      "title": "Sample size",
+      "text": "Step 2. This is how many students each sample has. Moving it clears the dots so you compare one size at a time. With small samples the dots spread out. With large ones they bunch near the dashed line.",
+      "try": "Draw 20 samples at size 10, then move to 80 and draw 20 more."
+    },
+    {
+      "at": "ctl:Draw 20 samples",
+      "title": "Draw samples",
+      "text": "Step 2. Each press adds random samples, and each sample is one dot of its percent. The green band is within 10 points of the truth. The readout counts how many dots land inside it. Clear removes the dots.",
+      "try": "Press Draw 20 samples three times and read the count in the band."
+    },
+    {
+      "at": "ctl:Give or take",
+      "title": "Give or take",
+      "text": "Step 3. First choose the best estimate for all 600 students. Then set how far off you think you could be. The feedback says if the range is too narrow. The buttons below compare 35 percent from small and large samples.",
+      "try": "Press 7 of 20, then 56 of 160, and see the believable range shrink."
+    },
+    {
+      "at": "ctl:Basketball",
+      "title": "Pick a survey",
+      "text": "Step 4. Four surveys give four answers. Choose a survey, then say if its sample is representative or biased. The numbered dots on the line show each survey's answer.",
+      "try": "Pick the online vote and ask who actually answers online votes."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows a biased sample. Step 2 draws many random samples. Step 3 estimates a whole school with a range. Step 4 judges four surveys."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions at the end. A wrong answer explains why."
+    }
+  ],
+  "teacher": "Project step 2 and draw 20 samples at size 10, then at size 80. Ask: why do the dots squeeze in? Typical misconception: a big sample is good even when it was not chosen randomly. Step 4 targets this with the online vote and basketball game."
+}

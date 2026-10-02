@@ -1,0 +1,36 @@
+{
+  "purpose": "This lesson shows where the special right triangles come from and why sine, cosine and tangent are just side ratios. You change a triangle, watch the sides, and then use the ratios to solve real measuring problems.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The triangle",
+      "text": "Green and red are the two legs, blue is the hypotenuse, and yellow arcs mark angles. In the first three scenes, drag the top corner (the small ringed dot) to resize the triangle. In the other scenes, the sliders change it.",
+      "try": "Drag the top corner. Which ratios between the sides stay the same?"
+    },
+    {
+      "at": "ctl:Choose a scene",
+      "title": "Choose a scene",
+      "text": "The menu switches the whole tool: 45-45-90, 30-60-90, sine cosine tangent, real situations, a test for a right triangle, and practice. The steps pick a scene for you, and the controls below change with it.",
+      "try": "Open the menu and visit Is it a right triangle."
+    },
+    {
+      "at": "panel",
+      "title": "Predict, then reveal",
+      "text": "Most scenes start with Predict first, and the numbers stay hidden until you answer. Then use the controls that appear: the side you know, size, Cut, or the angle and which corner is theta. Real situations ask you to pick sin, cos or tan.",
+      "try": "Make a prediction, then read why the other choices were wrong."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "The steps go in order: cut a square in half, cut an equilateral triangle in half, define sine cosine and tangent, then solve a real problem with a tree, cliff, ladder or roof. Each step opens the matching scene.",
+      "try": "In the real problem, choose sin, cos or tan before the answer appears."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice mode",
+      "text": "Eight short problems cover special triangles, choosing sine cosine or tangent, finding an angle, and testing for a right angle. Every answer is explained and nothing is saved or scored.",
+      "try": "Press Start practice and try the first problem."
+    }
+  ],
+  "teacher": "Project the 30-60-90 scene and ask for the long leg before the prediction is answered. Then drag the top corner to show the ratios hold at every size. Misconception: students label opposite and adjacent from the right angle, not from theta, so use the toggle for which corner is theta."
+}

@@ -1,0 +1,28 @@
+{
+  "purpose": "This tool lets you test a surprising rule: an angle made on the edge of a circle is always half the angle at the centre over the same arc. Move the points around and see the ratio never change.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "A circle with three points",
+      "text": "Drag A, B or P around the circle. The yellow arc is the arc AB that P does not sit on. The red lines and red number show the central angle at O. The green lines and green number show the inscribed angle at P.",
+      "try": "Drag P along the circle on the far side of AB. The green angle does not change."
+    },
+    {
+      "at": "ctl:Point A",
+      "title": "Point sliders",
+      "text": "These three sliders move A, B and P by angle around the circle, the same as dragging. Use them when you want exact positions, or on a touch screen.",
+      "try": "Set A and B 180 degrees apart. The inscribed angle becomes 90 degrees."
+    },
+    {
+      "at": "steps",
+      "title": "What Next does",
+      "text": "Step 1 shows the angle stays the same as P moves, and changes when P crosses the chord. Step 2 makes the arc 190 degrees. Step 3 sets A and B at opposite ends of a diameter for the right angle."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Two questions with explained answers."
+    }
+  ],
+  "teacher": "Ask students to predict the green angle before moving P, then check the readout ratio stays 2.00. Ask: what happens when P crosses to the other side of AB? Misconception: thinking the inscribed angle depends on where P sits on the arc. Project step 3 for Thales."
+}

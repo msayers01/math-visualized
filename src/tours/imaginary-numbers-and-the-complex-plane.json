@@ -1,0 +1,33 @@
+{
+  "purpose": "This tool shows why we invent the number i and where complex numbers live. You see that a number a + bi is just a point, and you add, measure and mirror numbers by moving points on a plane.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figure changes by step",
+      "text": "Step 1 is the curve y = x^2 + 1 with a point you can drag. Later steps show the powers of i on a wheel, then the complex plane with real part across and imaginary part up. Points z and w are blue and red, and you drag them.",
+      "try": "Answer the prediction. Then drag the point along the curve and watch its height."
+    },
+    {
+      "at": "ctl:Move the point",
+      "title": "Move the point",
+      "text": "Slides the point along the curve y = x^2 + 1. Its height never gets to 0, so no real x can solve x^2 = -1. This is why we invent i. It stays locked until you predict.",
+      "try": "Slide x from -3 to 3. What is the lowest height?"
+    },
+    {
+      "at": "steps",
+      "title": "Next changes the scene",
+      "text": "There is no menu here, so Next and Back switch the tool. Step 2 simplifies roots of negative numbers, step 3 steps round the wheel of powers of i, step 4 gives four plane tools: plot, add and subtract, size, mirror."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Try practice problems",
+      "text": "Eight short problems. Press the same button to go back to the lesson. Nothing is saved or scored."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "A short exit ticket with explained answers."
+    }
+  ],
+  "teacher": "Ask for the prediction in step 1 before anyone drags. Ask: why is root of -4 times root of -9 not root of 36? Misconception: treating bi as the imaginary part when it is b. Project step 4 with Add and subtract and drag w."
+}
