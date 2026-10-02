@@ -177,7 +177,7 @@
   ];
   const symOpts = (u, lim) => [
     ['≤', true, `${lim} is a limit, not a target. She may use up to the limit, or less, so the total can be equal to it or smaller: ≤. A solid boundary line.`],
-    ['<', false, 'That would forbid using the whole limit. But using all of it is allowed (the bag can be empty), so the boundary line must be included. Use ≤, not <.'],
+    ['<', false, 'That would forbid using the whole limit. But using all of it is allowed (nothing has to be left over), so the boundary line must be included. Use ≤, not <.'],
     ['≥', false, 'That says she must use at least the limit. But the limit is the most she has, so the total must be at or below it.'],
     ['=', false, 'That says she must use exactly the limit. The story only says she cannot go over it. Using less is fine, and an inequality allows that.']
   ];
@@ -281,7 +281,7 @@
     check: [
       { q: 'A system has two inequalities. Which statement describes its solution?',
         choices: ['The one point where the two boundary lines cross.', 'Every point that is in the shading of at least one of the two inequalities.', 'Every point that is in the shading of both inequalities at the same time.', 'Every point on either boundary line.'], answer: 2,
-        why: String.raw`A solution must make every inequality true, so it must be on the correct side of both lines: the overlap of the shadings. The crossing point (A) is the answer to a system of <em>equations</em>, and it may not even belong to the overlap. A point in only one shading (B) makes the other inequality false. A point on a dashed line is not even in its own shading (D).`,
+        why: String.raw`A solution must make every inequality true, so it must be on the correct side of both lines: the overlap of the shadings. The crossing point (A) is the answer to a system of <em>equations</em>, and it may not even belong to the overlap. A point in only one shading (B) makes the other inequality false. A point on one line can be on the wrong side of the other line (D).`,
         hint: 'The word "and" means both inequalities must be true for the same point.' },
       { q: 'The region is x ≥ 0, y ≥ 0, x + y ≤ 8 and 3x + y ≤ 14. The boundary lines x + y = 8 and 3x + y = 14 cross at a corner of the region. A profit is P = 2x + y. What is P at that corner?',
         choices: ['11', '13', '14', '8'], answer: 0,
@@ -329,7 +329,7 @@
           p.label(`${pt(cp[0], cp[1])} ${inn ? 'in' : 'out'}`, cp[0], cp[1], { size: 15, italic: false, dy: 22, color: pal.text });
         });
         const rows = q.map((r, i) => [C4[i], `${LET[i]}  ${txt(r)}   ${r.strict ? 'dashed' : 'solid'}`]);
-        if (show && st.part === 'special') rows.push([null, sy.tag]);
+        if (show && st.part === 'special') rows.push([null, 'Result: ' + sy.tag]);
         legend(p, rows);
         if (st.part === 'overlap' || st.spred) {
           const inAll = q.every(r => holds(r, st.tx, st.ty));
@@ -392,7 +392,7 @@
         const inside = shape(clipLine(L, KM));
         if (inside.kind === 'segment') p.path(inside.pts, { stroke: pal.yellow, width: 7 });
         else if (inside.kind === 'point') p.dot(inside.pts[0][0], inside.pts[0][1], 10, pal.yellow, pal.text, 3);
-        legend(p, [[null, 'x = cakes, y = pies'], [pal.yellow, inside.kind === 'empty' ? `3x + 2y = ${Pv}: misses the region` : `3x + 2y = ${Pv}: inside the region`]]);
+        legend(p, [[null, 'x = cakes, y = pies'], [pal.yellow, inside.kind === 'empty' ? `3x + 2y = ${Pv}: misses the region` : inside.kind === 'point' ? `3x + 2y = ${Pv}: touches the region at one corner` : `3x + 2y = ${Pv}: inside the region`]]);
       };
       /* the part of a segment L that satisfies every constraint */
       const clipLine = (L, cons) => {
@@ -735,7 +735,7 @@
         L.push(V.map(v => `${pt(v.x, v.y)}: 3(${v.x}) + 2(${v.y}) = $${PF(v.x, v.y)}`).join('<br>'));
         const b = { x0: -3, x1: 9, y0: -3, y1: 9 }, Pv = st.pv, line = [[(Pv - 2 * b.y0) / 3, b.y0], [(Pv - 2 * b.y1) / 3, b.y1]];
         const sh = shape(clipLine(line, KM));
-        L.push(`${kk('Slider')} P = $${Pv}: ${sh.kind === 'empty' ? bad('the line misses the region.') + ' No plan earns that much.' : sh.kind === 'point' ? good('the line just touches the region at ' + pt(...sh.pts[0]) + '.') + ' This is the largest P that still has a plan.' : good('the line cuts through the region.') + ' Plans on it earn $' + Pv + '.'}`);
+        L.push(`${kk('Slider')} P = $${Pv}: ${sh.kind === 'empty' ? bad('the line misses the region.') + ' No plan earns that much.' : sh.kind === 'point' ? good('the line just touches the region at ' + pt(...sh.pts[0]) + '.') + ' It touches only that one corner.' : good('the line cuts through the region.') + ' Plans on it earn $' + Pv + '.'}`);
         const wn = []; for (let x = 0; x <= 6; x++) for (let y = 0; y <= 8; y++) if (PF(x, y) === Pv && KM.every(q => holds(q, x, y))) wn.push(`(${x}, ${y})`);
         L.push(`${kk('Whole-number plans on this line')} ${wn.length ? wn.join(', ') : 'none'}`);
         L.push('The best value is at a corner. This is a teaser: we checked one example and did not prove it.');
