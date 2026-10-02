@@ -240,7 +240,7 @@ function renderViz(app, v, startStep = 0) {
   Progress.open(v.id);
   const chip = ProgressChip(v);
   const check = v.check && v.check.length ? QuickCheck(v.check, (n, right) => { Progress.answer(v.id, n, right); chip.update(); }) : null;
-  const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'with answer key')) : null;
+  const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'answer key (teachers)')) : null;
   const conn = Connections(connectionLinks(v), v.id);
   const align = Alignment(v);
   let scene = {};

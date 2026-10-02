@@ -121,6 +121,20 @@ function captureLessons() {
       prereq: (got.links && got.links.prereq) || [], src: 'lessons/' + got.id + '.js', file: f };
   });
 }
+/* Teacher password: CONTINUUM_TEACHER_PASSWORD, else the first line of teacher-password.txt (git-ignored).
+   Only a salted PBKDF2 hash goes into the page. No password means the gate is off. */
+function teacherHash() {
+  let pw = process.env.CONTINUUM_TEACHER_PASSWORD;
+  const f = path.join(root, 'teacher-password.txt');
+  if (!pw && fs.existsSync(f)) pw = fs.readFileSync(f, 'utf8').split(/\r?\n/)[0];
+  if (!pw) return '';
+  if (pw.length < 8) throw new Error('The teacher password must be at least 8 characters.');
+  const salt = require('crypto').createHash('sha256').update('continuum-teacher-mode-v1').digest().subarray(0, 16);
+  const it = 210000;
+  return `${it}:${salt.toString('hex')}:${require('crypto').pbkdf2Sync(pw.normalize('NFKC'), salt, it, 32, 'sha256').toString('hex')}`;
+}
+const TH = teacherHash();
+if (!TH) console.warn('note: no teacher password set; answer keys are open to everyone (set CONTINUUM_TEACHER_PASSWORD)');
 const wantSplit = process.argv.includes('--split');
 const splitMeta = wantSplit ? captureLessons() : [];
 const scripts = (wantSplit
@@ -128,7 +142,7 @@ const scripts = (wantSplit
   : [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n'));
 const out = read('template.html')
   .replace('/*@STYLES*/', () => man.styles.map(read).join('').replace(/\n$/, ''))
-  .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, ''));
+  .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, '').replace('__TEACHER_HASH__', () => TH));
 if (wantSplit) {
   const dist = path.join(root, 'dist'), ldir = path.join(dist, 'lessons');
   fs.rmSync(dist, { recursive: true, force: true }); fs.mkdirSync(ldir, { recursive: true });
@@ -138,7 +152,7 @@ if (wantSplit) {
   console.log(`built dist/ (index.html ${(out.length / 1024).toFixed(1)} KB + ${splitMeta.length} lesson files, ${(lessonBytes / 1024).toFixed(1)} KB; ${curSummary})`);
   process.exit(0);
 }
-const dest = path.join(root, 'index.html');
+const dest = process.env.CONTINUUM_OUT || path.join(root, 'index.html');
 if (process.argv.includes('--check')) {
   if (!fs.existsSync(dest) || fs.readFileSync(dest, 'utf8') !== out) { console.error('index.html is out of date; run node tools/build.js'); process.exit(1); }
   console.log('index.html is up to date'); process.exit(0);
