@@ -1658,6 +1658,7 @@ function CopyButton(label, getText, { cls = 'btn small', title = '' } = {}) {
 }
 
 /* TeX flattened to readable plain text (used for plain-text copies and when MathJax cannot load) */
+const GREEK = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', lambda: 'λ', mu: 'μ', sigma: 'σ', phi: 'φ', omega: 'ω', Delta: 'Δ', Sigma: 'Σ', Omega: 'Ω', rho: 'ρ', tau: 'τ' };
 function texFlat(s) {
   const sup = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
   const arg = t => t.replace(/^\{|\}$/g, ''), part = t => (/^[-−]?[A-Za-z0-9._]+$/.test(t) ? t : '(' + t + ')');
@@ -1670,6 +1671,9 @@ function texFlat(s) {
     .replace(/\\bar\{([^{}]*)\}/g, 'conj($1)').replace(/\\bar\s*([A-Za-z])/g, 'conj($1)')
     .replace(/\\mathbb\{([A-Za-z])\}/g, '$1').replace(/\\\{/g, '\u0001').replace(/\\\}/g, '\u0002').replace(/\\notin\b/g, '∉').replace(/\\in\b/g, '∈')
     .replace(/\\cup\b/g, '∪').replace(/\\cap\b/g, '∩').replace(/\\infty\b/g, '∞').replace(/\\(?:emptyset|varnothing)\b/g, '∅').replace(/\\subseteq\b/g, '⊆').replace(/\\subset\b/g, '⊂').replace(/\\mid\b/g, '|').replace(/\\to\b/g, '→')
+    .replace(/\\%/g, '%').replace(/\\\$/g, '$').replace(/\\(?:begin|end)\{[a-z*]+\}(?:\{[^}]*\})?/g, ' ').replace(/\\\\/g, '; ').replace(/&/g, ' ')
+    .replace(/\\(alpha|beta|gamma|delta|epsilon|lambda|mu|sigma|phi|omega|Delta|Sigma|Omega|rho|tau)(?![a-zA-Z])/g, (_, g) => GREEK[g])
+    .replace(/_\{([^{}]+)\}|_([A-Za-z0-9])/g, (_, a, b) => { const t = a ?? b; return /^[0-9]+$/.test(t) ? [...t].map(c => '₀₁₂₃₄₅₆₇₈₉'[c]).join('') : '_' + t; })
     .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '').replace(/\u0001/g, '{').replace(/\u0002/g, '}');
 }
 /* TeX in quick-check text (an HTML string), flattened for plain-text copies */
