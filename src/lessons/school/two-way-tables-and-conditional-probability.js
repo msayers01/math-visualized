@@ -125,7 +125,7 @@
         text: String.raw`<p>Suppose you know a student is in 10th grade. What is the chance that this student plays a sport? This is a <b>conditional probability</b>, written P(A given B). Only the 10th graders can be the one you picked, so the sample space shrinks to the 10th grade column.</p><p>Choose <b>P(A given B)</b>. Mark the cells that count as the <b>top</b> of the fraction. Switch to <b>bottom</b> and mark the cells that make the new sample space. Then try <b>P(B given A)</b> and compare.</p>`,
         set: { mode: 'prob', ds: 0, task: 2 } },
       { title: 'Does knowing B change A?',
-        text: String.raw`<p>Two events are <b>independent</b> if knowing one does not change the chance of the other. Here 100 students were asked about their phone and their favorite streaming service. A is "has an iPhone" and B is "likes music best".</p><p>Find P(A) and P(A given B). Real counts are never exactly equal, so ask whether the two numbers are close. Then give your verdict. Switch the survey to grade and sport and compare.</p>`,
+        text: String.raw`<p>Two events are <b>independent</b> if knowing one does not change the chance of the other. Here 100 students were asked about their phone and their favorite streaming service. A is "has an iPhone" and B is "likes music best".</p><p>Find P(A) and P(A given B). Real counts are almost never exactly equal, so ask whether the two numbers are close. Then give your verdict. Switch the survey to grade and sport and compare.</p>`,
         set: { mode: 'indep', ds: 1, task: 0 } }
     ],
     formal: String.raw`

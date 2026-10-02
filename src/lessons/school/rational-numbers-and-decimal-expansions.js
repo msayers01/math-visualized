@@ -189,7 +189,7 @@
         hint: 'Subtract 10x from 100x. What is 16.666… minus 1.666…? Then divide by the number in front of x.' },
       { q: 'A student says: "3/15 has a 3 in its denominator, because 15 = 3 × 5. So its decimal must repeat." Which reply is correct?',
         choices: ['The student is right: a 3 in the denominator always makes the decimal repeat.', 'The student is wrong: 3/15 = 1/5 in lowest terms, and 5 is allowed, so it stops: 0.2.', 'The student is wrong: 3/15 stops because 15 is an odd number.', 'The student is wrong: 3/15 repeats, but only because 3 is a prime number.'], answer: 1,
-        why: String.raw`The test uses the denominator in <em>lowest terms</em>. \(\tfrac{3}{15}=\tfrac15\), and 5 has no prime factor except 5, so \(\tfrac15=\tfrac{2}{10}=0.2\) stops. The 3 in 15 cancelled with the top. An odd denominator does not make a decimal stop (\(\tfrac13\) has an odd denominator and repeats).`,
+        why: String.raw`The test uses the denominator in <em>lowest terms</em>. \(\tfrac{3}{15}=\tfrac15\), and 5 has no prime factor except 5, so \(\tfrac15=\tfrac{2}{10}=0.2\) stops. The 3 in 15 canceled with the top. An odd denominator does not make a decimal stop (\(\tfrac13\) has an odd denominator and repeats).`,
         hint: 'Reduce 3/15 before you look at the denominator.' }
     ],
     links: { prereq: ['percents-on-tape-and-number-lines'], next: ['square-roots-and-irrational-numbers'], related: ['negative-numbers-and-absolute-value', 'area-of-a-circle', 'scale-drawings-and-proportions', 'the-real-number-system', 'why-the-square-root-of-2-is-irrational'] },
@@ -620,7 +620,7 @@
         out.push(`${kk('Number')} ${q.name} = ${q.head}${q.d.slice(0, Math.min(shown, 24))}${shown > 24 ? '…' : ''}`);
         out.push(`${kk('Test')} If the digits repeat with length ${L}, each digit equals the digit ${L} places later.`);
         if (shown <= L) out.push('Show more digits.');
-        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds for ever. Other lengths, such as 4, break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
+        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds forever. Other lengths, such as 4, break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
         else out.push(bad(`Breaks at digit ${bk + 1}.`) + ` It is ${q.d[bk]}, but the digit ${L} places later is ${q.d[bk + L]}. So the digits do not repeat with length ${L} from the start.`);
         out.push(st.seq === 2 ? 'For contrast, this is a fraction. A repeat of length 6 never breaks.' : `Honest note: ${shown} digits cannot show what happens forever. Only a proof can. For √2 see the lesson Why the square root of 2 is irrational.`);
         return lines(out);

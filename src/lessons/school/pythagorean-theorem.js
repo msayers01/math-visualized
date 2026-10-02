@@ -4,7 +4,7 @@
 register({
   id: 'pythagorean-theorem', level: 'school',
   title: 'The Pythagorean theorem',
-  blurb: 'Slide four triangles inside a square and watch c² become a² + b².',
+  blurb: 'Slide triangles inside a square and watch c² become a² + b².',
   thumb(c, p) {
     const a = 3, b = 4, s = 7, pal = p.pal; p.cx = 3.5; p.cy = 3.5; p.span = 4.3;
     p.path([[0,0],[s,0],[s,s],[0,s]], { fill: alpha(pal.yellow, .26) });
@@ -45,7 +45,7 @@ register({
       choices: ['7', '13', '17', '169'], answer: 1,
       why: String.raw`\(5^2+12^2 = 25+144 = 169 = 13^2\), so \(c = 13\).`,
       hint: String.raw`Add the squares of the legs first, then take a square root.` },
-    { q: 'Why does the tilted square have the same area as the two smaller squares?',
+    { q: 'Four copies of a right triangle (legs a and b, long side c) fit inside a square of side a + b and leave a tilted square of side c in the middle. Sliding three of the triangles shows that the same leftover area is also two squares, with sides a and b. Why does the tilted square have the same area as those two squares together?',
       choices: ['The triangles are all the same shape', 'The same four triangles and the same big square are used, so the leftover area is unchanged',
                 'Because c is the longest side', 'Because a and b are equal'], answer: 1,
       why: 'Only the positions of the triangles change. Total area minus the four triangles is the same in both arrangements.',

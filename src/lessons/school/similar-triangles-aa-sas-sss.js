@@ -606,13 +606,13 @@
       const pr = { pi: 0, pj: 0, firstAll: true, done: 0, good: 0, fin: false, rev: false };
       const pracShow = () => {
         if (pr.fin) {
-          cardX.say(`<b>All ${PR.length} problems done.</b> You were right first time on ${pr.good} of ${PR.length}. A problem you got wrong first is a good one to try again.`, 'Practise again',
+          cardX.say(`<b>All ${PR.length} problems done.</b> You were right on the first try for ${pr.good} of ${PR.length}. A problem you missed on the first try is a good one to try again.`, 'Practice again',
             () => { Object.assign(pr, { pi: 0, pj: 0, firstAll: true, done: 0, good: 0, fin: false, rev: false }); pracShow(); });
           P.draw(); return;
         }
         const prob = PR[pr.pi], last = pr.pj === prob.parts.length - 1;
         cardX.ask(prob.parts[pr.pj], {
-          progress: () => `Problem ${pr.pi + 1} of ${PR.length}, part ${pr.pj + 1} of ${prob.parts.length}. Right first time: ${pr.good} of ${pr.done} finished.`,
+          progress: () => `Problem ${pr.pi + 1} of ${PR.length}, part ${pr.pj + 1} of ${prob.parts.length}. Right on the first try: ${pr.good} of ${pr.done} finished.`,
           nextLabel: last ? (pr.pi < PR.length - 1 ? 'Next problem' : 'See my score') : 'Next part',
           onNext: () => { if (!last) pr.pj++; else { pr.pi++; pr.pj = 0; pr.firstAll = true; pr.rev = false; if (pr.pi >= PR.length) pr.fin = true; } pracShow(); },
           onResult: ok => {

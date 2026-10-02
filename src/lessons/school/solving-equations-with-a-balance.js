@@ -300,21 +300,21 @@
     const pan = where === 'pan', both = pan ? 'pans' : 'sides', one = s => (s === 'L' ? 'left' : 'right') + (pan ? ' pan' : ' side');
     const sa = status(after, v), d0 = dist(before, v), d1 = dist(after, v);
     if (sa === 'solved') return { good: true, text: v + ' is alone: ' + (single(after.L, v) ? v + ' = ' + pr(after.R) : pr(after.L) + ' = ' + v) + '. Press ' + (where === 'pan' ? 'Check the answer' : 'Check with numbers') + ' to test it.' };
-    if (sa === 'none') return { good: true, text: 'Every ' + v + ' cancelled, and what is left, ' + prEq(after) + ', is false. No number can make it true, so there is no solution.' };
-    if (sa === 'all') return { good: true, text: 'Every ' + v + ' cancelled, and what is left, ' + prEq(after) + ', is always true. Any number works: there are infinitely many solutions.' };
+    if (sa === 'none') return { good: true, text: 'Every ' + v + ' canceled, and what is left, ' + prEq(after) + ', is false. No number can make it true, so there is no solution.' };
+    if (sa === 'all') return { good: true, text: 'Every ' + v + ' canceled, and what is left, ' + prEq(after) + ', is always true. Any number works: there are infinitely many solutions.' };
     const t = opTerm(op), key = mkey(t.m), tc = op.kind === 'sub' ? qneg(t.c) : t.c;
     if (op.kind === 'add' || op.kind === 'sub') {
       const hit = ['L', 'R'].map(s => ({ s, like: before[s].find(u => !u.e && mkey(u.m) === key) })).filter(x => x.like);
       const cancels = hit.filter(x => q0(qadd(x.like.c, tc)));
       if (d1 < d0 && cancels.length) {
         const c = cancels[0], isV = !!c.like.m[v];
-        return { good: true, text: isV ? 'The ' + pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]) + ' on the ' + one(c.s) + ' cancelled (' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0), so all the ' + v + '’s are now on one ' + (pan ? 'pan' : 'side') + '.'
-          : pr([c.like]) + ' on the ' + one(c.s) + ' cancelled, because ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0. ' + (d1 === 0 ? '' : 'Closer to ' + v + ' alone.') };
+        return { good: true, text: isV ? 'The ' + pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]) + ' on the ' + one(c.s) + ' canceled (' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0), so all the ' + v + '’s are now on one ' + (pan ? 'pan' : 'side') + '.'
+          : pr([c.like]) + ' on the ' + one(c.s) + ' canceled, because ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0. ' + (d1 === 0 ? '' : 'Closer to ' + v + ' alone.') };
       }
       if (d1 < d0) return { good: true, text: 'That brought ' + v + ' closer to being alone.' };
       if (hit.length) {
         const c = hit[0], left = qadd(c.like.c, tc), abs = pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]);
-        return { good: false, text: 'It is still true, but nothing cancelled: ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' leaves ' + pr([{ c: left, m: c.like.m }]) + '. To cancel ' + pr([c.like]) + ', ' + (c.like.c[0] < 0 ? 'add ' : 'subtract ') + abs + '.' };
+        return { good: false, text: 'It is still true, but nothing canceled: ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' leaves ' + pr([{ c: left, m: c.like.m }]) + '. To cancel ' + pr([c.like]) + ', ' + (c.like.c[0] < 0 ? 'add ' : 'subtract ') + abs + '.' };
       }
       return { good: false, text: 'It is still true, but there is no ' + opAbs(op) + ' on either ' + (pan ? 'pan' : 'side') + ' to cancel, so this only adds more. To cancel a term, use its opposite.' };
     }
@@ -583,13 +583,13 @@
     hook: String.raw`An equation is a balance. Why is it safe to subtract 4 from both sides, but never from just one side?`,
     steps: [
       { title: 'Do the same to both pans',
-        text: String.raw`<p>The bag holds \(x\) blocks, a number we do not know. The left pan has the bag and 4 blocks. The right pan has 9 blocks. The beam is level, so \(x+4=9\).</p><p>First press <b>Try it on the left pan only</b>. One pan gets heavier, the beam tips, and the two sides are no longer equal. Press <b>Put it back</b> to level the beam.</p><p>To find \(x\), get the bag alone. The amount is set to 4, so press <b>Subtract 4</b>. Both pans lose 4 blocks and the beam stays level. The right pan then holds 5 blocks, so \(x=5\). The written work records each move and the property of equality that allows it.</p>`,
+        text: String.raw`<p>The bag holds \(x\) blocks, a number we do not know. The left pan has the bag and 4 blocks. The right pan has 9 blocks. The beam is level, so \(x+4=9\).</p><p>First press <b>Try it on the left pan only</b>. The beam tips, so the two sides are no longer equal. Press <b>Put it back</b> to level it.</p><p>To find \(x\), get the bag alone. The amount is set to 4, so press <b>Subtract 4</b>. Both pans lose 4 blocks and the beam stays level. The right pan holds 5 blocks, so \(x=5\). The written work records each move and the property of equality that allows it.</p>`,
         set: { mode: 'bal', eq: 0, opn: 4 } },
       { title: 'Undo in reverse order',
-        text: String.raw`<p>Three bags and 2 blocks balance 14 blocks: \(3x+2=14\). Two things were done to \(x\): it was multiplied by 3, then 2 was added.</p><p>Undo them in <b>reverse order</b>. Subtract 2 first, which leaves \(3x=12\). Then divide by 3, which gives \(x=4\). Set the amount with the \(+\) and \(-\) buttons, then press an operation.</p><p>What if you divide by 3 first? Try it. The 2 blocks get divided too, and fractions appear. It still works, but it is harder.</p>`,
+        text: String.raw`<p>Three bags and 2 blocks balance 14 blocks: \(3x+2=14\). Two things were done to \(x\): it was multiplied by 3, then 2 was added.</p><p>Undo them in <b>reverse order</b>. Subtract 2 first: \(3x=12\). Then divide by 3: \(x=4\). Set the amount with the \(+\) and \(-\) buttons, then press an operation.</p><p>What if you divide by 3 first? Try it. The 2 blocks get divided too, and fractions appear. It still works, but it is harder.</p>`,
         set: { mode: 'bal', eq: 3, opn: 1 } },
       { title: 'Both sides and parentheses',
-        text: String.raw`<p>The left pan holds 4 groups of \((x+2)\) and the right pan holds \(2x+14\). That is \(4(x+2)=2x+14\).</p><p>Press <b>Distribute</b> to open the groups. The left pan holds \(4x+8\), because each group has one bag and 2 blocks. The bags are now on both pans, so subtract \(2x\) from both sides to gather them on the left. Then subtract 8 and divide by 2. The answer is \(x=3\).</p><p>Distributing rewrites one side. It does not change the amount on that pan, so it is not done to both sides.</p>`,
+        text: String.raw`<p>The left pan holds 4 groups of \((x+2)\) and the right pan holds \(2x+14\): \(4(x+2)=2x+14\).</p><p>Press <b>Distribute</b> to open the groups. The left pan holds \(4x+8\), because each group has one bag and 2 blocks. The bags are now on both pans, so subtract \(2x\) from both sides to gather them on the left. Then subtract 8 and divide by 2. The answer is \(x=3\).</p><p>Distributing only rewrites one side. It does not change the amount on that pan, so it is not done to both sides.</p>`,
         set: { mode: 'bal', eq: 11, opn: 1 } },
       { title: 'Solve a formula for one letter',
         text: String.raw`<p>The pans are gone and every letter stands for a number. The formula \(y=mx+b\) is solved for \(y\), and we want \(x\) alone.</p><p>The formula multiplies \(x\) by \(m\), then adds \(b\). Undo it in reverse order: subtract \(b\), then divide by \(m\). Choose <b>b</b> as the amount and press Subtract, then choose <b>m</b> and press Divide. You get \(x=\dfrac{y-b}{m}\).</p><p>Press <b>Check with numbers</b>. With \(m=2\), \(b=3\) and \(x=4\) the formula gives \(y=11\), and the solved form gives back \(x=4\).</p>`,

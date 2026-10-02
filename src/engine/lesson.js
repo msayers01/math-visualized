@@ -12,9 +12,26 @@ function Stepper(steps, onEnter, { onStep, tools } = {}) {
   const dots = steps.map((s, k) => h('button', { type: 'button', class: 'dot', 'aria-label': `Step ${k + 1}: ${s.title}`, onclick: () => go(k) }));
   const back = h('button', { type: 'button', class: 'btn', onclick: () => go(i - 1) }, 'Back');
   const next = h('button', { type: 'button', class: 'btn primary', onclick: () => go(i + 1) }, 'Next');
+  /* On the last step Next is disabled; say what comes after instead of leaving a dead button. */
+  const endGo = h('button', { type: 'button', class: 'btn', onclick: () => {
+    const c = document.querySelector('.check') || document.querySelector('.prose'); if (!c) return;
+    c.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    const hd = c.querySelector('h2'); if (hd) { hd.tabIndex = -1; hd.focus({ preventScroll: true }); }
+  } }, 'Go to the quick check');
+  const end = h('p', { class: 'steps-end', hidden: '' }, 'That was the last step. Play with the controls, then try the quick check.', h('br'), endGo);
   const el = h('section', { class: 'steps', 'aria-label': 'Guided steps' },
     h('div', { class: 'steps-head' }, h('span', { class: 'steps-k' }, 'Try this'), count),
-    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next), tools && tools.length ? h('div', { class: 'steps-tools' }, tools) : null);
+    h('div', { class: 'dots' }, dots), title, text, h('div', { class: 'steps-nav' }, back, next), end, tools && tools.length ? h('div', { class: 'steps-tools' }, tools) : null);
+  /* New step: the side panel scrolls back to its top, and on phones (where the figure is pinned under the header) the
+     step text is brought below the figure if it had scrolled behind it. */
+  function revealStep() {
+    const pnl = el.closest('.panel'); if (pnl) pnl.scrollTop = 0;
+    const st = document.querySelector('.stage');
+    if (st && getComputedStyle(st).position === 'sticky') {
+      const gap = title.getBoundingClientRect().top - st.getBoundingClientRect().bottom;
+      if (gap < 8) window.scrollBy({ top: gap - 12, behavior: 'auto' });
+    }
+  }
   function go(k, first) {
     i = clamp(k, 0, steps.length - 1);
     const s = steps[i];
@@ -22,6 +39,8 @@ function Stepper(steps, onEnter, { onStep, tools } = {}) {
     title.textContent = s.title; text.innerHTML = s.text; typeset(text);
     dots.forEach((d, j) => { d.classList.toggle('on', j === i); d.classList.toggle('done', j < i); j === i ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
     back.disabled = i === 0; next.disabled = i === steps.length - 1;
+    end.hidden = !(steps.length > 1 && i === steps.length - 1);
+    if (!first) revealStep();
     onEnter(s, i, !!first);
     if (onStep) onStep(i, !!first);
   }
@@ -30,10 +49,12 @@ function Stepper(steps, onEnter, { onStep, tools } = {}) {
 
 /* Multiple-choice quick check. Each question is { q, choices: [html], answer: index, why, hint? }.
    A wrong pick is marked and can be retried; the right pick locks the question and shows `why`. */
+let qcUid = 0;
 function QuickCheck(questions, onResult) {
+  const qid = ++qcUid;
   const root = h('section', { class: 'check', 'aria-label': 'Quick check' }, h('h2', {}, 'Quick check'));
   questions.forEach((Q, n) => {
-    const fb = h('div', { class: 'q-fb', 'aria-live': 'polite' });
+    const fb = h('div', { class: 'q-fb', 'aria-live': 'polite', role: 'status', tabindex: '-1' });
     const btns = Q.choices.map((c, k) => h('button', { type: 'button', class: 'choice', html: c, onclick: () => pick(k) }));
     function pick(k) {
       if (btns[Q.answer].classList.contains('right')) return;
@@ -46,9 +67,11 @@ function QuickCheck(questions, onResult) {
         fb.className = 'q-fb no'; fb.innerHTML = '<b>Not quite.</b> ' + (Q.hint || 'Try another answer.');
       }
       typeset(fb);
+      /* the clicked choice is now disabled, so focus would fall to <body>; keep it on the feedback instead */
+      try { fb.focus({ preventScroll: true }); } catch (e) {}
     }
-    root.append(h('div', { class: 'q' },
-      h('p', { class: 'q-stem', html: `<span class="q-n">${n + 1}</span>${Q.q}` }), h('div', { class: 'choices' }, btns), fb));
+    root.append(h('div', { class: 'q', role: 'group', 'aria-labelledby': 'qs-' + qid + '-' + n },
+      h('p', { class: 'q-stem', id: 'qs-' + qid + '-' + n, html: `<span class="q-n">${n + 1}</span>${Q.q}` }), h('div', { class: 'choices' }, btns), fb));
   });
   typeset(root);
   return root;

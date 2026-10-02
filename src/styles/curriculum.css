@@ -13,7 +13,7 @@
 
 .std { display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px 1px 7px; border-radius: 999px; font-size: .76rem; line-height: 1.6;
   font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--st); border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
 a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 26%, transparent); }
 
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
@@ -21,7 +21,7 @@ a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 
 .stds { display: inline-flex; flex-wrap: wrap; gap: 5px; }
 /* Enrichment: goes beyond the benchmarks */
 .tag.enrich { display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px 1px 8px; border-radius: 999px; font-size: .76rem; line-height: 1.6; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--brass); border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
 .tag.enrich::before { content: "\2726"; color: var(--brass); font-size: .8em; }
 a.tag.enrich:hover { border-color: var(--brass); background: color-mix(in srgb, var(--brass) 24%, transparent); }
 fieldset.facet.kind { grid-column: 1 / -1; }
@@ -90,7 +90,7 @@ label.facet .facet-k { margin-bottom: 0; }
 }
 
 /* Lesson page: course, skill, grades and standards under the title; alignment section */
-.viz-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 18px; }
+.viz-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 12px; }
 .viz-meta .tags { margin-top: 0; }
 .tag.course { color: var(--text); font-family: var(--display); font-size: .92rem; letter-spacing: -.02em; text-decoration: none; border-bottom: 1px solid var(--line-strong); transition: border-color .2s, color .2s; }
 .tag.course:hover { border-color: var(--brass); color: var(--brass); }
@@ -105,3 +105,26 @@ label.facet .facet-k { margin-bottom: 0; }
 .align-item .bench { font-size: .95rem; line-height: 1.55; }
 .align-item .anc { margin-top: 4px; font-size: .8rem; color: var(--muted); }
 @media (max-width: 560px) { .align-item { grid-template-columns: 1fr; } }
+
+/* Search box in the finder */
+.finder-search { margin: 0 0 18px; }
+.finder-search .facet-k { margin-bottom: 8px; }
+.finder-q { position: relative; max-width: 560px; }
+.finder-q-in { width: 100%; cursor: text; background-image: none; padding-right: 76px; -webkit-appearance: none; appearance: none; }
+.finder-q-in::-webkit-search-cancel-button, .finder-q-in::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.finder-q-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font: inherit; font-size: .84rem; padding: 4px 12px; min-height: 28px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
+.finder-q-clear:hover { border-color: var(--brass); color: var(--brass); }
+
+/* Hero note for teachers; "Continue where you left off" */
+.hero-note { margin: 18px 0 0; max-width: 46ch; font-size: .92rem; line-height: 1.5; color: var(--muted); }
+.resume { padding-top: clamp(24px, 4vw, 40px); }
+.resume-link { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 12px 18px; border: 1px solid var(--line-strong); border-left: 3px solid var(--brass);
+  border-radius: 4px; background: var(--surface); color: var(--text); text-decoration: none; transition: border-color .2s; }
+.resume-link:hover { border-color: var(--brass); }
+.resume-link:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.resume-k { font-size: .8rem; letter-spacing: .02em; color: var(--muted); }
+.resume-t { font-family: var(--display); font-size: 1.1rem; letter-spacing: -.025em; }
+.resume-d { margin-left: auto; font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.resume + .finder { padding-top: clamp(16px, 3vw, 28px); }
+@media (max-width: 560px) { .resume-d { margin-left: 0; } }

@@ -111,12 +111,12 @@
     hex: { name: 'Regular hexagon (a nut)', lab: 'Side s (mm)', vals: [2, 4, 6, 8, 10], def: 10, u: 'mm',
       stages: s => [
         mk('A regular hexagon has six equal sides of ' + s + ' mm. How do you cut it into triangles you know?',
-          ['Draw lines from the centre to all six corners', 'That makes six triangles around the centre. Each central angle is 360° ÷ 6 = 60°.'],
+          ['Draw lines from the center to all six corners', 'That makes six triangles around the center. Each central angle is 360° ÷ 6 = 60°.'],
           [['Draw one long diagonal from corner to corner', 'That makes two trapezoids, not triangles.'],
             ['Join two corners that skip one corner between them', 'That cuts off one triangle with a 120° angle, whose angles are 30°, 30° and 120°. It is not a special right triangle.']], 2),
         typeQ('What kind of triangle is each of the six pieces?', 'oeq',
           'Two sides of each piece are radii, and the angle between them is 60°. The other two angles are equal and add to 120°, so they are 60° too. All three sides are equal, so the radius equals the side, ' + s + ' mm. (The next scene gives this argument step by step.) Cut one piece down the middle and you get two 30-60-90 triangles.',
-          { o45: 'The angle at the centre is 60°, not 90°, so a piece has no right angle at all.', o3060: 'Not yet. Each piece has three 60° angles. A 30-60-90 triangle appears when you cut one piece down the middle.', oplain: 'The pieces are not right triangles, but they do have a pattern: three equal sides.' }, 0),
+          { o45: 'The angle at the center is 60°, not 90°, so a piece has no right angle at all.', o3060: 'Not yet. Each piece has three 60° angles. A 30-60-90 triangle appears when you cut one piece down the middle.', oplain: 'The pieces are not right triangles, but they do have a pattern: three equal sides.' }, 0),
         mk('The distance between two opposite flat sides is the wrench size. How big is it? (It is two heights of the small triangles.)',
           [val(s, 3, 'mm'), `One small triangle has height ${rt(s / 2, 3)} (its long leg: ${s / 2} × √3). The wrench size is two of them: 2 × ${rt(s / 2, 3)} = ${rt(s, 3)}. In general it is s√3.`],
           [[`${2 * s} mm`, 'That is the distance between opposite corners, 2 × the side. The flat sides are closer than the corners.'],
@@ -194,7 +194,7 @@
   const ARGS = [
     { name: 'The height of an equilateral triangle halves the base',
       given: 'Triangle ABC is equilateral. D is the point where the height from A meets BC, so AD ⟂ BC.',
-      claim: 'BD = DC and that AD splits the 60° angle at A into two 30° angles.',
+      claim: 'BD = DC, and AD splits the 60° angle at A into two 30° angles.',
       steps: [
         { s: 'Triangles ADB and ADC both have a right angle at D.',
           ch: [['AD is the height, so it meets BC at 90°.', 'That is how D was defined. The height makes a right angle with the base.', 1],
@@ -218,16 +218,16 @@
             ['D is the middle because the triangle is equilateral.', 'That is what we wanted to show, so it cannot be a reason.']] }],
       done: 'So BD = DC = s/2, and the 60° angle at A is split into two 30° angles. Each half is a 30-60-90 triangle with hypotenuse s and short leg s/2.' },
     { name: 'The six triangles in a regular hexagon are equilateral',
-      given: 'ABCDEF is a regular hexagon with centre O. All six sides are equal and all six corners are the same distance from O.',
-      claim: 'triangle OAB is equilateral, so the radius equals the side.',
+      given: 'ABCDEF is a regular hexagon with center O. All six sides are equal and all six corners are the same distance from O.',
+      claim: 'Triangle OAB is equilateral, so the radius equals the side.',
       steps: [
         { s: 'Angle AOB = 60°.',
           ch: [['The six angles around O are equal and add to 360°, and 360 ÷ 6 = 60.', 'The six triangles have three pairs of equal sides (the six sides of the hexagon and the radii), so they are congruent and their angles at O are equal: each is a sixth of a full turn.', 1],
             ['A hexagon has six sides, so the angle is 6°.', 'The count of sides is not the angle. Divide the full turn, 360°, by 6.'],
-            ['The interior angle of a hexagon is 120°, so AOB is 120°.', '120° is the angle at a corner of the hexagon (angle FAB), not the angle at the centre.']] },
+            ['The interior angle of a hexagon is 120°, so AOB is 120°.', '120° is the angle at a corner of the hexagon (angle FAB), not the angle at the center.']] },
         { s: 'OA = OB.',
           ch: [['Both are radii: every corner is the same distance from O.', 'In a regular hexagon all corners lie on a circle around O, so OA and OB are both radii.', 1],
-            ['They are both sides of the hexagon.', 'OA and OB go from the centre to corners. They are not sides of the hexagon.'],
+            ['They are both sides of the hexagon.', 'OA and OB go from the center to corners. They are not sides of the hexagon.'],
             ['They look equal.', 'A picture can mislead. We use the fact that the corners are the same distance from O.']] },
         { s: 'Angle OAB = angle OBA.',
           ch: [['Base angles of an isosceles triangle are equal.', 'OA = OB, so triangle OAB is isosceles, and the angles opposite the equal sides are equal.', 1],
@@ -286,7 +286,7 @@
       q: 'In equilateral triangle ABC the height AD meets BC at D. Which reason shows that BD = DC?',
       ch: [['In the picture D looks like the middle.', 'A proof cannot rest on how a picture looks.'],
         ['Triangles ADB and ADC are congruent by hypotenuse-leg, so their matching sides BD and DC are equal.', 'Both are right triangles, AB = AC because the triangle is equilateral, and AD is shared. Hypotenuse-leg gives congruence, and matching sides of congruent triangles are equal.', 1],
-        ['A height always bisects the side it meets.', 'That is false in general. In a scalene triangle the height lands off-centre. It works here because the triangle is equilateral.'],
+        ['A height always bisects the side it meets.', 'That is false in general. In a scalene triangle the height lands off center. It works here because the triangle is equilateral.'],
         ['AD = BD because both are heights.', 'BD is not a height, and AD and BD are different lengths.']] },
     { v: { k: 'fig', fig: 'eq', s: 8, tgt: 0 },
       q: 'A student finds the height of an equilateral triangle with side 8 cm like this: "height = 8 × sin 60° = 8 × 1/2 = 4 cm." What is wrong, and what is the right height?',
@@ -344,7 +344,7 @@
       <h3>Figures cut into special triangles</h3>
       <p><b>Equilateral triangle of side \(s\).</b> The height splits it into two 30-60-90 triangles with hypotenuse \(s\) and short leg \(s/2\). The height is the long leg, \(h = \tfrac{s}{2}\sqrt3 = \tfrac{s\sqrt3}{2}\). The area is
       \[ \tfrac12\cdot s\cdot\tfrac{s\sqrt3}{2} = \tfrac{\sqrt3}{4}s^2. \]</p>
-      <p><b>Regular hexagon of side \(s\).</b> Lines from the centre make six equilateral triangles of side \(s\) (proved below). So the area is
+      <p><b>Regular hexagon of side \(s\).</b> Lines from the center make six equilateral triangles of side \(s\) (proved below). So the area is
       \[ 6\cdot\tfrac{\sqrt3}{4}s^2 = \tfrac{3\sqrt3}{2}s^2. \]
       Two opposite flat sides are two triangle heights apart: \(2\cdot\tfrac{s\sqrt3}{2} = s\sqrt3\). A nut with sides \(10\) mm needs a \(10\sqrt3 \approx 17.3\) mm wrench. Opposite corners are farther apart, \(2s = 20\) mm.</p>
       <p><b>Rectangle with a \(30^\circ\) diagonal.</b> If the short side is \(s\), the diagonal is \(2s\) (the hypotenuse is twice the side across from \(30^\circ\)) and the long side is \(s\sqrt3\). The area is \(s\cdot s\sqrt3 = s^2\sqrt3\).</p>
@@ -352,7 +352,7 @@
       <p><b>Square of side \(s\).</b> A diagonal makes two 45-45-90 triangles, so the diagonal is \(s\sqrt2\).</p>
       <h3>Why the pieces are special: two short arguments</h3>
       <p><b>The height of an equilateral triangle bisects the base.</b> In triangle \(ABC\), let \(AD\) be the height, so \(\angle ADB = \angle ADC = 90^\circ\). Then \(AB = AC\) (equilateral) and \(AD = AD\) (shared). Two right triangles with equal hypotenuses and one equal leg are congruent (hypotenuse-leg). Corresponding parts of congruent triangles are equal, so \(BD = DC\) and \(\angle BAD = \angle CAD = 30^\circ\).</p>
-      <p><b>The six triangles in a regular hexagon are equilateral.</b> The six angles at the centre \(O\) are equal and add to \(360^\circ\), so each is \(60^\circ\). \(OA\) and \(OB\) are radii, so \(OA = OB\) and the base angles of triangle \(OAB\) are equal. They add to \(180^\circ - 60^\circ = 120^\circ\), so each is \(60^\circ\). Three equal angles give three equal sides: \(OA = OB = AB = s\).</p>
+      <p><b>The six triangles in a regular hexagon are equilateral.</b> The six angles at the center \(O\) are equal and add to \(360^\circ\), so each is \(60^\circ\). \(OA\) and \(OB\) are radii, so \(OA = OB\) and the base angles of triangle \(OAB\) are equal. They add to \(180^\circ - 60^\circ = 120^\circ\), so each is \(60^\circ\). Three equal angles give three equal sides: \(OA = OB = AB = s\).</p>
       <h3>Where this leads: the unit circle</h3>
       <p>Take a right triangle with hypotenuse \(1\) and angle \(\theta\) at the origin. Its legs are \(\cos\theta\) (across) and \(\sin\theta\) (up), so its far corner is the point \((\cos\theta, \sin\theta)\) on the circle of radius \(1\). The special angles give
       \[ 30^\circ: \left(\tfrac{\sqrt3}{2}, \tfrac12\right), \qquad 45^\circ: \left(\tfrac{\sqrt2}{2}, \tfrac{\sqrt2}{2}\right), \qquad 60^\circ: \left(\tfrac12, \tfrac{\sqrt3}{2}\right). \]

@@ -33,7 +33,7 @@
 
   const byAng = (a, b, c) => Math.max(a, b, c) > 90 ? 'obtuse (one angle is over 90°)' : Math.max(a, b, c) === 90 ? 'right (one angle is 90°)' : 'acute (every angle is under 90°)';
   const bySide = (a, b, c) => a === b && b === c ? 'equilateral (3 equal angles, so 3 equal sides)'
-    : (a === b || b === c || a === c) ? 'isosceles (exactly 2 equal angles, so exactly 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
+    : (a === b || b === c || a === c) ? 'isosceles (2 equal angles, so 2 equal sides)' : 'scalene (no equal angles, so no equal sides)';
 
   /* ----- canvas helpers ----- */
   const sector = (p, x, y, r, a0, sw, fill, stroke, lw = 2.4, dash) => {

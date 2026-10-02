@@ -122,7 +122,7 @@
         ['1080', 'That treats 3π/4 as 135 degrees and multiplies 8 × 135. In s = rθ the angle must be in radians. Use θ = 3π/4 itself.'],
         ['3π/32', 'That divides the angle by the radius (θ ÷ r). The rule is s = r × θ, so multiply.'],
         ['about 10.4', 'That adds 8 + 3π/4 (about 8 + 2.36). Arc length is r times θ. It does not add.'],
-        ['6π, about 18.85', 'Yes. s = rθ = 8 × 3π/4 = 24π/4 = 6π, about 18.85. The angle is 3π/4 ≈ 2.36 radii, and each radius is 8 long.']] },
+        ['6π, about 18.85', 'Yes. s = rθ = 8 × 3π/4 = 24π/4 = 6π, about 18.85. The angle is 3π/4 ≈ 2.36 radius-lengths, and each one is 8 long.']] },
     { name: 'Angle from arc and radius', ans: 0, fig: { R: 6, th: 1.5, vs: 9, thTxt: 'θ = ?', arcTxt: 's = 9', rTxt: 'r = 6' },
       q: 'On a circle of radius 6, an arc is 9 long. What is the angle at the center?',
       ch: [
@@ -186,7 +186,7 @@
         text: String.raw`<p>A half turn is 180° and \(\pi\) radians. So <b>degrees \(\times\ \pi/180\) gives radians</b>, and <b>radians \(\times\ 180/\pi\) gives degrees</b>.</p><p>The marker is at 30°. Choose its radian form. Then fill the strip by moving the marker: drag it, press a strip cell, or use Previous and Next.</p>`,
         set: { mode: 'conv', ci: 1, R: 2, vs: 3, th: PI / 6 } },
       { title: 'Sector area, and the unit circle',
-        text: String.raw`<p>A sector is the fraction \(\theta/2\pi\) of the whole disc, so \(A = \dfrac{\theta}{2\pi}\cdot \pi r^2 = \tfrac12 r^2\theta\).</p><p>Here \(r=4\) and \(\theta=\pi/2\): \(A=\tfrac12\cdot 16\cdot\tfrac{\pi}{2}=4\pi\), about 12.57. Press <b>r = 1</b>: the arc is \(\theta\) itself. That is the <a href="#/viz/the-unit-circle-and-trig-waves">unit circle</a>, the next lesson.</p>`,
+        text: String.raw`<p>A sector is the fraction \(\theta/2\pi\) of the whole disc, so \(A = \dfrac{\theta}{2\pi}\cdot \pi r^2 = \tfrac12 r^2\theta\).</p><p>Here \(r=4\) and \(\theta=\pi/2\): \(A=\tfrac12\cdot 16\cdot\tfrac{\pi}{2}=4\pi\), about 12.57. Press <b>r = 1 (unit circle)</b>: the arc is \(\theta\) itself. That is the <a href="#/viz/the-unit-circle-and-trig-waves">unit circle</a>, the next lesson.</p>`,
         set: { mode: 'sector', R: 4, vs: 6, th: PI / 2 } }
     ],
     formal: String.raw`

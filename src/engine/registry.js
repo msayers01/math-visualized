@@ -29,13 +29,16 @@ const pendingLoads = new Map();
 function loadLesson(id) {
   const v = VIZ.find(x => x.id === id);
   if (!v || isLoaded(v)) return Promise.resolve(v);
-  if (!pendingLoads.has(id)) pendingLoads.set(id, new Promise((resolve, reject) => {
+  /* A flaky school network drops a request now and then: try twice more (after a short wait) before giving up and
+     letting the page offer "Try again". */
+  const attempt = n => new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    const done = err => { pendingLoads.delete(id); if (err) { s.remove(); reject(err); } else resolve(v); };
+    const done = err => { if (err) { s.remove(); reject(err); } else resolve(v); };
     s.onload = () => done(isLoaded(v) ? null : new Error('The lesson file did not register ' + id));
     s.onerror = () => done(new Error('Could not load ' + v.lazySrc));
     s.src = v.lazySrc; document.head.append(s);
-  }));
+  }).catch(err => n >= 2 ? Promise.reject(err) : new Promise(r => setTimeout(r, 500 * (n + 1))).then(() => attempt(n + 1)));
+  if (!pendingLoads.has(id)) pendingLoads.set(id, attempt(0).finally(() => pendingLoads.delete(id)));
   return pendingLoads.get(id);
 }
 const PLANNED = {

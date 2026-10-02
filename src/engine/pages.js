@@ -4,6 +4,12 @@
 const NUMERALS = { school: '01', ugrad: '02', grad: '03' };
 /* courses the visitor has opened on the home page (kept while the page stays open) */
 const OPEN_COURSES = new Set();
+/* Back to the home list restores where the visitor was; every other page opens at the top. The browser's own
+   restoration would run before the page is rebuilt, so it is switched off and the home page restores itself. */
+try { history.scrollRestoration = 'manual'; } catch (e) {}
+let HOME_SCROLL = null, POPPED = false;
+addEventListener('popstate', () => { POPPED = true; setTimeout(() => { POPPED = false; }, 600); });
+const sameHash = (a, b) => (a || '#/') === (b || '#/');
 
 function renderHome(app) {
   document.title = 'Continuum: mathematics you can move';
@@ -17,7 +23,8 @@ function renderHome(app) {
         h('p', { class: 'hero-sub' }, 'Interactive visualizations from middle school through graduate study. Drag, slide, and watch each idea change shape.'),
         h('div', { class: 'hero-cta' },
           h('a', { class: 'btn primary', href: '#/viz/slope-and-linear-functions' }, 'Start with slope'),
-          h('a', { class: 'btn', href: '#/level/school' }, 'Browse all topics'))),
+          h('a', { class: 'btn', href: '#find', onclick: e => { e.preventDefault(); const f = document.getElementById('finder'); if (f) { f.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); finder.focus({ preventScroll: true }); } } }, 'Find a lesson')),
+        h('p', { class: 'hero-note' }, `For teachers: search ${VIZ.length} lessons by title, course or Minnesota benchmark, open one, then use its step links and printable exit ticket.`)),
       h('div', { class: 'instrument', 'aria-hidden': 'true' },
         h('div', { class: 'inst-item inst-matrix' }, h('span', { class: 'k' }, 'Matrix on screen'), h('span', { class: 'matrix' }, cells)),
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Determinant'), detEl),
@@ -27,16 +34,32 @@ function renderHome(app) {
      Each course is a collapsible group: closed groups show only their lesson titles, and a group draws its
      thumbnails (loading the lessons in a split build) the first time it is open. Filtering opens the groups
      that have matches and only hides rows; the filter state lives in the URL hash. */
-  const F = filterFromHash(location.hash), rows = new Map(), sections = [], allGroups = [], tPlanes = [];
-  let alive = true;
+  const F = finderFromHash(location.hash), rows = new Map(), sections = [], allGroups = [], tPlanes = [];
+  let alive = true, homeHash = location.hash;
+  /* Thumbnails are drawn a few at a time per frame (the ones on screen first), so "Expand all" never freezes the page */
+  const jobs = []; let pumping = 0;
+  const onScreen = el => { const r = el.getBoundingClientRect(); return r.bottom > -200 && r.top < innerHeight + 200; };
+  const pump = () => {
+    pumping = 0; const t0 = performance.now();
+    while (alive && jobs.length && performance.now() - t0 < 8) {
+      const i = jobs.findIndex(j => onScreen(j.el));
+      jobs.splice(i < 0 ? 0 : i, 1)[0].run();
+    }
+    if (alive && jobs.length) pumping = requestAnimationFrame(pump);
+  };
   const drawThumbs = g => {
     for (const v of g.items) {
       if (g.drawn.has(v.id) || rows.get(v.id).hidden) continue;
       g.drawn.add(v.id);
+      const el = g.thumbEls.get(v.id);
       loadLesson(v.id).then(() => {
         if (!alive || !v.thumb) return;
-        const P = new Plane(g.thumbEls.get(v.id), { span: 3 }); P.onDraw = v.thumb; P.draw(); tPlanes.push(P);
-      }, () => { g.drawn.delete(v.id); if (alive) g.thumbEls.get(v.id).classList.add('empty'); });
+        jobs.push({ el, run() {
+          if (g.list.hidden || rows.get(v.id).hidden) { g.drawn.delete(v.id); return; }   /* closed or filtered out meanwhile: draw when shown again */
+          const P = new Plane(el, { span: 3 }); P.onDraw = v.thumb; P.draw(); tPlanes.push(P);
+        } });
+        if (!pumping) pumping = requestAnimationFrame(pump);
+      }, () => { g.drawn.delete(v.id); if (alive) el.classList.add('empty'); });
     }
   };
   const syncAll = () => {
@@ -55,8 +78,8 @@ function renderHome(app) {
     allGroups.forEach(g => { if (!g.el.hidden) setOpen(g, open, true); });
   } }, 'Expand all courses');
   const levels = h('div', { class: 'wrap levels', id: 'lessons' }, h('div', { class: 'levels-tools' }, allBtn));
-  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match these filters.'),
-    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter()); finder.refresh(); apply(); } }, 'Clear filters'));
+  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match this search and these filters.'),
+    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter(), { q: '' }); finder.refresh(); apply(); } }, 'Clear filters'));
   for (const [key, L] of Object.entries(LEVELS)) {
     const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
     const body = h('div', { class: 'level-body' }), groups = [];
@@ -99,12 +122,12 @@ function renderHome(app) {
   }
   levels.append(empty);
   const apply = () => {
-    const on = filterActive(F); let shown = 0;
+    const on = finderActive(F); let shown = 0;
     for (const S of sections) {
       let n = 0;
       for (const g of S.groups) {
         let k = 0;
-        for (const v of g.items) { const ok = matches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
+        for (const v of g.items) { const ok = lessonMatches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
         g.el.hidden = !k; n += k;
         g.n.textContent = k === g.items.length ? `${k} ${k === 1 ? 'lesson' : 'lessons'}` : `${k} of ${g.items.length}`;
         setOpen(g, on ? k > 0 : OPEN_COURSES.has(g.id), false);
@@ -114,12 +137,31 @@ function renderHome(app) {
       S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
     }
     empty.hidden = !on || shown > 0;
-    const hash = on ? filterToken(F) : '#/';
-    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
+    const hash = on ? findToken(F) : '#/';
+    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); homeHash = hash; } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
   };
   const finder = Finder(F, apply);
-  app.append(finder.el, levels);
+  /* "Continue where you left off": the lesson this browser opened last, shown only when there is progress */
+  const last = Progress.last(), lv = last && VIZ.find(x => x.id === last.id);
+  let resume = null;
+  if (lv) {
+    const st = Progress.status(lv), done = st.state === 'done', at = !done && st.st > 1 ? clamp(last.step, 0, st.st - 1) : 0;
+    resume = h('div', { class: 'wrap resume' }, h('a', { class: 'resume-link', href: lessonToken(lv.id, at) },
+      h('span', { class: 'resume-k' }, done ? 'Last opened' : 'Continue where you left off'),
+      h('span', { class: 'resume-t' }, lv.title), h('span', { class: 'resume-d' }, done ? 'Complete' : st.st > 1 ? `Step ${at + 1} of ${st.st}` : 'Opened')));
+  }
+  app.append(resume, finder.el, levels);
   apply();
+  /* "/" jumps to the search box, as on most sites */
+  const slash = e => {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || /^(input|textarea|select)$/i.test(e.target.tagName) || e.target.isContentEditable) return;
+    e.preventDefault(); finder.focus();
+  };
+  addEventListener('keydown', slash);
+  if (POPPED && HOME_SCROLL && sameHash(HOME_SCROLL.hash, location.hash)) {   /* the router scrolls to the top (or the finder) after this returns, so restore after that */
+    const y = HOME_SCROLL.y; POPPED = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (alive) window.scrollTo({ top: y, behavior: 'instant' }); }));
+  }
 
   /* hero: a grid cycling through linear maps, with a live readout */
   const P = new Plane(heroCanvas, { span: 3.4, transparent: true });
@@ -152,7 +194,10 @@ function renderHome(app) {
     const loop = now => { if (t0 === null) t0 = now; M = matAt(now - t0); show(M); P.draw(); raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop);
   }
-  return () => { alive = false; cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
+  return () => {
+    HOME_SCROLL = { y: window.scrollY, hash: homeHash };
+    alive = false; cancelAnimationFrame(raf); cancelAnimationFrame(pumping); removeEventListener('keydown', slash); P.destroy(); tPlanes.forEach(t => t.destroy());
+  };
 }
 
 /* "Standards alignment" section of a lesson page: each tagged benchmark with its full wording. */
@@ -165,6 +210,19 @@ function Alignment(v) {
       return h('li', { class: 'align-item', 'data-strand': s.id }, StdChip(c, true),
         h('div', {}, h('p', { class: 'bench' }, STANDARDS[c]), h('p', { class: 'anc' }, s.name + ' \u00b7 ' + a.name)));
     })));
+}
+
+/* A lesson's links as the page shows them: what it lists plus the other side of every link elsewhere, so
+   "Builds on" on one page always has a matching "Leads to" on the other, whichever of the two wrote it down. */
+function connectionLinks(v) {
+  const L = v.links || {}, pre = new Set(L.prereq || []), nxt = new Set(L.next || []), rel = new Set(L.related || []);
+  for (const w of VIZ) {
+    if (w === v || !w.links) continue;
+    if ((w.links.prereq || []).includes(v.id)) nxt.add(w.id);
+    if ((w.links.next || []).includes(v.id)) pre.add(w.id);
+  }
+  for (const id of [...pre, ...nxt]) rel.delete(id);
+  return { prereq: [...pre], next: [...nxt], related: [...rel] };
 }
 
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
@@ -183,12 +241,12 @@ function renderViz(app, v, startStep = 0) {
   const chip = ProgressChip(v);
   const check = v.check && v.check.length ? QuickCheck(v.check, (n, right) => { Progress.answer(v.id, n, right); chip.update(); }) : null;
   const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'with answer key')) : null;
-  const conn = v.links ? Connections(v.links, v.id) : null;
+  const conn = Connections(connectionLinks(v), v.id);
   const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
     ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }, {
-        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
+        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); document.title = v.steps.length > 1 && i > 0 ? `${v.title}, step ${i + 1} of ${v.steps.length} | Continuum` : v.title + ' | Continuum'; if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
         tools: [CopyButton('Copy link to this step', () => shareUrl(lessonToken(v.id, stepper.index())), { title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' })]
       }) : null;
   if (stepper) panel.append(stepper.el);

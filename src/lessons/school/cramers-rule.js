@@ -104,7 +104,7 @@
         text: String.raw`<p>Draw the parallelogram of \(w\) and \(v\). Its area is \(7\cdot3-1\cdot6=15\). Predict \(x\) in the panel, then watch the top edge slide along \(v\).</p><p>Sliding along \(v\) keeps the base and the height, so the area never changes. At the start the edge is \(x\) copies of \(u\), so the area is \(x\) times \(D\): \(15=x\cdot5\).</p>`,
         set: { mode: 'X', a: 2, b: 1, c: 1, d: 3, e: 7, f: 6, sh: 0, walkT: 0 } },
       { title: 'Pick the column, then compute',
-        text: String.raw`<p>For \(x\), swap the \(x\) column \((2,1)\) for the right side \((7,6)\). That gives the parallelogram of \(w\) and \(v\). For \(y\), swap the \(y\) column instead.</p><p>Choose the column, set \(D\) and the top number with the sliders, and press Check. Here \(x=\tfrac{15}{5}=3\) and \(y=\tfrac55=1\).</p>`,
+        text: String.raw`<p>For \(x\), swap the \(x\) column \((2,1)\) for the right side \((7,6)\). That gives the parallelogram of \(w\) and \(v\). For \(y\), swap the \(y\) column instead.</p><p>Choose the column, set \(D\) and the top number with the sliders, and press <b>Check my numbers</b>. Here \(x=\tfrac{15}{5}=3\) and \(y=\tfrac55=1\).</p>`,
         set: { mode: 'rule', a: 2, b: 1, c: 1, d: 3, e: 7, f: 6, sh: 0, walkT: 0 } },
       { title: 'When the parallelogram is flat',
         text: String.raw`<p>Now \(x+2y=3,\ 2x+4y=5\). The arrows \(u=(1,2)\) and \(v=(2,4)\) point along one line, so the parallelogram is flat: \(D=1\cdot4-2\cdot2=0\). You cannot divide by 0.</p><p>Decide in the panel: none or many? The top numbers here are \(2\) and \(-1\). Then change the right side to \((3,6)\) and look again.</p>`,

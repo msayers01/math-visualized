@@ -23,6 +23,42 @@ function LessonTags(v, link, extra) {
     v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
+/* ---------- Free-text search ----------
+   The query lives beside the facets as F.q (the facet code in curriculum.js knows nothing about it).
+   Every word must start a word in the lesson's title, blurb, course name, benchmark codes or benchmark
+   wording; a whole code (8.2.4.1) must match a code exactly, a part of one (8.2) matches the codes that start with it. In the address the query is a
+   plain token: lower case, a-z 0-9 and "." only, spaces written as "-": #find~grade_8~q_pythagorean-theorem */
+const SEARCH_MAX = 60;
+const searchText = s => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9.]+/g, ' ');
+const searchTerms = q => searchText(q).split(' ').map(t => t.replace(/^\.+|\.+$/g, '')).filter(Boolean);
+const hayCache = new WeakMap();
+function haystack(v) {
+  let t = hayCache.get(v);
+  if (!t) {
+    t = ' ' + searchText([v.title, v.blurb, COURSE[v.course] ? COURSE[v.course].name : '',
+      ...v.standards, ...v.standards.map(c => STANDARDS[c])].join(' ')).replace(/ +/g, ' ') + ' ';
+    hayCache.set(v, t);
+  }
+  return t;
+}
+const CODE = /^\d+\.\d+\.\d+\.\d+$/;
+const searchMatch = (v, q) => { const T = searchTerms(q); return !T.length || T.every(t => haystack(v).includes(' ' + t + (CODE.test(t) ? ' ' : ''))); };
+/* the query as it appears in a share token */
+const searchToken = q => searchText(q).trim().replace(/ +/g, '-').slice(0, SEARCH_MAX).replace(/-+$/, '');
+/* lesson passes the facets and the search */
+const lessonMatches = (v, F) => matches(v, F) && searchMatch(v, F.q);
+const finderActive = F => filterActive(F) || searchTerms(F.q).length > 0;
+const finderCount = F => filterCount(F) + (searchTerms(F.q).length ? 1 : 0);
+const facetCountQ = (items, F, facet, val) => items.filter(v => matches(v, F, facet) && optionMatch(v, facet, val) && searchMatch(v, F.q)).length;
+/* #find~...~q_pythagorean-theorem */
+const findToken = F => { const t = filterToken(F), q = searchToken(F.q); return q ? t + '~q_' + q : t; };
+/* facets and search from an address */
+function finderFromHash(hash) {
+  const F = filterFromHash(hash); F.q = '';
+  if (hash.startsWith('#find')) for (const seg of hash.split('~').slice(1)) if (seg.startsWith('q_')) F.q = seg.slice(2).replace(/-+/g, ' ').replace(/[^a-z0-9. ]/gi, '').slice(0, SEARCH_MAX).trim();
+  return F;
+}
+
 /* The filter bar. F is the live filter state (mutated); onChange(F) runs after every user change.
    Option counts show how many lessons each choice would leave given the other filters, and
    choices that would leave none are disabled. Returns { el, refresh }. */
@@ -30,9 +66,17 @@ function Finder(F, onChange) {
   const chips = [], selects = [];
   const sum = h('span', { class: 'finder-sum', 'aria-live': 'polite' });
   const badge = h('span', { class: 'badge' });
-  const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter()); change(); } }, 'Clear filters');
+  const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter(), { q: '' }); change(); } }, 'Clear filters');
+  F.q = F.q || '';
+  const qIn = h('input', { type: 'search', id: 'f-q', class: 'fsel finder-q-in', autocomplete: 'off', spellcheck: 'false', autocapitalize: 'off', enterkeyhint: 'search',
+    maxlength: String(SEARCH_MAX), placeholder: 'Title, topic, course or benchmark code (such as 8.2.4.1)', 'aria-controls': 'lessons',
+    oninput: () => { F.q = qIn.value; change(); },
+    onkeydown: e => { if (e.key === 'Escape' && qIn.value) { e.preventDefault(); e.stopPropagation(); qIn.value = ''; F.q = ''; change(); } else if (e.key === 'Enter') e.preventDefault(); } });
+  const qClear = h('button', { type: 'button', class: 'finder-q-clear', 'aria-label': 'Clear search', onclick: () => { qIn.value = ''; F.q = ''; change(); qIn.focus(); } }, 'Clear');
+  const search = h('div', { class: 'finder-search', role: 'search' },
+    h('label', { class: 'facet-k', for: 'f-q' }, 'Search lessons'), h('div', { class: 'finder-q' }, qIn, qClear));
   const grid = h('div', { class: 'finder-grid', id: 'finder-grid' });
-  const copyView = CopyButton('Copy link to this view', () => shareUrl(filterToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
+  const copyView = CopyButton('Copy link to this view', () => shareUrl(findToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
   const toggle = h('button', { type: 'button', class: 'finder-toggle', 'aria-expanded': 'false', 'aria-controls': 'finder-grid',
     onclick: () => { const o = root.classList.toggle('open'); toggle.setAttribute('aria-expanded', o); } }, 'Filters', badge);
 
@@ -75,23 +119,25 @@ function Finder(F, onChange) {
 
   function refresh() {
     for (const c of chips) {
-      const n = facetCount(VIZ, F, c.facet, c.val), on = F[c.facet].includes(c.val);
+      const n = facetCountQ(VIZ, F, c.facet, c.val), on = F[c.facet].includes(c.val);
       c.n.textContent = n; c.btn.setAttribute('aria-pressed', on); c.btn.disabled = !n && !on;
     }
     for (const s of selects) {
       s.sel.value = F[s.facet];
-      for (const o of s.opts) o.el.disabled = !facetCount(VIZ, F, s.facet, o.val) && F[s.facet] !== o.val;
+      for (const o of s.opts) o.el.disabled = !facetCountQ(VIZ, F, s.facet, o.val) && F[s.facet] !== o.val;
     }
-    const shown = VIZ.filter(v => matches(v, F)).length, on = filterActive(F);
+    const shown = VIZ.filter(v => lessonMatches(v, F)).length, on = finderActive(F);
     sum.textContent = on ? `${shown} of ${VIZ.length} lessons match` : `${VIZ.length} lessons`;
-    clear.hidden = !on; copyView.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
+    if (qIn.value !== F.q) qIn.value = F.q;
+    qClear.hidden = !F.q;
+    clear.hidden = !on; copyView.hidden = !on; badge.textContent = finderCount(F); badge.hidden = !on;
   }
   function change() { refresh(); onChange(F); }
 
   const root = h('section', { class: 'wrap finder', id: 'finder', 'aria-label': 'Find lessons' },
     h('div', { class: 'finder-box' },
       h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, copyView, clear),
-      grid));
+      search, grid));
   refresh();
-  return { el: root, refresh };
+  return { el: root, refresh, focus: () => { qIn.focus(); qIn.select(); } };
 }

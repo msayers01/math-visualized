@@ -130,7 +130,7 @@
       const upd = () => {
         const n = cum.length, s = n ? cum[n - 1] : 0;
         ro.innerHTML = `<span class="k">Trials</span> ${n.toLocaleString('en')} &nbsp; <span class="k">Successes</span> ${s.toLocaleString('en')}<br>` +
-          `<span class="k">Fraction</span> ${n ? (s / n).toFixed(3) : '—'} <span class="k">(p = ${num(st.p)})</span><br>` +
+          `<span class="k">Fraction</span> ${n ? (s / n).toFixed(3) : '–'} <span class="k">(p = ${num(st.p)})</span><br>` +
           `<span class="k">At least one in ${st.k}</span> ${(atLeast(st.p, st.k) * 100).toFixed(1)}%` + (sim && sim.p === st.p && sim.k === st.k ? ` <span class="k">(sim ${(sim.frac * 100).toFixed(1)}%)</span>` : '');
       };
       const draw = () => { P1.draw(); P2.draw(); upd(); };

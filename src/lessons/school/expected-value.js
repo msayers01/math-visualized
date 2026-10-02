@@ -257,7 +257,7 @@
       } },
     { ask: 'Set the prize to $10, so the game is fair, and press Play 10 a few times. A player spins 10 times. Which statement is correct?',
       items: seat([
-        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$18 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
+        I('The net could be well above or well below $0. Zero is only the long-run average per spin.', true, `${ok('Right.')} In 10 spins the player wins 0, 1, 2 or more times, so the net can be far from $0 (for example −$10 after one win, +$10 after three wins, or −$20 after none). Expected value tells you the average result per spin over a very large number of spins, not what 10 spins will do.`),
         I('The net is exactly $0.', false, `${no('Not quite.')} Fair means the AVERAGE per spin is $0 in the long run. A few spins can end far from $0.`),
         I('The player will lose, because the host always wins.', false, `${no('Not quite.')} In a fair game the host has no advantage on average. Over a few spins either side can come out ahead.`)
       ], 0) }
@@ -292,7 +292,7 @@
         I('Game A, because the prize is bigger', false, `${no('Not quite.')} The size of the prize does not change the chance of winning. For at least one win, only the chances count.`),
         I('They are the same, because 3 tickets each', false, `${no('Not quite.')} Same number of tickets, but different chances per ticket (1/10 against 1/2).`)
       ], 0) },
-    { ask: 'You must pick Game A. Use the slider for the number of tickets. What is the smallest number of tickets that gives at least a 50% chance of at least one win, then press the button.',
+    { ask: 'You must pick Game A. Use the slider to find the smallest number of tickets that gives at least a 50% chance of at least one win, then press the button.',
       check: st => {
         const n = Math.round(st.n);
         if (n === 7) return { right: true, text: `${ok('Right.')} With 7 tickets the chance of at least one win is 1 − 0.9⁷ = ${pc1(pA(7))}. With 6 tickets it is 1 − 0.9⁶ = ${pc1(pA(6))}, which is just under 50%. So 7 is the smallest number that works.` };
@@ -738,13 +738,13 @@
         const a = st.act, k = kOf(a);
         let t = '';
         if (a === 'build') {
-          t = kk('Plays', grp(String(simB.n))) + ' &nbsp; ' + kk('Last spin net', simB.last === null ? '—' : sg(simB.last)) + '<br>' +
-            kk('Average net so far', simB.n ? m2(simB.sum / simB.n) : '—') + (k >= 6 ? ' ' + kk('(expected ' + m2(EVNET) + ')', '') : '') + '<br>' +
-            kk('Range of single spins', simB.n ? sg(simB.lo) + ' to ' + sg(simB.hi) : '—');
+          t = kk('Plays', grp(String(simB.n))) + ' &nbsp; ' + kk('Last spin net', simB.last === null ? 'none yet' : sg(simB.last)) + '<br>' +
+            kk('Average net so far', simB.n ? m2(simB.sum / simB.n) : 'none yet') + (k >= 6 ? ' ' + kk('(expected ' + m2(EVNET) + ')', '') : '') + '<br>' +
+            kk('Range of single spins', simB.n ? sg(simB.lo) + ' to ' + sg(simB.hi) : 'none yet');
         } else if (a === 'fair') {
           const pr = Math.round(st.prize), e = fairEV(pr);
           t = kk('Prize', m(pr)) + ' &nbsp; ' + kk('Fee', '$2') + '<br>' + kk('Expected payout', `${m(pr)} × 1/5 = ${m2(pr / FSEC)}`) + '<br>' +
-            kk('Expected net', m2(e) + ' (' + kind(e) + ')') + '<br>' + kk('Plays', grp(String(simF.n))) + ' &nbsp; ' + kk('Average net', simF.n ? m2(simF.sum / simF.n) : '—');
+            kk('Expected net', m2(e) + ' (' + kind(e) + ')') + '<br>' + kk('Plays', grp(String(simF.n))) + ' &nbsp; ' + kk('Average net', simF.n ? m2(simF.sum / simF.n) : 'none yet');
         } else if (a === 'profit') {
           const pr = st.price;
           t = kk('Price', m2(pr)) + '<br>' + kk('Plays', `300 − 60 × ${pr.toFixed(2)} = ${plays(pr)}`) + '<br>' +

@@ -52,7 +52,7 @@
       p.path(inn, { stroke: pal.blue, width: 4 });
       p.dot(0, 0, 6, pal.yellow, pal.stage, 2);
     },
-    hook: String.raw`Near a point, a function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
+    hook: String.raw`A function can be undefined at a point and still "head toward" a number. What does that mean, exactly enough to prove, and how can it fail (a jump, a wild swing)?`,
     steps: [
       { title: 'Getting close',
         text: String.raw`<p>The limit \(\lim_{x\to a} f(x) = L\) says: as \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). Here \(f(x)=x^2\) and \(a=2\).</p><p>Drag the point, or press <b>Step closer</b>. Read the table: from both sides the values of \(f(x)\) head for \(4\). At \(x=2.001\) we get \(4.004\), and at \(x=1.999\) we get \(3.996\).</p>`,

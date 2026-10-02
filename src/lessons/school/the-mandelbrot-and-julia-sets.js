@@ -193,7 +193,7 @@
       ], ans: 3, show: { part: 'orbit', cr: 1, ci: 0, n: 4 } },
     { q: 'The main cardioid is the big heart-shaped body of the Mandelbrot set. There the orbit of 0 settles to a single fixed point. Work out the orbits by hand. Which c lies in the main cardioid?',
       ch: [
-        ['c = −1', 'The orbit of −1 is 0, −1, 0, −1, … It repeats a cycle of 2 points, so it is not one fixed point. c = −1 is the centre of the round bulb to the left of the cardioid.'],
+        ['c = −1', 'The orbit of −1 is 0, −1, 0, −1, … It repeats a cycle of 2 points, so it is not one fixed point. c = −1 is the center of the round bulb to the left of the cardioid.'],
         ['c = 0.5', 'The orbit of 0.5 is 0, 0.5, 0.75, 1.063, 1.629, 3.153, … It passes 2 and escapes, so c = 0.5 is outside the set.'],
         ['c = −0.5', ok('Right.') + ' The orbit of −0.5 is −0.5, −0.25, −0.4375, −0.309, −0.405, −0.336, … It closes in on one fixed point, about −0.366. That is what happens inside the main cardioid.'],
         ['c = 1', 'The orbit of 1 is 0, 1, 2, 5, 26, … It escapes, so c = 1 is outside the set.']
@@ -241,19 +241,19 @@
       }
       void pal;
     },
-    hook: String.raw`Square a number, then add a fixed number \(c\). Do it again, and again. For some \(c\) the numbers explode, for others they settle down. Colour every \(c\) by which happens. What picture do you get, and what happens when you zoom in on its edge?`,
+    hook: String.raw`Square a number, then add a fixed number \(c\). Do it again, and again. For some \(c\) the numbers explode, for others they settle down. Color every \(c\) by which happens. What picture do you get, and what happens when you zoom in on its edge?`,
     steps: [
       { title: 'One rule, repeated',
         text: String.raw`<p>Pick a number \(c\). Start at \(z_0=0\) and apply \(z\mapsto z^2+c\) again and again. The dots are the orbit. For \(c=0.5\): 0, 0.5, 0.75, 1.063, 1.629, 3.153. At step 5 the size \(|z|\) is 3.153, past the line \(|z|=2\), and it never comes back. Predict, then press Next step. Then try \(c=-1\), \(c=i\) and \(c=0.2\): an orbit can also settle.</p>`,
         set: { part: 'orbit', cr: .5, ci: 0, n: 5 } },
-      { title: 'Colour every c',
-        text: String.raw`<p>Now colour every \(c\) by the step where its orbit first passes \(|z|=2\). Black means it never does. The black shape is the Mandelbrot set. Here \(c=-1\) is black: its orbit is 0, −1, 0, −1, and so on. Drag the ring or use the sliders. Try \(c=0.25\) and \(c=-2\): the set meets the real axis exactly from −2 to 0.25.</p>`,
+      { title: 'Color every c',
+        text: String.raw`<p>Now color every \(c\) by the step where its orbit first passes \(|z|=2\). Black means it never does. The black shape is the Mandelbrot set. Here \(c=-1\) is black: its orbit is 0, −1, 0, −1, and so on. Drag the ring or use the sliders. Try \(c=0.25\) and \(c=-2\): the set meets the real axis exactly from −2 to 0.25.</p>`,
         set: { part: 'set', cr: -1, ci: 0, n: 30 } },
       { title: 'Zoom in on the edge',
         text: String.raw`<p>Zoom in on the edge, here near \(-0.75+0.1i\). It never becomes smooth: curls, spirals and little bulbs keep appearing at every level. The step limit rises with each zoom (60 plus 10 per level, at most 200) so the detail stays visible. Use the presets, the zoom buttons and the pan buttons.</p>`,
         set: { part: 'zoom', cr: -.75, ci: .1, view: { x: -.75, y: .1, k: 5 } } },
       { title: 'Julia sets',
-        text: String.raw`<p>Keep the rule, but fix \(c\) and colour each starting point \(z_0\) by how fast it escapes. That picture is the Julia set for \(c\). Drag \(c\) on the top picture. If \(c\) is in the Mandelbrot set, the Julia set is one connected piece. If \(c\) is outside, it is dust. Here \(c=-1\) gives the basilica.</p>`,
+        text: String.raw`<p>Keep the rule, but fix \(c\) and color each starting point \(z_0\) by how fast it escapes. That picture is the Julia set for \(c\). Drag \(c\) on the top picture. If \(c\) is in the Mandelbrot set, the Julia set is one connected piece. If \(c\) is outside, it is dust. Here \(c=-1\) gives the basilica.</p>`,
         set: { part: 'julia', cr: -1, ci: 0 } }
     ],
     formal: String.raw`
@@ -277,7 +277,7 @@
       <p><i>In between.</i> Let \(c\in[-2,\tfrac14]\) and \(\beta=\tfrac{1+\sqrt{1-4c}}{2}\), so \(\beta^2-\beta+c=0\), i.e. \(\beta^2+c=\beta\). If \(|z|\le\beta\) then \(z^2+c\) lies between \(c\) and \(\beta^2+c=\beta\). And \(c\ge-\beta\) exactly when \(\beta\le2\), i.e. \(c\ge-2\). So \([-\beta,\beta]\) is mapped into itself, contains 0, and the orbit never leaves it. The set meets the real axis in exactly \([-2,\tfrac14]\).</p>
 
       <h3>The Mandelbrot set</h3>
-      <p>The <b>Mandelbrot set</b> is the set of all \(c\) whose orbit of 0 never escapes. The picture colours each \(c\) by the step where \(|z|\) first passes 2. A computer can only try a limited number of steps, so black means "no escape found within the step limit". Near the edge a point can escape later than the limit, so the black region is drawn slightly too big. The picture is an approximation from the outside.</p>
+      <p>The <b>Mandelbrot set</b> is the set of all \(c\) whose orbit of 0 never escapes. The picture colors each \(c\) by the step where \(|z|\) first passes 2. A computer can only try a limited number of steps, so black means "no escape found within the step limit". Near the edge a point can escape later than the limit, so the black region is drawn slightly too big. The picture is an approximation from the outside.</p>
       <p>Facts we do not prove here. The big heart-shaped <b>main cardioid</b> is where the orbit settles to one attracting fixed point (the derivative of \(z^2+c\) at a fixed point \(z^*\) is \(2z^*\), and the orbit is pulled in when \(|2z^*|&lt;1\)). The round <b>period-2 bulb</b> is the disc \(|c+1|&lt;\tfrac14\), where the orbit ends in a 2-cycle. Further bulbs on the cardioid belong to cycles of length 3, 4, 5, and so on. The thin <b>antenna</b> on the left runs along the real axis out to \(-2\), with branches and tiny bulbs along it.</p>
 
       <h3>Zoom and the edge</h3>
@@ -297,8 +297,8 @@
           'The orbit of 0 returns to 0 after a few steps.',
           'c is a real number.'],
         answer: 1,
-        why: 'Colours show the step where the orbit first passes \\(|z|=2\\). Black is the one case where that never happens within the step limit. Near the edge a point can escape after the limit, so black means "in the set as far as the program can tell". Only a few special c (centres of bulbs, like \\(c=-1\\)) return exactly to 0, and the real axis is mostly colourless of any meaning here.',
-        hint: 'What do the colours measure? Black is what is left over.' },
+        why: 'Colors show the step where the orbit first passes \\(|z|=2\\). Black is the one case where that never happens within the step limit. Near the edge a point can escape after the limit, so black means "in the set as far as the program can tell". Only a few special c (centers of bulbs, like \\(c=-1\\)) return exactly to 0.',
+        hint: 'What do the colors measure? Black is what is left over.' },
       { q: 'Take c = −1 + i. Start at z₀ = 0 and use the rule z → z² + c. At which step n is |z_n| first larger than 2?',
         choices: [
           'Step 1',
@@ -435,7 +435,7 @@
           T(c, 'c', p.X(S.cr) + 16, p.Y(S.ci) - 15, { size: fs * 1.5, color: '#fff', weight: 700, halo: 'rgba(8,10,24,.9)', italic: true });
         }
         if (S.part === 'zoom') {
-          T(c, `centre ${cs(S.view.x, S.view.y, 7)}   zoom ×${Math.pow(2, S.view.k)}   step limit ${cap}`, 8, p.h - 12, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
+          T(c, `center ${cs(S.view.x, S.view.y, 7)}   zoom ×${Math.pow(2, S.view.k)}   step limit ${cap}`, 8, p.h - 12, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
         } else {
           T(c, S.part === 'julia' ? 'c-plane: drag c' : 'black = never passes 2 (up to ' + cap + ' steps)', 8, 14, { size: fs * .95, color: '#fff', weight: 600, halo: 'rgba(8,10,24,.85)', align: 'left' });
         }
@@ -550,7 +550,7 @@
         zS = C.slider({ label: 'Zoom level (each level doubles the magnification)', min: 0, max: KMAX, step: 1, value: 0, format: v => `level ${v}, ×${Math.pow(2, v)}`, onInput: v => zoomTo(v) });
         C.title('Move the view');
         C.buttons([{ label: '◀ Left', onClick: panBy(-1, 0) }, { label: 'Right ▶', onClick: panBy(1, 0) }, { label: '▲ Up', onClick: panBy(0, 1) }, { label: '▼ Down', onClick: panBy(0, -1) }]);
-        C.buttons([{ label: 'Centre on c', onClick: () => { st.view = { ...st.view, x: st.cr, y: st.ci }; sync(); } }, { label: 'Whole set', onClick: goView(-.5, 0, 0) }]);
+        C.buttons([{ label: 'Center on c', onClick: () => { st.view = { ...st.view, x: st.cr, y: st.ci }; sync(); } }, { label: 'Whole set', onClick: goView(-.5, 0, 0) }]);
         C.title('Places to look');
         C.buttons([
           { label: 'Seahorse valley', onClick: goView(-.75, .1, 5) },
@@ -606,8 +606,8 @@
       };
       const setRo = S => {
         const f = fate(S.cr, S.ci), L = [`${kk('c')} ${cs(S.cr, S.ci)}`];
-        if (f.t === 'esc') L.push(`${kk('Colour')} the colour of step ${f.n}: the orbit first passes |z| = 2 at step ${f.n}. c is outside the set.`);
-        else L.push(`${kk('Colour')} black: no escape found in 3000 steps, so c is very likely in the set.`);
+        if (f.t === 'esc') L.push(`${kk('Color')} the color of step ${f.n}: the orbit first passes |z| = 2 at step ${f.n}. c is outside the set.`);
+        else L.push(`${kk('Color')} black: no escape found in 3000 steps, so c is very likely in the set.`);
         L.push(fateText(S.cr, S.ci));
         const rg = regionTxt(S.cr, S.ci); if (rg) L.push('Region: ' + rg + '.');
         if (S.ci === 0) L.push('On the real axis, c is in the set exactly when −2 ≤ c ≤ 0.25.');
@@ -615,7 +615,7 @@
       };
       const zoomRo = S => {
         const f = fate(S.cr, S.ci), hs = viewHs(S, PT), L = [];
-        L.push(`${kk('View')} centre ${cs(S.view.x, S.view.y, 7)}, about ${nf(2 * hs, 6)} across the shorter side`);
+        L.push(`${kk('View')} center ${cs(S.view.x, S.view.y, 7)}, about ${nf(2 * hs, 6)} across the shorter side`);
         L.push(`${kk('Zoom')} level ${S.view.k}, magnification ×${Math.pow(2, S.view.k)}. Step limit ${capOf(S.view.k)}.`);
         L.push(`${kk('c')} ${cs(S.cr, S.ci, 7)}: ` + (f.t === 'esc' ? `escapes at step ${f.n}` : 'no escape in 3000 steps (black)'));
         if (S.view.k >= 4) L.push('The edge is still rough at this scale. Zoom out and back in to compare.');

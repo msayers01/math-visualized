@@ -18,7 +18,7 @@
     const n = Math.abs(a[0]), one = n === 1 && a[1] === 1;
     return one ? w : (a[1] === 1 ? n + w : '(' + n + '/' + a[1] + ')' + w);
   };
-  /* "pw + q = r" from fractions, or just "q = r" when the variable has cancelled */
+  /* "pw + q = r" from fractions, or just "q = r" when the variable has canceled */
   const eqQ = (p, q, r, w) => {
     const parts = [];
     if (!q0(p)) parts.push([p[0] < 0, qpw(p, w)]);
@@ -260,7 +260,7 @@
         if (ph === 'sub') return `A says ${v} equals ${S.exprStr}. Click the ${v} in equation B, or press Replace, to write ${S.exprStr} in its place.`;
         if (ph === 'simp') return `Now B has only ${w} in it. Simplify it: distribute, then combine like terms.`;
         if (ph === 'solve') return `Solve for ${w}. Choose a move and an amount, then apply it to both sides.`;
-        if (ph === 'verdict') return `The ${w} terms cancelled. What does ${qtxt(W.eq.q)} = ${qtxt(W.eq.r)} tell you about the system?`;
+        if (ph === 'verdict') return `The ${w} terms canceled. What does ${qtxt(W.eq.q)} = ${qtxt(W.eq.r)} tell you about the system?`;
         if (ph === 'back') return `${w} = ${num(W.found.val)}. Now find ${v}: put ${num(W.found.val)} in for ${w} in one of the equations. Which one is quicker?`;
         if (ph === 'check') { const c = W.cand; return `Is (${num(c.x)}, ${num(c.y)}) really a solution? A solution must work in both original equations. Test both.`; }
         return '';
@@ -314,7 +314,7 @@
           const: { label: c > 0 ? `Subtract ${c} from both sides` : `Add ${Math.abs(c)} to both sides`,
             fb: `That removes ${Math.abs(c)} from the right side, but the ${bw} is still next to ${v} on the left. ${v} is not alone yet.` },
           sign: { label: b > 0 ? `Add ${bw} to both sides` : `Subtract ${bw} from both sides`,
-            fb: `That puts another ${bw} on the left instead of cancelling the one that is there. To cancel ${b > 0 ? '+' : MI}${bw} you do the opposite: ${b > 0 ? 'subtract' : 'add'} ${bw}.` },
+            fb: `That puts another ${bw} on the left instead of canceling the one that is there. To cancel ${b > 0 ? '+' : MI}${bw} you do the opposite: ${b > 0 ? 'subtract' : 'add'} ${bw}.` },
           div: { label: `Divide both sides by ${b}`,
             fb: `Dividing every term by ${b} turns ${v} into ${v}/${b}, so ${v} is not alone. Cancel the ${bw} with a subtraction (or addition) instead.` }
         };
@@ -394,7 +394,7 @@
         const right = truth ? 2 : 1;
         if (i !== right) {
           err();
-          W.fb = bad('Not quite.') + ' ' + (i === 0 ? `There is no ${w} left to solve for: the ${w} terms cancelled. What is left, ${st0}, does not mention ${w} at all, so it cannot give one value of ${w}.`
+          W.fb = bad('Not quite.') + ' ' + (i === 0 ? `There is no ${w} left to solve for: the ${w} terms canceled. What is left, ${st0}, does not mention ${w} at all, so it cannot give one value of ${w}.`
             : truth ? `${st0} is true, so nothing is ruled out. It is true for every ${w}, not for none.`
             : `${st0} is false for every ${w}, so no ${w} makes B true on line A. It is not true for every ${w}.`);
           refresh(); return;
@@ -539,7 +539,7 @@
       const nextProb = () => {
         if (PR.idx < PROBS.length - 1) { PR.idx++; loadProb(); return; }
         pFinal.replaceChildren(); pNext.disabled = true;
-        pFb.innerHTML = `All six problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, or Start practice again after going back.`;
+        pFb.innerHTML = `All six problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, then Start practice to try again.`;
       };
 
       /* ================= canvas ================= */

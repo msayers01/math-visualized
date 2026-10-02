@@ -20,7 +20,7 @@
     hook: String.raw`Balls bounce left or right at random as they fall through a board of pegs. Why do they pile up in a smooth bell shape instead of spreading evenly?`,
     steps: [
       { title: 'Count the paths',
-        text: String.raw`<p>At every peg a ball goes left or right. The number on each peg counts the different paths that lead there. Each is the sum of the two numbers above it.</p><p>The bottom row, \(1,4,6,4,1\), is row 4 of <b>Pascal's triangle</b>. There are \(2^4=16\) paths in all.</p>`,
+        text: String.raw`<p>At every peg a ball goes left or right. The number on each peg counts the different paths that lead there. Each number is the sum of the two numbers above it.</p><p>The bottom row, \(1,4,6,4,1\), is row 4 of <b>Pascal's triangle</b>. There are \(2^4=16\) paths in all.</p>`,
         set: { rows: 4, p: .5, reset: true, nums: true, theory: false, drop: 0 } },
       { title: 'Drop some balls',
         text: String.raw`<p>Press <b>Drop 10</b> or <b>Drop 100</b>. The middle bin gets the most balls because \(6\) of the \(16\) paths end there, while each edge bin has only \(1\).</p><p>With equally likely paths, more paths means more balls.</p>`,

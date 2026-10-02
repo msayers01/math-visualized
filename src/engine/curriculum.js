@@ -14,7 +14,7 @@ const cmpCode = (a, b) => cmpKey(codeKey(a), codeKey(b));
 const bandOf = code => { const g = +code.split('.')[0]; return g >= 9 ? '9-11' : String(g); };
 const strandOf = code => STRANDS[+code.split('.')[1] - 1];
 const anchorOf = code => ANCHORS[+code.split('.')[2]];
-const hasStandard = code => Object.hasOwn(STANDARDS, code);
+const hasStandard = code => Object.prototype.hasOwnProperty.call(STANDARDS, code);
 
 /* Everything a lesson inherits from its ALIGN entry: grades are the course's plus the band of each tag */
 function curriculumMeta(a) {

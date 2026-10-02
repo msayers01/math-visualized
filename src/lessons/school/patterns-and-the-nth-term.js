@@ -359,7 +359,7 @@
     hook: String.raw`A row of toothpick squares uses 4 sticks for one square, 7 for two and 10 for three. How many sticks does a row of 100 squares need, and how can you know without building it?`,
     steps: [
       { title: 'Predict, then build',
-        text: String.raw`<p>Each figure is a row of toothpick squares. Figures 1 to 4 use \(4, 7, 10\) and \(13\) sticks.</p><p>Predict Figure 5. Then click the dotted slots to build it and count. After that, predict Figure 10 and drag the <b>Figure</b> slider to check.</p>`,
+        text: String.raw`<p>Each figure is a row of toothpick squares. Figures 1 to 4 use \(4, 7, 10\) and \(13\) sticks.</p><p>Predict Figure 5. Then click the dotted slots to build it and count. After that, predict Figure 10 and drag the <b>Figure n</b> slider to check.</p>`,
         set: { pat: 0, view: 'build', n: 5 } },
       { title: 'How is it changing?',
         text: String.raw`<p>Look at what is <b>new</b> from one figure to the next. Predict first: will the new part stay the same size?</p><p>Then the new sticks turn green and the table shows the change. A change that is always the same means a <b>linear</b> pattern. Try the staircase in the pattern menu.</p>`,
@@ -406,7 +406,7 @@
       { q: 'Mia has the counts 6, 10, 14 and 18 for Figures 1 to 4. She says: "The rate is 4 and the start is 6, so the nth term is 6 + 4n." Which statement is true?',
         choices: ['Mia is right: 6 + 4n gives 10, 14, 18, which are the next counts.', 'The rate is wrong. It should be 6, the first count.', 'Mia has used n instead of n − 1. The rule should be 6 + 4(n − 1), which is 4n + 2.', 'The start is not needed. The rule should be 4n.'], answer: 2,
         why: String.raw`Test Figure 1: \(6+4(1)=10\), but Figure 1 has 6 dots. Mia's rule is one step ahead. The 6 belongs to Figure 1, so only \(n-1\) steps of 4 come after it: \(6+4(n-1)=4n+2\). Check: \(4(1)+2=6\) and \(4(2)+2=10\). The rate 4 is right. \(4n\) alone would give 4 for Figure 1.`,
-        hint: 'Put n = 1 into Mia’s rule. Does it give the count of Figure 1?' }
+        hint: 'Put n = 1 into Mia\'s rule. Does it give the count of Figure 1?' }
     ],
     links: { prereq: ['slope-and-linear-functions', 'what-is-a-function'], next: ['sequences-recursive-and-explicit'], related: ['exponential-growth', 'forms-of-a-linear-equation', 'variables-and-relationships', 'solving-equations-with-a-balance', 'proportional-relationships'] },
 
@@ -544,7 +544,7 @@
           const k2 = ak(kd), a2 = st.ans[k2]; if (a2 === undefined) return '';
           const D2 = PRED[st.pat][kd], right = a2 === D2.a, rev = kd === 'chg' || (kd === 'f5' && reveal5()) || (kd === 'f10' && st.n === 10);
           if (rev) return kk(kd === 'f5' ? 'Figure 5' : kd === 'f10' ? 'Figure 10' : 'Your prediction') + ' ' + (right ? good('Right.') : bad('Not quite.')) + ' ' + D2.o[a2][1];
-          return `You predicted ${D2.o[a2][0]}. ` + (kd === 'f5' ? (cur().nested ? 'Now build Figure 5: click the dotted slots, or press Add a piece, and count.' : 'Now set the Figure slider to 5 and count the tiles.') : 'Now set the Figure slider to 10 to check.');
+          return `You predicted ${D2.o[a2][0]}. ` + (kd === 'f5' ? (cur().nested ? 'Now build Figure 5: click the dotted slots, or press Add a piece, and count.' : 'Now set the Figure n slider to 5 and count the tiles.') : 'Now set the Figure n slider to 10 to check.');
         };
         const fb = st.view === 'chg' || st.view === 'change' ? fbFor('chg') : lines([fbFor('f5'), fbFor('f10')]);
         predFb.innerHTML = fb;

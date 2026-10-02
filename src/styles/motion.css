@@ -1,3 +1,44 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- Skip link, screen-reader text, route errors ---------- */
+.skip { position: fixed; top: 8px; left: 8px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--brass); color: var(--brass-ink);
+  font-weight: 600; text-decoration: none; transform: translateY(-200%); }
+.skip:focus { transform: none; }
+main:focus, h1:focus { outline: none; }
+h1:focus-visible { outline: 2px solid var(--brass); outline-offset: 6px; }
+.route-error { max-width: 60ch; padding-top: 72px; padding-bottom: 72px; }
+.route-error h1 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); font-weight: 300; margin: 0 0 .5em; }
+.route-error p { color: var(--muted); }
+.route-error .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.lesson-loading { padding-top: 72px; padding-bottom: 72px; }
+
+/* ---------- Windows high contrast and other forced-colors modes ---------- */
+@media (forced-colors: active) {
+  .stage, .panel, .q, .link, .pg, .instrument, .thumb { border: 1px solid CanvasText; }
+  .btn, .choice, .theme-btn, .go { border: 1px solid ButtonText; }
+  .btn.primary { background: Highlight; color: HighlightText; border-color: Highlight; forced-color-adjust: none; }
+  .btn:hover, .choice:hover:not(:disabled) { border-color: Highlight; color: Highlight; }
+  .btn:disabled, .choice:disabled:not(.right):not(.wrong) { color: GrayText; border-color: GrayText; opacity: 1; }
+  .choice.right { border: 3px double CanvasText; }
+  .choice.wrong { border: 1px dashed CanvasText; text-decoration: line-through; }
+  .dot::before { background: GrayText; }
+  .dot.done::before { background: CanvasText; opacity: 1; }
+  .dot.on::before { background: Highlight; height: 4px; top: 13px; }
+  .ctl input[type=range] { forced-color-adjust: none; }
+  .ctl input[type=range]::-webkit-slider-runnable-track { background: CanvasText; }
+  .ctl input[type=range]::-webkit-slider-thumb { background: Canvas; border-color: Highlight; }
+  .ctl input[type=range]::-moz-range-track { background: CanvasText; }
+  .ctl input[type=range]::-moz-range-progress { background: Highlight; }
+  .ctl input[type=range]::-moz-range-thumb { background: Canvas; border-color: Highlight; }
+  .ctl.toggle input { forced-color-adjust: none; background: Canvas; border: 2px solid CanvasText; }
+  .ctl.toggle input::before { background: CanvasText; top: 1px; left: 1px; }
+  .ctl.toggle input:checked { background: Highlight; border-color: Highlight; }
+  .ctl.toggle input:checked::before { background: HighlightText; transform: translateX(16px); }
+  .ctl select, .fsel { background: Canvas url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='CanvasText' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center / 12px; border-color: ButtonText; }
+  .tick { border-color: CanvasText; }
+  .topbar { background: Canvas; border-bottom: 1px solid CanvasText; }
+  .skip { background: Highlight; color: HighlightText; }
+  :focus-visible { outline: 3px solid Highlight; }
+}

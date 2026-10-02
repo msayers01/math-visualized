@@ -249,7 +249,7 @@
              A('legs 3, hypotenuse 7', 'The legs 3 are right, but 7 is the old leg a. The new hypotenuse is 2a − c = 14 − 10 = 4.')], ans: 2 },
     { title: 'Why forever is impossible',
       q: 'Suppose a triangle with whole sides really had c² = 2a². Folding gives a smaller one with whole sides, and folding that one gives another, and so on. Why is that impossible?',
-      opts: [A('It is possible: the triangles just get very small', 'Whole-number sides cannot be smaller than 1. Starting from a, you can shrink at most a few times before you run out of whole numbers.'),
+      opts: [A('It is possible: the triangles just get very small', 'Whole-number sides cannot be smaller than 1. Each shrink gives smaller whole-number sides, so starting from a you can shrink at most a times before you run out of whole numbers.'),
              A('Whole numbers cannot get smaller forever', ok('Yes.') + ' Each fold gives smaller positive whole numbers: a, then c − a, then smaller again. A list of positive whole numbers cannot keep shrinking forever. So no whole-number triangle with c² = 2a² exists, and √2 is not a fraction.'),
              A('Because 2a − c is negative', 'It is not: c is between a and 2a, so 2a − c is positive.')], ans: 1 }
   ];

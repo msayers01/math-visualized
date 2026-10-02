@@ -179,7 +179,7 @@
         text: String.raw`<p>Two chords cross at \(X\) inside the circle. Angle \(AXB\) cuts off arc \(AB=100^\circ\), and its vertical angle \(CXD\) cuts off arc \(CD=60^\circ\).</p><p>The angle is half the <b>sum</b> of the two arcs: \(\tfrac12(100+60)=80^\circ\). Change the arcs with the sliders: the measured angle and the half sum always agree.</p>`,
         set: { view: 'in', w: 100, x: 80, y: 60, which: 0 } },
       { title: 'Vertex outside: subtract',
-        text: String.raw`<p>Two secants meet at \(P\) outside the circle. The <b>far arc</b> is \(200^\circ\) and the <b>near arc</b> is \(60^\circ\). The angle is half the <b>difference</b>: \(\tfrac12(200-60)=70^\circ\).</p><p>Drag \(P\) outward or raise the near arc. The near arc grows toward the far arc, so the angle shrinks. Switch the kind to tangents to see \(180^\circ\) minus the near arc.</p>`,
+        text: String.raw`<p>Two secants meet at \(P\) outside the circle. The <b>far arc</b> is \(200^\circ\) and the <b>near arc</b> is \(60^\circ\). The angle is half the <b>difference</b>: \(\tfrac12(200-60)=70^\circ\).</p><p>Drag \(P\) outward or raise the near arc. The near arc grows toward the far arc, so the angle shrinks. Set the menu "The two lines are" to "Two tangents" to see \(180^\circ\) minus the near arc.</p>`,
         set: { view: 'out', kind: 'ss', N: 60, F: 200 } }
     ],
     formal: String.raw`

@@ -458,7 +458,7 @@
             const rows = [...new Set(miss.map(o => o.x))];
             return setFb(noT('Not yet.') + ` You have ${have} of the 36 pairs. ${rows.length === 1 ? 'Row ' + rows[0] + ' has' : 'Rows ' + list(rows.map(String)) + ' have'} empty cells, for example ${miss.slice(0, 2).map(o => o.name).join(' and ')}. Every pair that can happen must be in the sample space.`);
           }
-          setFb(okT('Yes.') + ' All 36 pairs are in your sample space. ' + S.ok + ' Press "Why not list the sums" to see the 7s and the 12.');
+          setFb(okT('Yes.') + ' All 36 pairs are in your sample space. ' + S.ok + ' Press "Why not list the sums 2 to 12?" to see the 7s and the 12.');
           return draw();
         }
         const pool = S.out.concat(S.decoys), tray = st.tray;

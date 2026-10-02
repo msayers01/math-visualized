@@ -127,7 +127,7 @@
       calc: 'C(10, 4) = 10 × 9 × 8 × 7 ÷ 4! = 5040 ÷ 24 = 210',
       calcWhy: 'Ordered draws: 10 × 9 × 8 × 7 = 5040. Each set of 4 numbers shows up in 4! = 24 orders, so there are 5040 ÷ 24 = 210 different tickets.',
       wrong: [[5040, '5040 = P(10, 4) counts ordered draws. Each set of 4 numbers is counted 24 times, so divide by 4! = 24.'],
-        [10000, '10⁴ = 10 000 lets numbers repeat and counts order.'],
+        [10000, '10⁴ = 10,000 lets numbers repeat and counts order.'],
         [40, '10 × 4 = 40 is not a counting rule here: the number of choices shrinks from draw to draw.']] }
   ];
   const TOOLS = [['MUL', 'Multiplication principle'], ['ADD', 'Addition principle'], ['P', 'Permutation P(n, r)'], ['C', 'Combination C(n, r)'], ['POW', 'Power n<sup>r</sup>']];

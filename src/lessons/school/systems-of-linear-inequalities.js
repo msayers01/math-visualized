@@ -186,9 +186,9 @@
   const evalE = (e, x, y) => e[0] * x + e[1] * y;
   const PV1 = { cx: 2.5, cy: 2.5, span: 6.5 };
   const PROBS = [
-    { kind: 'pts', q: 'A system is  y ≥ x − 1  and  x + y < 6. Which point is a solution of BOTH inequalities?',
+    { kind: 'pts', q: 'A system is y ≥ x − 1 and x + y < 6. Which point is a solution of BOTH inequalities?',
       cons: [I('y', Y, '≥', 'x − 1', [1, 0, -1]), I('x + y', [1, 1, 0], '<', '6', K(6))], view: PV1, cands: [[5, 1], [3, 2], [3, 3], [0, -2]], ans: 1, note: {} },
-    { kind: 'graphs', q: 'A system is  y ≥ x − 1  (solid line)  and  y < 3  (dashed line). Which graph shows its solution?', ans: 2,
+    { kind: 'graphs', q: 'A system is y ≥ x − 1 (solid line) and y < 3 (dashed line). Which graph shows its solution?', ans: 2,
       vs: [
         { cons: [I('y', Y, '≤', 'x − 1', [1, 0, -1]), I('y', Y, '<', '3', K(3))], fb: 'This graph shades BELOW the slanted line, but y ≥ x − 1 means y is at least x − 1, which is the side ABOVE the line.' },
         { cons: [I('y', Y, '≥', 'x − 1', [1, 0, -1]), I('y', Y, '≤', '3', K(3))], fb: 'The side is right, but the flat line is solid here. The symbol in y < 3 is strict, so points with y = 3 are NOT included: that line must be dashed.' },
@@ -371,7 +371,7 @@
           }
           const ok = all.every(q => holds(q, S.px, S.py));
           p.dot(S.px, S.py, 11, ok ? alpha(pal.violet, .95) : pal.stage, pal.brass, 3.5);
-          p.label(`${S.px} cakes, ${S.py} pies`, S.px, S.py, { size: 16, italic: false, dy: -25, color: pal.text });
+          p.label(`${S.px} cake${S.px === 1 ? '' : 's'}, ${S.py} pie${S.py === 1 ? '' : 's'}`, S.px, S.py, { size: 16, italic: false, dy: -25, color: pal.text });
         }
         const rows = built.map(i => [C4[i], `${BEQ[i].name}  ${txt(BEQ[i].q)}   solid`]);
         if (S.stage >= 2) rows.push([null, 'x ≥ 0 and y ≥ 0 (no negative bakes)']);
@@ -664,7 +664,7 @@
           els.push(mk('Let x be…', 'sx'), mk('Let y be…', 'sy'));
           els.push(h('div', { class: 'ctl buttons' }, mkBtn('Check my unknowns', () => {
             if (S.sx < 0 || S.sy < 0) { S.fb = 'Choose something for both x and y.'; renderStory(); return; }
-            const L = [], one = (sel, want, other, nm) => { if (sel === want) L.push(good(nm + ' is right.') + ' ' + UNK[sel][1]); else if (sel === other) L.push(bad(nm + ':') + ` That is one of the two unknowns, but call it ${nm === 'x' ? 'y' : 'x'} so that cakes are on the x axis.`); else L.push(bad(nm + ':') + ' ' + UNK[sel][1]); };
+            const L = [], one = (sel, want, other, nm) => { if (sel === want) L.push(good(nm + ' is right.') + ' ' + UNK[sel][1]); else if (sel === other) L.push(bad(nm + ':') + ` That is one of the two unknowns, but call it ${nm === 'x' ? 'y' : 'x'} so that cakes are on the x-axis.`); else L.push(bad(nm + ':') + ' ' + UNK[sel][1]); };
             one(S.sx, 0, 1, 'x'); one(S.sy, 1, 0, 'y');
             if (S.sx === 0 && S.sy === 1) { S.unkOk = true; S.stage = 1; S.pi = 0; S.eq = 0; L.push('x is on the horizontal axis and y on the vertical axis of the graph.'); }
             S.fb = L.join('<br>'); renderStory(); sync();
@@ -707,8 +707,8 @@
       const planRo = () => {
         const f = ev([2, 1, 0], S.px, S.py), o = S.px + S.py, L = [];
         L.push(`${kk('Plan')} ${S.px} cake${S.px === 1 ? '' : 's'} and ${S.py} pie${S.py === 1 ? '' : 's'}`);
-        L.push(`${kk('Flour')} 2(${S.px}) + ${S.py} = ${f} cups. Limit 8: ${f <= 8 ? good('ok') : bad('too much')}`);
-        L.push(`${kk('Oven')} ${S.px} + ${S.py} = ${o} hours. Limit 6: ${o <= 6 ? good('ok') : bad('too much')}`);
+        L.push(`${kk('Flour')} 2(${S.px}) + ${S.py} = ${f} cup${f === 1 ? '' : 's'}. Limit 8: ${f <= 8 ? good('ok') : bad('too much')}`);
+        L.push(`${kk('Oven')} ${S.px} + ${S.py} = ${o} hour${o === 1 ? '' : 's'}. Limit 6: ${o <= 6 ? good('ok') : bad('too much')}`);
         L.push(f <= 8 && o <= 6 ? good('Allowed.') + ' It is a whole-number point in the violet region.' : bad('Not allowed.') + ` It breaks ${f > 8 && o > 6 ? 'both limits' : f > 8 ? 'the flour limit' : 'the oven limit'}, so it is outside the region.`);
         return L.join('<br>');
       };

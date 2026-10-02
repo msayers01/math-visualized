@@ -28,7 +28,7 @@ register({
   hook: String.raw`A point circles at a steady pace. Why does its height rise and fall in such a smooth, repeating wave?`,
   steps: [
     { title: 'A point on a circle',
-      text: String.raw`<p>The circle has radius \(1\). The angle \(\theta\) is measured counterclockwise from the positive x-axis.</p><p>The <b>yellow arc</b> is the distance travelled around the circle. That length <em>is</em> \(\theta\) in radians.</p>`,
+      text: String.raw`<p>The circle has radius \(1\). The angle \(\theta\) is measured counterclockwise from the positive x-axis.</p><p>The <b>yellow arc</b> is the distance traveled around the circle. That length <em>is</em> \(\theta\) in radians.</p>`,
       set: { th: .9, showCos: false } },
     { title: 'Two legs: cosine and sine',
       text: String.raw`<p>Drop a vertical line from the point. The <b>green</b> leg is how far right it is, \(\cos\theta\). The <b>red</b> leg is how high it is, \(\sin\theta\).</p><p>The radius is \(1\), so Pythagoras gives \(\cos^2\theta+\sin^2\theta=1\).</p>`,
