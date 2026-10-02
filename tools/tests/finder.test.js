@@ -223,6 +223,154 @@ const visibleIds = page => page.evaluate(() => [...document.querySelectorAll('a.
     await lf.c.close();
   }
 
+  /* ===== free-text search ===== */
+  {
+    const sr = await mk(), sp = sr.page;
+    await sp.addInitScript(() => { window.__copied = []; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async t => { window.__copied.push(t); } }, configurable: true }); });
+    await sp.goto(URL); await sp.waitForSelector('#f-q');
+    const info = await sp.evaluate(() => VIZ.map(v => ({ id: v.id, title: v.title, blurb: v.blurb })));
+    const words = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9.]+/g, ' ');
+    /* independent model of the rule: every word starts a word of title, blurb, course name, benchmark codes or wording; a whole code must equal a code */
+    const hay = id => { const a = D.ALIGN.find(x => x.id === id), i = info.find(x => x.id === id);
+      return ' ' + words([i.title, i.blurb, D.COURSES.find(c => c.id === a.course).name, ...a.standards, ...a.standards.map(c => D.STANDARDS[c])].join(' ')).replace(/ +/g, ' ') + ' '; };
+    const expectQ = (q, F = {}) => expected(F).filter(id => words(q).split(' ').map(t => t.replace(/^\.+|\.+$/g, '')).filter(Boolean)
+      .every(t => hay(id).includes(' ' + t + (/^\d+\.\d+\.\d+\.\d+$/.test(t) ? ' ' : '')))).sort();
+    const tok = q => '#find~q_' + words(q).trim().replace(/ +/g, '-');
+    const sChip = (legend, name) => sp.locator('fieldset.facet', { hasText: legend }).getByRole('button', { name });
+    const queries = [...D.COURSES.filter(c => D.ALIGN.some(a => a.course === c.id)).map(c => c.name),
+      ...[...new Set(D.ALIGN.flatMap(a => a.standards))].sort().map(c => c),          /* every used benchmark code */
+      'pythagorean theorem', 'Pythagorean', 'ratio', 'slope', 'circle', "Cramer's rule", 'inequal', 'sin', 'x', '8.2', 'zzzzqq', 'probability tree', 'grade 8 data'];
+    check('search queries cover every used course and benchmark code', queries.length >= D.COURSES.length + 100, queries.length);
+    let bad = 0, badEx = '';
+    for (const q of queries) {
+      await sp.goto('about:blank'); await sp.goto(URL + tok(q)); await sp.waitForSelector('#f-q');
+      const got = (await visibleIds(sp)).sort(), exp = expectQ(q);
+      if (JSON.stringify(got) !== JSON.stringify(exp)) { bad++; badEx = badEx || `${q}: got ${got.length} exp ${exp.length}`; }
+      const sum = await sp.textContent('.finder-sum');
+      if (sum !== (exp.length || words(q).trim() ? `${exp.length} of ${TOTAL} lessons match` : `${TOTAL} lessons`)) { bad++; badEx = badEx || `${q}: summary ${sum}`; }
+    }
+    check(`search via address: ${queries.length} queries return exactly the modelled lessons and summary`, bad === 0, `${bad} bad, e.g. ${badEx}`);
+    /* every benchmark code finds at least the lessons tagged with it */
+    check('each benchmark code as a query finds the lessons tagged with it (exact code match)', await (async () => {
+      for (const c of [...new Set(D.ALIGN.flatMap(a => a.standards))]) { const exp = model.filter(m => m.std.includes(c)).map(m => m.id).sort(), got = expectQ(c); if (JSON.stringify(exp) !== JSON.stringify(got.filter(id => exp.includes(id))) || !exp.every(id => got.includes(id))) return false; }
+      return true; })());
+
+    /* the box: label, type, typing, count, URL */
+    await sp.goto('about:blank'); await sp.goto(URL); await sp.waitForSelector('#f-q');
+    check('search box is type=search with a visible label', (await sp.getAttribute('#f-q', 'type')) === 'search' && /Search lessons/.test(await sp.textContent('label[for="f-q"]')) && await sp.locator('label[for="f-q"]').isVisible());
+    check('search is reachable by its label', (await sp.getByLabel('Search lessons').count()) === 1);
+    await sp.locator('#f-q').click(); await sp.keyboard.type('Pythagorean theorem');
+    const e1 = expectQ('Pythagorean theorem');
+    check('typing filters live', JSON.stringify((await visibleIds(sp)).sort()) === JSON.stringify(e1) && e1.length > 0, JSON.stringify(await visibleIds(sp)));
+    check('summary counts matches', (await sp.textContent('.finder-sum')) === `${e1.length} of ${TOTAL} lessons match`, await sp.textContent('.finder-sum'));
+    check('address is a plain token', (await sp.evaluate(() => location.hash)) === '#find~q_pythagorean-theorem', await sp.evaluate(() => location.hash));
+    check('Clear button shows once there is a query', await sp.locator('.finder-q-clear').isVisible());
+    await sChip('Grade level', /^Grade 8/).click();
+    const e2 = expectQ('Pythagorean theorem', { grade: ['8'] });
+    check('search combines with facets', JSON.stringify((await visibleIds(sp)).sort()) === JSON.stringify(e2), JSON.stringify(await visibleIds(sp)));
+    check('address holds facets and search', (await sp.evaluate(() => location.hash)) === '#find~grade_8~q_pythagorean-theorem', await sp.evaluate(() => location.hash));
+    check('facet counts respect the search', (await sChip('Grade level', /^Grade 8/).locator('.n').textContent()) === String(e2.length), await sChip('Grade level', /^Grade 8/).locator('.n').textContent());
+    await sp.getByRole('button', { name: 'Copy link to this view' }).click();
+    check('copied view link carries the search', (await sp.evaluate(() => window.__copied.at(-1))).endsWith('#find~grade_8~q_pythagorean-theorem'), await sp.evaluate(() => window.__copied.at(-1)));
+    await sp.locator('#f-q').focus(); await sp.keyboard.press('Escape');
+    check('Escape clears the search and keeps the facets', (await sp.inputValue('#f-q')) === '' && (await sp.evaluate(() => location.hash)) === '#find~grade_8' && JSON.stringify((await visibleIds(sp)).sort()) === JSON.stringify(expected({ grade: ['8'] })));
+    await sp.keyboard.type('ratio'); await sp.locator('.finder-q-clear').click();
+    check('Clear button empties the box, keeps focus there', (await sp.inputValue('#f-q')) === '' && (await sp.evaluate(() => document.activeElement.id)) === 'f-q' && await sp.locator('.finder-q-clear').isHidden());
+    await sp.keyboard.type('slope'); await sp.keyboard.press('Enter');
+    check('Enter in the box does not break anything', JSON.stringify((await visibleIds(sp)).sort()) === JSON.stringify(expectQ('slope', { grade: ['8'] })));
+    await sp.locator('.finder-clear').click();
+    check('Clear filters clears the search too', (await sp.inputValue('#f-q')) === '' && (await visibleIds(sp)).length === TOTAL && (await sp.evaluate(() => location.hash)) === '#/');
+    await sp.keyboard.type('qq'); await sp.locator('#f-q').blur(); await sp.locator('#f-q').fill('');
+    await sp.locator('h1').first().click(); await sp.keyboard.press('/');
+    check('"/" focuses the search box', (await sp.evaluate(() => document.activeElement.id)) === 'f-q');
+    await sp.locator('#f-q').fill('zzzzqq');
+    check('no match: empty state and 0 count', !(await sp.locator('.finder-empty').isHidden()) && (await sp.textContent('.finder-sum')) === `0 of ${TOTAL} lessons match`);
+    await sp.locator('.finder-empty .btn').click();
+    check('empty-state button clears the search', (await sp.inputValue('#f-q')) === '' && (await visibleIds(sp)).length === TOTAL);
+    await sp.locator('#f-q').fill("Théorème <b>\"x\"</b> & 100% ~ _ #/?");
+    const hh = await sp.evaluate(() => location.hash);
+    check('awkward characters still give a plain-anchor-safe address', /^#find~q_[A-Za-z0-9._-]*$/.test(hh) && !hh.includes('~~'), hh);
+    await sp.locator('#f-q').fill('a'.repeat(200));
+    check('very long input is capped in the address', (await sp.evaluate(() => location.hash)).length <= '#find~q_'.length + 60);
+    await sp.goto('about:blank'); await sp.goto(URL + '#find~q_pythagorean-theorem'); await sp.waitForSelector('#f-q');
+    check('address with a search fills the box (hyphens back to spaces)', (await sp.inputValue('#f-q')) === 'pythagorean theorem');
+    await sp.goto('about:blank'); await sp.goto(URL + '#find~q_'); await sp.waitForSelector('#f-q');
+    check('empty q token is no filter', (await visibleIds(sp)).length === TOTAL && (await sp.textContent('.finder-sum')) === `${TOTAL} lessons`);
+    await sp.goto('about:blank'); await sp.goto(URL + '#find~q_pythagorean-theorem~course_grade8'); await sp.waitForSelector('#f-q');
+    check('q token in any position combines with the other keys', JSON.stringify((await visibleIds(sp)).sort()) === JSON.stringify(expectQ('pythagorean theorem', { course: 'grade8' })));
+    check('search sweep: no errors', sr.errs.length === 0, sr.errs.join(' | '));
+    await sr.c.close();
+  }
+
+  /* ===== every share token for filters: each course and each used benchmark code returns the modelled count ===== */
+  {
+    const tr = await mk(), tp = tr.page; let badTok = 0, ex = '';
+    await tp.goto(URL); await tp.waitForSelector('.finder');
+    const tokens = [...D.COURSES.filter(c => D.ALIGN.some(a => a.course === c.id)).map(c => [`#find~course_${c.id}`, { course: c.id }]),
+      ...[...new Set(D.ALIGN.flatMap(a => a.standards))].sort().map(c => [`#find~std_${c}`, { std: c }])];
+    for (const [t, F] of tokens) {
+      await tp.evaluate(h => { location.hash = h; }, t); await tp.waitForTimeout(0);
+      await tp.waitForFunction(h => location.hash === h, t);
+      const got = (await visibleIds(tp)).length, exp = expected(F).length;
+      if (got !== exp || (await tp.textContent('.finder-sum')) !== `${exp} of ${TOTAL} lessons match`) { badTok++; ex = ex || `${t}: ${got} vs ${exp}`; }
+    }
+    check(`${tokens.length} course and benchmark find tokens return the modelled counts`, badTok === 0 && tokens.length > 100, `${badTok} bad, e.g. ${ex}`);
+    check('token sweep: no errors', tr.errs.length === 0, tr.errs.join(' | '));
+    await tr.c.close();
+  }
+
+  /* ===== home page at scale: continue link, thumbnails, scroll and history ===== */
+  {
+    const hr = await mk(), hp = hr.page;
+    await hp.goto(URL); await hp.waitForSelector('.finder');
+    check('no progress: no "Continue" link', (await hp.locator('.resume').count()) === 0);
+    check('hero offers a way into the finder for teachers', (await hp.locator('.hero-cta a', { hasText: 'Find a lesson' }).count()) === 1 && /teachers/i.test(await hp.textContent('.hero-note')));
+    /* thumbnails: Expand all must not draw them all in one go, and must draw all of them in the end */
+    await hp.evaluate(() => { window.__draws = 0; const o = Plane.prototype.draw; Plane.prototype.draw = function () { window.__draws++; return o.apply(this, arguments); }; });
+    const burst = await hp.evaluate(async () => { document.querySelector('.course-all').click(); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); return document.querySelectorAll('.thumb canvas').length; });
+    check('Expand all draws thumbnails over several frames, not in one burst', burst < TOTAL, burst);
+    await hp.waitForFunction(n => document.querySelectorAll('.thumb canvas').length === n, TOTAL, { timeout: 15000 }).catch(() => {});
+    check('Expand all ends with one canvas per lesson', (await hp.locator('.thumb canvas').count()) === TOTAL, await hp.locator('.thumb canvas').count());
+    /* opening a lesson, then Back: scroll position */
+    await hp.evaluate(() => window.scrollTo(0, 2500)); await hp.waitForTimeout(150);
+    const y0 = await hp.evaluate(() => scrollY), hl = await hp.evaluate(() => history.length);
+    const link = await hp.evaluate(() => { const a = [...document.querySelectorAll('a.topic')].find(a => a.getBoundingClientRect().top > 100 && a.getBoundingClientRect().top < innerHeight - 100); a.click(); return a.getAttribute('href'); });
+    await hp.waitForSelector('.viz-head');
+    check('opening a lesson scrolls to the top', (await hp.evaluate(() => scrollY)) === 0, await hp.evaluate(() => scrollY));
+    check('lesson page title names the lesson', (await hp.title()).startsWith((await hp.textContent('h1')) + ' |') || /step 1 of/.test(await hp.title()), await hp.title());
+    const nSteps = await hp.locator('.steps .dot').count();
+    if (nSteps > 1) {
+      await hp.locator('.steps-nav .btn.primary').click();
+      check('title follows the step', (await hp.title()).includes(`step 2 of ${nSteps}`), await hp.title());
+      check('stepping replaces history, it does not add entries', (await hp.evaluate(() => history.length)) === hl + 1, await hp.evaluate(() => history.length));
+    }
+    await hp.goBack(); await hp.waitForSelector('.finder'); await hp.waitForTimeout(500);
+    const y1 = await hp.evaluate(() => scrollY);
+    check('Back to the home list restores the scroll position', Math.abs(y1 - y0) < 40 && y0 > 1000, `${y0} -> ${y1}`);
+    check('Back leaves the home page on its own (no stepped entries to click through)', (await hp.evaluate(() => location.hash)) === '#/' || (await hp.evaluate(() => location.hash)) === '', await hp.evaluate(() => location.hash));
+    await hp.goto('about:blank'); await hp.goto(URL + link.replace('#/viz/', '#').replace(/$/, '')); await hp.waitForSelector('.viz-head');
+    await hp.goBack(); await hp.goForward().catch(() => {});
+    check('home list: no errors while scrolling and navigating', hr.errs.length === 0, hr.errs.join(' | '));
+    await hr.c.close();
+
+    /* "Continue where you left off" */
+    const rr = await mk(), rp = rr.page;
+    await rp.goto(URL + '#proportional-relationships.3'); await rp.waitForSelector('.steps');
+    await rp.goto('about:blank'); await rp.goto(URL + '#/'); await rp.waitForSelector('.finder');
+    const rl = rp.locator('.resume-link');
+    check('progress makes a "Continue where you left off" link', (await rl.count()) === 1 && /Continue where you left off/.test(await rl.textContent()) && /Proportional relationships/.test(await rl.textContent()) && /Step 3 of/.test(await rl.textContent()), await rp.locator('.resume').count() ? await rl.textContent() : 'none');
+    check('the link opens that lesson at that step', (await rl.getAttribute('href')) === '#proportional-relationships.3', await rl.getAttribute('href'));
+    await rl.click(); await rp.waitForSelector('.steps');
+    check('and it lands on step 3', (await rp.textContent('.steps-n')).startsWith('3 /'));
+    check('Continue link: no errors', rr.errs.length === 0, rr.errs.join(' | '));
+    await rr.c.close();
+    const nr = await mk(); await nr.page.addInitScript(() => { Storage.prototype.setItem = () => { throw new Error('quota'); }; Storage.prototype.getItem = () => { throw new Error('blocked'); }; });
+    await nr.page.goto(URL + '#proportional-relationships.2'); await nr.page.waitForSelector('.steps'); await nr.page.locator('.steps-nav .btn.primary').click();
+    await nr.page.locator('.crumbs a').first().click(); await nr.page.waitForSelector('.finder');
+    check('storage blocked: home page and Continue link work (kept for the visit)', (await nr.page.locator('.resume-link').count()) === 1 && nr.errs.length === 0, nr.errs.join(' | '));
+    await nr.c.close();
+  }
+
   /* ===== mobile ===== */
   const m = await mk({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   await m.page.goto(URL); await m.page.waitForSelector('.finder');

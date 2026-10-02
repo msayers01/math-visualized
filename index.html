@@ -519,6 +519,29 @@ label.facet .facet-k { margin-bottom: 0; }
 .align-item .bench { font-size: .95rem; line-height: 1.55; }
 .align-item .anc { margin-top: 4px; font-size: .8rem; color: var(--muted); }
 @media (max-width: 560px) { .align-item { grid-template-columns: 1fr; } }
+
+/* Search box in the finder */
+.finder-search { margin: 0 0 18px; }
+.finder-search .facet-k { margin-bottom: 8px; }
+.finder-q { position: relative; max-width: 560px; }
+.finder-q-in { width: 100%; cursor: text; background-image: none; padding-right: 76px; -webkit-appearance: none; appearance: none; }
+.finder-q-in::-webkit-search-cancel-button, .finder-q-in::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.finder-q-clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font: inherit; font-size: .84rem; padding: 4px 12px; min-height: 28px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer; }
+.finder-q-clear:hover { border-color: var(--brass); color: var(--brass); }
+
+/* Hero note for teachers; "Continue where you left off" */
+.hero-note { margin: 18px 0 0; max-width: 46ch; font-size: .92rem; line-height: 1.5; color: var(--muted); }
+.resume { padding-top: clamp(24px, 4vw, 40px); }
+.resume-link { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 12px 18px; border: 1px solid var(--line-strong); border-left: 3px solid var(--brass);
+  border-radius: 4px; background: var(--surface); color: var(--text); text-decoration: none; transition: border-color .2s; }
+.resume-link:hover { border-color: var(--brass); }
+.resume-link:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+.resume-k { font-size: .8rem; letter-spacing: .02em; color: var(--muted); }
+.resume-t { font-family: var(--display); font-size: 1.1rem; letter-spacing: -.025em; }
+.resume-d { margin-left: auto; font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.resume + .finder { padding-top: clamp(16px, 3vw, 28px); }
+@media (max-width: 560px) { .resume-d { margin-left: 0; } }
 /* ---------- Teacher tools: progress, copy links, exit tickets, print ---------- */
 .btn.small { min-height: 34px; padding: 5px 14px; font-size: .86rem; }
 .copy { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
@@ -544,6 +567,12 @@ label.facet .facet-k { margin-bottom: 0; }
 .sure { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: .88rem; color: var(--muted); }
 .prog-total { margin: 4px 0 22px; font-family: var(--display); font-size: 1.25rem; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .prog-body .course { max-width: 760px; }
+.prog-level { display: flex; align-items: baseline; gap: 14px; max-width: 760px; margin: 38px 0 14px; font-family: var(--display); font-weight: 300; font-size: 1.5rem; letter-spacing: -.035em; }
+.prog-level:first-child { margin-top: 0; }
+.prog-body .course-head { display: flex; align-items: baseline; gap: 12px; padding: 4px 14px 10px; }
+.prog-body .course-head .n { margin-left: auto; font-family: var(--sans); letter-spacing: 0; }
+.prog-warn { max-width: 62ch; margin: 0 0 18px; padding: 10px 14px; border: 1px solid var(--brass); border-left-width: 3px; border-radius: 4px; font-size: .92rem; background: var(--surface); }
+.print-only { display: none; }
 .prog-list { list-style: none; margin: 0; padding: 0; }
 .prog-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 18px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
 .prog-row a { text-decoration: none; font-family: var(--display); letter-spacing: -.02em; }
@@ -576,24 +605,52 @@ label.facet .facet-k { margin-bottom: 0; }
 .ticket-key ol { margin: 0; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 8px; font-size: .95rem; }
 @media (max-width: 560px) { .ticket-sheet { padding: 22px 18px 26px; } }
 
+/* the answer key marks the right choice with a double ring, bold text and a tick, so no color is needed */
+.tc li.right { font-weight: 600; }
+.tc li.right .bub { outline: 1.5px solid currentColor; outline-offset: 2px; margin: 2px; }
+.tick-mark { margin-left: auto; font-size: .8rem; font-weight: 600; white-space: nowrap; color: var(--green); }
+.ticket-page.is-key .ticket-key { margin-top: 24px; }
+
+@page { margin: .55in .7in; }
 @media print {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   :root { padding: 0 !important; }
-  body { background: #fff !important; color: #000 !important; font-size: 12pt; }
+  body { background: #fff !important; color: #000 !important; font-size: 11.5pt; line-height: 1.4; }
   body { background-image: none !important; }
   .topbar, footer, .no-print, .pager { display: none !important; }
+  .print-only { display: block; }
   .wrap { max-width: none; padding: 0; }
   .viz { padding-top: 0; }
   .ticket-sheet { border: 0; padding: 0; background: #fff !important; color: #000 !important; max-width: none; margin: 0; }
   .ticket-sheet * { color: #000 !important; }
-  .std { border-color: #666 !important; background: none !important; }
-  .ticket-who .line { border-bottom-color: #000; }
-  .bub { border-color: #000; }
-  .prog-row { break-inside: avoid; }
+  .ticket-head h1 { font-size: 20pt; margin-bottom: 4pt; }
+  .ticket-meta { gap: 4px 8px; }
+  .std { border: 1px solid #000 !important; background: none !important; }
+  .std::before { display: none !important; }
+  .ticket-who { margin: 16pt 0 10pt; }
+  .ticket-who .line { border-bottom: 1px solid #000; }
+  .ticket-qs { gap: 15pt; }
+  .tq { margin-bottom: 6pt; font-size: 11.5pt; }
+  .tc { gap: 5pt; }
+  .bub { border: 1.5px solid #000; }
+  .tc li.right .bub { outline: 1.5px solid #000; }
+  .ticket-key { margin-top: 16pt; padding-top: 10pt; border-top: 1.5px solid #000; }
+  .ticket-key ol { gap: 5pt; font-size: 10.5pt; }
+  /* the answer key is a teacher's copy: tighter, choices in two columns, so it stays on one sheet */
+  .is-key .ticket-qs { gap: 10pt; }
+  .is-key .tq { margin-bottom: 4pt; font-size: 10.5pt; }
+  .is-key .tc { display: grid; grid-template-columns: 1fr 1fr; gap: 3pt 14pt; font-size: 10pt; }
+  .is-key .tc .bub { font-size: 7.5pt; }
+  .is-key .ticket-key ol { font-size: 9.5pt; line-height: 1.35; }
+  .prog-row, .prog-body .course-head { break-inside: avoid; }
+  .prog-body .course-head { break-after: avoid; }
+  .prog-level { break-after: avoid; }
+  .prog-warn { border-color: #000; }
 }
 .foot-link { color: var(--muted); text-underline-offset: 3px; }
 .foot-link:hover { color: var(--text); }
 .credit { margin: -22px 0 0; padding: 0 0 36px; font-size: .8rem; color: var(--faint); }
+.prog-level .n { font-family: var(--sans); font-size: .85rem; font-weight: 400; letter-spacing: 0; }
 </style>
 </head>
 <body>
@@ -1636,6 +1693,42 @@ function LessonTags(v, link, extra) {
     v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c, link))) : null, extra || null);
 }
 
+/* ---------- Free-text search ----------
+   The query lives beside the facets as F.q (the facet code in curriculum.js knows nothing about it).
+   Every word must start a word in the lesson's title, blurb, course name, benchmark codes or benchmark
+   wording; a whole code (8.2.4.1) must match a code exactly, a part of one (8.2) matches the codes that start with it. In the address the query is a
+   plain token: lower case, a-z 0-9 and "." only, spaces written as "-": #find~grade_8~q_pythagorean-theorem */
+const SEARCH_MAX = 60;
+const searchText = s => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/['\u2019]/g, '').replace(/[^a-z0-9.]+/g, ' ');
+const searchTerms = q => searchText(q).split(' ').map(t => t.replace(/^\.+|\.+$/g, '')).filter(Boolean);
+const hayCache = new WeakMap();
+function haystack(v) {
+  let t = hayCache.get(v);
+  if (!t) {
+    t = ' ' + searchText([v.title, v.blurb, COURSE[v.course] ? COURSE[v.course].name : '',
+      ...v.standards, ...v.standards.map(c => STANDARDS[c])].join(' ')).replace(/ +/g, ' ') + ' ';
+    hayCache.set(v, t);
+  }
+  return t;
+}
+const CODE = /^\d+\.\d+\.\d+\.\d+$/;
+const searchMatch = (v, q) => { const T = searchTerms(q); return !T.length || T.every(t => haystack(v).includes(' ' + t + (CODE.test(t) ? ' ' : ''))); };
+/* the query as it appears in a share token */
+const searchToken = q => searchText(q).trim().replace(/ +/g, '-').slice(0, SEARCH_MAX).replace(/-+$/, '');
+/* lesson passes the facets and the search */
+const lessonMatches = (v, F) => matches(v, F) && searchMatch(v, F.q);
+const finderActive = F => filterActive(F) || searchTerms(F.q).length > 0;
+const finderCount = F => filterCount(F) + (searchTerms(F.q).length ? 1 : 0);
+const facetCountQ = (items, F, facet, val) => items.filter(v => matches(v, F, facet) && optionMatch(v, facet, val) && searchMatch(v, F.q)).length;
+/* #find~...~q_pythagorean-theorem */
+const findToken = F => { const t = filterToken(F), q = searchToken(F.q); return q ? t + '~q_' + q : t; };
+/* facets and search from an address */
+function finderFromHash(hash) {
+  const F = filterFromHash(hash); F.q = '';
+  if (hash.startsWith('#find')) for (const seg of hash.split('~').slice(1)) if (seg.startsWith('q_')) F.q = seg.slice(2).replace(/-+/g, ' ').replace(/[^a-z0-9. ]/gi, '').slice(0, SEARCH_MAX).trim();
+  return F;
+}
+
 /* The filter bar. F is the live filter state (mutated); onChange(F) runs after every user change.
    Option counts show how many lessons each choice would leave given the other filters, and
    choices that would leave none are disabled. Returns { el, refresh }. */
@@ -1643,9 +1736,17 @@ function Finder(F, onChange) {
   const chips = [], selects = [];
   const sum = h('span', { class: 'finder-sum', 'aria-live': 'polite' });
   const badge = h('span', { class: 'badge' });
-  const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter()); change(); } }, 'Clear filters');
+  const clear = h('button', { type: 'button', class: 'finder-clear', onclick: () => { Object.assign(F, emptyFilter(), { q: '' }); change(); } }, 'Clear filters');
+  F.q = F.q || '';
+  const qIn = h('input', { type: 'search', id: 'f-q', class: 'fsel finder-q-in', autocomplete: 'off', spellcheck: 'false', autocapitalize: 'off', enterkeyhint: 'search',
+    maxlength: String(SEARCH_MAX), placeholder: 'Title, topic, course or benchmark code (such as 8.2.4.1)', 'aria-controls': 'lessons',
+    oninput: () => { F.q = qIn.value; change(); },
+    onkeydown: e => { if (e.key === 'Escape' && qIn.value) { e.preventDefault(); e.stopPropagation(); qIn.value = ''; F.q = ''; change(); } else if (e.key === 'Enter') e.preventDefault(); } });
+  const qClear = h('button', { type: 'button', class: 'finder-q-clear', 'aria-label': 'Clear search', onclick: () => { qIn.value = ''; F.q = ''; change(); qIn.focus(); } }, 'Clear');
+  const search = h('div', { class: 'finder-search', role: 'search' },
+    h('label', { class: 'facet-k', for: 'f-q' }, 'Search lessons'), h('div', { class: 'finder-q' }, qIn, qClear));
   const grid = h('div', { class: 'finder-grid', id: 'finder-grid' });
-  const copyView = CopyButton('Copy link to this view', () => shareUrl(filterToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
+  const copyView = CopyButton('Copy link to this view', () => shareUrl(findToken(F)), { cls: 'finder-copy', title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' });
   const toggle = h('button', { type: 'button', class: 'finder-toggle', 'aria-expanded': 'false', 'aria-controls': 'finder-grid',
     onclick: () => { const o = root.classList.toggle('open'); toggle.setAttribute('aria-expanded', o); } }, 'Filters', badge);
 
@@ -1688,25 +1789,27 @@ function Finder(F, onChange) {
 
   function refresh() {
     for (const c of chips) {
-      const n = facetCount(VIZ, F, c.facet, c.val), on = F[c.facet].includes(c.val);
+      const n = facetCountQ(VIZ, F, c.facet, c.val), on = F[c.facet].includes(c.val);
       c.n.textContent = n; c.btn.setAttribute('aria-pressed', on); c.btn.disabled = !n && !on;
     }
     for (const s of selects) {
       s.sel.value = F[s.facet];
-      for (const o of s.opts) o.el.disabled = !facetCount(VIZ, F, s.facet, o.val) && F[s.facet] !== o.val;
+      for (const o of s.opts) o.el.disabled = !facetCountQ(VIZ, F, s.facet, o.val) && F[s.facet] !== o.val;
     }
-    const shown = VIZ.filter(v => matches(v, F)).length, on = filterActive(F);
+    const shown = VIZ.filter(v => lessonMatches(v, F)).length, on = finderActive(F);
     sum.textContent = on ? `${shown} of ${VIZ.length} lessons match` : `${VIZ.length} lessons`;
-    clear.hidden = !on; copyView.hidden = !on; badge.textContent = filterCount(F); badge.hidden = !on;
+    if (qIn.value !== F.q) qIn.value = F.q;
+    qClear.hidden = !F.q;
+    clear.hidden = !on; copyView.hidden = !on; badge.textContent = finderCount(F); badge.hidden = !on;
   }
   function change() { refresh(); onChange(F); }
 
   const root = h('section', { class: 'wrap finder', id: 'finder', 'aria-label': 'Find lessons' },
     h('div', { class: 'finder-box' },
       h('div', { class: 'finder-head' }, h('h2', { class: 'finder-title' }, 'Find lessons'), sum, toggle, copyView, clear),
-      grid));
+      search, grid));
   refresh();
-  return { el: root, refresh };
+  return { el: root, refresh, focus: () => { qIn.focus(); qIn.select(); } };
 }
 
 /* =====================================================================
@@ -1799,22 +1902,62 @@ function texToText(s) {
    Stored on the device only (localStorage, with an in-memory fallback). A teacher sees a class through
    the copyable summary on the progress page, not through a server.
    Per lesson: s = indices of the steps opened, q = { question index: { n: tries, ok: got it right,
-   first: right on the first try } }, at = time first opened.
+   first: right on the first try } }, at = time first opened. The lesson opened last (and its step) is kept
+   under a second key, so the home page can offer "Continue where you left off".
+   Storage can be blocked or full: reads and writes are guarded, and once a write fails the in-memory copy
+   is the truth for the rest of the visit (storageOk() tells the progress page to warn).
    ===================================================================== */
 const Progress = (() => {
-  const KEY = 'continuum-progress-v1', NAME = 'continuum-student-name';
-  let mem = {}, memName = '';
-  const load = () => { try { const d = JSON.parse(localStorage.getItem(KEY)); return d && typeof d === 'object' ? d : mem; } catch (e) { return mem; } };
-  const save = d => { mem = d; try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} };
+  const KEY = 'continuum-progress-v1', NAME = 'continuum-student-name', LAST = 'continuum-progress-last';
+  let mem = {}, memName = '', memLast = null, failed = false, nameFailed = false, rawSeen = null, parsed = null;
+  const tidy = d => {   /* a hand-edited or damaged store must not throw later */
+    const out = {};
+    if (d && typeof d === 'object' && !Array.isArray(d)) for (const [id, e] of Object.entries(d)) {
+      if (!e || typeof e !== 'object') continue;
+      const q = {};
+      if (e.q && typeof e.q === 'object') for (const [n, x] of Object.entries(e.q)) if (x && typeof x === 'object') q[n] = { n: +x.n || 0, ok: !!x.ok, first: !!x.first };
+      out[id] = { s: Array.isArray(e.s) ? e.s.filter(i => Number.isInteger(i) && i >= 0) : [], q, at: +e.at || 0 };
+    }
+    return out;
+  };
+  const load = () => {
+    if (failed) return mem;
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw === rawSeen && parsed) return parsed;      /* unchanged since the last read: no parse (the progress page asks 100+ times) */
+      rawSeen = raw; parsed = raw ? tidy(JSON.parse(raw)) : {};
+      return parsed;
+    } catch (e) { return mem; }
+  };
+  const save = d => {
+    mem = d;
+    try { const raw = JSON.stringify(d); localStorage.setItem(KEY, raw); rawSeen = raw; parsed = d; }
+    catch (e) { failed = true; }
+  };
   const touch = (d, id) => (d[id] = d[id] || { s: [], q: {}, at: Date.now() });
+  const setLast = (id, step) => {
+    memLast = { id, step, at: Date.now() };
+    try { localStorage.setItem(LAST, JSON.stringify(memLast)); } catch (e) {}
+  };
   return {
-    open(id) { const d = load(); touch(d, id); save(d); },
-    step(id, i) { const d = load(), e = touch(d, id); if (!e.s.includes(i)) { e.s.push(i); e.s.sort((a, b) => a - b); } save(d); },
+    open(id) { const d = load(); touch(d, id); save(d); setLast(id, 0); },
+    step(id, i) { const d = load(), e = touch(d, id); if (!e.s.includes(i)) { e.s.push(i); e.s.sort((a, b) => a - b); } save(d); setLast(id, i); },
     answer(id, n, right) {
       const d = load(), e = touch(d, id), q = e.q[n] = e.q[n] || { n: 0, ok: false, first: false };
       if (q.ok) return;
       q.n++; if (right) { q.ok = true; q.first = q.n === 1; }
       save(d);
+    },
+    /* the lesson opened last: { id, step (0-based), at }, or null */
+    last() {
+      let l = memLast;
+      if (!failed) try { const x = JSON.parse(localStorage.getItem(LAST)); if (x && typeof x.id === 'string') l = { id: x.id, step: Math.max(0, +x.step || 0), at: +x.at || 0 }; } catch (e) {}
+      return l && load()[l.id] ? l : null;
+    },
+    /* false when this browser refuses to keep progress (private or blocked storage): it is then lost when the tab closes */
+    storageOk() {
+      if (failed) return false;
+      try { localStorage.setItem('continuum-probe', '1'); localStorage.removeItem('continuum-probe'); return true; } catch (e) { return false; }
     },
     /* counts and a state for lesson v: new, started or done. A lesson with no steps or checks is done once opened. */
     status(v) {
@@ -1824,20 +1967,25 @@ const Progress = (() => {
       const right = qs.filter(x => x.ok).length, first = qs.filter(x => x.first).length;
       return { seen, st, right, ck, first, state: seen >= st && right >= ck ? 'done' : 'started' };
     },
-    reset() { save({}); },
-    name: () => { try { return localStorage.getItem(NAME) || ''; } catch (e) { return memName; } },
-    setName(v) { memName = v; try { localStorage.setItem(NAME, v); } catch (e) {} },
-    /* plain-text summary of every lesson, grouped by course in display order */
-    summary(vizList, level = 'school') {
-      const rows = vizList.filter(v => v.level === level), done = rows.filter(v => this.status(v).state === 'done').length;
-      const out = [`Continuum progress: ${this.name() || 'student'} (${new Date().toLocaleDateString('en-US')})`, `${LEVELS[level].name}: ${done} of ${rows.length} lessons complete`];
-      for (const c of COURSES.filter(c => c.level === level)) {
-        const items = rows.filter(v => v.course === c.id);
-        if (!items.length) continue;
-        out.push('', c.name);
-        for (const v of items) {
-          const s = this.status(v), mark = s.state === 'done' ? '[done]' : s.state === 'started' ? '[in progress]' : '[not started]';
-          out.push(`  ${mark} ${v.title}` + (s.st || s.ck ? `: steps ${s.seen}/${s.st}, checks right ${s.right}/${s.ck} (first try ${s.first})` : ''));
+    reset() { save({}); memLast = null; try { localStorage.removeItem(LAST); } catch (e) {} },
+    name: () => { if (!nameFailed) { try { return localStorage.getItem(NAME) || memName; } catch (e) {} } return memName; },
+    setName(v) { memName = v; try { localStorage.setItem(NAME, v); } catch (e) { nameFailed = true; } },
+    /* plain-text summary of every lesson of a level (every level when omitted), grouped by course in display order */
+    summary(vizList, level) {
+      const levels = level ? [level] : LEVEL_ORDER.filter(l => vizList.some(v => v.level === l));
+      const all = vizList.filter(v => levels.includes(v.level)), doneAll = all.filter(v => this.status(v).state === 'done').length;
+      const out = [`Continuum progress: ${this.name() || 'student'} (${new Date().toLocaleDateString('en-US')})`, `${doneAll} of ${all.length} lessons complete`];
+      for (const l of levels) {
+        const rows = vizList.filter(v => v.level === l), done = rows.filter(v => this.status(v).state === 'done').length;
+        if (levels.length > 1) out.push('', `${LEVELS[l].name}: ${done} of ${rows.length} lessons complete`);
+        for (const c of COURSES.filter(c => c.level === l)) {
+          const items = rows.filter(v => v.course === c.id);
+          if (!items.length) continue;
+          out.push('', c.name);
+          for (const v of items) {
+            const s = this.status(v), mark = s.state === 'done' ? '[done]' : s.state === 'started' ? '[in progress]' : '[not started]';
+            out.push(`  ${mark} ${v.title}` + (s.st || s.ck ? `: steps ${s.seen}/${s.st}, checks right ${s.right}/${s.ck} (first try ${s.first})` : ''));
+          }
         }
       }
       return out.join('\n');
@@ -1861,45 +2009,55 @@ function ProgressChip(v) {
   return { el, update };
 }
 
-/* Progress page: one row per lesson, a copyable summary, print, and reset */
+/* Progress page: every lesson, grouped by level and course, a copyable summary, print, and reset */
 function renderProgress(app) {
   document.title = 'My progress | Continuum';
-  const level = 'school', rows = VIZ.filter(v => v.level === level);
+  const rows = VIZ.slice();
   const name = h('input', { type: 'text', id: 'student-name', class: 'fsel name-in', value: Progress.name(), placeholder: 'Optional', autocomplete: 'off' });
-  name.addEventListener('input', () => Progress.setName(name.value.trim()));
+  const who = h('p', { class: 'print-only prog-who' }, Progress.name() ? 'Student: ' + Progress.name() : '');
+  name.addEventListener('input', () => { Progress.setName(name.value.trim()); who.textContent = name.value.trim() ? 'Student: ' + name.value.trim() : ''; });
   const body = h('div', { class: 'prog-body' }), total = h('p', { class: 'prog-total', 'aria-live': 'polite' });
   const draw = () => {
-    body.replaceChildren();
-    const done = rows.filter(v => Progress.status(v).state === 'done').length;
+    const st = new Map(rows.map(v => [v.id, Progress.status(v)])), frag = document.createDocumentFragment();   /* one read per lesson */
+    const done = rows.filter(v => st.get(v.id).state === 'done').length;
     total.textContent = `${done} of ${rows.length} lessons complete`;
-    for (const c of COURSES.filter(c => c.level === level)) {
-      const items = rows.filter(v => v.course === c.id);
-      if (!items.length) continue;
-      body.append(h('section', { class: 'course' }, h('h3', { class: 'course-head' }, c.name),
-        h('ul', { class: 'prog-list' }, items.map(v => {
-          const s = Progress.status(v);
-          return h('li', { class: 'prog-row ' + s.state },
-            h('a', { href: lessonToken(v.id) }, v.title),
-            h('span', { class: 'n' }, `Steps ${s.seen}/${s.st}`), h('span', { class: 'n' }, `Checks ${s.right}/${s.ck}`),
-            h('span', { class: 'prog ' + s.state }, s.state === 'done' ? 'Complete' : s.state === 'started' ? 'In progress' : 'Not started'));
-        }))));
+    for (const l of LEVEL_ORDER) {
+      const inLevel = rows.filter(v => v.level === l);
+      if (!inLevel.length) continue;
+      frag.append(h('h2', { class: 'prog-level' }, LEVELS[l].name, h('span', { class: 'n' }, `${inLevel.filter(v => st.get(v.id).state === 'done').length} of ${inLevel.length} complete`)));
+      for (const c of COURSES.filter(c => c.level === l)) {
+        const items = inLevel.filter(v => v.course === c.id);
+        if (!items.length) continue;
+        frag.append(h('section', { class: 'course', 'aria-label': c.name }, h('h3', { class: 'course-head' }, c.name,
+          h('span', { class: 'n' }, `${items.filter(v => st.get(v.id).state === 'done').length} of ${items.length}`)),
+          h('ul', { class: 'prog-list' }, items.map(v => {
+            const s = st.get(v.id);
+            return h('li', { class: 'prog-row ' + s.state },
+              h('a', { href: lessonToken(v.id) }, v.title),
+              h('span', { class: 'n' }, `Steps ${s.seen}/${s.st}`), h('span', { class: 'n' }, `Checks ${s.right}/${s.ck}`),
+              h('span', { class: 'prog ' + s.state }, s.state === 'done' ? 'Complete' : s.state === 'started' ? 'In progress' : 'Not started'));
+          }))));
+      }
     }
+    body.replaceChildren(frag);
   };
   draw();
-  const sure = h('span', { class: 'sure', hidden: '' }, 'Erase all progress on this device? ',
-    h('button', { type: 'button', class: 'btn small', onclick: () => { Progress.reset(); sure.hidden = true; resetBtn.hidden = false; draw(); } }, 'Yes, erase'),
-    h('button', { type: 'button', class: 'btn small', onclick: () => { sure.hidden = true; resetBtn.hidden = false; } }, 'Keep it'));
-  const resetBtn = h('button', { type: 'button', class: 'btn small', onclick: () => { sure.hidden = false; resetBtn.hidden = true; } }, 'Reset progress');
+  const closeSure = focusBtn => { sure.hidden = true; resetBtn.hidden = false; if (focusBtn) resetBtn.focus(); };
+  const keep = h('button', { type: 'button', class: 'btn small', onclick: () => closeSure(true) }, 'Keep it');
+  const sure = h('span', { class: 'sure', role: 'group', 'aria-label': 'Confirm reset', hidden: '', onkeydown: e => { if (e.key === 'Escape') closeSure(true); } }, 'Erase all progress on this device? ',
+    h('button', { type: 'button', class: 'btn small', onclick: () => { Progress.reset(); draw(); closeSure(true); } }, 'Yes, erase'), keep);
+  const resetBtn = h('button', { type: 'button', class: 'btn small', onclick: () => { sure.hidden = false; resetBtn.hidden = true; keep.focus(); } }, 'Reset progress');
   app.append(h('article', { class: 'wrap viz progress-page' },
     h('nav', { class: 'crumbs no-print', 'aria-label': 'Breadcrumb' }, h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'My progress')),
     h('header', { class: 'viz-head' }, h('h1', { class: 'display' }, 'My progress'),
       h('p', { class: 'lede' }, 'Saved in this browser only. To hand progress to a teacher, copy the summary below and paste it into an email or an assignment.')),
+    Progress.storageOk() ? null : h('p', { class: 'prog-warn', role: 'status' }, 'This browser is not keeping progress (private or blocked storage). What you do now is lost when you close this tab, so copy the summary before you leave.'),
     h('div', { class: 'prog-tools no-print' },
       h('label', { class: 'facet', for: 'student-name' }, h('span', { class: 'facet-k' }, 'Name for the summary'), name),
       h('div', { class: 'prog-actions' },
-        CopyButton('Copy summary', () => Progress.summary(VIZ, level), { cls: 'btn primary small' }),
+        CopyButton('Copy summary', () => Progress.summary(VIZ), { cls: 'btn primary small' }),
         canPrint ? h('button', { type: 'button', class: 'btn small', onclick: () => window.print() }, 'Print') : null, resetBtn, sure)),
-    total, body));
+    who, total, body));
   return () => {};
 }
 
@@ -1912,15 +2070,18 @@ function renderTicket(app, v, key) {
     ...(key ? ['Answer key', ...qs.map((q, n) => `${n + 1}. ${L(q.answer)}. ${texToText(q.why)}`)] : [])].join('\n');
   const sheet = h('section', { class: 'ticket-sheet', 'aria-label': 'Exit ticket' },
     h('div', { class: 'ticket-head' },
-      h('p', { class: 'ticket-k' }, 'Exit ticket'), h('h1', { class: 'display' }, v.title),
+      h('p', { class: 'ticket-k' }, key ? 'Exit ticket: answer key' : 'Exit ticket'), h('h1', { class: 'display' }, v.title),
       h('p', { class: 'ticket-meta' }, COURSE[v.course].name + (v.standards.length ? ' · ' : ''), v.standards.length ? h('span', { class: 'stds' }, v.standards.map(c => StdChip(c))) : null)),
-    h('div', { class: 'ticket-who' }, h('span', {}, 'Name'), h('span', { class: 'line' }), h('span', {}, 'Date'), h('span', { class: 'line short' })),
+    key ? null : h('div', { class: 'ticket-who' }, h('span', {}, 'Name'), h('span', { class: 'line' }), h('span', {}, 'Date'), h('span', { class: 'line short' })),
     qs.length ? h('ol', { class: 'ticket-qs' }, qs.map(q => h('li', {},
       h('p', { class: 'tq', html: q.q }),
-      h('ul', { class: 'tc' }, q.choices.map((c, i) => h('li', {}, h('span', { class: 'bub', 'aria-hidden': 'true' }, L(i)), h('span', { html: c }))))))) : h('p', {}, 'This lesson has no quick-check questions yet.'),
+      h('ul', { class: 'tc' }, q.choices.map((c, i) => {
+        const right = key && i === q.answer;   /* in the key the right choice is ringed twice and ticked, which survives black-and-white printing */
+        return h('li', { class: right ? 'right' : '' }, h('span', { class: 'bub', 'aria-hidden': 'true' }, L(i)), h('span', { html: c }), right ? h('span', { class: 'tick-mark' }, '\u2713 correct') : null);
+      }))))) : h('p', {}, 'This lesson has no quick-check questions yet.'),
     key && qs.length ? h('div', { class: 'ticket-key' }, h('h2', {}, 'Answer key'),
       h('ol', {}, qs.map(q => h('li', {}, h('b', {}, L(q.answer) + '. '), h('span', { html: q.why }))))) : null);
-  app.append(h('article', { class: 'wrap viz ticket-page' },
+  app.append(h('article', { class: 'wrap viz ticket-page' + (key ? ' is-key' : '') },
     h('nav', { class: 'crumbs no-print', 'aria-label': 'Breadcrumb' }, h('a', { href: '#/' }, 'Continuum'), h('span', { 'aria-hidden': 'true' }, '/'),
       h('a', { href: lessonToken(v.id) }, v.title), h('span', { 'aria-hidden': 'true' }, '/'), h('span', {}, 'Exit ticket')),
     h('div', { class: 'ticket-tools no-print' },
@@ -53242,6 +53403,12 @@ register({
 const NUMERALS = { school: '01', ugrad: '02', grad: '03' };
 /* courses the visitor has opened on the home page (kept while the page stays open) */
 const OPEN_COURSES = new Set();
+/* Back to the home list restores where the visitor was; every other page opens at the top. The browser's own
+   restoration would run before the page is rebuilt, so it is switched off and the home page restores itself. */
+try { history.scrollRestoration = 'manual'; } catch (e) {}
+let HOME_SCROLL = null, POPPED = false;
+addEventListener('popstate', () => { POPPED = true; setTimeout(() => { POPPED = false; }, 600); });
+const sameHash = (a, b) => (a || '#/') === (b || '#/');
 
 function renderHome(app) {
   document.title = 'Continuum: mathematics you can move';
@@ -53255,7 +53422,8 @@ function renderHome(app) {
         h('p', { class: 'hero-sub' }, 'Interactive visualizations from middle school through graduate study. Drag, slide, and watch each idea change shape.'),
         h('div', { class: 'hero-cta' },
           h('a', { class: 'btn primary', href: '#/viz/slope-and-linear-functions' }, 'Start with slope'),
-          h('a', { class: 'btn', href: '#/level/school' }, 'Browse all topics'))),
+          h('a', { class: 'btn', href: '#find', onclick: e => { e.preventDefault(); const f = document.getElementById('finder'); if (f) { f.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); finder.focus({ preventScroll: true }); } } }, 'Find a lesson')),
+        h('p', { class: 'hero-note' }, `For teachers: search ${VIZ.length} lessons by title, course or Minnesota benchmark, open one, then use its step links and printable exit ticket.`)),
       h('div', { class: 'instrument', 'aria-hidden': 'true' },
         h('div', { class: 'inst-item inst-matrix' }, h('span', { class: 'k' }, 'Matrix on screen'), h('span', { class: 'matrix' }, cells)),
         h('div', { class: 'inst-item' }, h('span', { class: 'k' }, 'Determinant'), detEl),
@@ -53265,16 +53433,32 @@ function renderHome(app) {
      Each course is a collapsible group: closed groups show only their lesson titles, and a group draws its
      thumbnails (loading the lessons in a split build) the first time it is open. Filtering opens the groups
      that have matches and only hides rows; the filter state lives in the URL hash. */
-  const F = filterFromHash(location.hash), rows = new Map(), sections = [], allGroups = [], tPlanes = [];
-  let alive = true;
+  const F = finderFromHash(location.hash), rows = new Map(), sections = [], allGroups = [], tPlanes = [];
+  let alive = true, homeHash = location.hash;
+  /* Thumbnails are drawn a few at a time per frame (the ones on screen first), so "Expand all" never freezes the page */
+  const jobs = []; let pumping = 0;
+  const onScreen = el => { const r = el.getBoundingClientRect(); return r.bottom > -200 && r.top < innerHeight + 200; };
+  const pump = () => {
+    pumping = 0; const t0 = performance.now();
+    while (alive && jobs.length && performance.now() - t0 < 8) {
+      const i = jobs.findIndex(j => onScreen(j.el));
+      jobs.splice(i < 0 ? 0 : i, 1)[0].run();
+    }
+    if (alive && jobs.length) pumping = requestAnimationFrame(pump);
+  };
   const drawThumbs = g => {
     for (const v of g.items) {
       if (g.drawn.has(v.id) || rows.get(v.id).hidden) continue;
       g.drawn.add(v.id);
+      const el = g.thumbEls.get(v.id);
       loadLesson(v.id).then(() => {
         if (!alive || !v.thumb) return;
-        const P = new Plane(g.thumbEls.get(v.id), { span: 3 }); P.onDraw = v.thumb; P.draw(); tPlanes.push(P);
-      }, () => { g.drawn.delete(v.id); if (alive) g.thumbEls.get(v.id).classList.add('empty'); });
+        jobs.push({ el, run() {
+          if (g.list.hidden || rows.get(v.id).hidden) { g.drawn.delete(v.id); return; }   /* closed or filtered out meanwhile: draw when shown again */
+          const P = new Plane(el, { span: 3 }); P.onDraw = v.thumb; P.draw(); tPlanes.push(P);
+        } });
+        if (!pumping) pumping = requestAnimationFrame(pump);
+      }, () => { g.drawn.delete(v.id); if (alive) el.classList.add('empty'); });
     }
   };
   const syncAll = () => {
@@ -53293,8 +53477,8 @@ function renderHome(app) {
     allGroups.forEach(g => { if (!g.el.hidden) setOpen(g, open, true); });
   } }, 'Expand all courses');
   const levels = h('div', { class: 'wrap levels', id: 'lessons' }, h('div', { class: 'levels-tools' }, allBtn));
-  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match these filters.'),
-    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter()); finder.refresh(); apply(); } }, 'Clear filters'));
+  const empty = h('div', { class: 'finder-empty', hidden: true }, h('p', {}, 'No lessons match this search and these filters.'),
+    h('button', { type: 'button', class: 'btn', onclick: () => { Object.assign(F, emptyFilter(), { q: '' }); finder.refresh(); apply(); } }, 'Clear filters'));
   for (const [key, L] of Object.entries(LEVELS)) {
     const live = VIZ.filter(v => v.level === key), todo = PLANNED[key].filter(t => !live.some(v => v.id === slug(t))), total = live.length + todo.length;
     const body = h('div', { class: 'level-body' }), groups = [];
@@ -53337,12 +53521,12 @@ function renderHome(app) {
   }
   levels.append(empty);
   const apply = () => {
-    const on = filterActive(F); let shown = 0;
+    const on = finderActive(F); let shown = 0;
     for (const S of sections) {
       let n = 0;
       for (const g of S.groups) {
         let k = 0;
-        for (const v of g.items) { const ok = matches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
+        for (const v of g.items) { const ok = lessonMatches(v, F); rows.get(v.id).hidden = !ok; if (ok) k++; }
         g.el.hidden = !k; n += k;
         g.n.textContent = k === g.items.length ? `${k} ${k === 1 ? 'lesson' : 'lessons'}` : `${k} of ${g.items.length}`;
         setOpen(g, on ? k > 0 : OPEN_COURSES.has(g.id), false);
@@ -53352,12 +53536,31 @@ function renderHome(app) {
       S.count.textContent = on ? `${n} of ${S.live.length} lessons shown` : `${S.live.length} of ${S.total} topics ready`;
     }
     empty.hidden = !on || shown > 0;
-    const hash = on ? filterToken(F) : '#/';
-    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
+    const hash = on ? findToken(F) : '#/';
+    if (location.hash !== hash && (on || /^#(find|\/\?)/.test(location.hash))) { try { history.replaceState(null, '', hash); homeHash = hash; } catch (e) {} }   /* the URL is a convenience; a frame that refuses it must not break filtering */
   };
   const finder = Finder(F, apply);
-  app.append(finder.el, levels);
+  /* "Continue where you left off": the lesson this browser opened last, shown only when there is progress */
+  const last = Progress.last(), lv = last && VIZ.find(x => x.id === last.id);
+  let resume = null;
+  if (lv) {
+    const st = Progress.status(lv), done = st.state === 'done', at = !done && st.st > 1 ? clamp(last.step, 0, st.st - 1) : 0;
+    resume = h('div', { class: 'wrap resume' }, h('a', { class: 'resume-link', href: lessonToken(lv.id, at) },
+      h('span', { class: 'resume-k' }, done ? 'Last opened' : 'Continue where you left off'),
+      h('span', { class: 'resume-t' }, lv.title), h('span', { class: 'resume-d' }, done ? 'Complete' : st.st > 1 ? `Step ${at + 1} of ${st.st}` : 'Opened')));
+  }
+  app.append(resume, finder.el, levels);
   apply();
+  /* "/" jumps to the search box, as on most sites */
+  const slash = e => {
+    if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || /^(input|textarea|select)$/i.test(e.target.tagName) || e.target.isContentEditable) return;
+    e.preventDefault(); finder.focus();
+  };
+  addEventListener('keydown', slash);
+  if (POPPED && HOME_SCROLL && sameHash(HOME_SCROLL.hash, location.hash)) {   /* the router scrolls to the top (or the finder) after this returns, so restore after that */
+    const y = HOME_SCROLL.y; POPPED = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => { if (alive) window.scrollTo({ top: y, behavior: 'instant' }); }));
+  }
 
   /* hero: a grid cycling through linear maps, with a live readout */
   const P = new Plane(heroCanvas, { span: 3.4, transparent: true });
@@ -53390,7 +53593,10 @@ function renderHome(app) {
     const loop = now => { if (t0 === null) t0 = now; M = matAt(now - t0); show(M); P.draw(); raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop);
   }
-  return () => { alive = false; cancelAnimationFrame(raf); P.destroy(); tPlanes.forEach(t => t.destroy()); };
+  return () => {
+    HOME_SCROLL = { y: window.scrollY, hash: homeHash };
+    alive = false; cancelAnimationFrame(raf); cancelAnimationFrame(pumping); removeEventListener('keydown', slash); P.destroy(); tPlanes.forEach(t => t.destroy());
+  };
 }
 
 /* "Standards alignment" section of a lesson page: each tagged benchmark with its full wording. */
@@ -53403,6 +53609,19 @@ function Alignment(v) {
       return h('li', { class: 'align-item', 'data-strand': s.id }, StdChip(c, true),
         h('div', {}, h('p', { class: 'bench' }, STANDARDS[c]), h('p', { class: 'anc' }, s.name + ' \u00b7 ' + a.name)));
     })));
+}
+
+/* A lesson's links as the page shows them: what it lists plus the other side of every link elsewhere, so
+   "Builds on" on one page always has a matching "Leads to" on the other, whichever of the two wrote it down. */
+function connectionLinks(v) {
+  const L = v.links || {}, pre = new Set(L.prereq || []), nxt = new Set(L.next || []), rel = new Set(L.related || []);
+  for (const w of VIZ) {
+    if (w === v || !w.links) continue;
+    if ((w.links.prereq || []).includes(v.id)) nxt.add(w.id);
+    if ((w.links.next || []).includes(v.id)) pre.add(w.id);
+  }
+  for (const id of [...pre, ...nxt]) rel.delete(id);
+  return { prereq: [...pre], next: [...nxt], related: [...rel] };
 }
 
 /* Lesson page. A lesson may use the full format (hook, steps, formal, check, links) or the
@@ -53421,12 +53640,12 @@ function renderViz(app, v, startStep = 0) {
   const chip = ProgressChip(v);
   const check = v.check && v.check.length ? QuickCheck(v.check, (n, right) => { Progress.answer(v.id, n, right); chip.update(); }) : null;
   const tickets = v.check && v.check.length ? h('p', { class: 'ticket-links' }, 'Printable exit ticket: ', h('a', { href: ticketToken(v.id, false) }, 'student version'), ' · ', h('a', { href: ticketToken(v.id, true) }, 'with answer key')) : null;
-  const conn = v.links ? Connections(v.links, v.id) : null;
+  const conn = Connections(connectionLinks(v), v.id);
   const align = Alignment(v);
   let scene = {};
   const stepper = v.steps && v.steps.length
     ? Stepper(v.steps, (s, k, first) => { if (s.set && scene.apply) scene.apply(s.set, first); }, {
-        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
+        onStep: (i, first) => { Progress.step(v.id, i); chip.update(); document.title = v.steps.length > 1 && i > 0 ? `${v.title}, step ${i + 1} of ${v.steps.length} | Continuum` : v.title + ' | Continuum'; if (!first) { try { history.replaceState(null, '', lessonToken(v.id, i)); } catch (e) {} } },
         tools: [CopyButton('Copy link to this step', () => shareUrl(lessonToken(v.id, stepper.index())), { title: embedded ? 'Copies the end of the link; add it after this page\'s address' : '' })]
       }) : null;
   if (stepper) panel.append(stepper.el);

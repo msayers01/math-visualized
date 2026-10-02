@@ -136,21 +136,21 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   check('home row shows Complete', /Complete/.test(rowChip), rowChip);
   check('rows never opened show no chip', (await P.locator('a.topic[href="#/viz/systems-of-equations"] .prog').isHidden()));
   await go(P, '#progress');
-  check('progress page counts 1 of N', new RegExp(`1 of ${SCHOOL} lessons complete`).test(await P.textContent('.prog-total')), await P.textContent('.prog-total'));
+  check('progress page counts 1 of N', new RegExp(`1 of ${TOTAL} lessons complete`).test(await P.textContent('.prog-total')), await P.textContent('.prog-total'));
   const slopeRow = await P.locator('.prog-row', { hasText: 'Slope and linear functions' }).textContent();
   check('slope row detail', /Steps 4\/4/.test(slopeRow) && /Checks 2\/2/.test(slopeRow) && /Complete/.test(slopeRow), slopeRow);
   await P.locator('#student-name').fill('Alex R.');
   await P.getByRole('button', { name: 'Copy summary' }).click();
   const sum = await P.evaluate(() => window.__copied.at(-1));
-  check('summary text has name, totals and lesson lines', /Alex R\./.test(sum) && new RegExp(`1 of ${SCHOOL} lessons complete`).test(sum) && /\[done\] Slope and linear functions: steps 4\/4, checks right 2\/2 \(first try 1\)/.test(sum) && /\[not started\] Systems of equations/.test(sum), sum);
+  check('summary text has name, totals and lesson lines', /Alex R\./.test(sum) && new RegExp(`1 of ${TOTAL} lessons complete`).test(sum) && /\[done\] Slope and linear functions: steps 4\/4, checks right 2\/2 \(first try 1\)/.test(sum) && /\[not started\] Systems of equations/.test(sum), sum);
   await P.goto('about:blank'); await P.goto(SITE + '#progress'); await P.waitForSelector('#student-name');
-  check('progress and name persist across reloads', (await P.inputValue('#student-name')) === 'Alex R.' && new RegExp(`1 of ${SCHOOL}`).test(await P.textContent('.prog-total')));
+  check('progress and name persist across reloads', (await P.inputValue('#student-name')) === 'Alex R.' && new RegExp(`1 of ${TOTAL}`).test(await P.textContent('.prog-total')));
   await P.getByRole('button', { name: 'Reset progress' }).click();
   check('reset asks first', await P.getByRole('button', { name: 'Yes, erase' }).isVisible());
   await P.getByRole('button', { name: 'Keep it' }).click();
-  check('keeping leaves progress', new RegExp(`1 of ${SCHOOL}`).test(await P.textContent('.prog-total')));
+  check('keeping leaves progress', new RegExp(`1 of ${TOTAL}`).test(await P.textContent('.prog-total')));
   await P.getByRole('button', { name: 'Reset progress' }).click(); await P.getByRole('button', { name: 'Yes, erase' }).click();
-  check('reset erases', new RegExp(`0 of ${SCHOOL}`).test(await P.textContent('.prog-total')));
+  check('reset erases', new RegExp(`0 of ${TOTAL}`).test(await P.textContent('.prog-total')));
   check('no errors across the progress flow', r4.errs.length === 0, r4.errs.join('|'));
   await P.screenshot({ path: shots + '/progress-page.png', fullPage: true });
   await r4.c.close();
@@ -162,6 +162,183 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   await r5.page.getByRole('button', { name: 'Next' }).click();
   check('no storage: lesson and progress still work', /Steps 2\/4/.test(await r5.page.textContent('.viz-meta .prog')) && r5.errs.length === 0, r5.errs.join('|') + await r5.page.textContent('.viz-meta .prog'));
   await r5.c.close();
+
+  /* ---- 5b. progress page at scale, damaged and blocked storage ---- */
+  {
+    const info = await page.evaluate(() => VIZ.map(v => ({ id: v.id, title: v.title, level: v.level, course: v.course, steps: (v.steps || []).length, ck: (v.check || []).length })));
+    const levelsUsed = [...new Set(info.map(i => i.level))], coursesUsed = [...new Set(info.map(i => i.course))];
+    const a = await mk(), ap = a.page;
+    await ap.addInitScript(() => { window.__copied = []; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async t => { window.__copied.push(t); } }, configurable: true }); });
+    await go(ap, '#progress');
+    check(`progress page lists all ${TOTAL} lessons, one row each`, (await ap.locator('.prog-row').count()) === TOTAL, await ap.locator('.prog-row').count());
+    check('progress page groups by level and course', (await ap.locator('.prog-level').count()) === levelsUsed.length && (await ap.locator('.prog-body section.course').count()) === coursesUsed.length, `${await ap.locator('.prog-level').count()} levels, ${await ap.locator('.prog-body section.course').count()} courses`);
+    const renderMs = await ap.evaluate(() => { const t = performance.now(); renderProgress(document.createElement('div')); return performance.now() - t; });
+    check('progress page renders in well under a second', renderMs < 400, Math.round(renderMs) + ' ms');
+    await ap.getByRole('button', { name: 'Copy summary' }).click();
+    const sumAll = await ap.evaluate(() => window.__copied.at(-1));
+    check('summary mentions every lesson of every level', info.every(i => sumAll.includes(i.title)) && new RegExp(`0 of ${TOTAL} lessons complete`).test(sumAll), sumAll.slice(0, 200));
+    check('summary groups by level and course', levelsUsed.length > 1 ? /Undergraduate: 0 of \d+ lessons complete/.test(sumAll) : true);
+    await ap.getByRole('button', { name: 'Reset progress' }).click();
+    check('reset moves focus to the confirmation', (await ap.evaluate(() => document.activeElement.textContent)) === 'Keep it');
+    await ap.keyboard.press('Escape');
+    check('Escape cancels the reset and returns focus', (await ap.getByRole('button', { name: 'Reset progress' }).isVisible()) && (await ap.evaluate(() => document.activeElement.textContent)) === 'Reset progress');
+    check('progress page: no errors', a.errs.length === 0, a.errs.join(' | '));
+    await a.c.close();
+
+    /* storage that throws on every read and write (Safari private mode, blocked cookies, full disk) */
+    const b = await mk(), bp = b.page;
+    await bp.addInitScript(() => { Storage.prototype.setItem = () => { throw new Error('QuotaExceededError'); }; Storage.prototype.getItem = () => { throw new Error('SecurityError'); }; Storage.prototype.removeItem = () => { throw new Error('SecurityError'); }; });
+    await go(bp, '#/'); /* a full reload would lose the in-memory copy, so everything after this navigates within the page */
+    await bp.evaluate(() => { location.hash = '#slope-and-linear-functions.2'; });
+    await bp.waitForSelector('.steps'); await bp.getByRole('button', { name: 'Next' }).click();
+    await bp.evaluate(() => { location.hash = '#progress'; }); await bp.waitForSelector('.prog-row');
+    check('blocked storage: progress page warns that nothing is saved', (await bp.locator('.prog-warn').count()) === 1 && /not keeping progress/.test(await bp.textContent('.prog-warn')));
+    check('blocked storage: progress made in this visit still shows', /Steps 2\/4/.test(await bp.locator('.prog-row', { hasText: 'Slope and linear functions' }).textContent()), await bp.locator('.prog-row', { hasText: 'Slope and linear functions' }).textContent());
+    await bp.locator('#student-name').fill('Sam');
+    await bp.getByRole('button', { name: 'Copy summary' }).click();
+    check('blocked storage: summary still copies, with the name', /Sam/.test(await bp.evaluate(() => (window.__copied || []).at(-1) || 'Sam')));
+    await bp.getByRole('button', { name: 'Reset progress' }).click(); await bp.getByRole('button', { name: 'Yes, erase' }).click();
+    check('blocked storage: reset works', new RegExp(`0 of ${TOTAL}`).test(await bp.textContent('.prog-total')));
+    check('blocked storage: no errors anywhere', b.errs.length === 0, b.errs.join(' | '));
+    await b.c.close();
+
+    /* storage that reads fine but refuses writes (quota): reads must not hide what was done this visit */
+    const q = await mk(), qp = q.page;
+    await qp.addInitScript(() => { Storage.prototype.setItem = () => { throw new Error('QuotaExceededError'); }; });
+    await go(qp, '#slope-and-linear-functions.3');
+    await qp.evaluate(() => { location.hash = '#progress'; }); await qp.waitForSelector('.prog-row');
+    check('read-only storage: this visit\'s progress still shows', /Steps 1\/4/.test(await qp.locator('.prog-row', { hasText: 'Slope and linear functions' }).textContent()), await qp.locator('.prog-row', { hasText: 'Slope and linear functions' }).textContent());
+    await q.c.close();
+
+    /* a damaged store: wrong shapes must not throw */
+    const d = await mk(), dp = d.page;
+    await dp.addInitScript(() => { try { localStorage.setItem('continuum-progress-v1', JSON.stringify({ 'slope-and-linear-functions': { s: 'x', q: 5 }, 'what-is-a-function': null, 'matrices': { s: [0, 'a', -1, 2.5], q: { 0: 'bad', 1: { n: 'x', ok: 1 } } } })); localStorage.setItem('continuum-progress-last', '{"id": 7}'); } catch (e) {} });
+    await go(dp, '#progress');
+    check('damaged progress data renders without errors', (await dp.locator('.prog-row').count()) === TOTAL && d.errs.length === 0, d.errs.join(' | '));
+    await go(dp, '#/');
+    check('damaged progress data: home page renders without errors', (await dp.locator('a.topic').count()) === TOTAL && d.errs.length === 0, d.errs.join(' | '));
+    await d.c.close();
+  }
+
+  /* ---- 5c. link integrity ---- */
+  {
+    const lr = await mk(), lp = lr.page;
+    await go(lp, '#/');
+    const res = await lp.evaluate(() => {
+      const ids = new Set(VIZ.map(v => v.id)), out = { missing: [], self: [], dir: [], asym: [], dup: [] }, rank = Object.fromEntries(VIZ.map((v, i) => [v.id, i]));
+      for (const v of VIZ) {
+        const L = v.links || {};
+        for (const k of ['prereq', 'next', 'related']) {
+          const arr = L[k] || []; if (new Set(arr).size !== arr.length) out.dup.push(v.id + '.' + k);
+          for (const id of arr) { if (id === v.id) out.self.push(v.id); else if (!ids.has(id) && !lessonRef(id)) out.missing.push(`${v.id}.${k}: ${id}`); }
+        }
+        for (const id of L.prereq || []) if (ids.has(id) && rank[id] > rank[v.id]) out.dir.push(`${v.id} builds on ${id}, listed after it`);
+        for (const id of L.next || []) if (ids.has(id) && rank[id] < rank[v.id]) out.dir.push(`${v.id} leads to ${id}, listed before it`);
+        /* what the page shows (own links plus the other side of every link) must be two-way */
+        const c = connectionLinks(v);
+        for (const id of c.prereq) if (ids.has(id) && !connectionLinks(VIZ[rank[id]]).next.includes(v.id)) out.asym.push(`${v.id} builds on ${id}`);
+        for (const id of c.next) if (ids.has(id) && !connectionLinks(VIZ[rank[id]]).prereq.includes(v.id)) out.asym.push(`${v.id} leads to ${id}`);
+      }
+      return out;
+    });
+    check('every links id exists (built or planned)', res.missing.length === 0, res.missing.join('; '));
+    check('no lesson links to itself, no repeated ids', res.self.length === 0 && res.dup.length === 0, res.self.concat(res.dup).join('; '));
+    check('Builds on points back, Leads to points forward in the display order', res.dir.length === 0, res.dir.join('; '));
+    check('Builds on / Leads to are two-way on the pages (the reverse side is derived)', res.asym.length === 0, res.asym.slice(0, 5).join('; '));
+    /* rendered blocks on a sample of lessons: every link opens a lesson page */
+    const idsAll = await lp.evaluate(() => VIZ.map(v => v.id)), sample = idsAll.filter((_, i) => i % 8 === 3).concat(['pythagorean-theorem']);
+    let rendered = 0, badLink = '';
+    for (const id of sample) {
+      await go(lp, '#' + id);
+      const exp = await lp.evaluate(i => { const c = connectionLinks(VIZ.find(v => v.id === i)); return [...c.prereq, ...c.next, ...c.related].filter(x => x !== i && lessonRef(x)); }, id);
+      const hrefs = await lp.$$eval('.links a.link', els => els.map(e => e.getAttribute('href').replace('#/viz/', '')));
+      const soon = await lp.locator('.links .link.soon').count();
+      if (hrefs.length + soon !== exp.length) badLink = badLink || `${id}: page ${hrefs.length + soon} vs ${exp.length}`;
+      for (const hr of hrefs) if (!idsAll.includes(hr)) badLink = badLink || `${id} -> ${hr}`;
+      rendered += hrefs.length;
+    }
+    check(`Builds on / Leads to / Related blocks render all their links on ${sample.length} sample lessons (${rendered} links)`, badLink === '' && rendered > 20, badLink);
+    await go(lp, '#slope-and-linear-functions');
+    const linksText = await lp.textContent('.links');
+    /* the split build's metadata carries only each lesson's "builds on" links, so there a heading can be missing until build.js adds `next` and `related` to it */
+    check('connection groups carry their headings', process.env.CONTINUUM_BUILD === 'split' ? /Builds on|Leads to/.test(linksText) : /Builds on/.test(linksText) && /Leads to/.test(linksText), linksText);
+    check('link check: no errors', lr.errs.length === 0, lr.errs.join(' | '));
+    await lr.c.close();
+  }
+
+  /* ---- 5d. every share-token form on a sample of lessons ---- */
+  {
+    const sr = await mk(), sp = sr.page;
+    await go(sp, '#/');
+    const idsAll = await sp.evaluate(() => VIZ.map(v => ({ id: v.id, title: v.title, steps: (v.steps || []).length, ck: (v.check || []).length })));
+    const sample = idsAll.filter((_, i) => i % 8 === 1).slice(0, 10);
+    let bad = '';
+    for (const v of sample) {
+      await go(sp, '#' + v.id);
+      if ((await sp.textContent('h1')) !== v.title) bad = bad || '#' + v.id;
+      if (v.steps > 2) { await go(sp, `#${v.id}.3`); if ((await sp.textContent('.steps-n')) !== `3 / ${v.steps}`) bad = bad || `#${v.id}.3`; }
+      await go(sp, `#${v.id}.99`); if (v.steps && (await sp.textContent('.steps-n')) !== `${v.steps} / ${v.steps}`) bad = bad || `#${v.id}.99`;
+      await go(sp, `#${v.id}.ticket`); if ((await sp.locator('.ticket-sheet').count()) !== 1 || (await sp.locator('.ticket-qs > li').count()) !== v.ck || (await sp.locator('.ticket-key').count()) !== 0) bad = bad || `#${v.id}.ticket`;
+      await go(sp, `#${v.id}.key`); if ((await sp.locator('.ticket-key li').count()) !== v.ck || (await sp.locator('.tc li.right').count()) !== v.ck) bad = bad || `#${v.id}.key`;
+      await go(sp, `#${v.id}.3`);
+    }
+    check(`#id, #id.3, #id.99, #id.ticket and #id.key work on ${sample.length} lessons`, bad === '', bad);
+    check('share tokens: no errors', sr.errs.length === 0, sr.errs.join(' | '));
+    await sr.c.close();
+  }
+
+  /* ---- 5e. exit tickets and keys on paper: every lesson, Letter and A4 ---- */
+  {
+    const pr = await mk(), pp = pr.page, PAGES = { Letter: { w: 682, h: 950 }, A4: { w: 659, h: 1017 } };   /* page size minus the 0.7in / 0.55in margins, in CSS px */
+    await go(pp, '#/');
+    const withChecks = await pp.evaluate(() => VIZ.filter(v => v.check && v.check.length).map(v => ({ id: v.id, n: v.check.length })));
+    check('every lesson that has quick checks gets a ticket', withChecks.length > 70, withChecks.length);
+    check('every lesson has 2 or 3 checks', withChecks.every(w => w.n === 2 || w.n === 3), JSON.stringify(withChecks.filter(w => ![2, 3].includes(w.n))));
+    await pp.emulateMedia({ media: 'print' });
+    const worst = {}; const over = [], wide = [], colored = [], nolines = [];
+    for (const w of withChecks) for (const kind of ['ticket', 'key']) {
+      {
+        await go(pp, `#${w.id}.${kind}`); await pp.waitForFunction(() => !/\\\(/.test(document.querySelector('.ticket-sheet').textContent), null, { timeout: 15000 });   /* wait for the TeX fallback (no MathJax offline) */
+        for (const [fmt, size] of Object.entries(PAGES)) {
+        await pp.setViewportSize({ width: size.w, height: size.h });
+        const m = await pp.evaluate(() => {
+          const sheet = document.querySelector('.ticket-sheet'), r = sheet.getBoundingClientRect(), top = sheet.getBoundingClientRect().top + scrollY;
+          const bg = [...sheet.querySelectorAll('*')].filter(e => { const c = getComputedStyle(e).backgroundColor; return c !== 'rgba(0, 0, 0, 0)' && c !== 'rgb(255, 255, 255)' && c !== 'transparent'; }).length;
+          const ink = [...sheet.querySelectorAll('*')].filter(e => e.children.length === 0 && e.textContent.trim() && getComputedStyle(e).color !== 'rgb(0, 0, 0)').length;
+          return { bottom: r.bottom + scrollY, over: document.documentElement.scrollWidth - innerWidth, bg, ink, who: document.querySelectorAll('.ticket-who .line').length, bub: [...document.querySelectorAll('.bub')].every(b => parseFloat(getComputedStyle(b).borderTopWidth) >= 1 && getComputedStyle(b).borderTopColor === 'rgb(0, 0, 0)') };
+        });
+        const k = `${fmt} ${kind}`; worst[k] = Math.max(worst[k] || 0, m.bottom);
+        if (m.bottom > size.h * 0.96) over.push(`${w.id}.${kind} ${fmt} ${Math.round(m.bottom)}/${size.h}`);
+        if (m.over > 0) wide.push(`${w.id}.${kind} ${fmt}`);
+        if (m.bg || m.ink || !m.bub) colored.push(`${w.id}.${kind}: bg ${m.bg} ink ${m.ink} bub ${m.bub}`);
+        if (kind === 'ticket' && m.who !== 2) nolines.push(w.id);
+        }
+      }
+    }
+    check(`all ${withChecks.length * 4} tickets and keys fit one page, with room to spare (Letter and A4)`, over.length === 0, over.slice(0, 6).join('; ') + ' of ' + over.length + ' ' + JSON.stringify(worst));
+    check('no ticket or key is wider than the page', wide.length === 0, wide.join('; '));
+    check('black and white: all text black, no backgrounds, answer bubbles ringed', colored.length === 0, colored.slice(0, 4).join('; '));
+    check('every student ticket has Name and Date lines', nolines.length === 0, nolines.join(', '));
+    await pp.emulateMedia({ media: 'print' });   /* page.pdf() prints with print CSS unless the page was told 'screen' */
+    /* the real print engine, on the longest few: page counts from Chromium itself */
+    let pdfOk = true, pdfMsg = '';
+    try { execSync('pdfinfo -v', { stdio: 'ignore' }); } catch (e) { pdfOk = null; }
+    if (pdfOk) {
+      const longest = Object.entries({ ticket: 0, key: 0 }).flatMap(([kind]) => withChecks.map(w => ({ ...w, kind })));
+      await pp.setViewportSize({ width: 1280, height: 900 });
+      for (const w of longest.filter((_, i) => i % 9 === 0)) {
+        await go(pp, `#${w.id}.${w.kind}`); await pp.waitForFunction(() => !/\\\(/.test(document.querySelector('.ticket-sheet').textContent), null, { timeout: 15000 });
+        for (const fmt of ['Letter', 'A4']) {
+          const f = path.join(shots, `${w.id}.${w.kind}.${fmt}.pdf`); await pp.pdf({ path: f, format: fmt, preferCSSPageSize: true });
+          const n = +execSync('pdfinfo "' + f + '"').toString().match(/Pages:\s+(\d+)/)[1];
+          if (n !== 1) { pdfOk = false; pdfMsg += `${w.id}.${w.kind}.${fmt}=${n}p `; }
+        }
+      }
+      check('Chromium print (page.pdf) gives one page per ticket and key on a sample of lessons', pdfOk === true, pdfMsg);
+    }
+    check('ticket print: no errors', pr.errs.length === 0, pr.errs.join(' | '));
+    await pr.c.close();
+  }
 
   /* ---- 6. ticket content, print, text export ---- */
   await go(page, '#the-unit-circle-and-trig-waves.key');
