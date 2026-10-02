@@ -410,8 +410,8 @@
         const lo = lerp(3.10, 3.1385, z), hi = lerp(3.20, 3.1445, z), X = v => 24 + (v - lo) / (hi - lo) * (W - 48), ay = H * .42;
         c.textAlign = 'left'; c.fillStyle = pal.text; c.font = font(fs * 1.3, 700); c.fillText('π and two fractions', 14, 26);
         c.strokeStyle = pal['grid-strong']; c.lineWidth = 2; c.beginPath(); c.moveTo(14, ay); c.lineTo(W - 14, ay); c.stroke();
-        const steps = [.1, .05, .02, .01, .005, .002, .001, .0005]; let stp = steps[steps.length - 1];
-        for (const s of steps) if ((hi - lo) / s <= 7) { stp = s; break; }
+        const steps = [.2, .1, .05, .02, .01, .005, .002, .001, .0005, .0002, .0001]; let stp = steps[steps.length - 1];
+        for (const s of steps) if ((hi - lo) / s >= 3) { stp = s; break; }
         const dec = Math.max(2, Math.round(-Math.log10(stp)) + (stp < .01 && String(stp).includes('5') ? 1 : 0));
         c.font = font(fs * .9, 500); c.textAlign = 'center';
         for (let v = Math.ceil(lo / stp) * stp; v <= hi + 1e-9; v += stp) {
@@ -505,8 +505,8 @@
       };
       const renderStage2 = () => {
         const D = DV[st.fi], b = D.b; dRow.replaceChildren();
-        dQ.textContent = `It repeats. How long can the repeating block be, at most? Think: what remainders are possible when you divide by ${b}?`;
-        [`At most ${Math.floor(b / 2)} digits`, `At most ${b - 1} digits`, 'No limit'].forEach((l, i) => dRow.append(mkBtn(l, () => {
+        dQ.textContent = `It repeats. Which limit on the length of the repeating block is guaranteed for every fraction with denominator ${b}? Think: what remainders are possible when you divide by ${b}?`;
+        [`At most ${Math.floor(b / 2)} digit${Math.floor(b / 2) === 1 ? '' : 's'}`, `At most ${b - 1} digit${b - 1 === 1 ? '' : 's'}`, 'No limit'].forEach((l, i) => dRow.append(mkBtn(l, () => {
           if (st.dp === 2) return; st.dp = 2;
           const msgs = [bad('Not quite.') + ` Nothing forces a cap of ${Math.floor(b / 2)}. The real limit comes from the remainders: only 1 to ${b - 1} are possible (0 would stop it).`,
             good('Yes.') + ` The remainder is one of 1 to ${b - 1}. Once a remainder comes back, the digits repeat, so the block has at most ${b - 1} digits.`,
@@ -559,7 +559,7 @@
           const e2 = I.f.filter(q => q === 2).length, e5 = I.f.length - e2, m = Math.max(e2, e5), mult = Math.pow(10, m) / I.dd;
           L.push(good('Only 2s and 5s.') + ` So ${I.nn}/${I.dd} = ${I.nn * mult}/${Math.pow(10, m)}, a fraction over a power of 10, so it stops.`);
         } else L.push(bad(`A ${I.other} in the denominator.`) + ` Powers of 10 have only 2s and 5s, so ${I.dd} never fits into one. The remainders never reach 0, so it repeats.`);
-        if (I.g > 1 && I.stops) L.push(`The unreduced ${n}/${d} looks like it has a ${fmtF(factors(d).filter(q => q !== 2 && q !== 5).slice(0, 1))}, but it cancels.`);
+        if (I.g > 1 && I.stops && factors(d).some(q => q !== 2 && q !== 5)) L.push(`The unreduced ${n}/${d} looks like it has a ${fmtF(factors(d).filter(q => q !== 2 && q !== 5).slice(0, 1))}, but it cancels.`);
         return lines(L);
       };
 
@@ -594,7 +594,8 @@
         } else {
           L.push(good('The tails cancel.') + ` What is left, ${decHtml(D)}, stops but is not a whole number. ${coef}x = ${decHtml(D)}, so x = ${decHtml(D)} ÷ ${coef} = <b>${n}/${d}</b> in lowest terms. A cleaner pair gives a whole number: ${shiftName(Math.pow(10, np + blk))} − ${shiftName(Math.pow(10, np))}.`);
         }
-        if (st.tchk) { const C2 = longDiv(n, d); L.push(`${kk('Check')} ${n} ÷ ${d} = ${decHtml(C2)}. ${C2.ip}.${C2.pre}${C2.per.repeat(3)}… matches ${tName(t)} ${good('(yes)')}`); }
+        if (st.tchk && d === 1) L.push(`${kk('Check')} 1 = 0.999…, see the argument below.`);
+        else if (st.tchk) { const C2 = longDiv(n, d); L.push(`${kk('Check')} ${n} ÷ ${d} = ${decHtml(C2)}. ${C2.ip}.${C2.pre}${C2.per.repeat(3)}… matches ${tName(t)} ${good('(yes)')}`); }
         if (t.R === '9' && !t.P) {
           L.push(`<b>So 0.999… = 1 exactly.</b> This is an argument, not a trick. (1) 1/3 = 0.333…, and 3 × 1/3 = 1, but 3 × 0.333… = 0.999… (2) The gap 1 − 0.999… is smaller than 0.1, than 0.01, than 0.001, and so on. The only number that is not negative and smaller than all of these is 0, so the gap is 0.`);
         }
@@ -619,7 +620,7 @@
         out.push(`${kk('Number')} ${q.name} = ${q.head}${q.d.slice(0, Math.min(shown, 24))}${shown > 24 ? '…' : ''}`);
         out.push(`${kk('Test')} If the digits repeat with length ${L}, each digit equals the digit ${L} places later.`);
         if (shown <= L) out.push('Show more digits.');
-        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds for ever. Other lengths such as ${L} may break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
+        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds for ever. Other lengths, such as 4, break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
         else out.push(bad(`Breaks at digit ${bk + 1}.`) + ` It is ${q.d[bk]}, but the digit ${L} places later is ${q.d[bk + L]}. So the digits do not repeat with length ${L} from the start.`);
         out.push(st.seq === 2 ? 'For contrast, this is a fraction. A repeat of length 6 never breaks.' : `Honest note: ${shown} digits cannot show what happens forever. Only a proof can. For √2 see the lesson Why the square root of 2 is irrational.`);
         return lines(out);
@@ -675,7 +676,7 @@
       /* ========================= practice ========================= */
       C.title('Practice');
       C.hint('Seven short problems. Nothing here is saved or scored.');
-      startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; sync(); } else { st.practice = true; if (!prOver) loadProb(); sync(); } } }])[0];
+      startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; st.fi = 0; st.k = 0; selFr.value = '0'; loadFr(); sync(); } else { st.practice = true; if (!prOver) loadProb(); sync(); } } }])[0];
       grp('practice', () => {
         ptally = h('p', { class: 'ctl-title' });
         pq = h('p', { style: 'margin:0;font-size:.95rem;line-height:1.5' });
