@@ -816,10 +816,10 @@ const ALIGN = [
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
   { id: 'angles-in-triangles-and-polygons', course: 'geometry', skill: 'intro', standards: ['6.2.4.1', '6.2.4.2', '9.2.4.2', '9.2.4.3'] },
   { id: 'special-right-triangles-and-trigonometry', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
-  { id: 'volume-of-prisms-pyramids-and-cones', course: 'geometry', skill: 'mid', standards: ['6.2.3.2', '7.2.3.4', '9.2.3.4', '9.2.3.5'] },
+  { id: 'volume-of-prisms-pyramids-and-cones', course: 'geometry', skill: 'mid', standards: ['6.2.3.2', '7.2.3.4', '9.2.3.4', '9.2.3.5', '9.2.3.9'] },
   { id: 'nets-and-surface-area', course: 'geometry', skill: 'mid', standards: ['6.2.3.1', '7.2.3.4', '9.2.3.4', '9.2.3.5'] },
   { id: 'similar-triangles-aa-sas-sss', course: 'geometry', skill: 'mid', standards: ['9.2.4.11', '9.2.4.10'] },
-  { id: 'rigid-motions-and-congruence', course: 'geometry', skill: 'mid', standards: ['7.2.4.1', '9.2.4.4', '9.2.4.13', '9.2.4.14'] },
+  { id: 'rigid-motions-and-congruence', course: 'geometry', skill: 'mid', standards: ['7.2.4.1', '7.2.4.2', '9.2.4.4', '9.2.4.13', '9.2.4.14'] },
   { id: 'angle-relationships-and-parallel-lines', course: 'geometry', skill: 'mid', standards: ['9.2.4.1'] },
 
   /* Precalculus & Trigonometry. Radians and periodic waves go beyond the 9-11 benchmarks; 9.2.3.8 (acute-angle
@@ -24943,7 +24943,7 @@ register({
     check: [
       { q: String.raw`Two lines are cut by a transversal. Which statement about corresponding angles is correct?`,
         choices: [String.raw`They are equal for any two lines.`, String.raw`They always add to \(180^\circ\).`, String.raw`They are equal exactly when the two lines are parallel.`, String.raw`They are equal only when the transversal is perpendicular to the lines.`], answer: 2,
-        why: String.raw`Parallel lines make equal corresponding angles, and equal corresponding angles tell you the lines are parallel. For lines that are not parallel, the corresponding angles are different. They add to \(180^\circ\) only in special cases, such as a right transversal.`,
+        why: String.raw`Parallel lines make equal corresponding angles, and equal corresponding angles tell you the lines are parallel. For lines that are not parallel, the corresponding angles are different. They add to \(180^\circ\) only by accident, for example \(100^\circ\) and \(80^\circ\) when line \(n\) is tilted \(20^\circ\).`,
         hint: String.raw`Think of tilting one track. Do the corresponding angles stay matched?` },
       { q: String.raw`Lines \(m\) and \(n\) are parallel. A transversal makes two alternate interior angles of \((4x-8)^\circ\) and \((2x+30)^\circ\). What is the size of the angle that makes a linear pair with the first one?`,
         choices: [String.raw`\(68^\circ\)`, String.raw`\(112^\circ\)`, String.raw`\(76^\circ\)`, String.raw`\(142^\circ\)`], answer: 1,
@@ -25107,7 +25107,7 @@ register({
           if (!narrow) text('drag', p.X(hx) + (hx > 3.2 ? -26 : 26), p.Y(hy) - 2, 13, pal.muted, false);
         }
         /* status */
-        const s1 = parallel() ? 'Lines m and n are parallel' : `Lines m and n are NOT parallel (n is tilted ${deg(tilt)}°)`;
+        const s1 = fl.prac && !parallel() ? 'Lines m and n: parallel or not?' : parallel() ? 'Lines m and n are parallel' : `Lines m and n are NOT parallel (n is tilted ${deg(tilt)}°)`;
         const sz1 = clamp(sc * .46, 13, 15.5); c.font = `700 ${sz1}px ${FONT}`;
         text(s1, 30 + c.measureText(s1).width / 2, 24, sz1, parallel() ? pal.green : pal.red, true);
       };
@@ -25161,7 +25161,7 @@ register({
           onclick: () => {
             if (predPick >= 0) return;
             predPick = i; fl.deg = true; tgDeg.checked = true;
-            const a = deg(sizeOf(2, st.th, st.tilt)), b = deg(sizeOf(6, st.th, st.tilt));
+            const a = deg(sizeOf(2, st.th, 0)), b = deg(sizeOf(6, st.th, 0));
             predBtns.forEach((bt, j) => { bt.disabled = true; if (j === i) { bt.style.borderColor = o.ok ? 'var(--green)' : 'var(--red)'; bt.style.borderWidth = '2px'; } });
             predFb.innerHTML = o.ok
               ? `<b style="color:var(--green)">Yes.</b> ∠2 = ${a}° and ∠6 = ${b}°. When the lines are parallel, the road meets both at the same angle. Now switch off "Lines m and n are parallel" and watch ∠6.`
@@ -25362,6 +25362,7 @@ register({
         roP.replaceChildren(h('p', { style: 'margin:0 0 10px', html: `<b>You got ${pr.score} of ${N} problems right on the first try.</b> ${pr.score === N ? 'Every problem, first try.' : 'The ones you missed are worth another look: read each explanation, then try again.'}` }),
           h('button', { type: 'button', class: 'btn primary', onclick: startPractice }, 'Practice again'));
         fl.prac = false; fl.lab = null; fl.hl = []; fl.mode = 'explore'; fl.sel = null; fl.ray = false; fl.deg = true; tgDeg.checked = true; selEl.value = '0';
+        if (curPatch) apply(curPatch, true);
         refreshLocks(); sync();
       };
 
@@ -25497,7 +25498,7 @@ register({
         { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up of the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
         { t: 'B′ = (1, −4)', pt: [1, -4], why: 'That is a turn the other way (clockwise), which sends (x, y) to (y, −x). Counterclockwise is against the hands of a clock.' },
         { t: 'B′ = (−4, −1)', pt: [-4, -1], why: 'That is a half turn (180°), which sends (x, y) to (−x, −y). A quarter turn only swaps the two numbers and changes one sign.' },
-        { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. A turn must keep the corner the same distance from the origin and move it a quarter of the way round.' }] },
+        { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. (1, 4) is not a quarter of the way round from (4, 1): the flip also changes which way A, B, C goes round. A turn keeps the direction A, B, C goes round.' }] },
     { kind: 'mc', tag: 'Choose the move',
       q: 'Which ONE move maps the light triangle ABC onto the yellow target? Look at the picture. The target is a mirror image of ABC.',
       tgt: T3,
@@ -25836,7 +25837,7 @@ register({
       };
       const leave = () => {
         cancelA(); st.mode = 'explore'; clearPractice(); st.moves = []; st.anim = 1;
-        show(gPal, true); show(ro, true); updKind(); showPrac(false); refresh();
+        show(gPal, true); show(ro, true); show(gPred, st.cmpOn); updKind(); showPrac(false); refresh();
       };
       const clearPractice = () => { st.tgt = null; st.names = null; st.mark = null; st.hl = false; st.ring = null; st.pre = PRE; st.cmp = null; };
       const showPrac = on => { pracEls.forEach(e => show(e, on)); show(startB.parentNode, !on); if (!on) choiceB.forEach(b => show(b.parentNode, false)); };
@@ -25892,7 +25893,7 @@ register({
         if (same(img, st.tgt)) {
           const steps = st.moves.map((m, i) => `${i + 1}. ${wordsOf(m)}`).join('; ');
           fb.innerHTML = `${good('Correct.')} Every corner lands on the target. Your steps: ${steps}. ` +
-            (st.moves.length === 2 && st.moves.some(m => m.k === 'F') && st.moves.some(m => m.k === 'T') ? 'Here the same two moves in the opposite order also work, but only because the slide runs along the mirror line. In general the order matters. ' : '') +
+            (st.moves.length === 2 && same(runMoves(st.pre, [st.moves[1], st.moves[0]]), st.tgt) ? 'Here the same two moves in the opposite order also work, which happens only for special choices. In general the order matters. ' : '') +
             `The triangles are congruent, because rigid motions map one onto the other.` + (st.tries === 1 ? ' Right on the first try.' : '');
           finish(st.tries === 1);
         } else {
@@ -26101,7 +26102,7 @@ register({
         choices: ['$70', '$270', '$282', '$210'], answer: 3,
         why: String.raw`Cut along \(y=4\). The bottom piece is \(|10-0|\times|4-0|=10\times 4=40\). The top piece is \(|6-0|\times|9-4|=6\times 5=30\). The floor is \(40+30=70\) square meters, and \(70\times 3=\$210\). $70 forgets the price. $270 covers the whole \(10\times 9\) rectangle at $3 a square meter. $282 adds \(10\times 4\) and \(6\times 9\), which counts the bottom left block twice.`,
         hint: 'Cut the L into two rectangles first. Find each side length by subtracting coordinates. Then multiply the total by 3.' },
-      { q: 'Mia finds the area of a triangle with corners (1, 1), (7, 1) and (3, 5). She writes:\nStep 1. Base = |7 − 1| = 6.\nStep 2. Height = |5 − 1| = 4.\nStep 3. Area = 6 × 4 = 24 square units.\nWhich statement is true?',
+      { q: 'Mia finds the area of a triangle with corners (1, 1), (7, 1) and (3, 5). She writes:<br>Step 1. Base = |7 − 1| = 6.<br>Step 2. Height = |5 − 1| = 4.<br>Step 3. Area = 6 × 4 = 24 square units.<br>Which statement is true?',
         choices: ['Step 3 is wrong: a triangle is half of base times height, so the area is 12.', 'Step 1 is wrong: the base should be 7 + 1 = 8.', 'Step 2 is wrong: the height should be the slanted side.', 'Nothing is wrong: the area is 24.'], answer: 0,
         why: String.raw`Steps 1 and 2 are right: the base and the height come from subtracting coordinates. But \(6\times 4=24\) is the area of a parallelogram with that base and height. Two copies of the triangle make that parallelogram, so the triangle is half: \(\tfrac12\times 6\times 4=12\).`,
         hint: 'Two copies of a triangle make a parallelogram. How does the area of one copy compare with the parallelogram?' }

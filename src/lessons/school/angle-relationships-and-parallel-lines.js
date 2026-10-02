@@ -178,7 +178,7 @@
     check: [
       { q: String.raw`Two lines are cut by a transversal. Which statement about corresponding angles is correct?`,
         choices: [String.raw`They are equal for any two lines.`, String.raw`They always add to \(180^\circ\).`, String.raw`They are equal exactly when the two lines are parallel.`, String.raw`They are equal only when the transversal is perpendicular to the lines.`], answer: 2,
-        why: String.raw`Parallel lines make equal corresponding angles, and equal corresponding angles tell you the lines are parallel. For lines that are not parallel, the corresponding angles are different. They add to \(180^\circ\) only in special cases, such as a right transversal.`,
+        why: String.raw`Parallel lines make equal corresponding angles, and equal corresponding angles tell you the lines are parallel. For lines that are not parallel, the corresponding angles are different. They add to \(180^\circ\) only by accident, for example \(100^\circ\) and \(80^\circ\) when line \(n\) is tilted \(20^\circ\).`,
         hint: String.raw`Think of tilting one track. Do the corresponding angles stay matched?` },
       { q: String.raw`Lines \(m\) and \(n\) are parallel. A transversal makes two alternate interior angles of \((4x-8)^\circ\) and \((2x+30)^\circ\). What is the size of the angle that makes a linear pair with the first one?`,
         choices: [String.raw`\(68^\circ\)`, String.raw`\(112^\circ\)`, String.raw`\(76^\circ\)`, String.raw`\(142^\circ\)`], answer: 1,
@@ -342,7 +342,7 @@
           if (!narrow) text('drag', p.X(hx) + (hx > 3.2 ? -26 : 26), p.Y(hy) - 2, 13, pal.muted, false);
         }
         /* status */
-        const s1 = parallel() ? 'Lines m and n are parallel' : `Lines m and n are NOT parallel (n is tilted ${deg(tilt)}°)`;
+        const s1 = fl.prac && !parallel() ? 'Lines m and n: parallel or not?' : parallel() ? 'Lines m and n are parallel' : `Lines m and n are NOT parallel (n is tilted ${deg(tilt)}°)`;
         const sz1 = clamp(sc * .46, 13, 15.5); c.font = `700 ${sz1}px ${FONT}`;
         text(s1, 30 + c.measureText(s1).width / 2, 24, sz1, parallel() ? pal.green : pal.red, true);
       };
@@ -396,7 +396,7 @@
           onclick: () => {
             if (predPick >= 0) return;
             predPick = i; fl.deg = true; tgDeg.checked = true;
-            const a = deg(sizeOf(2, st.th, st.tilt)), b = deg(sizeOf(6, st.th, st.tilt));
+            const a = deg(sizeOf(2, st.th, 0)), b = deg(sizeOf(6, st.th, 0));
             predBtns.forEach((bt, j) => { bt.disabled = true; if (j === i) { bt.style.borderColor = o.ok ? 'var(--green)' : 'var(--red)'; bt.style.borderWidth = '2px'; } });
             predFb.innerHTML = o.ok
               ? `<b style="color:var(--green)">Yes.</b> ∠2 = ${a}° and ∠6 = ${b}°. When the lines are parallel, the road meets both at the same angle. Now switch off "Lines m and n are parallel" and watch ∠6.`
@@ -597,6 +597,7 @@
         roP.replaceChildren(h('p', { style: 'margin:0 0 10px', html: `<b>You got ${pr.score} of ${N} problems right on the first try.</b> ${pr.score === N ? 'Every problem, first try.' : 'The ones you missed are worth another look: read each explanation, then try again.'}` }),
           h('button', { type: 'button', class: 'btn primary', onclick: startPractice }, 'Practice again'));
         fl.prac = false; fl.lab = null; fl.hl = []; fl.mode = 'explore'; fl.sel = null; fl.ray = false; fl.deg = true; tgDeg.checked = true; selEl.value = '0';
+        if (curPatch) apply(curPatch, true);
         refreshLocks(); sync();
       };
 

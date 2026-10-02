@@ -98,10 +98,10 @@ const ALIGN = [
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
   { id: 'angles-in-triangles-and-polygons', course: 'geometry', skill: 'intro', standards: ['6.2.4.1', '6.2.4.2', '9.2.4.2', '9.2.4.3'] },
   { id: 'special-right-triangles-and-trigonometry', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
-  { id: 'volume-of-prisms-pyramids-and-cones', course: 'geometry', skill: 'mid', standards: ['6.2.3.2', '7.2.3.4', '9.2.3.4', '9.2.3.5'] },
+  { id: 'volume-of-prisms-pyramids-and-cones', course: 'geometry', skill: 'mid', standards: ['6.2.3.2', '7.2.3.4', '9.2.3.4', '9.2.3.5', '9.2.3.9'] },
   { id: 'nets-and-surface-area', course: 'geometry', skill: 'mid', standards: ['6.2.3.1', '7.2.3.4', '9.2.3.4', '9.2.3.5'] },
   { id: 'similar-triangles-aa-sas-sss', course: 'geometry', skill: 'mid', standards: ['9.2.4.11', '9.2.4.10'] },
-  { id: 'rigid-motions-and-congruence', course: 'geometry', skill: 'mid', standards: ['7.2.4.1', '9.2.4.4', '9.2.4.13', '9.2.4.14'] },
+  { id: 'rigid-motions-and-congruence', course: 'geometry', skill: 'mid', standards: ['7.2.4.1', '7.2.4.2', '9.2.4.4', '9.2.4.13', '9.2.4.14'] },
   { id: 'angle-relationships-and-parallel-lines', course: 'geometry', skill: 'mid', standards: ['9.2.4.1'] },
 
   /* Precalculus & Trigonometry. Radians and periodic waves go beyond the 9-11 benchmarks; 9.2.3.8 (acute-angle

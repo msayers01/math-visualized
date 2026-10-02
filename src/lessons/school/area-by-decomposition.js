@@ -180,7 +180,7 @@
         choices: ['$70', '$270', '$282', '$210'], answer: 3,
         why: String.raw`Cut along \(y=4\). The bottom piece is \(|10-0|\times|4-0|=10\times 4=40\). The top piece is \(|6-0|\times|9-4|=6\times 5=30\). The floor is \(40+30=70\) square meters, and \(70\times 3=\$210\). $70 forgets the price. $270 covers the whole \(10\times 9\) rectangle at $3 a square meter. $282 adds \(10\times 4\) and \(6\times 9\), which counts the bottom left block twice.`,
         hint: 'Cut the L into two rectangles first. Find each side length by subtracting coordinates. Then multiply the total by 3.' },
-      { q: 'Mia finds the area of a triangle with corners (1, 1), (7, 1) and (3, 5). She writes:\nStep 1. Base = |7 − 1| = 6.\nStep 2. Height = |5 − 1| = 4.\nStep 3. Area = 6 × 4 = 24 square units.\nWhich statement is true?',
+      { q: 'Mia finds the area of a triangle with corners (1, 1), (7, 1) and (3, 5). She writes:<br>Step 1. Base = |7 − 1| = 6.<br>Step 2. Height = |5 − 1| = 4.<br>Step 3. Area = 6 × 4 = 24 square units.<br>Which statement is true?',
         choices: ['Step 3 is wrong: a triangle is half of base times height, so the area is 12.', 'Step 1 is wrong: the base should be 7 + 1 = 8.', 'Step 2 is wrong: the height should be the slanted side.', 'Nothing is wrong: the area is 24.'], answer: 0,
         why: String.raw`Steps 1 and 2 are right: the base and the height come from subtracting coordinates. But \(6\times 4=24\) is the area of a parallelogram with that base and height. Two copies of the triangle make that parallelogram, so the triangle is half: \(\tfrac12\times 6\times 4=12\).`,
         hint: 'Two copies of a triangle make a parallelogram. How does the area of one copy compare with the parallelogram?' }

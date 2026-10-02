@@ -107,7 +107,7 @@
         { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up of the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
         { t: 'B′ = (1, −4)', pt: [1, -4], why: 'That is a turn the other way (clockwise), which sends (x, y) to (y, −x). Counterclockwise is against the hands of a clock.' },
         { t: 'B′ = (−4, −1)', pt: [-4, -1], why: 'That is a half turn (180°), which sends (x, y) to (−x, −y). A quarter turn only swaps the two numbers and changes one sign.' },
-        { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. A turn must keep the corner the same distance from the origin and move it a quarter of the way round.' }] },
+        { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. (1, 4) is not a quarter of the way round from (4, 1): the flip also changes which way A, B, C goes round. A turn keeps the direction A, B, C goes round.' }] },
     { kind: 'mc', tag: 'Choose the move',
       q: 'Which ONE move maps the light triangle ABC onto the yellow target? Look at the picture. The target is a mirror image of ABC.',
       tgt: T3,
@@ -446,7 +446,7 @@
       };
       const leave = () => {
         cancelA(); st.mode = 'explore'; clearPractice(); st.moves = []; st.anim = 1;
-        show(gPal, true); show(ro, true); updKind(); showPrac(false); refresh();
+        show(gPal, true); show(ro, true); show(gPred, st.cmpOn); updKind(); showPrac(false); refresh();
       };
       const clearPractice = () => { st.tgt = null; st.names = null; st.mark = null; st.hl = false; st.ring = null; st.pre = PRE; st.cmp = null; };
       const showPrac = on => { pracEls.forEach(e => show(e, on)); show(startB.parentNode, !on); if (!on) choiceB.forEach(b => show(b.parentNode, false)); };
@@ -502,7 +502,7 @@
         if (same(img, st.tgt)) {
           const steps = st.moves.map((m, i) => `${i + 1}. ${wordsOf(m)}`).join('; ');
           fb.innerHTML = `${good('Correct.')} Every corner lands on the target. Your steps: ${steps}. ` +
-            (st.moves.length === 2 && st.moves.some(m => m.k === 'F') && st.moves.some(m => m.k === 'T') ? 'Here the same two moves in the opposite order also work, but only because the slide runs along the mirror line. In general the order matters. ' : '') +
+            (st.moves.length === 2 && same(runMoves(st.pre, [st.moves[1], st.moves[0]]), st.tgt) ? 'Here the same two moves in the opposite order also work, which happens only for special choices. In general the order matters. ' : '') +
             `The triangles are congruent, because rigid motions map one onto the other.` + (st.tries === 1 ? ' Right on the first try.' : '');
           finish(st.tries === 1);
         } else {
