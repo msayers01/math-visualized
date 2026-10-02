@@ -74,9 +74,9 @@ function texFlat(s) {
     .replace(/\\bar\{([^{}]*)\}/g, 'conj($1)').replace(/\\bar\s*([A-Za-z])/g, 'conj($1)')
     .replace(/\\mathbb\{([A-Za-z])\}/g, '$1').replace(/\\\{/g, '\u0001').replace(/\\\}/g, '\u0002').replace(/\\notin\b/g, '∉').replace(/\\in\b/g, '∈')
     .replace(/\\cup\b/g, '∪').replace(/\\cap\b/g, '∩').replace(/\\infty\b/g, '∞').replace(/\\(?:emptyset|varnothing)\b/g, '∅').replace(/\\subseteq\b/g, '⊆').replace(/\\subset\b/g, '⊂').replace(/\\mid\b/g, '|').replace(/\\to\b/g, '→')
-    .replace(/\\%/g, '%').replace(/\\\$/g, '$').replace(/\\(?:begin|end)\{[a-z*]+\}(?:\{[^}]*\})?/g, ' ').replace(/\\\\/g, '; ').replace(/&(?!(?:lt|gt|amp|nbsp);)/g, ' ')
+    .replace(/\\sum(?![a-zA-Z])/g, 'Σ').replace(/\\prod(?![a-zA-Z])/g, 'Π').replace(/\\%/g, '%').replace(/\\\$/g, '$').replace(/\\(?:begin|end)\{[a-z*]+\}(?:\{[^}]*\})?/g, ' ').replace(/\\\\/g, '; ').replace(/&(?!(?:lt|gt|amp|nbsp);)/g, ' ')
     .replace(/\\(alpha|beta|gamma|delta|epsilon|lambda|mu|sigma|phi|omega|Delta|Sigma|Omega|rho|tau)(?![a-zA-Z])/g, (_, g) => GREEK[g])
-    .replace(/_\{([^{}]+)\}|_([A-Za-z0-9])/g, (_, a, b) => { const t = a ?? b; return /^[0-9]+$/.test(t) ? [...t].map(c => '₀₁₂₃₄₅₆₇₈₉'[c]).join('') : '_' + t; })
+    .replace(/_\{([^{}]+)\}|_([A-Za-z0-9])/g, (_, a, b) => { const t = a ?? b; return /^[0-9]+$/.test(t) ? [...t].map(c => '₀₁₂₃₄₅₆₇₈₉'[c]).join('') : /^[A-Za-z0-9]$/.test(t) ? '_' + t : '_(' + t + ')'; })
     .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '').replace(/\u0001/g, '{').replace(/\u0002/g, '}');
 }
 /* TeX in quick-check text (an HTML string), flattened for plain-text copies */

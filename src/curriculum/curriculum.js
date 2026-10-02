@@ -106,6 +106,7 @@ const ALIGN = [
   { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'solving-systems-by-substitution', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4'] },
+  { id: 'arithmetic-and-geometric-series', course: 'algebra2', skill: 'mid', standards: ['9.3.7.4'] },
   { id: 'complex-roots-of-quadratics', course: 'algebra2', skill: 'mid', standards: ['9.3.5.3', '9.3.6.5'] },
   { id: 'complex-arithmetic-in-the-plane', course: 'algebra2', skill: 'mid', standards: ['9.3.5.3'] },
   { id: 'imaginary-numbers-and-the-complex-plane', course: 'algebra2', skill: 'intro', standards: ['9.3.5.3'] },
