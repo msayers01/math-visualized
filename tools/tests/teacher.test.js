@@ -40,6 +40,8 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   const flat3 = await page.evaluate(() => texFlat('a \\equiv b \\pmod{5}, -3 \\bmod 5 = 2, \\gcd(a,n)=1'));
   check('texFlat writes congruences as plain text', flat3 === 'a ≡ b  (mod 5), -3  mod  5 = 2, gcd(a,n)=1', flat3);
   const flat4 = await page.evaluate(() => texFlat('x \\in \\mathbb{R}, \\{x \\mid x \\ge 2\\} = [2, \\infty), (-\\infty, 1) \\cup (3, 5], A \\cap B = \\emptyset, 2 \\notin \\mathbb{Q}'));
+  const flat5 = await page.evaluate(() => texFlat('z = a + bi, \\bar{z} = a - bi, |z|^2 = z\\bar{z}, \\bar z'));
+  check('texFlat writes complex conjugates', flat5 === 'z = a + bi, conj(z) = a - bi, |z|² = zconj(z), conj(z)', flat5);
   check('texFlat writes set and interval notation', flat4 === 'x ∈ R, {x | x ≥ 2} = [2, ∞), (-∞, 1) ∪ (3, 5], A ∩ B = ∅, 2 ∉ Q', flat4);
   check('plain lesson token opens the lesson', (await page.textContent('h1')) === 'Slope and linear functions' && (await stepText()) === '1 / 4');
   await go(page, '#slope-and-linear-functions.3');

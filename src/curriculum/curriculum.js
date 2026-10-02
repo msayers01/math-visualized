@@ -106,6 +106,9 @@ const ALIGN = [
   { id: 'solving-systems-by-elimination', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'solving-systems-by-substitution', course: 'algebra1', skill: 'mid', standards: ['8.3.6.9'] },
   { id: 'matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4'] },
+  { id: 'complex-roots-of-quadratics', course: 'algebra2', skill: 'mid', standards: ['9.3.5.3', '9.3.6.5'] },
+  { id: 'complex-arithmetic-in-the-plane', course: 'algebra2', skill: 'mid', standards: ['9.3.5.3'] },
+  { id: 'imaginary-numbers-and-the-complex-plane', course: 'algebra2', skill: 'intro', standards: ['9.3.5.3'] },
   { id: 'systems-of-three-equations', course: 'algebra2', skill: 'mid', standards: ['9.3.7.1'] },
   { id: 'cramers-rule', course: 'algebra2', skill: 'mid', standards: ['9.3.7.1'] },
   { id: 'solving-systems-with-matrices', course: 'algebra2', skill: 'mid', standards: ['9.3.5.4', '9.3.7.1'] },
@@ -115,6 +118,7 @@ const ALIGN = [
   /* Geometry */
   { id: 'similarity-and-scaling',      course: 'geometry', skill: 'mid', standards: ['7.2.4.2', '7.2.4.3', '9.2.3.9'] },
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
+  { id: 'fractals-self-similarity-and-dimension', course: 'geometry', skill: 'adv', standards: [], enrichment: true },
   { id: 'angles-in-triangles-and-polygons', course: 'geometry', skill: 'intro', standards: ['6.2.4.1', '6.2.4.2', '9.2.4.2', '9.2.4.3'] },
   { id: 'special-right-triangles-and-trigonometry', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
   { id: 'volume-of-prisms-pyramids-and-cones', course: 'geometry', skill: 'mid', standards: ['6.2.3.2', '7.2.3.4', '9.2.3.4', '9.2.3.5', '9.2.3.9'] },
@@ -126,6 +130,8 @@ const ALIGN = [
   /* Precalculus & Trigonometry. Radians and periodic waves go beyond the 9-11 benchmarks; 9.2.3.8 (acute-angle
      trigonometric ratios) is the nearest one, and the lesson extends it rather than teaching it. */
   { id: 'the-unit-circle-and-trig-waves', course: 'precalc', skill: 'adv', standards: ['9.2.3.8'] },
+  { id: 'the-mandelbrot-and-julia-sets', course: 'precalc', skill: 'adv', standards: [], enrichment: true },
+  { id: 'polar-form-and-roots-of-unity', course: 'precalc', skill: 'mid', standards: [] },
 
   /* Statistics & Probability */
   { id: 'mean-median-and-spread',      course: 'stats', skill: 'mid', standards: ['6.1.1.3', '7.1.1.4', '9.1.1.9', '9.1.1.13'] },
