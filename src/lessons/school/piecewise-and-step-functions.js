@@ -296,7 +296,7 @@
         why: String.raw`The expression inside the bars is \(x-3\), and it changes sign at \(x=3\). So \(|x-3|=x-3\) for \(x\ge 3\) and \(3-x\) for \(x&lt;3\). Test \(x=1\): \(|1-3|=2\), but Dana's first rule gives \(1-3=-2\), and a distance cannot be negative. The split at 0 only works for \(|x|\), with nothing subtracted inside.`,
         hint: 'Try x = 1 in both the original and in Dana’s first rule. Where does x − 3 change from negative to positive?' }
     ],
-    links: { prereq: ['absolute-value-equations-and-inequalities', 'what-is-a-function'], related: ['functions-as-transformations', 'slope-and-linear-functions', 'forms-of-a-linear-equation', 'sequences-recursive-and-explicit', 'exponential-growth'] },
+    links: { prereq: ['absolute-value-equations-and-inequalities', 'what-is-a-function', 'domain-and-range-of-functions'], related: ['functions-as-transformations', 'slope-and-linear-functions', 'forms-of-a-linear-equation', 'sequences-recursive-and-explicit', 'exponential-growth'] },
 
     mount({ stage, controls: C }) {
       const st = { scene: 'taxi', x: 2, pred: false, a: 2, m1: 4, b1: 0, m2: 1, b2: 0, task: 0, meet: 0, pre: 0, dp: 0, va: 2, vk: 1, practice: false };
