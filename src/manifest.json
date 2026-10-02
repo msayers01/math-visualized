@@ -114,6 +114,7 @@
     "lessons/school/tangent-and-secant-angles.js",
     "lessons/school/trigonometric-ratios-sine-cosine-tangent.js",
     "lessons/school/exact-trig-values-and-special-triangles.js",
+    "lessons/school/arithmetic-and-geometric-series.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
