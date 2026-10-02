@@ -309,7 +309,7 @@
            ['31.4', 'That is 5 × 2 × π. The 2 radians already counts radius-lengths, so no extra π is needed.', false]]);
         ask('Your turn: the degree trap', 'Sam wants the arc for r = 3 and θ = 60°. He writes s = 3 × 60 = 180. What went wrong?',
           [['Nothing. The arc is 180.', 'The whole circle with r = 3 has circumference 2π × 3 ≈ 18.85. An arc of 180 cannot fit.', false],
-           ['The formula s = rθ needs radians. 60° = π/3, so s = 3 × π/3 = π ≈ 3.14.', 'The degree rule agrees: (60 ÷ 360) × 2π × 3 = π. Press the 60° button above and compare the two lines in the readout.', true],
+           ['The formula s = rθ needs radians. 60° = π/3, so s = 3 × π/3 = π ≈ 3.14.', 'The degree rule agrees: (60 ÷ 360) × 2π × 3 = π.', true],
            ['He should divide: 60 ÷ 3 = 20.', 'The rule multiplies, and 60 is still degrees. Dividing does not change the unit.', false]]);
       });
 

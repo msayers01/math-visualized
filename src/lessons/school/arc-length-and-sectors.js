@@ -294,8 +294,8 @@
       track(G.sec, () => C.hint('You can also drag the ring on the rim. It snaps to 5°. Use the slider or the ±15° buttons if you prefer.'));
 
       const lockBack = () => st.view === 'back' && !back.solved && !prac.on;
-      function manual() { cancel(); st.prev = null; st.story = -1; st.note = ''; bumpBuild(); }
-      const edit = fn => { if (lockBack()) { sync(); return; } manual(); fn(); sync(); };
+      function manual() { cancel(); st.prev = null; st.story = -1; st.note = ''; }
+      const edit = fn => { if (lockBack()) { sync(); return; } manual(); fn(); bumpBuild(); sync(); };
 
       /* ---- predict (view 1) ---- */
       const PRED = [
@@ -454,7 +454,8 @@
         const { ang, r, view } = st, u = st.unit, M = meas(ang, r), o = [];
         const restM = meas(360 - ang, r);
         if (view === 'frac') {
-          o.push(kv('Central angle', ang + '°'), kv('Fraction of the circle', `${ang}/360 = ${M.F}`), kv('As a percent', `${M.pct}%`));
+          if (st.hideSec) o.push(kv('Fraction of the circle', 'Pick a fraction first'));
+          else o.push(kv('Central angle', ang + '°'), kv('Fraction of the circle', `${ang}/360 = ${M.F}`), kv('As a percent', `${M.pct}%`));
           if (st.rest) o.push(kv('The rest of the circle', `${360 - ang}°, which is ${restM.F}`));
         } else if (view === 'arc') {
           o.push(kv('Whole circle', `circumference 2πr = ${M.circS} ≈ ${dec(M.circV)} ${u}`), kv('Fraction', `${ang}/360 = ${M.F}`), kv('Arc length', `${M.F} × ${M.circS} = ${M.arcS} ≈ ${dec(M.arcV)} ${u}`));
@@ -629,7 +630,7 @@
           const prev = st.ang; let a;
           if (raw < 5 || raw > 355 || Math.abs(raw - prev) > 180) a = prev < 180 ? 5 : 355; else a = clamp(snap(raw, 5), 5, 355);
           if (a === st.ang) return;
-          manual(); st.ang = a; sync();
+          manual(); st.ang = a; bumpBuild(); sync();
         }
       });
 

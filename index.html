@@ -49454,8 +49454,8 @@ register({
       track(G.sec, () => C.hint('You can also drag the ring on the rim. It snaps to 5°. Use the slider or the ±15° buttons if you prefer.'));
 
       const lockBack = () => st.view === 'back' && !back.solved && !prac.on;
-      function manual() { cancel(); st.prev = null; st.story = -1; st.note = ''; bumpBuild(); }
-      const edit = fn => { if (lockBack()) { sync(); return; } manual(); fn(); sync(); };
+      function manual() { cancel(); st.prev = null; st.story = -1; st.note = ''; }
+      const edit = fn => { if (lockBack()) { sync(); return; } manual(); fn(); bumpBuild(); sync(); };
 
       /* ---- predict (view 1) ---- */
       const PRED = [
@@ -49614,7 +49614,8 @@ register({
         const { ang, r, view } = st, u = st.unit, M = meas(ang, r), o = [];
         const restM = meas(360 - ang, r);
         if (view === 'frac') {
-          o.push(kv('Central angle', ang + '°'), kv('Fraction of the circle', `${ang}/360 = ${M.F}`), kv('As a percent', `${M.pct}%`));
+          if (st.hideSec) o.push(kv('Fraction of the circle', 'Pick a fraction first'));
+          else o.push(kv('Central angle', ang + '°'), kv('Fraction of the circle', `${ang}/360 = ${M.F}`), kv('As a percent', `${M.pct}%`));
           if (st.rest) o.push(kv('The rest of the circle', `${360 - ang}°, which is ${restM.F}`));
         } else if (view === 'arc') {
           o.push(kv('Whole circle', `circumference 2πr = ${M.circS} ≈ ${dec(M.circV)} ${u}`), kv('Fraction', `${ang}/360 = ${M.F}`), kv('Arc length', `${M.F} × ${M.circS} = ${M.arcS} ≈ ${dec(M.arcV)} ${u}`));
@@ -49789,7 +49790,7 @@ register({
           const prev = st.ang; let a;
           if (raw < 5 || raw > 355 || Math.abs(raw - prev) > 180) a = prev < 180 ? 5 : 355; else a = clamp(snap(raw, 5), 5, 355);
           if (a === st.ang) return;
-          manual(); st.ang = a; sync();
+          manual(); st.ang = a; bumpBuild(); sync();
         }
       });
 
@@ -50120,7 +50121,7 @@ register({
            ['31.4', 'That is 5 × 2 × π. The 2 radians already counts radius-lengths, so no extra π is needed.', false]]);
         ask('Your turn: the degree trap', 'Sam wants the arc for r = 3 and θ = 60°. He writes s = 3 × 60 = 180. What went wrong?',
           [['Nothing. The arc is 180.', 'The whole circle with r = 3 has circumference 2π × 3 ≈ 18.85. An arc of 180 cannot fit.', false],
-           ['The formula s = rθ needs radians. 60° = π/3, so s = 3 × π/3 = π ≈ 3.14.', 'The degree rule agrees: (60 ÷ 360) × 2π × 3 = π. Press the 60° button above and compare the two lines in the readout.', true],
+           ['The formula s = rθ needs radians. 60° = π/3, so s = 3 × π/3 = π ≈ 3.14.', 'The degree rule agrees: (60 ÷ 360) × 2π × 3 = π.', true],
            ['He should divide: 60 ÷ 3 = 20.', 'The rule multiplies, and 60 is still degrees. Dividing does not change the unit.', false]]);
       });
 
