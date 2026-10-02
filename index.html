@@ -838,7 +838,7 @@ const ALIGN = [
   { id: 'inscribed-angles',            course: 'geometry', skill: 'mid', standards: ['9.2.4.8'] },
   { id: 'exact-trig-values-and-special-triangles', course: 'geometry', skill: 'mid', standards: ['9.2.3.2', '9.2.3.3'] },
   { id: 'trigonometric-ratios-sine-cosine-tangent', course: 'geometry', skill: 'mid', standards: ['9.2.3.8'] },
-  { id: 'tangent-and-secant-angles', course: 'geometry', skill: 'mid', standards: ['9.2.4.9'] },
+  { id: 'tangent-and-secant-angles', course: 'geometry', skill: 'mid', standards: ['9.2.4.8', '9.2.4.9'] },
   { id: 'arc-length-and-sectors', course: 'geometry', skill: 'mid', standards: ['7.2.3.3'] },
   { id: 'fractals-self-similarity-and-dimension', course: 'geometry', skill: 'adv', standards: [], enrichment: true },
   { id: 'angles-in-triangles-and-polygons', course: 'geometry', skill: 'intro', standards: ['6.2.4.1', '6.2.4.2', '9.2.4.2', '9.2.4.3'] },
@@ -50417,11 +50417,11 @@ register({
     { key: 'in', short: 'Inside', name: 'Vertex INSIDE (two chords)', words: 'half the SUM of its arc and the arc of its vertical angle', sym: FB, ex: '½ (100° + 60°) = 80°', set: { view: 'in', w: 100, x: 80, y: 60, which: 0 } },
     { key: 'ss', short: 'Outside, 2 secants', name: 'Vertex OUTSIDE, two secants', words: 'half the DIFFERENCE: far arc minus near arc', sym: FC, ex: '½ (200° − 60°) = 70°', set: { view: 'out', kind: 'ss', N: 60, F: 200 } },
     { key: 'st', short: 'Outside, secant + tangent', name: 'Vertex OUTSIDE, a secant and a tangent', words: 'half the DIFFERENCE: far arc minus near arc', sym: FC, ex: '½ (200° − 60°) = 70°', set: { view: 'out', kind: 'st', N: 60, F: 200 } },
-    { key: 'tt', short: 'Outside, 2 tangents', name: 'Vertex OUTSIDE, two tangents', words: 'half the difference, and since the two arcs add to 360°, also 180° minus the near arc', sym: FC + '  =  ' + FE, ex: '½ (250° − 110°) = 70°, and 180° − 110° = 70°', set: { view: 'out', kind: 'tt', N: 110 } }
+    { key: 'tt', short: 'Outside, 2 tangents', name: 'Vertex OUTSIDE, two tangents', words: 'half the difference, and since the two arcs add to 360°, also 180° minus the near arc', sym: FC + '  =  ' + FE.replace('θ = ', ''), ex: '½ (250° − 110°) = 70°, and 180° − 110° = 70°', set: { view: 'out', kind: 'tt', N: 110 } }
   ];
   const MATCH = [
     { c: 2, q: 'The diagram shows two lines from a point outside the circle. Both lines cut through the circle. Which formula gives the angle θ at P?',
-      ch: [[FB, 'Adding the arcs is for a vertex inside the circle. At an outside vertex the far arc contains the near arc, so you subtract.'],
+      ch: [[FB, 'Adding the arcs is for a vertex inside the circle. At an outside vertex the angle opens onto two arcs, a near one and a far one, so you subtract.'],
         [FC, 'Two secants from an outside point: far arc minus near arc, then half. Here ½ (200° − 60°) = 70°.'],
         [FD, 'The difference is right but the half is missing. Every one of these angles is half of an arc measure.'],
         [FE, '180° minus the near arc only works for two tangents, where the arcs add to 360°. With secants they do not.']], ans: 1 },
@@ -50456,7 +50456,7 @@ register({
         ['40°', 'That is 180° − 140°. The angle is half the arc, not the supplement.'],
         ['35°', 'That halves twice. Half of 140° is 70°.']] },
     { fig: { view: 'in', w: 80, x: 100, y: 40, which: 0, hide: ['ang'] },
-      q: 'Chords AC and BD cross at X inside the circle. Arc AB is 80° and arc CD is 40°. What is angle AXB?', ans: 3,
+      q: 'Chords AC and BD cross at X inside the circle (A, B, C, D in order around the circle). Arc AB is 80° and arc CD is 40°. What is angle AXB?', ans: 3,
       ch: [['20°', 'That is half the difference. Inside the circle the two arcs are added.'],
         ['120°', 'That is the full sum. The angle is half of it.'],
         ['40°', 'That is half of arc AB only. Both arcs count: the one inside AXB and the one inside its vertical angle CXD.'],
@@ -50569,7 +50569,7 @@ register({
         choices: ['50°', '15°', '60°', '90°'], answer: 3,
         why: String.raw`The angle is half the difference: \(\tfrac12\big((4x+30)-(x+15)\big)=\tfrac12(3x+15)=30\). So \(3x+15=60\), \(3x=45\) and \(x=15\). The far arc is \(4\cdot15+30=90^\circ\) (the near arc is \(30^\circ\), and \(\tfrac12(90-30)=30\)). The answer 50 comes from forgetting the half. The answer 15 is \(x\) itself, and 60 is only \(4x\).`,
         hint: 'Write half of (far arc minus near arc) equal to 30, solve for x, then put x back into the far arc.' },
-      { q: 'Two chords AC and BD cross at X inside a circle. Arc AB is 50° and arc CD is 70°. A student writes: angle AXB = (70° − 50°) ÷ 2 = 10°. What is the error?',
+      { q: 'Two chords AC and BD cross at X inside a circle (A, B, C, D in order around the circle). Arc AB is 50° and arc CD is 70°. A student writes: angle AXB = (70° − 50°) ÷ 2 = 10°. What is the error?',
         choices: ['There is no error: 10° is correct', 'The student should use the full sum, 50° + 70° = 120°', 'The student should add the arcs, not subtract: (50° + 70°) ÷ 2 = 60°', 'The student should use only the larger arc: 70° ÷ 2 = 35°'], answer: 2,
         why: String.raw`Subtracting is for a vertex <em>outside</em> the circle. For a vertex inside, the angle and its vertical angle look at two arcs, and both count: \(\tfrac12(50+70)=60^\circ\). The full sum, 120, forgets the half. Using only one arc ignores the arc of the vertical angle.`,
         hint: 'Where is the vertex: inside or outside? That decides add or subtract.' }
@@ -50680,7 +50680,7 @@ register({
           if (showTC) { const m = wedge(T, [T[0] + 1, T[1]], B, .24, pal.green); txt(`at T: ${dg(tc)}`, T[0] + .5 * Math.cos(m * D) + .12, T[1] + .5 * Math.sin(m * D) + .06, { col: pal.green, size: fs + .5 }); }
           else txt('at T: ?', T[0] + .35, T[1] + .22, { col: pal.green, size: fs + .5 });
           if (!hid('q')) { const m2 = wedge(Q, T, B, .17, pal.red);
-          txt(`at Q: ${dg(ins)}`, Q[0] + .55 * Math.cos(m2 * D), Q[1] + .55 * Math.sin(m2 * D), { col: pal.red, size: fs + .5 }); dot(Q, 'Q', [Q[0] * .16, Q[1] * .16]); }
+          if (!hid('ang')) txt(`at Q: ${dg(ins)}`, Q[0] + .55 * Math.cos(m2 * D), Q[1] + .55 * Math.sin(m2 * D), { col: pal.red, size: fs + .5 }); dot(Q, 'Q', [Q[0] * .16, Q[1] * .16]); }
           dot(T, 'T', [0, -.15]); dot(B, 'B', [B[0] * .16, B[1] * .16]);
           txt('tangent', -1.18, -1.12, { size: fs - .5, col: pal.muted });
           hdl(B, 'al'); if (!hid('q')) hdl(Q, 'g');
@@ -50825,6 +50825,9 @@ register({
           const why = pd.ch[i][1], right = pd.ch[cu.ans][0];
           pq.fbEl.innerHTML = `<b>${ok ? 'Yes.' : 'Not this time.'}</b> ${why}${ok ? '' : ' The answer was: ' + right + '.'} Watch the picture.`;
           st.hide = [];
+          if (v === 'tan') st.dist = 3;
+          if (v === 'on') { st.al = 140; st.g = 100; }
+          if (v === 'out') { st.kind = 'ss'; st.F = 200; st.N = 60; }
           if (v === 'tan') cancel = animateTo(st, { dist: 5 }, 1400, sync);
           if (v === 'on') cancel = animateTo(st, { g: 2 }, 1600, sync);
           if (v === 'out') cancel = animateTo(st, { N: 120 }, 1600, sync);
@@ -51006,7 +51009,7 @@ register({
 
       /* ---------- dragging ---------- */
       draggable(P, {
-        hit: (px, py) => { if (prac.on) return null; let best = null, bd = 24; hnd.forEach(q => { const d = Math.hypot(q.x - px, q.y - py); if (d < bd) { bd = d; best = q.id; } }); return best; },
+        hit: (px, py) => { if (prac.on || st.view === 'cmp' || st.view === 'story') return null; let best = null, bd = 24; hnd.forEach(q => { const d = Math.hypot(q.x - px, q.y - py); if (d < bd) { bd = d; best = q.id; } }); return best; },
         move: (id, mx, my) => {
           manual();
           const ang = Math.atan2(my, mx) / D;
