@@ -108,6 +108,9 @@
     "lessons/school/the-mandelbrot-and-julia-sets.js",
     "lessons/school/arc-length-and-sectors.js",
     "lessons/school/radians-the-circles-own-angle-unit.js",
+    "lessons/school/tangent-and-secant-angles.js",
+    "lessons/school/trigonometric-ratios-sine-cosine-tangent.js",
+    "lessons/school/exact-trig-values-and-special-triangles.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
