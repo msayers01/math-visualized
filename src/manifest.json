@@ -87,6 +87,7 @@
     "lessons/school/solving-systems-with-matrices.js",
     "lessons/school/cramers-rule.js",
     "lessons/school/systems-of-three-equations.js",
+    "lessons/school/modeling-with-systems.js",
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js"
   ],
