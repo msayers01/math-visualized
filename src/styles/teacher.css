@@ -13,7 +13,7 @@
 /* progress chip (lesson rows, lesson header) */
 .prog { display: inline-flex; align-items: center; font-size: .76rem; line-height: 1.6; padding: 1px 9px; border-radius: 999px; font-variant-numeric: tabular-nums;
   border: 1px solid var(--line-strong); color: var(--muted); }
-.prog.done { color: var(--text); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
+.prog.done { color: var(--text); border-color: var(--green); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
 .prog.done::before { content: "✓"; margin-right: 5px; color: var(--green); font-weight: 700; }
 
 /* progress page */

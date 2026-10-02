@@ -16,7 +16,7 @@ function parseRoute(hash, ids = VIZ.map(v => v.id)) {
   if (/^#\/\?/.test(hash) || /^#find(~|$)/.test(hash)) return { page: 'home', filters: true };
   const t = hash.slice(1);
   if (t === 'progress') return { page: 'progress' };
-  if (Object.hasOwn(LEVELS, t)) return { page: 'home', level: t };
+  if (Object.prototype.hasOwnProperty.call(LEVELS, t)) return { page: 'home', level: t };
   const m = t.match(/^([a-z0-9-]+)(?:\.([a-z0-9]+))?$/);
   if (m && ids.includes(m[1])) {
     if (!m[2]) return { page: 'viz', id: m[1], step: 0 };

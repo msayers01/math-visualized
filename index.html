@@ -312,7 +312,7 @@ a.link:hover { border-color: var(--brass); }
 
 .std { display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px 1px 7px; border-radius: 999px; font-size: .76rem; line-height: 1.6;
   font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--st); border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
 a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 26%, transparent); }
 
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
@@ -320,7 +320,7 @@ a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 
 .stds { display: inline-flex; flex-wrap: wrap; gap: 5px; }
 /* Enrichment: goes beyond the benchmarks */
 .tag.enrich { display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px 1px 8px; border-radius: 999px; font-size: .76rem; line-height: 1.6; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--brass); border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
 .tag.enrich::before { content: "\2726"; color: var(--brass); font-size: .8em; }
 a.tag.enrich:hover { border-color: var(--brass); background: color-mix(in srgb, var(--brass) 24%, transparent); }
 fieldset.facet.kind { grid-column: 1 / -1; }
@@ -419,7 +419,7 @@ label.facet .facet-k { margin-bottom: 0; }
 /* progress chip (lesson rows, lesson header) */
 .prog { display: inline-flex; align-items: center; font-size: .76rem; line-height: 1.6; padding: 1px 9px; border-radius: 999px; font-variant-numeric: tabular-nums;
   border: 1px solid var(--line-strong); color: var(--muted); }
-.prog.done { color: var(--text); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
+.prog.done { color: var(--text); border-color: var(--green); border-color: color-mix(in srgb, var(--green) 60%, transparent); background: color-mix(in srgb, var(--green) 16%, transparent); }
 .prog.done::before { content: "✓"; margin-right: 5px; color: var(--green); font-weight: 700; }
 
 /* progress page */
@@ -1263,7 +1263,7 @@ const cmpCode = (a, b) => cmpKey(codeKey(a), codeKey(b));
 const bandOf = code => { const g = +code.split('.')[0]; return g >= 9 ? '9-11' : String(g); };
 const strandOf = code => STRANDS[+code.split('.')[1] - 1];
 const anchorOf = code => ANCHORS[+code.split('.')[2]];
-const hasStandard = code => Object.hasOwn(STANDARDS, code);
+const hasStandard = code => Object.prototype.hasOwnProperty.call(STANDARDS, code);
 
 /* Everything a lesson inherits from its ALIGN entry: grades are the course's plus the band of each tag */
 function curriculumMeta(a) {
@@ -1542,7 +1542,7 @@ function parseRoute(hash, ids = VIZ.map(v => v.id)) {
   if (/^#\/\?/.test(hash) || /^#find(~|$)/.test(hash)) return { page: 'home', filters: true };
   const t = hash.slice(1);
   if (t === 'progress') return { page: 'progress' };
-  if (Object.hasOwn(LEVELS, t)) return { page: 'home', level: t };
+  if (Object.prototype.hasOwnProperty.call(LEVELS, t)) return { page: 'home', level: t };
   const m = t.match(/^([a-z0-9-]+)(?:\.([a-z0-9]+))?$/);
   if (m && ids.includes(m[1])) {
     if (!m[2]) return { page: 'viz', id: m[1], step: 0 };

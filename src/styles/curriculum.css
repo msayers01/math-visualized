@@ -13,7 +13,7 @@
 
 .std { display: inline-flex; align-items: center; gap: 6px; padding: 1px 9px 1px 7px; border-radius: 999px; font-size: .76rem; line-height: 1.6;
   font-variant-numeric: tabular-nums; letter-spacing: 0; white-space: nowrap; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--st); border: 1px solid color-mix(in srgb, var(--st) 55%, transparent); background: color-mix(in srgb, var(--st) 14%, transparent); transition: border-color .2s, background .2s; }
 a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 26%, transparent); }
 
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 8px; }
@@ -21,7 +21,7 @@ a.std:hover { border-color: var(--st); background: color-mix(in srgb, var(--st) 
 .stds { display: inline-flex; flex-wrap: wrap; gap: 5px; }
 /* Enrichment: goes beyond the benchmarks */
 .tag.enrich { display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px 1px 8px; border-radius: 999px; font-size: .76rem; line-height: 1.6; text-decoration: none; color: var(--text);
-  border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
+  border: 1px solid var(--brass); border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent); background: color-mix(in srgb, var(--brass) 13%, transparent); transition: border-color .2s, background .2s; }
 .tag.enrich::before { content: "\2726"; color: var(--brass); font-size: .8em; }
 a.tag.enrich:hover { border-color: var(--brass); background: color-mix(in srgb, var(--brass) 24%, transparent); }
 fieldset.facet.kind { grid-column: 1 / -1; }
