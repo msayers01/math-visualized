@@ -230,7 +230,7 @@
         why: String.raw`Step 1 is right. In Step 2 the factor \(\sqrt2\) belongs to the 45-45-90 triangle. A check shows the error: \(5^2 + 7.07^2 = 75\), not \(100\). With \(5\sqrt3\): \(25 + 75 = 100\).`,
         hint: 'Check the three sides with the Pythagorean theorem. Do they fit?' }
     ],
-    links: { related: ['pythagorean-theorem', 'distance-and-the-pythagorean-theorem', 'the-unit-circle-and-trig-waves', 'square-roots-and-irrational-numbers',
+    links: { prereq: ['trigonometric-ratios-sine-cosine-tangent'], next: ['exact-trig-values-and-special-triangles'], related: ['pythagorean-theorem', 'distance-and-the-pythagorean-theorem', 'the-unit-circle-and-trig-waves', 'square-roots-and-irrational-numbers',
       'similarity-and-scaling', 'similar-triangles-aa-sas-sss', 'angles-in-triangles-and-polygons', 'area-by-decomposition', 'rigid-motions-and-congruence'] },
 
     mount({ stage, controls: C }) {
