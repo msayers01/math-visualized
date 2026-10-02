@@ -149,7 +149,7 @@
       let s = `the plans tie at ${nm(x)} months, with ${dl(y)} spent on each.`;
       if (!isInt(x) && x > 0) {
         const f = Math.floor(x), c = f + 1, A = n => u[0] + u[1] * n, B = n => u[2] + u[3] * n;
-        s += ` Gyms bill by whole months, so after ${f} months the totals are ${dl(A(f))} (A) and ${dl(B(f))} (B), and after ${c} months they are ${dl(A(c))} (A) and ${dl(B(c))} (B). The tie falls between two bills.`;
+        s += ` Gyms bill by whole months, so after ${f} months the totals are ${dl(A(f))} (A) and ${dl(B(f))} (B), and after ${c} months they are ${dl(A(c))} (A) and ${dl(B(c))} (B). Strictly, the totals match only partway through a month, so on the monthly bills they never match exactly.`;
       }
       return s;
     },
@@ -448,7 +448,7 @@
           [sd.mix(x, y), false, 'The units are mixed up. Each number must go with the quantity it measures.']], K()) });
       const fx = sd.cnt[0] || sd.cnt[1];
       qs.push({ q: 'Check the answer against the story. Does it fit?', opts: place(
-        ['Yes: ' + sd.fit(u, x, y), true, 'You tested the numbers in the equations and in the story. Nothing is negative, and every count is a whole number.'],
+        ['Yes: ' + sd.fit(u, x, y), true, 'You tested the numbers in the equations and in the story. Nothing is negative, and anything you count is a whole number.'],
         [['No: an answer must be a whole number.', false, 'Only counts of separate things (tickets, coins, shirts) must be whole. Quantities such as speeds, money and time can be decimals.'],
           ['No: x and y must be equal.', false, 'Nothing in the story says the two unknowns are equal.'],
           ['We cannot tell without drawing the graph again.', false, 'You already checked both equations. Now compare the numbers with the story: are they possible?']], K()) });
@@ -509,14 +509,14 @@
       ch: [['She breaks even after 60 shirts.', 'Dropping the minus sign changes the answer. At 60 shirts the cost is $360 and the revenue is only $240.'],
         ['She makes money on every shirt.', 'Each shirt sells for $4 and costs $5 to make, so she loses a dollar on every shirt.'],
         ['The system has no solution.', 'The lines have different slopes, so they do cross. They cross at a place the story cannot use.'],
-        ['The lines cross at a negative number of shirts, which is impossible. For every real number of shirts the revenue is below the cost, so she never breaks even.', 'Negative shirts cannot be sold. For x = 0 or more, the revenue line stays below the cost line.']], ans: 3,
+        ['The lines cross at a negative number of shirts, which is impossible. For every number of shirts that is 0 or more, the revenue is below the cost, so she never breaks even.', 'Negative shirts cannot be sold. For x = 0 or more, the revenue line stays below the cost line.']], ans: 3,
       eqs: [{ a: -5, b: 1, c: 60 }, { a: -4, b: 1, c: 0 }], xl: 'shirts', yl: 'dollars', view: { x0: -80, x1: 40, y0: -300, y1: 300, sx: 20, sy: 100 }, say: true },
     { name: 'Parallel plans', q: 'Plan A costs y = 15x + 40 dollars after x months. Plan B costs y = 15x + 25. After how many months do the two plans cost the same?',
       ch: [['After 1 month.', 'At 1 month plan A costs 55 and plan B costs 40. They are still $15 apart.'],
         ['After 15 months.', '15 is the monthly price, not a number of months. At 15 months the plans are still $15 apart.'],
         ['They are the same plan.', 'The plans start at different amounts, 40 and 25, so they are different plans.'],
         ['Never: the monthly price is the same, so the $15 gap at the start never changes.', 'Setting 15x + 40 = 15x + 25 gives 40 = 25, which is false. The lines are parallel.']], ans: 3,
-      eqs: [{ a: -15, b: 1, c: 40 }, { a: -15, b: 1, c: 25 }], xl: 'months', yl: 'dollars', view: { x0: -2, x1: 8, y0: -40, y1: 160, sx: 2, sy: 40 }, say: true }
+      eqs: [{ a: -15, b: 1, c: 40 }, { a: -15, b: 1, c: 25 }], xl: 'months', yl: 'dollars', view: { x0: -2, x1: 8, y0: -40, y1: 160, sx: 2, sy: 40 }, say: false }
   ];
 
   const OPTSTYLE = 'justify-content:flex-start;text-align:left;border-radius:12px;padding:9px 14px;line-height:1.35;height:auto';
@@ -563,7 +563,7 @@
       so \(x=30\), then \(30+y=40\) gives \(y=10\). Check: \(8(30)+5(10)=240+50=290\).</p>
       <p><em>Graph.</em> Each equation is a line, and the solution is the shared point. A grid reading can be a little off, so we check it in both equations.</p>
       <h3>Rates: speeds with and against a current</h3>
-      <p>Speed is distance divided by time. A rower who goes \(15\) km in \(2\) hours with the current has speed \(7.5\) km/h. With the current the speeds add, \(x+y=7.5\). Against it they subtract, \(x-y=5\). Adding gives \(2x=12.5\), so \(x=6.25\) km/h and \(y=1.25\) km/h. A solution does not have to be a whole number.</p>
+      <p>Speed is distance divided by time. A rower who goes \(15\) km in \(2\) hours with the current has speed \(7.5\) km/h. With the current the speeds add, \(x+y=7.5\). Against it they subtract, \(x-y=5\), because the same \(15\) km took \(3\) hours. Adding gives \(2x=12.5\), so \(x=6.25\) km/h and \(y=1.25\) km/h. A solution does not have to be a whole number.</p>
       <h3>Reading the answer in the story</h3>
       <p>Two lines can cross once, never, or everywhere. <b>Never</b> (parallel): the plans charge the same each month but start at different amounts, so they never cost the same. Algebra shows it as a false statement such as \(40=25\). <b>Everywhere</b> (same line): two descriptions of one plan. Algebra shows it as a true statement such as \(0=0\).</p>
       <p>A solution of the equations is only a solution of the story if it makes sense there. A count of tickets, coins or shirts must be a whole number. A solution such as \(x=32.5\) tickets, or a crossing at \(x=-20\) shirts, means that the model or the numbers do not fit a real situation. Speeds, money and time can be fractions. Always write the answer as a sentence with units, and test it in both original equations.</p>`,
@@ -932,7 +932,7 @@
         const sd = ST.gym, S = SS.gym, els = [ttl('Predict first'), para('Gym B costs more every month. Will Gym B ever cost less than Gym A in total?')];
         const OPT = [['Never: it costs more every month.', 'It costs more each month, but Gym A starts $45 higher. Watch the lines: the starting gap matters.'],
           ['Yes: for the first few months.', 'Gym B has no joining fee, so it starts at $0 while Gym A starts at $45. B is cheaper until the lines cross at 4.5 months. After that, A is cheaper.'],
-          ['Yes: but only after many months.', 'It is the other way round. B costs more each month, so over time B falls behind. Its advantage is at the start, when A\'s joining fee is still fresh.']];
+          ['Yes: but only after many months.', 'It is the other way round. B costs more each month, so over time B falls behind. Its advantage is at the start, because Gym A charges a joining fee up front.']];
         els.push(h('div', { style: COL.opts }, OPT.map((o, i) => { const b = mkBtn(o[0], () => {
           if (pred >= 0) return; pred = i; predFb = (i === 1 ? good('Yes.') : bad('Not quite.')) + ' ' + o[1] + (i === 1 ? '' : ' ' + OPT[1][1]);
           st.rev = 0; cancel(); cancel = animateTo(st, { rev: 1 }, 1500, () => Pl.requestDraw(), () => renderAll()); renderAll();
