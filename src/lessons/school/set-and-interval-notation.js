@@ -247,7 +247,7 @@
   register({
     id: 'set-and-interval-notation', level: 'school',
     title: 'Set and interval notation',
-    blurb: 'One set of numbers in four languages: words, a number-line graph, set-builder notation and interval notation, plus how to combine sets with and and or.',
+    blurb: 'One set of numbers in four languages: words, a number-line graph, set-builder notation and interval notation, plus how to combine sets with "and" and "or".',
     thumb(c, p) {
       const pal = p.pal, W = p.w, H = p.h, y = H * .68, x0 = W * .1, x1 = W * .9, X = v => x0 + (v + 3) / 8 * (x1 - x0);
       T(c, p, '(−1, 4]', W / 2, H * .27, { size: Math.max(15, H * .22), serif: true, halo: false });
@@ -269,7 +269,7 @@
         text: String.raw`<p>Interval notation is the short form. \((-1,4]\) means \(-1&lt;x\le 4\). A <b>square bracket</b> means the end number is included (closed circle). A <b>parenthesis</b> means it is not (open circle).</p><p>Predict first: which end of \(-1&lt;x\le 4\) will be closed? Then build intervals with the steppers, and read graphs. Infinity always gets a parenthesis, because you can never reach it.</p>`,
         set: { view: 'iv', ivMode: 'build' } },
       { title: 'And, or, and a look ahead',
-        text: String.raw`<p>"And" means both rules hold: the <b>intersection</b> \(\cap\), the overlap. "Or" means at least one rule holds: the <b>union</b> \(\cup\), everything in either set.</p><p>Choose a case. Press and or or to combine the blue set A and the red set B into the violet set, then pick its notation. Case D shows the allowed inputs of \(\dfrac{1}{x}\): every number except 0.</p>`,
+        text: String.raw`<p>"And" means both rules hold: the <b>intersection</b> \(\cap\), the overlap. "Or" means at least one rule holds: the <b>union</b> \(\cup\), everything in either set.</p><p>Choose a case. Press <b>and</b> or <b>or</b> to combine the blue set A and the red set B into the violet set, then pick its notation. Case D shows the allowed inputs of \(\dfrac{1}{x}\): every number except 0.</p>`,
         set: { view: 'comb', cs: 0 } }
     ],
     formal: String.raw`
@@ -288,7 +288,7 @@
       </ul>
       <h3>Why infinity always gets a parenthesis</h3>
       <p>A square bracket says "this number is in the set". But \(\infty\) is not a number. For any number you name, there is a bigger one, so there is no largest number to include. The shading just keeps going. So \(\infty\) and \(-\infty\) are always paired with a parenthesis, and \([3,\infty]\) is a mistake.</p>
-      <h3>And and or</h3>
+      <h3>"And" and "or"</h3>
       <p>The <em>intersection</em> \(A\cap B\) holds the numbers that are in \(A\) and in \(B\). The <em>union</em> \(A\cup B\) holds the numbers in \(A\) or in \(B\) (or both). A compound inequality uses these words. For example, \(-2&lt;x\le 3\) means \(x&gt;-2\) and \(x\le 3\):
       \[ (-2,\infty)\cap(-\infty,3]=(-2,3]. \]
       To intersect two intervals, take the larger left end and the smaller right end. At each end, the bracket comes from the set that supplies that number. If both supply the same number, it is closed only if both are closed. If the left end ends up larger than the right end, the sets do not overlap and the intersection is \(\emptyset\). For example \((-\infty,-1)\cap[4,\infty)=\emptyset\).</p>

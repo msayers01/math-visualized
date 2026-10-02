@@ -183,7 +183,7 @@
         text: String.raw`<p>To reach the 50th term with the rule, you must build 49 boxes first. An <b>explicit formula</b> jumps there directly: \(a_n=5+3(n-1)\).</p><p>Predict the 10th term, then slide to the 50th. The formula gives \(5+3(49)=152\) in one calculation. Why \(n-1\)? Term \(n\) has taken only \(n-1\) steps from the start.</p>`,
         set: { view: 'jump', seq: 0 } },
       { title: 'Arithmetic, geometric or neither',
-        text: String.raw`<p>In an <b>arithmetic</b> list you add the same number each time (a constant difference). In a <b>geometric</b> list you multiply by the same number each time (a constant ratio).</p><p>Here the list is 2, 6, 18, 54, 162, 486. Click neighbouring boxes to find differences and ratios, decide, then write both formulas. The dots lie on a line or on a curve.</p>`,
+        text: String.raw`<p>In an <b>arithmetic</b> list you add the same number each time (a constant difference). In a <b>geometric</b> list you multiply by the same number each time (a constant ratio).</p><p>Here the list is 2, 6, 18, 54, 162, 486. Click neighboring boxes to find differences and ratios, decide, then write both formulas. The dots lie on a line or on a curve.</p>`,
         set: { view: 'classify', seq: 1 } },
       { title: 'Rules that are neither',
         text: String.raw`<p>Fibonacci adds the <em>two</em> terms before it, so it needs two starting values: \(a_1=1,\ a_2=1\). Others mix steps, like \(a_n=2a_{n-1}+1\).</p><p>Real stories work too: savings that gain $50 a month, a town that grows 10% a year, a ball that bounces to 60% of its height.</p><p>Build the chain, then choose the rule that made it.</p>`,
@@ -199,7 +199,7 @@
       <p>If every term is the one before plus a fixed number \(d\) (the <em>common difference</em>), the sequence is <em>arithmetic</em>:
       \[ a_n=a_{n-1}+d, \qquad a_n=a_1+(n-1)d. \]
       Why \((n-1)\)? To get from \(a_1\) to \(a_n\) you take steps from position 1 to position \(n\), and there are \(n-1\) of them (five fence posts have four gaps between them). Each step adds \(d\), so you add \(d\) exactly \(n-1\) times. For \(5,8,11,\ldots\): \(a_{50}=5+3(49)=152\).</p>
-      <p>To test a list, subtract neighbouring terms. If all the differences are equal, it is arithmetic. On a graph of the points \((n,a_n)\), the dots lie on a straight line with slope \(d\), because \(a_n=dn+(a_1-d)\) is a linear function of \(n\), like \(f(x)=mx+b\). Only the whole-number values of \(n\) are dots.</p>
+      <p>To test a list, subtract neighboring terms. If all the differences are equal, it is arithmetic. On a graph of the points \((n,a_n)\), the dots lie on a straight line with slope \(d\), because \(a_n=dn+(a_1-d)\) is a linear function of \(n\), like \(f(x)=mx+b\). Only the whole-number values of \(n\) are dots.</p>
       <h3>Geometric sequences: a constant ratio</h3>
       <p>If every term is the one before times a fixed number \(r\) (the <em>common ratio</em>, not zero), the sequence is <em>geometric</em>:
       \[ a_n=r\,a_{n-1}, \qquad a_n=a_1\,r^{\,n-1}. \]
@@ -328,7 +328,7 @@
         const L = [];
         const pairLines = () => {
           const t = terms(sq, prac ? pr.rv : cnOf(sq)), i = st.pair, lo = i - (zero ? 1 : 0);
-          if (!i) { L.push({ s: prac ? 'Tip: click two neighbouring boxes to compare them.' : 'Click two neighbouring boxes (or use the pair slider) to compare them.', col: pal.muted }); return; }
+          if (!i) { L.push({ s: prac ? 'Tip: click two neighboring boxes to compare them.' : 'Click two neighboring boxes (or use the pair slider) to compare them.', col: pal.muted }); return; }
           const a = t[i - 1], b = t[i], q = b / a;
           L.push({ s: `a_{${i + 1 - (zero ? 1 : 0)}} − a_{${lo}} = ${vt(b)} − ${vt(a)} = ${vt(rd(b - a))}`, col: pal.green, wt: 600 });
           L.push({ s: `a_{${i + 1 - (zero ? 1 : 0)}} ÷ a_{${lo}} = ${vt(b)} ÷ ${vt(a)} ${isEx(q) ? '=' : '≈'} ${vt(q)}`, col: pal.red, wt: 600 });
@@ -441,7 +441,7 @@
         c.globalAlpha = 1;
       };
 
-      /* clicking boxes compares neighbouring terms */
+      /* clicking boxes compares neighboring terms */
       P.canvas.addEventListener('pointerdown', e => {
         if (st.view !== 'classify' && !st.practice) return;
         const r = P.canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
@@ -484,7 +484,7 @@
         C.title('Ask for a term');
         zeroT = C.toggle({ label: 'Count from n = 0 instead of n = 1', value: false, onChange: v => { cancel(); st.zero = v; sync(); } });
       });
-      clsBox = box(() => { C.title('Compare two neighbours'); });
+      clsBox = box(() => { C.title('Compare two neighbors'); });
       roBox = box(() => { ro = C.readout(); });
       pracBox = box(() => {
         C.title('Practice');
@@ -499,7 +499,7 @@
       };
       const buildPair = () => {
         const sq = cur(), nn = cnOf(sq) - 1;
-        pairS = swapSlider(clsBox, () => C.slider({ label: 'Pair of neighbours', min: 1, max: nn, step: 1, value: Math.max(1, st.pair || 1), format: v => `a${Math.round(v)} and a${Math.round(v) + 1}`, onInput: v => { cancel(); pickPair(v); } }));
+        pairS = swapSlider(clsBox, () => C.slider({ label: 'Pair of neighbors', min: 1, max: nn, step: 1, value: Math.max(1, st.pair || 1), format: v => `a${Math.round(v)} and a${Math.round(v) + 1}`, onInput: v => { cancel(); pickPair(v); } }));
       };
       let builtFor = -1;
 
@@ -569,7 +569,7 @@
           { label: 'Geometric: multiply by the same number each time', ok: G, fb: G ? `Every ratio is ${vt(R[0])} (${rl}). The ratio is constant, so the list is geometric. The differences (${dl}) keep changing.` : `The ratios are ${rl} (rounded). They are not all the same, so the list does not multiply by the same number each time.` + (A ? ` The differences are all ${vt(D[0])}: this list adds.` : '') },
           { label: 'Neither', ok: !A && !G, fb: !A && !G ? `The differences (${dl}) change, and the ratios (${rl}, rounded) change. Neither is constant, so the list is neither arithmetic nor geometric.` : A ? `The differences are all ${vt(D[0])}, which is constant. So it is arithmetic.` : `The ratios are all ${vt(R[0])}, which is constant. So it is geometric.` }
         ];
-        return { prompt: 'What kind of list is this? Compare at least three pairs of neighbours first.', opts, gate: () => st.pairs.filter(Boolean).length >= 3,
+        return { prompt: 'What kind of list is this? Compare at least three pairs of neighbors first.', opts, gate: () => st.pairs.filter(Boolean).length >= 3,
           onRight: fb => { carry = fb; st.cls = 1; st.shape = 0; cancel2(); cancel2 = animateTo(st, { shape: 1 }, 700, () => P.draw()); } };
       };
       const clsRuleQ = sq => ({ prompt: 'Now write the recursive rule: where does the list start, and how do you get each term from the one before?', opts: ruleOpts(sq, st.seq + 1).map(o => ({ ...o, fb: rh(o.fb) })),
@@ -626,7 +626,7 @@
       };
 
       /* ---------------- practice ---------------- */
-      const tally = () => { qTitle.textContent = `Problem ${prIdx + 1} of ${PROBS.length}: ${PROBS[prIdx].name}. Right first time: ${prFirst} of ${prDone} done`; };
+      const tally = () => { qTitle.textContent = `Problem ${prIdx + 1} of ${PROBS.length}: ${PROBS[prIdx].name}. Right on the first try: ${prFirst} of ${prDone} done`; };
       const loadProb = () => {
         prSolved = false; prTried = false; st.pair = 0; st.pairs = []; pnext.disabled = true; pnext.textContent = prIdx === PROBS.length - 1 ? 'Finish' : 'Next problem'; curKey = ''; carry = '';
       };

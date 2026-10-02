@@ -4411,7 +4411,7 @@ register({
         text: String.raw`<p>The square covers \(n=9\) unit squares, so its area is \(9\). Its side is the number that multiplies by itself to give \(9\): \(\sqrt9=3\). The edges land exactly on grid lines, and the number line shows \(3\) on a tick.</p><p>Squaring and taking a square root undo each other: \(3^2=9\) and \(\sqrt9=3\). Drag the corner to \(n=16\) and the side becomes \(4\). Whole numbers like these are <b>perfect squares</b>: \(1, 4, 9, 16, 25, 36, 49\).</p>`,
         set: { n: 9, zoom: 0, cmp: 'none', a: 0 } },
       { title: 'Not a whole number',
-        text: String.raw`<p>Now \(n=2\). A side of \(1\) gives area \(1\) (green) and a side of \(2\) gives area \(4\) (red). Area \(2\) is in between, so \(\sqrt2\) is between \(1\) and \(2\), and the edge falls inside a grid cell.</p><p>This side is not a whole number, and it is not a fraction either. Here is the fact to use: if \(n\) is a positive whole number and \(\sqrt n\) is not a whole number, then \(\sqrt n\) is <b>irrational</b>. It cannot be written as a fraction of whole numbers, and its decimal never ends and never repeats.</p>`,
+        text: String.raw`<p>Now \(n=2\). A side of \(1\) gives area \(1\) (green) and a side of \(2\) gives area \(4\) (red). Area \(2\) is in between, so \(\sqrt2\) is between \(1\) and \(2\): the edge falls inside a grid cell.</p><p>This side is not a whole number, and it is not a fraction either. The fact to use: if \(n\) is a positive whole number and \(\sqrt n\) is not a whole number, then \(\sqrt n\) is <b>irrational</b>. It cannot be written as a fraction of whole numbers, and its decimal never ends or repeats.</p>`,
         set: { n: 2, zoom: 0, cmp: 'none', a: 0 } },
       { title: 'Zoom, compare, estimate',
         text: String.raw`<p>Whole numbers only say that \(\sqrt5\) and \(\sqrt6\) are both between \(2\) and \(3\). The number line is zoomed to tenths. The green square has side \(2.2\) and area \(4.84\), too small. The red square has side \(2.3\) and area \(5.29\), too big. So \(2.2<\sqrt5<2.3\), and \(\sqrt6\) sits between \(2.4\) and \(2.5\).</p><p>Drag <b>Zoom</b> up: the squares close in on \(5\) but never equal it, so a decimal that stops can only approximate \(\sqrt5\). That is enough to compare and estimate: \(\sqrt5<\sqrt6\), and \(3+\sqrt5\) is between \(5.2\) and \(5.3\).</p>`,
@@ -7771,21 +7771,21 @@ register({
     const pan = where === 'pan', both = pan ? 'pans' : 'sides', one = s => (s === 'L' ? 'left' : 'right') + (pan ? ' pan' : ' side');
     const sa = status(after, v), d0 = dist(before, v), d1 = dist(after, v);
     if (sa === 'solved') return { good: true, text: v + ' is alone: ' + (single(after.L, v) ? v + ' = ' + pr(after.R) : pr(after.L) + ' = ' + v) + '. Press ' + (where === 'pan' ? 'Check the answer' : 'Check with numbers') + ' to test it.' };
-    if (sa === 'none') return { good: true, text: 'Every ' + v + ' cancelled, and what is left, ' + prEq(after) + ', is false. No number can make it true, so there is no solution.' };
-    if (sa === 'all') return { good: true, text: 'Every ' + v + ' cancelled, and what is left, ' + prEq(after) + ', is always true. Any number works: there are infinitely many solutions.' };
+    if (sa === 'none') return { good: true, text: 'Every ' + v + ' canceled, and what is left, ' + prEq(after) + ', is false. No number can make it true, so there is no solution.' };
+    if (sa === 'all') return { good: true, text: 'Every ' + v + ' canceled, and what is left, ' + prEq(after) + ', is always true. Any number works: there are infinitely many solutions.' };
     const t = opTerm(op), key = mkey(t.m), tc = op.kind === 'sub' ? qneg(t.c) : t.c;
     if (op.kind === 'add' || op.kind === 'sub') {
       const hit = ['L', 'R'].map(s => ({ s, like: before[s].find(u => !u.e && mkey(u.m) === key) })).filter(x => x.like);
       const cancels = hit.filter(x => q0(qadd(x.like.c, tc)));
       if (d1 < d0 && cancels.length) {
         const c = cancels[0], isV = !!c.like.m[v];
-        return { good: true, text: isV ? 'The ' + pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]) + ' on the ' + one(c.s) + ' cancelled (' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0), so all the ' + v + '’s are now on one ' + (pan ? 'pan' : 'side') + '.'
-          : pr([c.like]) + ' on the ' + one(c.s) + ' cancelled, because ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0. ' + (d1 === 0 ? '' : 'Closer to ' + v + ' alone.') };
+        return { good: true, text: isV ? 'The ' + pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]) + ' on the ' + one(c.s) + ' canceled (' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0), so all the ' + v + '’s are now on one ' + (pan ? 'pan' : 'side') + '.'
+          : pr([c.like]) + ' on the ' + one(c.s) + ' canceled, because ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' = 0. ' + (d1 === 0 ? '' : 'Closer to ' + v + ' alone.') };
       }
       if (d1 < d0) return { good: true, text: 'That brought ' + v + ' closer to being alone.' };
       if (hit.length) {
         const c = hit[0], left = qadd(c.like.c, tc), abs = pr([{ ...c.like, c: Q(Math.abs(c.like.c[0]), c.like.c[1]) }]);
-        return { good: false, text: 'It is still true, but nothing cancelled: ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' leaves ' + pr([{ c: left, m: c.like.m }]) + '. To cancel ' + pr([c.like]) + ', ' + (c.like.c[0] < 0 ? 'add ' : 'subtract ') + abs + '.' };
+        return { good: false, text: 'It is still true, but nothing canceled: ' + pr([c.like]) + ' ' + (op.kind === 'sub' ? MINUS : '+') + ' ' + opText(op, true) + ' leaves ' + pr([{ c: left, m: c.like.m }]) + '. To cancel ' + pr([c.like]) + ', ' + (c.like.c[0] < 0 ? 'add ' : 'subtract ') + abs + '.' };
       }
       return { good: false, text: 'It is still true, but there is no ' + opAbs(op) + ' on either ' + (pan ? 'pan' : 'side') + ' to cancel, so this only adds more. To cancel a term, use its opposite.' };
     }
@@ -8054,13 +8054,13 @@ register({
     hook: String.raw`An equation is a balance. Why is it safe to subtract 4 from both sides, but never from just one side?`,
     steps: [
       { title: 'Do the same to both pans',
-        text: String.raw`<p>The bag holds \(x\) blocks, a number we do not know. The left pan has the bag and 4 blocks. The right pan has 9 blocks. The beam is level, so \(x+4=9\).</p><p>First press <b>Try it on the left pan only</b>. One pan gets heavier, the beam tips, and the two sides are no longer equal. Press <b>Put it back</b> to level the beam.</p><p>To find \(x\), get the bag alone. The amount is set to 4, so press <b>Subtract 4</b>. Both pans lose 4 blocks and the beam stays level. The right pan then holds 5 blocks, so \(x=5\). The written work records each move and the property of equality that allows it.</p>`,
+        text: String.raw`<p>The bag holds \(x\) blocks, a number we do not know. The left pan has the bag and 4 blocks. The right pan has 9 blocks. The beam is level, so \(x+4=9\).</p><p>First press <b>Try it on the left pan only</b>. The beam tips, so the two sides are no longer equal. Press <b>Put it back</b> to level it.</p><p>To find \(x\), get the bag alone. The amount is set to 4, so press <b>Subtract 4</b>. Both pans lose 4 blocks and the beam stays level. The right pan holds 5 blocks, so \(x=5\). The written work records each move and the property of equality that allows it.</p>`,
         set: { mode: 'bal', eq: 0, opn: 4 } },
       { title: 'Undo in reverse order',
-        text: String.raw`<p>Three bags and 2 blocks balance 14 blocks: \(3x+2=14\). Two things were done to \(x\): it was multiplied by 3, then 2 was added.</p><p>Undo them in <b>reverse order</b>. Subtract 2 first, which leaves \(3x=12\). Then divide by 3, which gives \(x=4\). Set the amount with the \(+\) and \(-\) buttons, then press an operation.</p><p>What if you divide by 3 first? Try it. The 2 blocks get divided too, and fractions appear. It still works, but it is harder.</p>`,
+        text: String.raw`<p>Three bags and 2 blocks balance 14 blocks: \(3x+2=14\). Two things were done to \(x\): it was multiplied by 3, then 2 was added.</p><p>Undo them in <b>reverse order</b>. Subtract 2 first: \(3x=12\). Then divide by 3: \(x=4\). Set the amount with the \(+\) and \(-\) buttons, then press an operation.</p><p>What if you divide by 3 first? Try it. The 2 blocks get divided too, and fractions appear. It still works, but it is harder.</p>`,
         set: { mode: 'bal', eq: 3, opn: 1 } },
       { title: 'Both sides and parentheses',
-        text: String.raw`<p>The left pan holds 4 groups of \((x+2)\) and the right pan holds \(2x+14\). That is \(4(x+2)=2x+14\).</p><p>Press <b>Distribute</b> to open the groups. The left pan holds \(4x+8\), because each group has one bag and 2 blocks. The bags are now on both pans, so subtract \(2x\) from both sides to gather them on the left. Then subtract 8 and divide by 2. The answer is \(x=3\).</p><p>Distributing rewrites one side. It does not change the amount on that pan, so it is not done to both sides.</p>`,
+        text: String.raw`<p>The left pan holds 4 groups of \((x+2)\) and the right pan holds \(2x+14\): \(4(x+2)=2x+14\).</p><p>Press <b>Distribute</b> to open the groups. The left pan holds \(4x+8\), because each group has one bag and 2 blocks. The bags are now on both pans, so subtract \(2x\) from both sides to gather them on the left. Then subtract 8 and divide by 2. The answer is \(x=3\).</p><p>Distributing only rewrites one side. It does not change the amount on that pan, so it is not done to both sides.</p>`,
         set: { mode: 'bal', eq: 11, opn: 1 } },
       { title: 'Solve a formula for one letter',
         text: String.raw`<p>The pans are gone and every letter stands for a number. The formula \(y=mx+b\) is solved for \(y\), and we want \(x\) alone.</p><p>The formula multiplies \(x\) by \(m\), then adds \(b\). Undo it in reverse order: subtract \(b\), then divide by \(m\). Choose <b>b</b> as the amount and press Subtract, then choose <b>m</b> and press Divide. You get \(x=\dfrac{y-b}{m}\).</p><p>Press <b>Check with numbers</b>. With \(m=2\), \(b=3\) and \(x=4\) the formula gives \(y=11\), and the solved form gives back \(x=4\).</p>`,
@@ -19282,7 +19282,7 @@ register({
             const rows = [...new Set(miss.map(o => o.x))];
             return setFb(noT('Not yet.') + ` You have ${have} of the 36 pairs. ${rows.length === 1 ? 'Row ' + rows[0] + ' has' : 'Rows ' + list(rows.map(String)) + ' have'} empty cells, for example ${miss.slice(0, 2).map(o => o.name).join(' and ')}. Every pair that can happen must be in the sample space.`);
           }
-          setFb(okT('Yes.') + ' All 36 pairs are in your sample space. ' + S.ok + ' Press "Why not list the sums" to see the 7s and the 12.');
+          setFb(okT('Yes.') + ' All 36 pairs are in your sample space. ' + S.ok + ' Press "Why not list the sums 2 to 12?" to see the 7s and the 12.');
           return draw();
         }
         const pool = S.out.concat(S.decoys), tray = st.tray;
@@ -25528,7 +25528,7 @@ register({
       q: 'Turn the triangle 90° counterclockwise about the origin. Corner B is at (4, 1). Where does B land?',
       show: [mR(90)],
       choices: [
-        { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up of the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
+        { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up from the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
         { t: 'B′ = (1, −4)', pt: [1, -4], why: 'That is a turn the other way (clockwise), which sends (x, y) to (y, −x). Counterclockwise is against the hands of a clock.' },
         { t: 'B′ = (−4, −1)', pt: [-4, -1], why: 'That is a half turn (180°), which sends (x, y) to (−x, −y). A quarter turn only swaps the two numbers and changes one sign.' },
         { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. (1, 4) is not a quarter of the way round from (4, 1): the flip also changes which way A, B, C goes round. A turn keeps the direction A, B, C goes round.' }] },
@@ -27284,13 +27284,13 @@ register({
       const pr = { pi: 0, pj: 0, firstAll: true, done: 0, good: 0, fin: false, rev: false };
       const pracShow = () => {
         if (pr.fin) {
-          cardX.say(`<b>All ${PR.length} problems done.</b> You were right first time on ${pr.good} of ${PR.length}. A problem you got wrong first is a good one to try again.`, 'Practise again',
+          cardX.say(`<b>All ${PR.length} problems done.</b> You were right on the first try for ${pr.good} of ${PR.length}. A problem you missed on the first try is a good one to try again.`, 'Practice again',
             () => { Object.assign(pr, { pi: 0, pj: 0, firstAll: true, done: 0, good: 0, fin: false, rev: false }); pracShow(); });
           P.draw(); return;
         }
         const prob = PR[pr.pi], last = pr.pj === prob.parts.length - 1;
         cardX.ask(prob.parts[pr.pj], {
-          progress: () => `Problem ${pr.pi + 1} of ${PR.length}, part ${pr.pj + 1} of ${prob.parts.length}. Right first time: ${pr.good} of ${pr.done} finished.`,
+          progress: () => `Problem ${pr.pi + 1} of ${PR.length}, part ${pr.pj + 1} of ${prob.parts.length}. Right on the first try: ${pr.good} of ${pr.done} finished.`,
           nextLabel: last ? (pr.pi < PR.length - 1 ? 'Next problem' : 'See my score') : 'Next part',
           onNext: () => { if (!last) pr.pj++; else { pr.pi++; pr.pj = 0; pr.firstAll = true; pr.rev = false; if (pr.pi >= PR.length) pr.fin = true; } pracShow(); },
           onResult: ok => {
@@ -30426,7 +30426,7 @@ register({
     const n = Math.abs(a[0]), one = n === 1 && a[1] === 1;
     return one ? w : (a[1] === 1 ? n + w : '(' + n + '/' + a[1] + ')' + w);
   };
-  /* "pw + q = r" from fractions, or just "q = r" when the variable has cancelled */
+  /* "pw + q = r" from fractions, or just "q = r" when the variable has canceled */
   const eqQ = (p, q, r, w) => {
     const parts = [];
     if (!q0(p)) parts.push([p[0] < 0, qpw(p, w)]);
@@ -30668,7 +30668,7 @@ register({
         if (ph === 'sub') return `A says ${v} equals ${S.exprStr}. Click the ${v} in equation B, or press Replace, to write ${S.exprStr} in its place.`;
         if (ph === 'simp') return `Now B has only ${w} in it. Simplify it: distribute, then combine like terms.`;
         if (ph === 'solve') return `Solve for ${w}. Choose a move and an amount, then apply it to both sides.`;
-        if (ph === 'verdict') return `The ${w} terms cancelled. What does ${qtxt(W.eq.q)} = ${qtxt(W.eq.r)} tell you about the system?`;
+        if (ph === 'verdict') return `The ${w} terms canceled. What does ${qtxt(W.eq.q)} = ${qtxt(W.eq.r)} tell you about the system?`;
         if (ph === 'back') return `${w} = ${num(W.found.val)}. Now find ${v}: put ${num(W.found.val)} in for ${w} in one of the equations. Which one is quicker?`;
         if (ph === 'check') { const c = W.cand; return `Is (${num(c.x)}, ${num(c.y)}) really a solution? A solution must work in both original equations. Test both.`; }
         return '';
@@ -30722,7 +30722,7 @@ register({
           const: { label: c > 0 ? `Subtract ${c} from both sides` : `Add ${Math.abs(c)} to both sides`,
             fb: `That removes ${Math.abs(c)} from the right side, but the ${bw} is still next to ${v} on the left. ${v} is not alone yet.` },
           sign: { label: b > 0 ? `Add ${bw} to both sides` : `Subtract ${bw} from both sides`,
-            fb: `That puts another ${bw} on the left instead of cancelling the one that is there. To cancel ${b > 0 ? '+' : MI}${bw} you do the opposite: ${b > 0 ? 'subtract' : 'add'} ${bw}.` },
+            fb: `That puts another ${bw} on the left instead of canceling the one that is there. To cancel ${b > 0 ? '+' : MI}${bw} you do the opposite: ${b > 0 ? 'subtract' : 'add'} ${bw}.` },
           div: { label: `Divide both sides by ${b}`,
             fb: `Dividing every term by ${b} turns ${v} into ${v}/${b}, so ${v} is not alone. Cancel the ${bw} with a subtraction (or addition) instead.` }
         };
@@ -30802,7 +30802,7 @@ register({
         const right = truth ? 2 : 1;
         if (i !== right) {
           err();
-          W.fb = bad('Not quite.') + ' ' + (i === 0 ? `There is no ${w} left to solve for: the ${w} terms cancelled. What is left, ${st0}, does not mention ${w} at all, so it cannot give one value of ${w}.`
+          W.fb = bad('Not quite.') + ' ' + (i === 0 ? `There is no ${w} left to solve for: the ${w} terms canceled. What is left, ${st0}, does not mention ${w} at all, so it cannot give one value of ${w}.`
             : truth ? `${st0} is true, so nothing is ruled out. It is true for every ${w}, not for none.`
             : `${st0} is false for every ${w}, so no ${w} makes B true on line A. It is not true for every ${w}.`);
           refresh(); return;
@@ -30947,7 +30947,7 @@ register({
       const nextProb = () => {
         if (PR.idx < PROBS.length - 1) { PR.idx++; loadProb(); return; }
         pFinal.replaceChildren(); pNext.disabled = true;
-        pFb.innerHTML = `All six problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, or Start practice again after going back.`;
+        pFb.innerHTML = `All six problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, then Start practice to try again.`;
       };
 
       /* ================= canvas ================= */
@@ -31399,11 +31399,11 @@ register({
         if (w.kind === 'wait') { L.push('Set the multipliers, then press Add or Subtract.'); return lines(L); }
         L.push(`${kk('x terms')} ${par(w.e1[0])} ${sgn} ${par(w.e2[0])} = ${num(R[0])}`, `${kk('y terms')} ${par(w.e1[1])} ${sgn} ${par(w.e2[1])} = ${num(R[1])}`, `${kk('Right sides')} ${par(w.e1[2])} ${sgn} ${par(w.e2[2])} = ${num(R[2])}`);
         L.push(`<b>New equation: ${eqText(R)}</b>`);
-        if (w.kind === 'vert') L.push(good('y cancelled.') + ` The new line is vertical, so it reads off x: x = ${num(R[2])} ÷ ${par(R[0])} = ${num(R[2] / R[0])}.`);
-        else if (w.kind === 'horiz') L.push(good('x cancelled.') + ` The new line is horizontal, so it reads off y: y = ${num(R[2])} ÷ ${par(R[1])} = ${num(R[2] / R[1])}.`);
+        if (w.kind === 'vert') L.push(good('y canceled.') + ` The new line is vertical, so it reads off x: x = ${num(R[2])} ÷ ${par(R[0])} = ${num(R[2] / R[0])}.`);
+        else if (w.kind === 'horiz') L.push(good('x canceled.') + ` The new line is horizontal, so it reads off y: y = ${num(R[2])} ÷ ${par(R[1])} = ${num(R[2] / R[1])}.`);
         else if (w.kind === 'both') L.push(bad('This still has both x and y.') + ` The new line is tilted. If the system has a solution, this line passes through it, but the line does not name x or y. To cancel, a pair of terms must be opposites (when you add) or equal (when you subtract). Now the x terms are ${num(w.e1[0])} and ${num(w.e2[0])}, and the y terms are ${num(w.e1[1])} and ${num(w.e2[1])}.`);
-        else if (w.kind === 'void') L.push(good('Both cancelled.') + ` What is left, 0 = ${num(R[2])}, is never true. No x and y fit it, so the two lines have no point in common: no solution.` + (st.oops ? ' (If you forgot the right side, check that this is real.)' : ''));
-        else if (w.kind === 'same') L.push(good('Both cancelled.') + ' What is left, 0 = 0, is always true. The two equations describe the same line, so every point on it is a solution.');
+        else if (w.kind === 'void') L.push(good('Both canceled.') + ` What is left, 0 = ${num(R[2])}, is never true. No x and y fit it, so the two lines have no point in common: no solution.` + (st.oops ? ' (The right side was not multiplied, so this result may be wrong. Turn that switch off to see the real one.)' : ''));
+        else if (w.kind === 'same') L.push(good('Both canceled.') + ' What is left, 0 = 0, is always true. The two equations describe the same line, so every point on it is a solution.');
         return lines(L);
       };
 
@@ -31451,7 +31451,7 @@ register({
         if (w.kind === 'zero') { prTried = true; pfb.innerHTML = bad('Not yet.') + ' A multiplier of 0 turns the equation into 0 = 0 and forgets everything it said. Use a number that is not 0.'; tally(); return; }
         if (w.kind === 'vert' || w.kind === 'horiz') {
           prStage = 1; const kx = w.kind === 'vert', val = kx ? w.R[2] / w.R[0] : w.R[2] / w.R[1];
-          pfb.innerHTML = good('Good move.') + ` The new equation is ${eqText(w.R)}, so ${kx ? 'y' : 'x'} cancelled and ${kx ? 'x' : 'y'} = ${num(val)}. Now put it back into an original equation to find the other coordinate. What is the solution?`;
+          pfb.innerHTML = good('Good move.') + ` The new equation is ${eqText(w.R)}, so ${kx ? 'y' : 'x'} canceled and ${kx ? 'x' : 'y'} = ${num(val)}. Now put it back into an original equation to find the other coordinate. What is the solution?`;
           pch.replaceChildren(); pr.fin.forEach((o, i) => pch.append(mkBtn(o[0], () => pickFin(i))));
         } else {
           prTried = true;
@@ -32171,7 +32171,7 @@ register({
         ch('No solution', 'No solution needs B off the line A can reach. A X = (2t, −t), and B = (6, −3) is that with t = 3. So B is on the line.'),
         ch('Exactly one, (3, 0)', '(3, 0) is a solution, but so is (1, −1): 2 + 4 = 6 and −1 − 2 = −3. With det 0 you never get exactly one.'),
         ch('Infinitely many', 'det A = 4 − 4 = 0, and B = (6, −3) is on the line A can reach (t = 3). The second equation is −1/2 times the first, so they describe one line: every point on it works.', true),
-        ch('Can not tell without an inverse', 'There is no inverse (det is 0), but you can still tell: compare B with the line A can reach.')] },
+        ch('Cannot tell without an inverse', 'There is no inverse (det is 0), but you can still tell: compare B with the line A can reach.')] },
     { tag: 'A context problem', A: [[3, 1], [1, 2]], B: [5, 5], vw: [3, 3, 8], X0: [0, 0],
       q: 'At the school store, 3 pens and 1 pad cost $5. 1 pen and 2 pads cost $5. Let x be the price of a pen and y the price of a pad. Here A = [3 1; 1 2], B = (5, 5), det A = 5, and A⁻¹ = (1 ÷ 5) times [2 −1; −1 3]. What does one pad cost?',
       hint: 'The pad price is y, the bottom entry of X. Bottom: (−1)·5 + 3·5 = 10, then divide by 5.',
@@ -32258,11 +32258,11 @@ register({
           String.raw`\(\begin{pmatrix} 2 & -1 \\ 3 & 4 \end{pmatrix}\begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} 1 \\ 5 \end{pmatrix}\)`], answer: 2,
         why: String.raw`Each row of \(A\) comes from one equation: row 1 is \((2,-1)\) and row 2 is \((3,4)\). Row 1 times \(X\) gives \(2x-y\), which must equal \(5\), and row 2 gives \(3x+4y=1\). The first choice dropped the minus sign. The second wrote the equations down the columns instead of across the rows. The last one swapped the right-hand numbers.`,
         hint: String.raw`Write the coefficients of each equation across one row, keeping the minus sign. Then multiply row 1 by the column \((x, y)\) and see if you get the first equation.` },
-      { q: 'Solve 3x + 2y = 8 and x + y = 3 with matrices. The coefficient matrix is A = (3 2 over 1 1), the right side is B = (8, 3) as a column, and det A = 3·1 − 2·1 = 1. Use the inverse formula A⁻¹ = (1 ÷ det) times the matrix (d −b over −c a), then compute X = A⁻¹B. What is (x, y)?',
+      { q: 'Solve 3x + 2y = 8 and x + y = 3 with matrices. The coefficient matrix A has first row (3, 2) and second row (1, 1). The right side is B = (8, 3) as a column, and det A = 3·1 − 2·1 = 1. Use the inverse formula A⁻¹ = (1 ÷ det) times the matrix with first row (d, −b) and second row (−c, a), then compute X = A⁻¹B. What is (x, y)?',
         choices: ['(14, 17)', '(1, 2)', '(18, −5)', '(2, 1)'], answer: 3,
         why: String.raw`Here \(a=3, b=2, c=1, d=1\), so \(A^{-1} = \frac11\begin{pmatrix} 1 & -2 \\ -1 & 3 \end{pmatrix}\). Then \(X = \begin{pmatrix} 1\cdot8-2\cdot3 \\ -1\cdot8+3\cdot3 \end{pmatrix} = \begin{pmatrix} 2 \\ 1 \end{pmatrix}\). Check: \(3\cdot2+2\cdot1=8\) and \(2+1=3\). The answer \((14, 17)\) comes from forgetting to flip the signs of \(b\) and \(c\). The answer \((18,-5)\) comes from not swapping \(a\) and \(d\). The answer \((1,2)\) swaps \(x\) and \(y\).`,
         hint: String.raw`Swap the two diagonal entries (3 and 1), change the signs of 2 and 1, and divide by 1. Then multiply row by row: top is (1)(8) + (−2)(3).` },
-      { q: 'A student studies 2x + y = 3 and 4x + 2y = 6, so A = (2 1 over 4 2) and B = (3, 6) as a column. The student writes: "det A = 2·2 − 1·4 = 0, so A has no inverse, so the system has no solution." Which comment is correct?',
+      { q: 'A student studies 2x + y = 3 and 4x + 2y = 6, so A has first row (2, 1) and second row (4, 2), and B = (3, 6) as a column. The student writes: "det A = 2·2 − 1·4 = 0, so A has no inverse, so the system has no solution." Which comment is correct?',
         choices: ['The conclusion is wrong. B is on the line that A can reach, so there are infinitely many solutions', 'The conclusion is right. A zero determinant always means no solution', 'The determinant is wrong. A zero determinant would mean infinitely many solutions every time', 'The conclusion is right, because dividing by 0 gives an answer that does not exist'], answer: 0,
         why: String.raw`The determinant \(0\) is right, and it does mean no inverse, so the inverse method cannot be used. But it does not say which of the other two cases occurs. Here \(AX = (2x+y,\ 2(2x+y))\), and \(B=(3,6)\) has this form with \(2x+y=3\). So \(B\) is on the line, and the second equation is just twice the first: infinitely many solutions. A zero determinant gives either no solution or infinitely many, depending on \(B\).`,
         hint: String.raw`Compare the two equations. Is the second one a multiple of the first one? If both describe the same line, how many points are on it?` }
@@ -32579,18 +32579,18 @@ register({
         { ask: 'Case 2: <b>2x + 4y = 6</b> and <b>x + 2y = 4</b>, so B = (6, 4). The matrix is the same, but B has moved. Drag X around. Can A X ever reach B?',
           enter: () => { setSys(SYS[2].A, SYS[2].B, SYS[2].vw, SYS[2].X0); st.reveal = true; st.t = 1; st.showDet = true; st.showSol = false; },
           choices: [ch('Yes, with a large enough X', 'A X always lies on the violet line y = x/2, however large X is. B = (6, 4) has y = 4, but the line at x = 6 is at y = 3. It is off the line.'),
-            ch('No. A X stays on the line and B is off it, so there is no solution', 'Every A X is on the violet line, and B is not on it. In Two-lines view the lines are parallel: 2x + 4y = 6 and 2x + 4y = 8 can not both hold.', true),
+            ch('No. A X stays on the line and B is off it, so there is no solution', 'Every A X is on the violet line, and B is not on it. In Two-lines view the lines are parallel: 2x + 4y = 6 and 2x + 4y = 8 cannot both hold.', true),
             ch('Yes, exactly one X', 'With det 0 there is never exactly one. Here B is off the line, so there is none at all.'),
             ch('Yes, only X = (6, 4)', 'A(6, 4) = (2·6 + 4·4, 6 + 8) = (28, 14). That is on the line, but nowhere near B.')],
           onRight: () => { st.showSol = true; } },
         { ask: 'Compare with elimination on Case 2. Double equation 2 (x + 2y = 4) to get 2x + 4y = 8, then subtract equation 1 (2x + 4y = 6). What do you get, and what does it tell you?',
           choices: [ch('0 = 0, so there are infinitely many solutions', '0 = 0 would be the Case 1 result (B on the line). Here 8 − 6 = 2.'),
-            ch('x = 2, so there is one solution', 'Both x and y cancelled, so nothing is left to solve for. That is the sign of det = 0.'),
+            ch('x = 2, so there is one solution', 'Both x and y canceled, so nothing is left to solve for. That is the sign of det = 0.'),
             ch('0 = 2, which is impossible, so there is no solution', 'Both unknowns cancel and the leftover 0 = 2 is false. Elimination reached the same answer as the matrix picture (B off the line), only by different bookkeeping.', true)] },
         { ask: 'A shop uses the same prices every day but has a new pair of receipts each day (a new B, the same A). For 30 days, which method saves the most work?',
           choices: [ch('Eliminate from scratch each day, because the totals change the work', 'You can do that, and it works. But it repeats all the elimination steps 30 times.'),
             ch('Find A⁻¹ once, then compute A⁻¹B for each day', 'A⁻¹ depends only on A, so it is found once. Each new day costs one matrix times a column. That is the advantage of matrices when many systems share the same A.', true),
-            ch('Matrices can not be used, because B changes', 'A⁻¹ does not depend on B, so a new B changes nothing about the inverse. It is reused as it is.')],
+            ch('Matrices cannot be used, because B changes', 'A⁻¹ does not depend on B, so a new B changes nothing about the inverse. It is reused as it is.')],
           fb0: '' }
       );
       const loadTask = i => {
@@ -35698,9 +35698,9 @@ register({
         const t0 = terms(before), t1 = terms(after);
         if (isoForm(after)) s += `${P.v} is alone now. Press Check my answer.`;
         else if (op.k === 'dist') s += 'Now collect terms.';
-        else if (t1 < t0) s += 'A term cancelled, so the inequality is simpler.';
+        else if (t1 < t0) s += 'A term canceled, so the inequality is simpler.';
         else if (t1 > t0) s += 'It is a legal move, since you did the same thing to both sides, but it added a term. Try Undo and look for a move that cancels something.';
-        else s += 'It is legal, but nothing cancelled. Use Hint if you are stuck.';
+        else s += 'It is legal, but nothing canceled. Use Hint if you are stuck.';
         W.fb = s; wbRefresh();
       };
       const undoOp = () => {
@@ -35822,7 +35822,7 @@ register({
       const nextProb = () => {
         if (PR.idx < PROBS.length - 1) { PR.idx++; loadProb(); return; }
         pNext.disabled = true;
-        pFb.innerHTML = `All seven problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, or go back and try again.`;
+        pFb.innerHTML = `All seven problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, then Start practice to try again.`;
       };
 
       /* ============ canvas ============ */
@@ -38565,7 +38565,7 @@ register({
         text: String.raw`<p>To reach the 50th term with the rule, you must build 49 boxes first. An <b>explicit formula</b> jumps there directly: \(a_n=5+3(n-1)\).</p><p>Predict the 10th term, then slide to the 50th. The formula gives \(5+3(49)=152\) in one calculation. Why \(n-1\)? Term \(n\) has taken only \(n-1\) steps from the start.</p>`,
         set: { view: 'jump', seq: 0 } },
       { title: 'Arithmetic, geometric or neither',
-        text: String.raw`<p>In an <b>arithmetic</b> list you add the same number each time (a constant difference). In a <b>geometric</b> list you multiply by the same number each time (a constant ratio).</p><p>Here the list is 2, 6, 18, 54, 162, 486. Click neighbouring boxes to find differences and ratios, decide, then write both formulas. The dots lie on a line or on a curve.</p>`,
+        text: String.raw`<p>In an <b>arithmetic</b> list you add the same number each time (a constant difference). In a <b>geometric</b> list you multiply by the same number each time (a constant ratio).</p><p>Here the list is 2, 6, 18, 54, 162, 486. Click neighboring boxes to find differences and ratios, decide, then write both formulas. The dots lie on a line or on a curve.</p>`,
         set: { view: 'classify', seq: 1 } },
       { title: 'Rules that are neither',
         text: String.raw`<p>Fibonacci adds the <em>two</em> terms before it, so it needs two starting values: \(a_1=1,\ a_2=1\). Others mix steps, like \(a_n=2a_{n-1}+1\).</p><p>Real stories work too: savings that gain $50 a month, a town that grows 10% a year, a ball that bounces to 60% of its height.</p><p>Build the chain, then choose the rule that made it.</p>`,
@@ -38581,7 +38581,7 @@ register({
       <p>If every term is the one before plus a fixed number \(d\) (the <em>common difference</em>), the sequence is <em>arithmetic</em>:
       \[ a_n=a_{n-1}+d, \qquad a_n=a_1+(n-1)d. \]
       Why \((n-1)\)? To get from \(a_1\) to \(a_n\) you take steps from position 1 to position \(n\), and there are \(n-1\) of them (five fence posts have four gaps between them). Each step adds \(d\), so you add \(d\) exactly \(n-1\) times. For \(5,8,11,\ldots\): \(a_{50}=5+3(49)=152\).</p>
-      <p>To test a list, subtract neighbouring terms. If all the differences are equal, it is arithmetic. On a graph of the points \((n,a_n)\), the dots lie on a straight line with slope \(d\), because \(a_n=dn+(a_1-d)\) is a linear function of \(n\), like \(f(x)=mx+b\). Only the whole-number values of \(n\) are dots.</p>
+      <p>To test a list, subtract neighboring terms. If all the differences are equal, it is arithmetic. On a graph of the points \((n,a_n)\), the dots lie on a straight line with slope \(d\), because \(a_n=dn+(a_1-d)\) is a linear function of \(n\), like \(f(x)=mx+b\). Only the whole-number values of \(n\) are dots.</p>
       <h3>Geometric sequences: a constant ratio</h3>
       <p>If every term is the one before times a fixed number \(r\) (the <em>common ratio</em>, not zero), the sequence is <em>geometric</em>:
       \[ a_n=r\,a_{n-1}, \qquad a_n=a_1\,r^{\,n-1}. \]
@@ -38710,7 +38710,7 @@ register({
         const L = [];
         const pairLines = () => {
           const t = terms(sq, prac ? pr.rv : cnOf(sq)), i = st.pair, lo = i - (zero ? 1 : 0);
-          if (!i) { L.push({ s: prac ? 'Tip: click two neighbouring boxes to compare them.' : 'Click two neighbouring boxes (or use the pair slider) to compare them.', col: pal.muted }); return; }
+          if (!i) { L.push({ s: prac ? 'Tip: click two neighboring boxes to compare them.' : 'Click two neighboring boxes (or use the pair slider) to compare them.', col: pal.muted }); return; }
           const a = t[i - 1], b = t[i], q = b / a;
           L.push({ s: `a_{${i + 1 - (zero ? 1 : 0)}} − a_{${lo}} = ${vt(b)} − ${vt(a)} = ${vt(rd(b - a))}`, col: pal.green, wt: 600 });
           L.push({ s: `a_{${i + 1 - (zero ? 1 : 0)}} ÷ a_{${lo}} = ${vt(b)} ÷ ${vt(a)} ${isEx(q) ? '=' : '≈'} ${vt(q)}`, col: pal.red, wt: 600 });
@@ -38823,7 +38823,7 @@ register({
         c.globalAlpha = 1;
       };
 
-      /* clicking boxes compares neighbouring terms */
+      /* clicking boxes compares neighboring terms */
       P.canvas.addEventListener('pointerdown', e => {
         if (st.view !== 'classify' && !st.practice) return;
         const r = P.canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
@@ -38866,7 +38866,7 @@ register({
         C.title('Ask for a term');
         zeroT = C.toggle({ label: 'Count from n = 0 instead of n = 1', value: false, onChange: v => { cancel(); st.zero = v; sync(); } });
       });
-      clsBox = box(() => { C.title('Compare two neighbours'); });
+      clsBox = box(() => { C.title('Compare two neighbors'); });
       roBox = box(() => { ro = C.readout(); });
       pracBox = box(() => {
         C.title('Practice');
@@ -38881,7 +38881,7 @@ register({
       };
       const buildPair = () => {
         const sq = cur(), nn = cnOf(sq) - 1;
-        pairS = swapSlider(clsBox, () => C.slider({ label: 'Pair of neighbours', min: 1, max: nn, step: 1, value: Math.max(1, st.pair || 1), format: v => `a${Math.round(v)} and a${Math.round(v) + 1}`, onInput: v => { cancel(); pickPair(v); } }));
+        pairS = swapSlider(clsBox, () => C.slider({ label: 'Pair of neighbors', min: 1, max: nn, step: 1, value: Math.max(1, st.pair || 1), format: v => `a${Math.round(v)} and a${Math.round(v) + 1}`, onInput: v => { cancel(); pickPair(v); } }));
       };
       let builtFor = -1;
 
@@ -38951,7 +38951,7 @@ register({
           { label: 'Geometric: multiply by the same number each time', ok: G, fb: G ? `Every ratio is ${vt(R[0])} (${rl}). The ratio is constant, so the list is geometric. The differences (${dl}) keep changing.` : `The ratios are ${rl} (rounded). They are not all the same, so the list does not multiply by the same number each time.` + (A ? ` The differences are all ${vt(D[0])}: this list adds.` : '') },
           { label: 'Neither', ok: !A && !G, fb: !A && !G ? `The differences (${dl}) change, and the ratios (${rl}, rounded) change. Neither is constant, so the list is neither arithmetic nor geometric.` : A ? `The differences are all ${vt(D[0])}, which is constant. So it is arithmetic.` : `The ratios are all ${vt(R[0])}, which is constant. So it is geometric.` }
         ];
-        return { prompt: 'What kind of list is this? Compare at least three pairs of neighbours first.', opts, gate: () => st.pairs.filter(Boolean).length >= 3,
+        return { prompt: 'What kind of list is this? Compare at least three pairs of neighbors first.', opts, gate: () => st.pairs.filter(Boolean).length >= 3,
           onRight: fb => { carry = fb; st.cls = 1; st.shape = 0; cancel2(); cancel2 = animateTo(st, { shape: 1 }, 700, () => P.draw()); } };
       };
       const clsRuleQ = sq => ({ prompt: 'Now write the recursive rule: where does the list start, and how do you get each term from the one before?', opts: ruleOpts(sq, st.seq + 1).map(o => ({ ...o, fb: rh(o.fb) })),
@@ -39008,7 +39008,7 @@ register({
       };
 
       /* ---------------- practice ---------------- */
-      const tally = () => { qTitle.textContent = `Problem ${prIdx + 1} of ${PROBS.length}: ${PROBS[prIdx].name}. Right first time: ${prFirst} of ${prDone} done`; };
+      const tally = () => { qTitle.textContent = `Problem ${prIdx + 1} of ${PROBS.length}: ${PROBS[prIdx].name}. Right on the first try: ${prFirst} of ${prDone} done`; };
       const loadProb = () => {
         prSolved = false; prTried = false; st.pair = 0; st.pairs = []; pnext.disabled = true; pnext.textContent = prIdx === PROBS.length - 1 ? 'Finish' : 'Next problem'; curKey = ''; carry = '';
       };
@@ -40735,7 +40735,7 @@ register({
         hint: 'Subtract 10x from 100x. What is 16.666… minus 1.666…? Then divide by the number in front of x.' },
       { q: 'A student says: "3/15 has a 3 in its denominator, because 15 = 3 × 5. So its decimal must repeat." Which reply is correct?',
         choices: ['The student is right: a 3 in the denominator always makes the decimal repeat.', 'The student is wrong: 3/15 = 1/5 in lowest terms, and 5 is allowed, so it stops: 0.2.', 'The student is wrong: 3/15 stops because 15 is an odd number.', 'The student is wrong: 3/15 repeats, but only because 3 is a prime number.'], answer: 1,
-        why: String.raw`The test uses the denominator in <em>lowest terms</em>. \(\tfrac{3}{15}=\tfrac15\), and 5 has no prime factor except 5, so \(\tfrac15=\tfrac{2}{10}=0.2\) stops. The 3 in 15 cancelled with the top. An odd denominator does not make a decimal stop (\(\tfrac13\) has an odd denominator and repeats).`,
+        why: String.raw`The test uses the denominator in <em>lowest terms</em>. \(\tfrac{3}{15}=\tfrac15\), and 5 has no prime factor except 5, so \(\tfrac15=\tfrac{2}{10}=0.2\) stops. The 3 in 15 canceled with the top. An odd denominator does not make a decimal stop (\(\tfrac13\) has an odd denominator and repeats).`,
         hint: 'Reduce 3/15 before you look at the denominator.' }
     ],
     links: { prereq: ['percents-on-tape-and-number-lines'], next: ['square-roots-and-irrational-numbers'], related: ['negative-numbers-and-absolute-value', 'area-of-a-circle', 'scale-drawings-and-proportions', 'the-real-number-system', 'why-the-square-root-of-2-is-irrational'] },
@@ -41166,7 +41166,7 @@ register({
         out.push(`${kk('Number')} ${q.name} = ${q.head}${q.d.slice(0, Math.min(shown, 24))}${shown > 24 ? '…' : ''}`);
         out.push(`${kk('Test')} If the digits repeat with length ${L}, each digit equals the digit ${L} places later.`);
         if (shown <= L) out.push('Show more digits.');
-        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds for ever. Other lengths, such as 4, break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
+        else if (bk < 0) out.push(st.seq === 2 ? good(`All ${shown - L} comparisons agree.`) + ` 1/7 = 0.${ovl('142857')}, so a repeat of length 6 (or 12) holds forever. Other lengths, such as 4, break.` : `All ${shown - L} comparisons agree so far. Try a different L, or show more digits.`);
         else out.push(bad(`Breaks at digit ${bk + 1}.`) + ` It is ${q.d[bk]}, but the digit ${L} places later is ${q.d[bk + L]}. So the digits do not repeat with length ${L} from the start.`);
         out.push(st.seq === 2 ? 'For contrast, this is a fraction. A repeat of length 6 never breaks.' : `Honest note: ${shown} digits cannot show what happens forever. Only a proof can. For √2 see the lesson Why the square root of 2 is irrational.`);
         return lines(out);
@@ -42325,7 +42325,7 @@ register({
   register({
     id: 'set-and-interval-notation', level: 'school',
     title: 'Set and interval notation',
-    blurb: 'One set of numbers in four languages: words, a number-line graph, set-builder notation and interval notation, plus how to combine sets with and and or.',
+    blurb: 'One set of numbers in four languages: words, a number-line graph, set-builder notation and interval notation, plus how to combine sets with "and" and "or".',
     thumb(c, p) {
       const pal = p.pal, W = p.w, H = p.h, y = H * .68, x0 = W * .1, x1 = W * .9, X = v => x0 + (v + 3) / 8 * (x1 - x0);
       T(c, p, '(−1, 4]', W / 2, H * .27, { size: Math.max(15, H * .22), serif: true, halo: false });
@@ -42347,7 +42347,7 @@ register({
         text: String.raw`<p>Interval notation is the short form. \((-1,4]\) means \(-1&lt;x\le 4\). A <b>square bracket</b> means the end number is included (closed circle). A <b>parenthesis</b> means it is not (open circle).</p><p>Predict first: which end of \(-1&lt;x\le 4\) will be closed? Then build intervals with the steppers, and read graphs. Infinity always gets a parenthesis, because you can never reach it.</p>`,
         set: { view: 'iv', ivMode: 'build' } },
       { title: 'And, or, and a look ahead',
-        text: String.raw`<p>"And" means both rules hold: the <b>intersection</b> \(\cap\), the overlap. "Or" means at least one rule holds: the <b>union</b> \(\cup\), everything in either set.</p><p>Choose a case. Press and or or to combine the blue set A and the red set B into the violet set, then pick its notation. Case D shows the allowed inputs of \(\dfrac{1}{x}\): every number except 0.</p>`,
+        text: String.raw`<p>"And" means both rules hold: the <b>intersection</b> \(\cap\), the overlap. "Or" means at least one rule holds: the <b>union</b> \(\cup\), everything in either set.</p><p>Choose a case. Press <b>and</b> or <b>or</b> to combine the blue set A and the red set B into the violet set, then pick its notation. Case D shows the allowed inputs of \(\dfrac{1}{x}\): every number except 0.</p>`,
         set: { view: 'comb', cs: 0 } }
     ],
     formal: String.raw`
@@ -42366,7 +42366,7 @@ register({
       </ul>
       <h3>Why infinity always gets a parenthesis</h3>
       <p>A square bracket says "this number is in the set". But \(\infty\) is not a number. For any number you name, there is a bigger one, so there is no largest number to include. The shading just keeps going. So \(\infty\) and \(-\infty\) are always paired with a parenthesis, and \([3,\infty]\) is a mistake.</p>
-      <h3>And and or</h3>
+      <h3>"And" and "or"</h3>
       <p>The <em>intersection</em> \(A\cap B\) holds the numbers that are in \(A\) and in \(B\). The <em>union</em> \(A\cup B\) holds the numbers in \(A\) or in \(B\) (or both). A compound inequality uses these words. For example, \(-2&lt;x\le 3\) means \(x&gt;-2\) and \(x\le 3\):
       \[ (-2,\infty)\cap(-\infty,3]=(-2,3]. \]
       To intersect two intervals, take the larger left end and the smaller right end. At each end, the bracket comes from the set that supplies that number. If both supply the same number, it is closed only if both are closed. If the left end ends up larger than the right end, the sets do not overlap and the intersection is \(\emptyset\). For example \((-\infty,-1)\cap[4,\infty)=\emptyset\).</p>
@@ -49937,7 +49937,7 @@ register({
         ['1080', 'That treats 3π/4 as 135 degrees and multiplies 8 × 135. In s = rθ the angle must be in radians. Use θ = 3π/4 itself.'],
         ['3π/32', 'That divides the angle by the radius (θ ÷ r). The rule is s = r × θ, so multiply.'],
         ['about 10.4', 'That adds 8 + 3π/4 (about 8 + 2.36). Arc length is r times θ. It does not add.'],
-        ['6π, about 18.85', 'Yes. s = rθ = 8 × 3π/4 = 24π/4 = 6π, about 18.85. The angle is 3π/4 ≈ 2.36 radii, and each radius is 8 long.']] },
+        ['6π, about 18.85', 'Yes. s = rθ = 8 × 3π/4 = 24π/4 = 6π, about 18.85. The angle is 3π/4 ≈ 2.36 radius-lengths, and each one is 8 long.']] },
     { name: 'Angle from arc and radius', ans: 0, fig: { R: 6, th: 1.5, vs: 9, thTxt: 'θ = ?', arcTxt: 's = 9', rTxt: 'r = 6' },
       q: 'On a circle of radius 6, an arc is 9 long. What is the angle at the center?',
       ch: [
@@ -50001,7 +50001,7 @@ register({
         text: String.raw`<p>A half turn is 180° and \(\pi\) radians. So <b>degrees \(\times\ \pi/180\) gives radians</b>, and <b>radians \(\times\ 180/\pi\) gives degrees</b>.</p><p>The marker is at 30°. Choose its radian form. Then fill the strip by moving the marker: drag it, press a strip cell, or use Previous and Next.</p>`,
         set: { mode: 'conv', ci: 1, R: 2, vs: 3, th: PI / 6 } },
       { title: 'Sector area, and the unit circle',
-        text: String.raw`<p>A sector is the fraction \(\theta/2\pi\) of the whole disc, so \(A = \dfrac{\theta}{2\pi}\cdot \pi r^2 = \tfrac12 r^2\theta\).</p><p>Here \(r=4\) and \(\theta=\pi/2\): \(A=\tfrac12\cdot 16\cdot\tfrac{\pi}{2}=4\pi\), about 12.57. Press <b>r = 1</b>: the arc is \(\theta\) itself. That is the <a href="#/viz/the-unit-circle-and-trig-waves">unit circle</a>, the next lesson.</p>`,
+        text: String.raw`<p>A sector is the fraction \(\theta/2\pi\) of the whole disc, so \(A = \dfrac{\theta}{2\pi}\cdot \pi r^2 = \tfrac12 r^2\theta\).</p><p>Here \(r=4\) and \(\theta=\pi/2\): \(A=\tfrac12\cdot 16\cdot\tfrac{\pi}{2}=4\pi\), about 12.57. Press <b>r = 1 (unit circle)</b>: the arc is \(\theta\) itself. That is the <a href="#/viz/the-unit-circle-and-trig-waves">unit circle</a>, the next lesson.</p>`,
         set: { mode: 'sector', R: 4, vs: 6, th: PI / 2 } }
     ],
     formal: String.raw`

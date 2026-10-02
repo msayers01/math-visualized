@@ -621,9 +621,9 @@
         const t0 = terms(before), t1 = terms(after);
         if (isoForm(after)) s += `${P.v} is alone now. Press Check my answer.`;
         else if (op.k === 'dist') s += 'Now collect terms.';
-        else if (t1 < t0) s += 'A term cancelled, so the inequality is simpler.';
+        else if (t1 < t0) s += 'A term canceled, so the inequality is simpler.';
         else if (t1 > t0) s += 'It is a legal move, since you did the same thing to both sides, but it added a term. Try Undo and look for a move that cancels something.';
-        else s += 'It is legal, but nothing cancelled. Use Hint if you are stuck.';
+        else s += 'It is legal, but nothing canceled. Use Hint if you are stuck.';
         W.fb = s; wbRefresh();
       };
       const undoOp = () => {
@@ -745,7 +745,7 @@
       const nextProb = () => {
         if (PR.idx < PROBS.length - 1) { PR.idx++; loadProb(); return; }
         pNext.disabled = true;
-        pFb.innerHTML = `All seven problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, or go back and try again.`;
+        pFb.innerHTML = `All seven problems are done. You got ${PR.first} of ${PROBS.length} with no wrong choices. Press Back to the lesson, then Start practice to try again.`;
       };
 
       /* ============ canvas ============ */

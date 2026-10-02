@@ -104,7 +104,7 @@
       q: 'Turn the triangle 90° counterclockwise about the origin. Corner B is at (4, 1). Where does B land?',
       show: [mR(90)],
       choices: [
-        { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up of the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
+        { t: 'B′ = (−1, 4)', ok: true, why: 'A quarter turn counterclockwise sends (x, y) to (−y, x). B was 4 right and 1 up from the origin. After the turn it is 4 up and 1 left: (−1, 4).' },
         { t: 'B′ = (1, −4)', pt: [1, -4], why: 'That is a turn the other way (clockwise), which sends (x, y) to (y, −x). Counterclockwise is against the hands of a clock.' },
         { t: 'B′ = (−4, −1)', pt: [-4, -1], why: 'That is a half turn (180°), which sends (x, y) to (−x, −y). A quarter turn only swaps the two numbers and changes one sign.' },
         { t: 'B′ = (1, 4)', pt: [1, 4], why: 'Swapping x and y with no sign change is a flip over the line y = x, not a turn. (1, 4) is not a quarter of the way round from (4, 1): the flip also changes which way A, B, C goes round. A turn keeps the direction A, B, C goes round.' }] },

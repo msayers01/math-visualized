@@ -374,11 +374,11 @@
         if (w.kind === 'wait') { L.push('Set the multipliers, then press Add or Subtract.'); return lines(L); }
         L.push(`${kk('x terms')} ${par(w.e1[0])} ${sgn} ${par(w.e2[0])} = ${num(R[0])}`, `${kk('y terms')} ${par(w.e1[1])} ${sgn} ${par(w.e2[1])} = ${num(R[1])}`, `${kk('Right sides')} ${par(w.e1[2])} ${sgn} ${par(w.e2[2])} = ${num(R[2])}`);
         L.push(`<b>New equation: ${eqText(R)}</b>`);
-        if (w.kind === 'vert') L.push(good('y cancelled.') + ` The new line is vertical, so it reads off x: x = ${num(R[2])} ÷ ${par(R[0])} = ${num(R[2] / R[0])}.`);
-        else if (w.kind === 'horiz') L.push(good('x cancelled.') + ` The new line is horizontal, so it reads off y: y = ${num(R[2])} ÷ ${par(R[1])} = ${num(R[2] / R[1])}.`);
+        if (w.kind === 'vert') L.push(good('y canceled.') + ` The new line is vertical, so it reads off x: x = ${num(R[2])} ÷ ${par(R[0])} = ${num(R[2] / R[0])}.`);
+        else if (w.kind === 'horiz') L.push(good('x canceled.') + ` The new line is horizontal, so it reads off y: y = ${num(R[2])} ÷ ${par(R[1])} = ${num(R[2] / R[1])}.`);
         else if (w.kind === 'both') L.push(bad('This still has both x and y.') + ` The new line is tilted. If the system has a solution, this line passes through it, but the line does not name x or y. To cancel, a pair of terms must be opposites (when you add) or equal (when you subtract). Now the x terms are ${num(w.e1[0])} and ${num(w.e2[0])}, and the y terms are ${num(w.e1[1])} and ${num(w.e2[1])}.`);
-        else if (w.kind === 'void') L.push(good('Both cancelled.') + ` What is left, 0 = ${num(R[2])}, is never true. No x and y fit it, so the two lines have no point in common: no solution.` + (st.oops ? ' (If you forgot the right side, check that this is real.)' : ''));
-        else if (w.kind === 'same') L.push(good('Both cancelled.') + ' What is left, 0 = 0, is always true. The two equations describe the same line, so every point on it is a solution.');
+        else if (w.kind === 'void') L.push(good('Both canceled.') + ` What is left, 0 = ${num(R[2])}, is never true. No x and y fit it, so the two lines have no point in common: no solution.` + (st.oops ? ' (The right side was not multiplied, so this result may be wrong. Turn that switch off to see the real one.)' : ''));
+        else if (w.kind === 'same') L.push(good('Both canceled.') + ' What is left, 0 = 0, is always true. The two equations describe the same line, so every point on it is a solution.');
         return lines(L);
       };
 
@@ -426,7 +426,7 @@
         if (w.kind === 'zero') { prTried = true; pfb.innerHTML = bad('Not yet.') + ' A multiplier of 0 turns the equation into 0 = 0 and forgets everything it said. Use a number that is not 0.'; tally(); return; }
         if (w.kind === 'vert' || w.kind === 'horiz') {
           prStage = 1; const kx = w.kind === 'vert', val = kx ? w.R[2] / w.R[0] : w.R[2] / w.R[1];
-          pfb.innerHTML = good('Good move.') + ` The new equation is ${eqText(w.R)}, so ${kx ? 'y' : 'x'} cancelled and ${kx ? 'x' : 'y'} = ${num(val)}. Now put it back into an original equation to find the other coordinate. What is the solution?`;
+          pfb.innerHTML = good('Good move.') + ` The new equation is ${eqText(w.R)}, so ${kx ? 'y' : 'x'} canceled and ${kx ? 'x' : 'y'} = ${num(val)}. Now put it back into an original equation to find the other coordinate. What is the solution?`;
           pch.replaceChildren(); pr.fin.forEach((o, i) => pch.append(mkBtn(o[0], () => pickFin(i))));
         } else {
           prTried = true;
