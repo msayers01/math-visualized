@@ -18,6 +18,8 @@
    have their own benchmarks and Grades 9-11 are one band. A lesson's grades are its course's
    grades plus the band of every benchmark it is tagged with. */
 const GRADES = [
+  { id: '4',    name: 'Grade 4' },
+  { id: '5',    name: 'Grade 5' },
   { id: '6',    name: 'Grade 6' },
   { id: '7',    name: 'Grade 7' },
   { id: '8',    name: 'Grade 8' },
@@ -30,6 +32,8 @@ const GRADES = [
    Algebra 1 through Precalculus are conventional labels, not state-defined courses. A course
    with no lessons is simply not shown. */
 const COURSES = [
+  { id: 'grade4',           level: 'school', name: 'Grade 4 Mathematics',        grades: ['4'] },
+  { id: 'grade5',           level: 'school', name: 'Grade 5 Mathematics',        grades: ['5'] },
   { id: 'grade6',           level: 'school', name: 'Grade 6 Mathematics',        grades: ['6'] },
   { id: 'grade7',           level: 'school', name: 'Grade 7 Mathematics',        grades: ['7'] },
   { id: 'grade8',           level: 'school', name: 'Grade 8 Mathematics',        grades: ['8'] },
@@ -55,6 +59,13 @@ const SKILLS = [
 /* One entry per lesson: its course, skill level and aligned benchmarks.
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
+  /* Grade 4 and Grade 5 (benchmarks from the Grade 4 and 5 tables, added 2026-10-04) */
+  { id: 'equivalent-fractions-on-a-number-line', course: 'grade4', skill: 'intro', standards: ['4.3.5.12', '4.3.5.13'] },
+  { id: 'multiplying-with-area-models', course: 'grade4', skill: 'mid', standards: ['4.3.5.7'] },
+  { id: 'angles-and-turns', course: 'grade4', skill: 'intro', standards: ['4.2.3.1', '4.2.3.3'] },
+  { id: 'decimals-and-place-value', course: 'grade5', skill: 'intro', standards: ['4.3.5.15', '5.3.5.7'] },
+  { id: 'adding-fractions-with-unlike-denominators', course: 'grade5', skill: 'mid', standards: ['5.3.5.11'] },
+  { id: 'the-coordinate-plane-first-quadrant', course: 'grade5', skill: 'intro', standards: ['5.3.7.1'] },
   /* Grade 6 */
   { id: 'area-by-decomposition', course: 'grade6', skill: 'intro', standards: ['6.2.3.5', '6.2.4.3'] },
   { id: 'statistical-questions-and-data-displays', course: 'grade6', skill: 'intro', standards: ['6.1.1.1', '6.1.1.4'] },
