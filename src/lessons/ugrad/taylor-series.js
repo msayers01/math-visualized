@@ -111,7 +111,7 @@
       p.path(t, { stroke: pal.red, width: 2.6 }); p.path(f, { stroke: pal.blue, width: 3 });
       p.dot(0, 0, 5, pal.yellow, pal.stage, 2);
     },
-    hook: String.raw`Your calculator knows \(\sin 0.5\) and \(e\), yet all it can really do is add, multiply and divide. How does a machine that only does arithmetic find the height of a curve?`,
+    hook: String.raw`Your calculator knows \(\sin 0.5\) and \(e\), yet all it can really do is add, multiply and divide. How does a machine that only does arithmetic find the height of a curve? Real calculators use cleverer relatives of this idea.`,
     steps: [
       { title: 'Start with a line',
         text: String.raw`<p>The blue curve is \(\sin x\). The red line is \(T_1(x)=x\). At the center \(a=0\) it has the same height (\(0\)) and the same slope (\(1\)) as the curve, so it hugs the curve there.</p><p>Step away and they part. At \(x=1\) the gap is \(0.1585\). How can we do better?</p>`,
@@ -129,7 +129,7 @@
     formal: String.raw`
       <p>Suppose \(f\) has derivatives of every order near a point \(a\). The <em>Taylor polynomial</em> of degree \(n\) at the center \(a\) is the polynomial
       \[ T_n(x)=\sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}\,(x-a)^k = f(a)+f'(a)(x-a)+\frac{f''(a)}{2!}(x-a)^2+\cdots+\frac{f^{(n)}(a)}{n!}(x-a)^n. \]
-      Here \(f^{(k)}\) is the \(k\)-th derivative and \(k!=k(k-1)\cdots 1\). It is the one polynomial of degree at most \(n\) whose value and first \(n\) derivatives at \(a\) equal those of \(f\).</p>
+      Here \(f^{(k)}\) is the \(k\)-th derivative and \(k!=k(k-1)\cdots 1\) (with the conventions \(0!=1\) and \(f^{(0)}=f\)). It is the one polynomial of degree at most \(n\) whose value and first \(n\) derivatives at \(a\) equal those of \(f\).</p>
       <h3>Why the coefficients are \(f^{(k)}(a)/k!\)</h3>
       <p>Write \(T(x)=c_0+c_1(x-a)+c_2(x-a)^2+\cdots+c_n(x-a)^n\) and ask that \(T^{(k)}(a)=f^{(k)}(a)\) for \(k=0,\dots,n\). Differentiate \(T\) \(k\) times. Every term of degree below \(k\) disappears. Every term of degree above \(k\) still contains a factor \((x-a)\), which is \(0\) at \(x=a\). Only \(c_k(x-a)^k\) is left, and its \(k\)-th derivative is \(k(k-1)\cdots1\cdot c_k=k!\,c_k\). So \(T^{(k)}(a)=k!\,c_k\), and matching gives
       \[ c_k=\frac{f^{(k)}(a)}{k!}. \]
@@ -141,15 +141,15 @@
       \[ f(x)-T_n(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}\,(x-a)^{n+1}. \]
       This explains what the lesson shows: the error carries the factor \((x-a)^{n+1}\), so it is small near the center and grows with the distance \(|x-a|\), while the \((n+1)!\) in the denominator works to shrink it as the degree rises.</p>
       <h3>Worked example: estimating \(\sin 0.5\) and \(e\)</h3>
-      <p>For \(\sin x\) every derivative is \(\pm\sin\) or \(\pm\cos\), so \(\lvert f^{(n+1)}(\xi)\rvert\le 1\). The polynomials \(T_3\) and \(T_4\) are the same (the \(x^4\) coefficient is \(0\)), so use \(n=4\): the error at \(x=0.5\) is at most \(0.5^5/5!=0.00026\). And \(T_3(0.5)=0.5-\tfrac{0.125}{6}=0.47917\), so \(\sin 0.5\) is within \(0.00026\) of \(0.47917\).</p>
+      <p>For \(\sin x\) every derivative is \(\pm\sin\) or \(\pm\cos\), so \(\lvert f^{(n+1)}(\xi)\rvert\le 1\). The polynomials \(T_3\) and \(T_4\) are the same (the \(x^4\) coefficient is \(0\)), so use \(n=4\): the error at \(x=0.5\) is at most \(0.5^5/5!\approx0.00026\), so at most \(0.00027\). And \(T_3(0.5)=0.5-\tfrac{0.125}{6}=0.47917\), so \(\sin 0.5\) is within \(0.00027\) of \(0.47917\).</p>
       <p>For \(e=e^1\), \(T_n(1)=\sum_{k=0}^{n}\frac1{k!}\). Here \(f^{(n+1)}(\xi)=e^{\xi}&lt;3\) for \(\xi\) between \(0\) and \(1\), so the error is below \(3/(n+1)!\). Taking \(n=5\) gives error below \(3/720&lt;0.005\), and \(T_5(1)=2.71667\). So \(e\) lies between \(2.711\) and \(2.722\). (The actual gap at degree 4 is \(0.0099\), which the lesson reads off the picture, but the formula lets you guarantee accuracy without knowing \(e\).)</p>
       <h3>The radius: where polynomials stop working</h3>
       <p>Multiply out to check the identity \((1-x)(1+x+\cdots+x^n)=1-x^{n+1}\). Dividing by \(1-x\),
       \[ \frac{1}{1-x}-\bigl(1+x+\cdots+x^n\bigr)=\frac{x^{n+1}}{1-x}. \]
-      This error is exact. If \(\lvert x\rvert&lt;1\), then \(x^{n+1}\to0\) and the error shrinks to \(0\) as \(n\) grows. If \(\lvert x\rvert&gt;1\), then \(\lvert x\rvert^{n+1}\) grows without bound, so the gap grows with the degree, exactly the flying-away you see at \(x=1.5\) and \(x=2\). The function \(\frac1{1-x}\) blows up at \(x=1\), a distance \(1\) from the center \(0\). With center \(a\) the size of this safe zone becomes \(R=\lvert 1-a\rvert\).</p>
+      This error is exact. If \(\lvert x\rvert&lt;1\), then \(x^{n+1}\to0\) and the error shrinks to \(0\) as \(n\) grows. If \(\lvert x\rvert&gt;1\), then \(\lvert x\rvert^{n+1}\) grows without bound, so the gap grows with the degree, the same flying-away you see for \(\ln(1+x)\) at \(x=1.5\) and \(x=2\). The function \(\frac1{1-x}\) blows up at \(x=1\), a distance \(1\) from the center \(0\). With center \(a\) the size of this safe zone becomes \(R=\lvert 1-a\rvert\).</p>
       <p>For \(\ln(1+x)\) the term \(\pm x^k/k\) does not even tend to \(0\) when \(\lvert x\rvert&gt;1\), so the polynomials cannot settle there. The function stops at \(x=-1\), so \(R=1+a\). This number \(R\) is the <em>radius of convergence</em> of these two examples: the polynomials settle on the function for \(\lvert x-a\rvert&lt;R\) and fly away for \(\lvert x-a\rvert&gt;R\). The edge \(\lvert x-a\rvert=R\) needs a separate look.</p>
       <h3>Caveats</h3>
-      <p>Having every derivative at \(a\) does not by itself make the polynomials settle on \(f\). Convergence is a separate question, and it can depend on \(x\). For \(\sin x\), \(\cos x\) and \(e^x\) the pictures show polynomials that keep hugging farther out as the degree rises; the remainder bound above shows the error tends to \(0\) at every \(x\), because \(|x-a|^{n+1}/(n+1)!\to0\), but this lesson does not prove it. There are even smooth functions, such as \(e^{-1/x^2}\) (with value \(0\) at \(0\)), whose Taylor polynomials at \(0\) are all the zero polynomial although the function is not zero. In practice: more terms help near the center, the center should sit near the point you need, and the error formula tells you when you can stop.</p>`,
+      <p>Having every derivative at \(a\) does not by itself make the polynomials settle on \(f\). Convergence is a separate question, and it can depend on \(x\). For \(\sin x\), \(\cos x\) and \(e^x\) the pictures show polynomials that keep hugging farther out as the degree rises; the remainder bound above gives this at every \(x\) for these three functions, since \(|x-a|^{n+1}/(n+1)!\) tends to \(0\), though the limit itself is not proved here. There are even smooth functions, such as \(e^{-1/x^2}\) (with value \(0\) at \(0\)), whose Taylor polynomials at \(0\) are all the zero polynomial although the function is not zero. In practice: more terms help near the center, the center should sit near the point you need, and the error formula tells you when you can stop.</p>`,
     check: [
       { q: String.raw`The Taylor polynomial of \(f\) at center \(a\) is built so that its value and first \(n\) derivatives at \(a\) match those of \(f\). Why is the coefficient of \((x-a)^k\) equal to \(f^{(k)}(a)/k!\) rather than just \(f^{(k)}(a)\)?`,
         choices: ['So that the polynomial stays small enough to converge.',
@@ -181,6 +181,9 @@
       const coefs = () => { const f = F(), r = []; for (let k = 0; k <= MAXN; k++) r.push(f.c(st.a, k)); return r; };
       const tAt = (x, n, cf) => { let s = 0, pw = 1; for (let k = 0; k <= n; k++) { s += cf[k] * pw; pw *= x - st.a; } return s; };
       const Tn = n => 'T' + dig(n, SUB);
+      /* keep dots on the canvas when f leaves the y-window (e^x for large x, 1/(1-x) near 1) */
+      const yc = y => { const b = P.bounds(), m = 16 / P.scale; return clamp(y, b.y0 + m, b.y1 - m); };
+      let lastHd = null;
 
       /* ---- the polynomial as text ---- */
       const polyText = n => {
@@ -228,10 +231,13 @@
         /* radius band for the two functions that blow up */
         if (f.R && showR) {
           const R = f.R(a), s = f.sing, lo = Math.max(a - R, b.x0), hi = Math.min(a + R, b.x1);
-          p.path([[s, b.y0], [s, b.y1]], { stroke: pal.violet, width: 2, dash: [7, 6] });
+          /* the dashed line leaves a gap under the axis so it does not strike through the tick label, and the dot sitting on that label is dropped */
+          const g0 = 4 / p.scale, g1 = 26 / p.scale;
+          p.path([[s, b.y1], [s, g0]], { stroke: pal.violet, width: 2, dash: [7, 6] });
+          p.path([[s, -g1], [s, b.y0]], { stroke: pal.violet, width: 2, dash: [7, 6] });
           p.path([[lo, 0], [hi, 0]], { stroke: alpha(pal.violet, .85), width: 9 });
-          if (a - R >= b.x0) p.dot(a - R, 0, 7, pal.stage, pal.violet, 3);
-          if (a + R <= b.x1) p.dot(a + R, 0, 7, pal.stage, pal.violet, 3);
+          if (a - R >= b.x0 && Math.abs(a - R - s) > 1e-9) p.dot(a - R, 0, 7, pal.stage, pal.violet, 3);
+          if (a + R <= b.x1 && Math.abs(a + R - s) > 1e-9) p.dot(a + R, 0, 7, pal.stage, pal.violet, 3);
           lab((p.h < 400 ? 'R = ' : 'radius R = ') + num(R), p.X((lo + hi) / 2), p.Y(0) - 24, { color: pal.violet, align: 'center' });
           lab(st.fn === 'ln' ? 'not defined at x = −1' : 'not defined at x = 1', p.X(s) + (p.X(s) > p.w / 2 ? -8 : 8), p.h - 40, { color: pal.violet, align: p.X(s) > p.w / 2 ? 'right' : 'left' });
         }
@@ -245,15 +251,15 @@
         const sl = p.X(x0) > p.w - 70 ? 'right' : p.X(x0) < 70 ? 'left' : 'center';
         lab('x = ' + num(x0), p.X(x0) + (sl === 'right' ? 4 : sl === 'left' ? -4 : 0), p.h - 14, { color: pal.muted, align: sl });
         if (okp) {
-          const ya = clamp(fy, b.y0 + .1, b.y1 - .1), yb = clamp(ty, b.y0 + .1, b.y1 - .1);
+          const ya = yc(fy), yb = clamp(ty, b.y0 + .1, b.y1 - .1);
           p.path([[x0, ya], [x0, yb]], { stroke: pal.yellow, width: 6 });
           if (Math.abs(ty) < Math.max(b.y1, -b.y0)) p.dot(x0, ty, 6, pal.red, pal.stage, 2);
-          p.dot(x0, fy, 7, pal.blue, pal.stage, 2); p.dot(x0, fy, 11, null, pal.brass, 3);
+          p.dot(x0, ya, 7, pal.blue, pal.stage, 2); p.dot(x0, ya, 11, null, pal.brass, 3);
           const my = clamp((ya + yb) / 2, b.y0 + 12 / p.scale, b.y1 - 12 / p.scale), right = p.X(x0) < p.w * .6;
           p.label('gap ' + f4(Math.abs(fy - ty)), x0, my, { size: fs, italic: false, color: pal.text, align: right ? 'left' : 'right', dx: right ? 12 : -12 });
         }
         /* the center */
-        const fa = f.f(a);
+        const fa = yc(f.f(a));
         p.dot(a, fa, 8, pal.yellow, pal.stage, 2); p.dot(a, fa, 12, null, pal.brass, 3);
         lab('center a = ' + num(a), p.X(a), p.Y(fa) + (fa > (b.y0 + b.y1) / 2 ? 26 : -26), { color: pal.text });
 
@@ -313,7 +319,7 @@
         const pr = PRED[pi], s = PRED[pi].setup, aft = { ...s, ...pr.after };
         const g0 = gapOf(s.fn, s.a, s.x0, s.n), g1 = gapOf(aft.fn, aft.a, aft.x0, aft.n);
         phase = 2; prFb.innerHTML = (i === pr.ans ? good('Right. ') : bad('Not quite. ')) + `At x = ${num(s.x0)} the gap was ${f4(g0)} before and is ${f4(g1)} after. ` + pr.why;
-        cancel(); Object.assign(st, aft); sync();
+        cancel(); Object.assign(st, aft); lastHd = null; sync();
       };
       const drawPred = () => {
         const pr = PRED[pi];
@@ -364,12 +370,12 @@
       const roText = () => {
         const f = F(), n = st.n, cf = coefs(), x = st.x0, fy = f.f(x), ty = tAt(x, n, cf), gap = Math.abs(fy - ty);
         let first = null;
-        for (let m = 0; m <= MAXN; m++) if (Math.abs(f.f(x) - tAt(x, m, cf)) < tol) { first = m; break; }
+        for (let m = MAXN; m >= 0 && Math.abs(f.f(x) - tAt(x, m, cf)) < tol; m--) first = m;
         const ok = isFinite(fy);
-        return `<span class="k">Polynomial</span> ${Tn(n)}(x) = ${polyText(n)}<br>` +
+        return `<span class="k">Polynomial</span> ${Tn(n)}(x) ${Math.abs(st.a) < 1e-6 ? '=' : '≈'} ${polyText(n)}<br>` +
           (ok ? `<span class="k">At x =</span> ${num(x)} (distance ${num(Math.abs(x - st.a))} from the center)<br>
           <span class="k">f(x)</span> ${f4(fy)}<br><span class="k">${Tn(n)}(x)</span> ${f4(ty)}<br><span class="k">Gap</span> ${f4(gap)}<br>
-          <span class="k">Smallest degree with gap below ${tol}</span> ${first === null ? 'none up to ' + MAXN : first}`
+          <span class="k">Smallest degree from which the gap stays below ${tol}</span> ${first === null ? 'none up to ' + MAXN : first}`
             : `<span class="k">At x =</span> ${num(x)}: f(x) is not defined here (it blows up), so there is no gap to measure.`);
       };
       const sync = () => {
@@ -390,10 +396,15 @@
         hit: (px, py) => {
           if (st.practice) return null;
           const f = F();
-          return isFinite(f.f(st.x0)) && near(P, st.x0, f.f(st.x0), px, py) ? 'probe' : near(P, st.a, f.f(st.a), px, py) ? 'center' : null;
+          const onP = isFinite(f.f(st.x0)) && near(P, st.x0, yc(f.f(st.x0)), px, py), onC = near(P, st.a, yc(f.f(st.a)), px, py);
+          if (onP && onC) {
+            const dP = Math.hypot(P.X(st.x0) - px, P.Y(yc(f.f(st.x0))) - py), dC = Math.hypot(P.X(st.a) - px, P.Y(yc(f.f(st.a))) - py);
+            return Math.abs(dP - dC) > 1 ? (dP < dC ? 'probe' : 'center') : lastHd === 'probe' ? 'probe' : 'center';
+          }
+          return onP ? 'probe' : onC ? 'center' : null;
         },
         move: (hd, x) => {
-          cancel(); const f = F();
+          cancel(); const f = F(); lastHd = hd;
           if (hd === 'probe') st.x0 = clamp(snap(x, .1), f.xr[0], f.xr[1]);
           else st.a = clamp(snap(x, .5), f.ar[0], f.ar[1]);
           sync();

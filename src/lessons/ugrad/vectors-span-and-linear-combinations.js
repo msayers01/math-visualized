@@ -27,7 +27,7 @@
   /* ---------- predict, then see: four fixed cases ---------- */
   const CASES = [
     { nums: { vx: 2, vy: 1, wx: -1, wy: 2, a: 1, b: 1 }, useW: true, ans: 2, show: 'v = (2, 1) and w = (−1, 2)',
-      why: 'The two arrows point in different directions. D = 2·2 − 1·(−1) = 5, which is not 0, so you can reach every point: the whole plane. The grid cells are parallelograms of area 5.' },
+      why: 'The two arrows point in different directions. The number D = v1·w2 − v2·w1 (the determinant, shown in the readout) is 2·2 − 1·(−1) = 5, which is not 0, so you can reach every point: the whole plane. The grid cells are parallelograms of area 5.' },
     { nums: { vx: 2, vy: 1, wx: 4, wy: 2, a: 1, b: 1 }, useW: true, ans: 1, show: 'v = (2, 1) and w = (4, 2)',
       why: 'Here w = 2v, so w points the same way as v and adds no new direction. D = 2·2 − 1·4 = 0. Every combination is a v + b(2v) = (a + 2b) v, a multiple of v: only a line.' },
     { nums: { vx: 2, vy: 1, wx: -1, wy: 2, a: 2, b: 0 }, useW: false, ans: 1, show: 'only v = (2, 1) (w is switched off)',
@@ -68,7 +68,7 @@
         { t: 'No. You would need a negative b.', why: 'a = 3, b = 0 already works: 3v = (3, −6). Negative coefficients are allowed anyway.' },
         { t: 'Yes, but only if a and b are both positive.', why: 'a = 1, b = −1 works too: (1, −2) − (−2, 4) = (3, −6). Nothing forces a and b to be positive.' }] },
     { kind: 'choice', setup: { vx: 1, vy: 2, wx: 3, wy: 6, a: 0, b: 0, tgt: false, grid: false, useW: false },
-      q: 'Which pair of vectors is linearly independent? Pick one. The canvas shows your pair and every combination with whole-number a and b.',
+      q: 'Which pair of vectors is linearly independent? Pick one. Pick a pair and the canvas will draw it with every combination using whole-number a and b.',
       ans: 0, after: {},
       choices: [
         { t: '(1, 2) and (2, 3)', show: { vx: 1, vy: 2, wx: 2, wy: 3, a: 0, b: 0, tgt: false, grid: true, useW: true }, why: 'D = 1·3 − 2·2 = −1, which is not 0. The first coordinates suggest (2, 3) = 2(1, 2), but the second would then be 4, not 3. Neither is a multiple of the other, so they are independent and the grid fills the plane.' },
@@ -76,13 +76,13 @@
         { t: '(2, −1) and (−4, 2)', show: { vx: 2, vy: -1, wx: -4, wy: 2, a: 0, b: 0, tgt: false, grid: true, useW: true }, why: '(−4, 2) = −2·(2, −1), so the pair is dependent (D = 2·2 − (−1)(−4) = 0). Opposite directions are still on one line.' },
         { t: '(0, 0) and (1, 5)', show: { vx: 0, vy: 0, wx: 1, wy: 5, a: 0, b: 0, tgt: false, grid: true, useW: true }, why: 'The zero vector is always a combination of any other vector: (0, 0) = 0·(1, 5). So the pair is dependent (D = 0·5 − 0·1 = 0) and only a line is reached.' }] },
     { kind: 'choice', setup: { vx: 1, vy: 1, wx: 2, wy: 3, a: 0, b: 0, tx: 5, ty: 7, tgt: true, grid: false, useW: true },
-      q: 'Three vectors in the plane: v = (1, 1) (green), w = (2, 3) (red) and x = (5, 7) (the yellow target). Are v, w and x linearly independent?',
+      q: 'Three vectors in the plane: v = (1, 1) (green), w = (2, 3) (red) and u = (5, 7) (the yellow target). Are v, w and u linearly independent?',
       ans: 1, after: { a: 1, b: 2 },
       choices: [
-        { t: 'Independent, because no two of them point the same way.', why: 'That only tests pairs. Independence asks that no vector is a combination of the others, and here x is one (see the right choice).' },
-        { t: 'Dependent. x = v + 2w, so x is already in the span of v and w.', why: 'Solve a + 2b = 5 and a + 3b = 7: subtract to get b = 2, then a = 1. Check: (1, 1) + 2(2, 3) = (5, 7). The yellow point sits on the target. Any three vectors in a plane are dependent.' },
-        { t: 'Independent, because x is different from v and from w.', why: 'Different is not the test. A vector can differ from the others and still be built from them.' },
-        { t: 'Dependent. x = 2v + w.', why: '2v + w = (2, 2) + (2, 3) = (4, 5), not (5, 7). The correct coefficients come from a + 2b = 5 and a + 3b = 7.' }] },
+        { t: 'Independent, because no two of them point the same way.', why: 'That only tests pairs. Independence asks that no vector is a combination of the others, and here u is one (see the right choice).' },
+        { t: 'Dependent. u = v + 2w, so u is already in the span of v and w.', why: 'Solve a + 2b = 5 and a + 3b = 7: subtract to get b = 2, then a = 1. Check: (1, 1) + 2(2, 3) = (5, 7). The yellow point sits on the target. Any three vectors in a plane are dependent.' },
+        { t: 'Independent, because u is different from v and from w.', why: 'Different is not the test. A vector can differ from the others and still be built from them.' },
+        { t: 'Dependent. u = 2v + w.', why: '2v + w = (2, 2) + (2, 3) = (4, 5), not (5, 7). The correct coefficients come from a + 2b = 5 and a + 3b = 7.' }] },
     { kind: 'set', setup: { vx: 2, vy: 1, wx: 1, wy: -1, a: 0, b: 0, tx: 5, ty: 1, tgt: true, grid: false, useW: true },
       q: 'Solve the system 2a + b = 5 and a − b = 1 by moving the combination. The green vector is v = (2, 1), the red vector is w = (1, −1), and the target is (5, 1). Set a and b, then press Check.',
       tip: 'The two equations are the x and y coordinates of the combination. Try adding them.',
@@ -115,7 +115,7 @@
         text: String.raw`<p>A <b>linear combination</b> is \(a v + b w\): stretch \(v\) by \(a\), stretch \(w\) by \(b\) (a negative number flips the arrow), then add.</p><p>Land on the target \((5,0)\) with the sliders \(a\) and \(b\). As equations: \(2a-b=5\) (x) and \(a+2b=0\) (y). Solving the system and hitting the target are the same job.</p>`,
         set: { vx: 2, vy: 1, wx: -1, wy: 2, a: 0, b: 0, tx: 5, ty: 0, tgt: true, grid: false, useW: true, pred: -1 } },
       { title: 'The span: all the points you can reach',
-        text: String.raw`<p>The set of every point \(a v+b w\) is called the <b>span</b> of \(v\) and \(w\). The yellow point is now \(1v+1w\).</p><p><b>Predict first.</b> In the Predict box below, choose how much of the plane you think the span covers. Then the violet grid shows the points with whole-number \(a\) and \(b\). Each cell has area \(D=5\).</p>`,
+        text: String.raw`<p>The set of every point \(a v+b w\) is called the <b>span</b> of \(v\) and \(w\). The yellow point is now \(1v+1w\).</p><p><b>Predict first.</b> In the Predict box below, choose how much of the plane you think the span covers. Then the violet grid shows the points with whole-number \(a\) and \(b\). Each cell has area \(|D|=5\), where \(D=v_1w_2-v_2w_1\) is the number in the readout.</p>`,
         set: { tgt: false, pred: 0 } },
       { title: 'When the second vector adds nothing',
         text: String.raw`<p>Now \(w=(4,2)\), which is \(2v\). <b>Predict</b> how much of the plane the combinations reach, then look at the violet line.</p><p>The target \((5,0)\) is off that line. The system \(2a+4b=5\), \(a+2b=0\) has no solution: twice the second equation says \(2a+4b=0\). We call \(v\) and \(w\) <b>dependent</b>.</p>`,
@@ -134,17 +134,17 @@
       Call \(D=v_1w_2-v_2w_1\). In the same way \(D\,b=v_1t_2-v_2t_1\). If \(D\neq 0\) there is exactly one solution for every target, \(a=\frac{t_1w_2-t_2w_1}{D}\) and \(b=\frac{v_1t_2-v_2t_1}{D}\), so the span is the whole plane. The number \(|D|\) is the area of the parallelogram with sides \(v\) and \(w\), which is one cell of the violet grid.</p>
       <p><em>Worked example.</em> For \(v=(2,1)\), \(w=(-1,2)\), \(t=(5,0)\): \(D=2\cdot2-1\cdot(-1)=5\), \(a=\frac{5\cdot 2-0\cdot(-1)}{5}=2\), \(b=\frac{2\cdot0-1\cdot5}{5}=-1\). Check: \(2v=(4,2)\) and \(-1\cdot w=(1,-2)\), and \((4,2)+(1,-2)=(5,0)\).</p>
       <h3>The case D = 0</h3>
-      <p>Suppose \(D=0\) and \(v\neq 0\). Then \(w\) is a multiple of \(v\), say \(w=kv\): if \(v_1\neq0\) take \(k=w_1/v_1\), and \(D=0\) forces \(w_2=kv_2\) too. Every combination is \(a v+b k v=(a+kb)\,v\), a multiple of \(v\), so the span is only a line. A target off that line has no solution, and a target on it has infinitely many (any \(a,b\) with \(a+kb\) the right value). For \(v=(2,1)\), \(w=(4,2)\), \(t=(5,0)\): subtracting 2 times equation 2 from equation 1 gives \(0=5\), a contradiction.</p>
+      <p>Suppose \(D=0\) and \(v\neq 0\). Then \(w\) is a multiple of \(v\), say \(w=kv\): if \(v_1\neq0\) take \(k=w_1/v_1\), and \(D=0\) forces \(w_2=kv_2\) too (if \(v_1=0\) then \(v_2\neq0\); use \(k=w_2/v_2\)). Every combination is \(a v+b k v=(a+kb)\,v\), a multiple of \(v\), so the span is only a line. A target off that line has no solution, and a target on it has infinitely many (any \(a,b\) with \(a+kb\) the right value). For \(v=(2,1)\), \(w=(4,2)\), \(t=(5,0)\): subtracting 2 times equation 2 from equation 1 gives \(0=5\), a contradiction.</p>
       <h3>Linear independence</h3>
       <p>Vectors \(v_1,\dots,v_n\) are <b>linearly independent</b> if the only way to get \(c_1v_1+\cdots+c_nv_n=0\) is \(c_1=\cdots=c_n=0\). This says the same as: <b>no vector is a combination of the others</b>. Why: if some \(c_i\neq 0\) in a relation, divide by \(c_i\) and solve for \(v_i\) as a combination of the rest. Conversely, if \(v_i\) equals a combination of the rest, move everything to one side and the coefficient of \(v_i\) is \(1\), not zero. A list containing the zero vector is always dependent, since \(0=1\cdot\mathbf 0+0\cdot v\). In the plane, two vectors are independent exactly when \(D\neq 0\), which is also exactly when the system has one solution for every target.</p>
       <h3>Three vectors, and three dimensions</h3>
-      <p>Any three vectors in the plane are dependent: two independent ones already span the plane, so the third is a combination of them (in the lesson, \((5,7)=1\cdot(1,1)+2\cdot(2,3)\)). In three dimensions the pattern continues in words. One nonzero vector spans a line through the origin. Two independent vectors span a plane through the origin, a flat sheet that is not all of space. Three independent vectors span all of 3D space, and the target equation becomes three equations in three unknowns. If the third vector lies in the plane of the first two, the three are dependent and the span is still only that plane.</p>
+      <p>Any three vectors in the plane are dependent: two independent ones already span the plane, so the third is a combination of them (if no two are independent, all three lie on one line and are dependent anyway). In the lesson, \((5,7)=1\cdot(1,1)+2\cdot(2,3)\). In three dimensions the pattern continues in words. One nonzero vector spans a line through the origin. Two independent vectors span a plane through the origin, a flat sheet that is not all of space. Three independent vectors span all of 3D space, and the target equation becomes three equations in three unknowns. If the third vector lies in the plane of the first two, the three are dependent and the span is still only that plane.</p>
       <h3>Caveats</h3>
-      <p>The span is always a line or plane <em>through the origin</em>, never a shifted one. Independence is about the whole list, not about pairs: vectors can be pairwise not parallel and still be dependent. When \(v\) and \(w\) are independent, the numbers \((a,b)\) are the <em>coordinates</em> of a point in the skewed grid made by \(v\) and \(w\). That idea, a different grid for the same plane, is the start of a basis.</p>`,
+      <p>The span is always a point, line or plane <em>through the origin</em>, never a shifted one. Independence is about the whole list, not about pairs: vectors can be pairwise not parallel and still be dependent. When \(v\) and \(w\) are independent, the numbers \((a,b)\) are the <em>coordinates</em> of a point in the skewed grid made by \(v\) and \(w\). That idea, a different grid for the same plane, is the start of a basis.</p>`,
     check: [
       { q: 'Which statement is the correct meaning of "the vectors v and w in the plane are linearly independent"?',
         choices: ['They are perpendicular to each other.', 'Neither vector is a combination of the other: neither is a multiple of the other.', 'They have different lengths.', 'Their sum v + w is not the zero vector.'], answer: 1,
-        why: String.raw`Independence means no vector can be built from the others. For two vectors in the plane that means neither is a multiple of the other, so they point along different lines. Perpendicular vectors are independent, but so are \((1,0)\) and \((1,1)\). Lengths do not matter: \((1,2)\) and \((2,4)\) have different lengths and are dependent. The sum \((3,6)\) of those two is not zero either.`,
+        why: String.raw`Independence means no vector can be built from the others. For two vectors in the plane that means neither is a multiple of the other, so they point along different lines. Nonzero perpendicular vectors are independent, but so are \((1,0)\) and \((1,1)\). Lengths do not matter: \((1,2)\) and \((2,4)\) have different lengths and are dependent. The sum \((3,6)\) of those two is not zero either.`,
         hint: String.raw`Test each statement on \(v=(1,2)\), \(w=(2,4)\). They are dependent. Which statements are still true for that pair?` },
       { q: 'Let v = (1, 2) and w = (3, 1). Find numbers a and b with a v + b w = (7, 4). Which pair (a, b) works?',
         choices: ['(a, b) = (2, 1)', '(a, b) = (4, 1)', '(a, b) = (7, 4)', '(a, b) = (1, 2)'], answer: 3,
@@ -291,12 +291,13 @@
             if (Math.abs(dx * st.ty - dy * st.tx) > 1e-9 || K.k === 'point' && (st.tx || st.ty)) s += `<br>${no('Unreachable.')} The target is not on the span, so no a and b work.`;
           }
         }
-        if (!hidden()) {
+        const probSet = pr.started && PROB[pr.i] && (PROB[pr.i].kind === 'set' || pr.solved[pr.i]);
+        if (!hidden() && (st.grid || st.pred >= 0 || probSet)) {
           const ex = `${pn(st.vx)}·${pn(wy)} − ${pn(st.vy)}·${pn(wx)} = ${nf(D)}`;
           s += `<br>${kk('Independent?')} D = ${ex}. `;
           if (Math.abs(D) > 1e-9) s += 'Not 0: independent, the span is the whole plane.';
+          else if (!st.useW) s += K.k === 'point' ? 'v is the zero vector: the span is one point.' : 'With one vector the span is a line.';
           else if (K.k === 'point') s += 'Both vectors are zero: dependent, the span is one point.';
-          else if (!st.useW) s += 'With one vector the span is a line.';
           else if (Math.abs(st.vx) + Math.abs(st.vy) < 1e-9) s += 'v is the zero vector: dependent, the span is a line.';
           else {
             const dd = st.vx * st.vx + st.vy * st.vy, kn = wx * st.vx + wy * st.vy;
@@ -327,9 +328,12 @@
           if (Math.abs(cross) > 1e-9) msg = `${no('No solution.')} D = 0, so the span is only a line, and the target is not on it. The equations contradict each other.`;
           else {
             const kn = st.tx * K.dx + st.ty * K.dy, dd = K.dx * K.dx + K.dy * K.dy, kv = fr(kn, dd);
-            msg = `${ok('Infinitely many solutions.')} D = 0 and the target is on the line. For example ${K.d === 'v' ? `a = ${kv}, b = 0` : `a = 0, b = ${kv}`}. Many pairs reach the same point.`;
+            msg = `${ok('Infinitely many solutions.')} D = 0 and the target is on the line. For example ${K.d === 'v' ? `a = ${kv}${st.useW ? ', b = 0' : ''}` : `a = 0, b = ${kv}`}. Many pairs reach the same point.`;
           }
-        } else msg = (st.tx || st.ty) ? `${no('No solution.')} Both vectors are zero, so only the origin is reachable.` : 'Both vectors are zero. Every a and b reaches the target, the origin.';
+        } else {
+          const who = st.useW ? 'Both vectors are zero' : 'v is the zero vector';
+          msg = (st.tx || st.ty) ? `${no('No solution.')} ${who}, so only the origin is reachable.` : `${who}. ${st.useW ? 'Every a and b reaches' : 'Every a reaches'} the target, the origin.`;
+        }
         solMsg = msg; sync();
       };
 
@@ -405,7 +409,7 @@
         if (pr.i >= n) {
           const d = h('div', { class: 'ctl readout', style: 'border-top:0;padding-top:0' });
           d.innerHTML = `${kk('Practice')} You solved ${sv} of ${n} problems.${sv < n ? ' Go back to any problem you skipped.' : ' Every problem solved.'}`;
-          prBox.append(d, btn('Start again', () => { pr.solved = PROB.map(() => false); pr.wrong = PROB.map(() => []); startPractice(0); }, true));
+          prBox.append(d, btn('Previous problem', () => startPractice(nProb - 1)), btn('Start again', () => { pr.solved = PROB.map(() => false); pr.wrong = PROB.map(() => []); startPractice(0); }, true));
           return;
         }
         const q = PROB[pr.i], head = h('div', { class: 'ctl readout', style: 'border-top:0;padding-top:0' });
