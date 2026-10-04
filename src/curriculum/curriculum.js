@@ -59,6 +59,21 @@ const SKILLS = [
 /* One entry per lesson: its course, skill level and aligned benchmarks.
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
+  /* One new lesson per course (2026-10-04) */
+  { id: 'perimeter-and-area-of-rectangles', course: 'grade4', skill: 'intro', standards: ['4.2.3.4', '4.2.3.5', '4.2.3.6'] },
+  { id: 'volume-with-unit-cubes', course: 'grade5', skill: 'intro', standards: ['5.2.3.3', '5.2.3.4', '5.2.3.5'] },
+  { id: 'factors-primes-gcf-and-lcm', course: 'grade6', skill: 'intro', standards: ['6.3.5.4', '6.3.5.5'] },
+  { id: 'adding-and-subtracting-integers', course: 'grade7', skill: 'mid', standards: ['7.3.5.2', '7.3.5.4'] },
+  { id: 'box-plots-and-comparing-distributions', course: 'grade8', skill: 'mid', standards: ['8.1.1.5'] },
+  { id: 'polynomials-and-factoring', course: 'algebra1', skill: 'mid', standards: ['9.3.6.1', '9.3.6.4', '9.3.5.8'] },
+  { id: 'circle-equations-and-the-distance-formula', course: 'geometry', skill: 'mid', standards: ['9.3.6.6'] },
+  { id: 'inverse-functions-and-composition', course: 'algebra2', skill: 'mid', standards: ['9.3.7.9', '9.3.5.9'] },
+  { id: 'logarithms-the-inverse-of-exponentials', course: 'precalc', skill: 'mid', standards: [] },
+  { id: 'misleading-graphs', course: 'stats', skill: 'mid', standards: ['9.1.1.15'] },
+  { id: 'taylor-series', course: 'calculus', skill: 'mid', standards: [] },
+  { id: 'vectors-span-and-linear-combinations', course: 'linear-algebra', skill: 'intro', standards: [] },
+  { id: 'gradient-and-contour-maps', course: 'multivariable', skill: 'mid', standards: [] },
+  { id: 'the-central-limit-theorem', course: 'fourier-probability', skill: 'mid', standards: [] },
   /* Grade 4 and Grade 5 (benchmarks from the Grade 4 and 5 tables, added 2026-10-04) */
   { id: 'equivalent-fractions-on-a-number-line', course: 'grade4', skill: 'intro', standards: ['4.3.5.12', '4.3.5.13'] },
   { id: 'multiplying-with-area-models', course: 'grade4', skill: 'mid', standards: ['4.3.5.7'] },
