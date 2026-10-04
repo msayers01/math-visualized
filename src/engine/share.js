@@ -82,7 +82,22 @@ function texFlat(s) {
     .replace(/_\{([^{}]+)\}|_([A-Za-z0-9])/g, (_, a, b) => { const t = a ?? b; return /^[0-9]+$/.test(t) ? [...t].map(c => '₀₁₂₃₄₅₆₇₈₉'[c]).join('') : /^[A-Za-z0-9]$/.test(t) ? '_' + t : '_(' + t + ')'; })
     .replace(/\\q?quad/g, '  ').replace(/\\[,;!]|\\ /g, ' ').replace(/\\([a-zA-Z]+)/g, '$1').replace(/[{}]/g, '').replace(/\u0001/g, '{').replace(/\u0002/g, '}');
 }
+/* Remove HTML tags with a scanner, not a regular expression, and repeat until nothing changes, so a tag cannot be rebuilt from the
+   pieces left behind ("<<b>script>" loses both tags). The result is plain text for the clipboard, never put back into the page as HTML. */
+function stripTags(s) {
+  const once = t => {
+    let out = '', i = 0;
+    while (i < t.length) {
+      if (t[i] === '<' && /[A-Za-z\/]/.test(t[i + 1] || '')) { const j = t.indexOf('>', i); if (j > i) { i = j + 1; continue; } }
+      out += t[i++];
+    }
+    return out;
+  };
+  let prev, cur = String(s);
+  do { prev = cur; cur = once(prev); } while (cur !== prev);
+  return cur;
+}
 /* TeX in quick-check text (an HTML string), flattened for plain-text copies */
 function texToText(s) {
-  return texFlat(String(s).replace(/<\/?[a-zA-Z][^>]*>/g, '')).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  return texFlat(stripTags(s)).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 }

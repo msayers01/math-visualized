@@ -35,6 +35,8 @@ const check = (name, cond, extra) => { (cond ? ok : fails).push(name + (cond ? '
   await go(page, '#slope-and-linear-functions');
   const flat = await page.evaluate(() => texToText('Is \\(-8 &lt; -3\\) true? <b>Yes</b>: -8 &lt; -3 and 5 &gt; 2 &amp; 4 &lt;= 5'));
   check('texToText drops tags but keeps decoded inequality symbols', flat === 'Is -8 < -3 true? Yes: -8 < -3 and 5 > 2 & 4 <= 5', flat);
+  const nested = await page.evaluate(() => texToText('x <<b>script>alert(1)<</b>/script> y <i>z</i> 3 < 4 and a<b'));
+  check('texToText leaves no tag behind when tags are nested inside each other', !/<\/?[A-Za-z]/.test(nested.replace('a<b', '')) && /3 < 4/.test(nested) && /^x /.test(nested), nested);
   const flat2 = await page.evaluate(() => texFlat('\\frac{y-y_1}{x-x_1}=m \\Longrightarrow 2^{5+(-3)} \\tfrac1{10^{6}}'));
   const flatSum = await page.evaluate(() => texFlat('S_5=\\sum_{k=1}^{5} a_k'));
   check('texFlat writes sums with their limits', flatSum === 'S₅=Σ_(k=1)⁵ a_k', flatSum);
