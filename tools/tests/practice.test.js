@@ -228,7 +228,7 @@ ok(pts(3) > pts(1), 'points scale with level');
 {
   const g = P.generators['g6-percent'], inst = g.generate(5, 1);
   ok(P.verify(inst) === null, 'percent problems verify with the implicit 100');
-  ok(P.verify(Object.assign({}, inst, { model: inst.model.replace('*', '+') })) !== null, 'a wrong model is caught');
+  ok(P.verify(Object.assign({}, inst, { model: inst.model + '+1' })) !== null, 'a wrong model is caught');
   ok(P.verify(Object.assign({}, inst, { implicit: [] })) !== null, 'without the declared implicit number it would be flagged');
 }
 
