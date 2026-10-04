@@ -56,3 +56,5 @@
 .pr-skillline { margin: 4px 0 0; font-weight: 500; }
 .pr-skillline:empty { display: none; }
 .pr-sumlist { padding-left: 1.2em; line-height: 1.7; }
+.pr-place { margin: 4px 0 8px; padding: 8px 12px; border: 1px solid var(--brass); border-radius: 4px; background: color-mix(in srgb, var(--brass) 10%, transparent); }
+.pr-place:empty { display: none; }

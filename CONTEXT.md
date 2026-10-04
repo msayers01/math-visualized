@@ -17,6 +17,8 @@ Instructions for any AI working on this project (including in a new chat):
 
 - **Done (2026-10-04, owner's request: easiest topics, then mixed review): practice v1.1** (ARCHITECTURE 0.36): twelve skills (Grade 4 multiply, divide, rectangles; Grade 5 fractions, decimals, order of operations; Grade 6 percent, mean; Grade 7 integers; Grade 8 equations, Pythagorean; Algebra 1 systems) and mixed review per course and per unit, weighted toward weak and stale skills, mastered skills kept in rotation. Still to do (v2): placement, Elo ratings, analytics, teacher or parent view.
 
+- **Done (2026-10-04, owner's request: placement, then Algebra 1 and Geometry skills): practice v1.2** (ARCHITECTURE 0.37): adaptive placement (4 problems at most) for a new skill; ten new skills (Algebra 1: slope, functions, factoring quadratics, sequences; Geometry: angles, circles, distance and midpoint, solids, trig ratios, similar figures); 22 skills and ten mixed reviews. Still to do (v2): Elo ratings, analytics, teacher or parent view, more answer types.
+
 ## Project
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 

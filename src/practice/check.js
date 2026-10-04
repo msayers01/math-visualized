@@ -30,6 +30,7 @@
     if (!units) return s;
     let t = clean(s);
     if (units.includes('%')) t = t.replace(/\s*%$/, '');
+    if (units.includes('\u00b0')) t = t.replace(/\s*\u00b0$/, '');
     for (let k = 0; k < 2; k++) {
       const m = t.match(/^(.*?)\s*([a-zA-Z.]+)$/);
       if (m && m[1] !== '' && units.includes(m[2].toLowerCase().replace(/\.$/, ''))) t = m[1]; else break;

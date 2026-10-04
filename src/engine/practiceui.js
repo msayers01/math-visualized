@@ -98,7 +98,7 @@ function practicePicker(app) {
           h('span', { class: 'pr-unit' }, s.unit),
           h('span', { class: 'pr-card-t' }, s.title),
           h('span', { class: 'pr-card-b' }, s.blurb),
-          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` \u00b7 ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '\u2605 Mastered') : null));
+          h('span', { class: 'pr-card-m' }, st.attempts || st.placed ? `Level ${st.level} of ${top}` : 'Not started', ` \u00b7 ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '\u2605 Mastered') : null));
       })));
   }
   /* the audit trail, put to use: the last few misconceptions, regenerated from their records, with a lesson to revisit */
@@ -117,7 +117,7 @@ function practicePicker(app) {
 
 function practiceSession(app, scope) {
   const keypad = ['grade4', 'grade5', 'grade6'].includes(scope.skills[0].course);
-  let skill = scope.skills[0], top = Practice.levelCount(skill), state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null, lastId = null, repeat = false;
+  let skill = scope.skills[0], top = Practice.levelCount(skill), state = PracticeStore.state(skill.id), placing = !scope.mix && Practice.needsPlacement(state, skill) ? Practice.placementStart(top) : null, inst = null, t0 = 0, hints = 0, answered = false, hintBox = null, lastId = null, repeat = false;
   const per = {};   /* per skill, this session: start level, solved, tried, points, misconceptions */
   const note = sk => (per[sk.id] = per[sk.id] || { skill: sk, startLevel: PracticeStore.state(sk.id).level, solved: 0, tried: 0, points: 0, misc: {} });
   let sessionPoints = 0;
@@ -125,8 +125,9 @@ function practiceSession(app, scope) {
   const back = h('a', { class: 'pr-back', href: '#practice' }, '← All skills');
   const lvl = h('span', { class: 'pr-stat-v' }), lvlDesc = h('p', { class: 'pr-lvldesc' }), pips = h('span', { class: 'pr-pips', role: 'img' }),
     sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' }), skillLine = h('p', { class: 'pr-skillline', 'aria-live': 'polite' });
+  const placeLine = h('p', { class: 'pr-place', role: 'status', 'aria-live': 'polite' });
   const stat = (k, v) => h('div', { class: 'pr-stat' }, h('span', { class: 'pr-stat-k' }, k), v);
-  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, scope.title),
+  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, scope.title), placeLine,
     h('div', { class: 'pr-stats' }, stat(scope.mix ? 'Level in this skill' : 'Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), skillLine, lvlDesc);
   const promptEl = h('div', { class: 'pr-prompt', id: 'pr-prompt' }), figEl = h('div', { class: 'pr-figwrap' });
   const input = h('input', { type: 'text', id: 'pr-answer', class: 'pr-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', inputmode: keypad ? 'none' : 'text', 'aria-describedby': 'pr-help pr-echo' });
@@ -137,7 +138,8 @@ function practiceSession(app, scope) {
     btnHint = h('button', { type: 'button', class: 'btn', onclick: () => hint() }, 'Hint'),
     btnSol = h('button', { type: 'button', class: 'btn', onclick: () => giveUp() }, 'Show solution'),
     btnNext = h('button', { type: 'button', class: 'btn primary', onclick: () => next() }, 'Next problem'),
-    btnEnd = h('button', { type: 'button', class: 'btn', onclick: () => summary() }, 'End session');
+    btnEnd = h('button', { type: 'button', class: 'btn', onclick: () => summary() }, 'End session'),
+    btnSkip = h('button', { type: 'button', class: 'btn', onclick: () => skipPlacement() }, 'Skip placement (start at level 1)');
   btnNext.hidden = true;
   const insert = ch => {
     const a = input.selectionStart ?? input.value.length, b = input.selectionEnd ?? a;
@@ -150,13 +152,15 @@ function practiceSession(app, scope) {
   const answerBox = h('div', { class: 'pr-answer' }, h('label', { for: 'pr-answer', class: 'pr-label' }, 'Your answer'), input, help, echo, pad,
     h('div', { class: 'btns pr-btns' }, btnCheck, btnHint, btnSol, btnNext));
   const card = h('section', { class: 'pr-card-main', 'aria-label': 'Problem' }, promptEl, figEl, answerBox, fb, stepsEl);
-  wrap.append(back, head, card, h('div', { class: 'btns pr-foot' }, btnEnd));
+  wrap.append(back, head, card, h('div', { class: 'btns pr-foot' }, btnSkip, btnEnd));
   app.append(wrap);
 
   const draw = () => {
     top = Practice.levelCount(skill);
-    lvl.textContent = `${state.level} of ${top}`;
-    lvlDesc.textContent = Practice.say(Practice.generatorsOf(skill)[0].levels[state.level - 1].desc);
+    lvl.textContent = placing ? 'Placement' : `${state.level} of ${top}`;
+    lvlDesc.textContent = placing ? '' : Practice.say(Practice.generatorsOf(skill)[0].levels[state.level - 1].desc);
+    placeLine.textContent = placing ? (placing.done ? `Placement finished: you will start at level ${placing.start} of ${top}.` : `Quick check, problem ${placing.probes + 1} of up to ${Practice.PLACEMENT_PROBES}: finding your starting level. These problems do not count for points.`) : '';
+    btnSkip.hidden = !placing || placing.done;
     skillLine.textContent = scope.mix ? 'Skill: ' + skill.title : '';
     const have = Math.min(state.streak, Practice.LADDER.up);
     pips.textContent = ''; pips.setAttribute('aria-label', `${have} of ${Practice.LADDER.up} correct in a row`);
@@ -173,14 +177,14 @@ function practiceSession(app, scope) {
     }
     repeat = false; lastId = skill.id; note(skill);
     state = PracticeStore.state(skill.id);
-    inst = Practice.nextInstance(state, skill);
+    inst = Practice.nextInstance(placing && !placing.done ? Object.assign({}, state, { forceLevel: placing.level }) : state, skill);
     Practice.markSeen(state, inst); PracticeStore.put(skill.id, state);
     hints = 0; answered = false; hintBox = null; t0 = performance.now();
     promptEl.innerHTML = inst.prompt.html; typeset(promptEl);
     figEl.replaceChildren(inst.figure ? practiceFigure(inst.figure) : '');
     help.textContent = inst.answer.help; echo.textContent = ''; input.value = ''; input.disabled = false;
     fb.className = 'pr-fb'; fb.textContent = ''; stepsEl.replaceChildren();
-    btnCheck.hidden = btnSol.hidden = false; btnNext.hidden = true; btnHint.hidden = false; btnHint.disabled = false; btnHint.textContent = 'Hint';
+    btnCheck.hidden = btnSol.hidden = false; btnNext.hidden = true; btnHint.hidden = !!placing; btnHint.disabled = false; btnHint.textContent = 'Hint'; btnSol.textContent = placing ? "I don't know" : 'Show solution'; btnNext.textContent = 'Next problem';
     window.__practice = { skill, inst, state };   /* the current problem, for the tests */
     draw();
     input.focus({ preventScroll: true });
@@ -201,6 +205,16 @@ function practiceSession(app, scope) {
   const lessonsOf = sk => sk.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
   function finish(o) {   /* o: { correct, gaveUp, answer, misconception } */
     answered = true;
+    if (placing) {
+      const ms0 = performance.now() - t0, fast0 = o.correct && !o.gaveUp && ms0 < Practice.generators[inst.generatorId].minTimeMs;
+      const rec = Practice.record(skill, inst, { answer: o.answer, correct: o.correct && !o.gaveUp, hints: 0, misconception: o.misconception, timeMs: ms0, points: 0, gaveUp: o.gaveUp, placement: true });
+      PracticeStore.put(skill.id, state, rec);
+      placing = Practice.placementStep(placing, { correct: o.correct && !o.gaveUp, ignored: fast0 });
+      input.disabled = true; btnCheck.hidden = btnSol.hidden = btnHint.hidden = true; btnNext.hidden = false;
+      btnNext.textContent = placing.done ? `Start practice at level ${placing.start}` : 'Next problem';
+      draw();
+      return { out: { points: 0, change: 0 }, fast: fast0, placement: true };
+    }
     const ms = performance.now() - t0, fast = o.correct && !o.gaveUp && !hints && ms < Practice.generators[inst.generatorId].minTimeMs;
     const out = Practice.applyAttempt(state, skill, { correct: o.correct, hints, gaveUp: !!o.gaveUp, fast, level: inst.level });
     state = out.state;
@@ -219,9 +233,12 @@ function practiceSession(app, scope) {
     if (r.status === 'invalid') { setFb('no', r.reason === 'empty' ? 'Type an answer first. ' + escapeHtml(inst.answer.help) : 'I could not read that. ' + escapeHtml(inst.answer.help)); input.focus(); return; }
     if (r.status === 'form') { setFb('warn', '<b>Nearly.</b> ' + escapeHtml(Practice.T['form.simplify'])); input.focus(); return; }
     const correct = r.status === 'correct', m = correct ? null : Practice.matchMisconception(inst, r.value);
-    const { out, fast } = finish({ correct, answer: input.value, misconception: m && m.id });
+    const { out, fast, placement } = finish({ correct, answer: input.value, misconception: m && m.id });
     let msg;
-    if (correct) {
+    if (placement) {
+      msg = correct ? (fast ? 'That was very quick, so it did not count. Read the problem, then answer.' : '<b>Correct.</b>') : `<b>Not quite.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. ${m ? escapeHtml(m.feedback) : ''}`;
+      if (placing.done) msg += ` That finishes the placement. You will start at level ${placing.start} of ${top}.`;
+    } else if (correct) {
       const bits = [];
       if (fast) bits.push('That was very quick, so it did not count toward points or levels. Read each problem, then answer.');
       else bits.push(`<b>Correct.</b> +${out.points} point${out.points === 1 ? '' : 's'}.`);
@@ -240,11 +257,13 @@ function practiceSession(app, scope) {
   function giveUp() {
     if (answered) return;
     finish({ correct: false, gaveUp: true, answer: input.value });
-    setFb('no', `<b>Here is the solution.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. No points for this one. Next you get a similar problem.`);
+    setFb('no', placing ? `<b>Here is the solution.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}.${placing.done ? ` That finishes the placement. You will start at level ${placing.start} of ${top}.` : ''}` : `<b>Here is the solution.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. No points for this one. Next you get a similar problem.`);
     showSteps(true);
     btnNext.focus();
   }
-  function next() { load(); }
+  const endPlacement = start => { state = Practice.placeState(PracticeStore.state(skill.id), start); PracticeStore.put(skill.id, state); placing = null; };
+  function skipPlacement() { endPlacement(1); load(); }
+  function next() { if (placing && placing.done) endPlacement(placing.start); load(); }
   function summary() {
     const rows = Object.values(per).filter(n => n.tried), solved = rows.reduce((t, n) => t + n.solved, 0), tried = rows.reduce((t, n) => t + n.tried, 0);
     const sample = (sk, id) => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === sk.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };

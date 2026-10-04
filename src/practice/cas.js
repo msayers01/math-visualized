@@ -75,6 +75,18 @@
     if (rat.isZero(s)) throw new Error('no single solution: ' + eq);
     return rat.neg(rat.div(v[0], s));
   };
+  /* One quadratic in x: coefficients from second differences, roots from the discriminant (exact; only rational roots are accepted).
+     Returns the distinct roots, sorted. */
+  Practice.cas.solveQuadratic = eq => {
+    const f = diff(eq), v = [0, 1, 2, 3].map(k => f({ x: R(k) })), d1 = [0, 1, 2].map(k => rat.sub(v[k + 1], v[k])), d2 = [0, 1].map(k => rat.sub(d1[k + 1], d1[k]));
+    if (!rat.eq(d2[0], d2[1])) throw new Error('not quadratic: ' + eq);
+    const a = rat.div(d2[0], R(2)), b = rat.sub(d1[0], a), c = v[0];
+    if (rat.isZero(a)) throw new Error('not quadratic: ' + eq);
+    const D = rat.sub(rat.mul(b, b), rat.mul(R(4), rat.mul(a, c))), sq = Practice.cas.value('sqrt(' + rat.str(D) + ')');   /* throws when D is negative or not a perfect square */
+    const two = rat.mul(R(2), a), r1 = rat.div(rat.add(rat.neg(b), sq), two), r2 = rat.div(rat.sub(rat.neg(b), sq), two);
+    const out = rat.eq(r1, r2) ? [r1] : [r1, r2];
+    return out.sort((p, q) => rat.cmp(p, q));
+  };
   /* Two linear equations in x and y, joined by ";": a x + b y = c each, solved by Cramer's rule. */
   Practice.cas.solveSystem = src => {
     const rows = src.split(';').map(eq => {
@@ -91,8 +103,10 @@
   /* Re-derive the answer of a finished problem from its model, as the same shape the generator uses for `answer.value`. */
   Practice.cas.answerOf = inst => {
     const m = inst.model;
+    if (inst.ask === 'values') return m.split(';').map(x => Practice.cas.value(x));
     if (inst.answer.type === 'pair') return Practice.cas.solveSystem(m);
     if (inst.ask === 'solve') return Practice.cas.solveLinear(m);
+    if (inst.ask === 'roots') return Practice.cas.solveQuadratic(m);
     return Practice.cas.value(m);
   };
 }

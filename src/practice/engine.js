@@ -36,6 +36,26 @@
       blurb: 'From one step up to brackets and variables on both sides.', lessons: ['solving-equations-with-a-balance'], standards: ['8.3.6.3'] },
     { id: 'pythagorean-side-lengths', course: 'grade8', unit: 'Right triangles', title: 'Find a side of a right triangle', gen: ['g8-pythagorean-side'],
       blurb: 'Use the Pythagorean theorem to find a hypotenuse or a leg.', lessons: ['pythagorean-theorem', 'distance-and-the-pythagorean-theorem'], standards: ['8.2.3.1'] },
+    { id: 'slope-from-two-points', course: 'algebra1', unit: 'Linear functions', title: 'Slope from two points', gen: ['a1-slope'],
+      blurb: 'Rise over run, including negative and fraction slopes.', lessons: ['slope-and-linear-functions'], standards: [] },
+    { id: 'evaluate-functions', course: 'algebra1', unit: 'Linear functions', title: 'Evaluate functions', gen: ['a1-evaluate-function'],
+      blurb: 'Use function notation: f of a number, and f of g.', lessons: ['what-is-a-function'], standards: ['9.3.7.10'] },
+    { id: 'solve-quadratics-by-factoring', course: 'algebra1', unit: 'Quadratics', title: 'Solve quadratics by factoring', gen: ['a1-quadratic-roots'],
+      blurb: 'Factor, then set each factor to zero. Enter every solution.', lessons: ['quadratics-and-the-parabola'], standards: ['9.3.6.5'] },
+    { id: 'sequence-terms', course: 'algebra1', unit: 'Sequences', title: 'Terms of sequences', gen: ['a1-sequence-term'],
+      blurb: 'Arithmetic and geometric sequences: a term, the difference, or which term.', lessons: ['sequences-recursive-and-explicit'], standards: ['9.3.7.4'] },
+    { id: 'angles-in-triangles-and-polygons', course: 'geometry', unit: 'Angles', title: 'Angles in triangles and polygons', gen: ['geo-angles'],
+      blurb: 'Missing angles, isosceles and exterior angles, and the angle sum of a polygon.', lessons: ['angles-in-triangles-and-polygons'], standards: ['6.2.4.1', '6.2.4.2', '9.2.4.3'] },
+    { id: 'circles-circumference-and-area', course: 'geometry', unit: 'Circles', title: 'Circumference, area, arcs and sectors', gen: ['geo-circle'],
+      blurb: 'Answers as a multiple of pi, up to arc length and sector area.', lessons: ['area-of-a-circle', 'arc-length-and-sectors'], standards: ['7.2.3.2', '7.2.3.3'] },
+    { id: 'distance-and-midpoint', course: 'geometry', unit: 'Coordinate geometry', title: 'Distance and midpoint', gen: ['geo-coordinates'],
+      blurb: 'Distance between points, the midpoint, and a missing endpoint.', lessons: ['distance-and-the-pythagorean-theorem'], standards: ['9.2.3.1'] },
+    { id: 'volume-and-surface-area', course: 'geometry', unit: 'Solids', title: 'Volume and surface area', gen: ['geo-solids'],
+      blurb: 'Boxes, prisms, pyramids, cylinders and cones.', lessons: ['volume-of-prisms-pyramids-and-cones', 'nets-and-surface-area'], standards: ['7.2.3.4', '9.2.3.5'] },
+    { id: 'similar-figures-missing-side', course: 'geometry', unit: 'Similarity and trigonometry', title: 'Similar figures', gen: ['geo-similar'],
+      blurb: 'Missing sides, scale factors and areas of similar figures.', lessons: ['similar-triangles-aa-sas-sss', 'similarity-and-scaling'], standards: ['7.2.4.3', '9.2.4.10'] },
+    { id: 'trig-ratios-from-a-triangle', course: 'geometry', unit: 'Similarity and trigonometry', title: 'Sine, cosine and tangent', gen: ['geo-trig'],
+      blurb: 'Ratios from a right triangle, and finding a side with a ratio.', lessons: ['trigonometric-ratios-sine-cosine-tangent'], standards: ['9.2.3.8'] },
     { id: 'solve-linear-systems', course: 'algebra1', unit: 'Systems', title: 'Solve a system of two linear equations', gen: ['a1-system-solve'],
       blurb: 'Substitution and elimination, up to negative coefficients.', lessons: ['solving-systems-by-substitution', 'solving-systems-by-elimination', 'systems-of-equations'], standards: ['8.3.6.9'] }
   ];
@@ -114,7 +134,7 @@
       /* the printed numbers must be the model's numbers (digits only; exponents are not data) */
       const nums = s => new Set(s.replace(/\^\d/g, '').match(/\d+/g) || []);
       const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' ')), model = nums(inst.model), implicit = inst.implicit || [];
-      const extra = [...shown].filter(x => !model.has(x)), hidden = [...model].filter(x => !shown.has(x) && !implicit.includes(x));
+      const distractors = inst.distractors || [], extra = [...shown].filter(x => !model.has(x) && !distractors.includes(x)), hidden = [...model].filter(x => !shown.has(x) && !implicit.includes(x));
       if (extra.length || hidden.length) return `the text and the model disagree on numbers (text only: ${extra}; model only: ${hidden})`;
       return null;
     } catch (e) { return 'the CAS could not read the problem: ' + e.message; }
@@ -128,8 +148,8 @@
   };
 
   /* ---- records ---- */
-  Practice.record = (skill, inst, o) => ({ s: skill.id, g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed,
-    a: String(o.answer || '').slice(0, 60), ok: o.correct ? 1 : 0, h: o.hints | 0, mc: o.misconception || null, t: Math.round(o.timeMs || 0), p: o.points | 0, gu: o.gaveUp ? 1 : 0, at: o.at || Date.now() });
+  Practice.record = (skill, inst, o) => Object.assign({ s: skill.id, g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed,
+    a: String(o.answer || '').slice(0, 60), ok: o.correct ? 1 : 0, h: o.hints | 0, mc: o.misconception || null, t: Math.round(o.timeMs || 0), p: o.points | 0, gu: o.gaveUp ? 1 : 0, at: o.at || Date.now() }, o.placement ? { pl: 1 } : {});
   /* regenerate an attempt's problem and grade it again: { stale } if the generator changed, else { ok } */
   Practice.regrade = rec => {
     const gen = byId[rec.g];
@@ -183,4 +203,27 @@
     for (let i = 0; i < pool.length; i++) { x -= ws[i]; if (x < 0) return pool[i]; }
     return pool[pool.length - 1];
   };
+}
+
+/* ---- placement (v2): on first entry to a skill, a short adaptive probe sets the starting level ----
+   A binary search over the levels: ask at the middle of what is still possible; a clean correct answer (no hint, not a guess) shows
+   that level is within reach and moves the floor up, anything else moves the ceiling down. At most 4 problems. Placement problems
+   give no points and do not touch the ladder; they are logged with `pl: 1`. */
+{
+  Practice.PLACEMENT_PROBES = 4;
+  Practice.placementStart = top => ({ lo: 1, hi: top, probes: 0, done: top <= 1, level: top <= 1 ? 1 : Math.ceil((1 + top) / 2), start: 1 });
+  /* result: { correct (no hints, not given up), ignored (too quick to count) } -> a new placement object (the input is not changed) */
+  Practice.placementStep = (p, result) => {
+    const q = Object.assign({}, p);
+    if (result.ignored) return q;                       /* a guess tells us nothing: ask again at this level */
+    q.probes++;
+    if (result.correct) q.lo = p.level; else q.hi = p.level - 1;
+    q.hi = Math.max(q.hi, q.lo);
+    if (q.lo >= q.hi || q.probes >= Practice.PLACEMENT_PROBES) { q.done = true; q.start = q.lo; q.level = q.lo; }
+    else q.level = Math.ceil((q.lo + q.hi) / 2) === q.lo ? q.lo + 1 : Math.ceil((q.lo + q.hi) / 2);
+    return q;
+  };
+  /* the state after placement: placed, at the found level, no streak */
+  Practice.placeState = (state, start) => Object.assign({}, state, { level: start, streak: 0, miss: 0, placed: true, forceLevel: 0 });
+  Practice.needsPlacement = (state, skill) => !state.placed && !state.attempts && Practice.levelCount(skill) > 1;
 }

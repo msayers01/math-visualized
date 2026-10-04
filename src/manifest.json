@@ -22,6 +22,7 @@
     "practice/strings.js",
     "practice/generators.js",
     "practice/generators2.js",
+    "practice/generators3.js",
     "practice/engine.js"
   ],
   "engine": [

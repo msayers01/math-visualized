@@ -158,11 +158,11 @@ ok(pts(3) > pts(1), 'points scale with level');
 {
   const names = id => 'Course ' + id, mixes = P.mixes(names);
   const ids = mixes.map(m => m.id);
-  ok(['grade4', 'grade5', 'grade6', 'grade8'].every(c => ids.includes('mix-course-' + c)) && !ids.includes('mix-course-grade7') && !ids.includes('mix-course-algebra1'), 'a mix exists for each course with 2+ skills, and not for one-skill courses');
+  ok(['grade4', 'grade5', 'grade6', 'grade8', 'algebra1', 'geometry'].every(c => ids.includes('mix-course-' + c)) && !ids.includes('mix-course-grade7'), 'a mix exists for each course with 2+ skills, and not for one-skill courses');
   ok(P.mix('mix-course-grade4', names).skills.length === P.SKILLS.filter(s => s.course === 'grade4').length, 'a course mix holds all the course skills');
   ok(mixes.every(m => m.skills.length >= 2 && m.skills.every(s => s.course === m.course)), 'every mix has 2+ skills from one course');
   ok(new Set(ids).size === ids.length && ids.every(i => /^[a-z0-9-]+$/.test(i)), 'mix ids are unique URL tokens');
-  ok(ids.includes('mix-unit-grade4-whole-number-operations') && !mixes.some(m => m.id.startsWith('mix-unit-grade6')), 'a unit mix exists only when the unit has 2+ skills and is not the whole course');
+  ok(ids.includes('mix-unit-grade4-whole-number-operations') && ids.includes('mix-unit-algebra1-linear-functions') && ids.includes('mix-unit-geometry-similarity-and-trigonometry') && !mixes.some(m => m.id.startsWith('mix-unit-grade6')), 'a unit mix exists only when the unit has 2+ skills and is not the whole course');
   const now = 10 * 86400000, st = (o = {}) => Object.assign(P.newState(), o);
   const strong = st({ attempts: 20, recentOk: [1, 1, 1, 1, 1, 1, 1, 1], lastPracticed: now - 1000 });
   const weak = st({ attempts: 20, recentOk: [0, 0, 1, 0, 0, 1, 0, 0], lastPracticed: now - 1000 });
@@ -199,6 +199,31 @@ ok(pts(3) > pts(1), 'points scale with level');
   ok(bad === 0, 'decimal answers are shown as decimals');
   ok(P.showValue({ type: 'number', display: 'decimal' }, R(271, 100)) === '2.71' && P.showValue({ type: 'number', display: 'decimal' }, R(8, 5)) === '1.6' && P.showValue({ type: 'number', display: 'decimal' }, R(-1, 4)) === '\u22120.25', 'exact decimal printing');
 }
+/* ---------- placement ---------- */
+{
+  const run = (top, rule) => { let p = P.placementStart(top), n = 0; while (!p.done) { p = P.placementStep(p, { correct: rule(p.level) }); if (++n > 10) throw new Error('placement does not end'); } return { p, n }; };
+  let allOk = true, probesOk = true;
+  for (let top = 2; top <= 8; top++) for (let L = 0; L <= top; L++) {
+    const { p, n } = run(top, lv => lv <= L), expect = Math.max(1, L);
+    if (p.start !== expect) allOk = false; if (n > P.PLACEMENT_PROBES) probesOk = false;
+  }
+  ok(allOk, 'placement finds the level where a student stops being right (2 to 8 levels)');
+  ok(probesOk, 'placement never asks more than ' + P.PLACEMENT_PROBES + ' problems');
+  ok(run(6, () => true).p.start === 6 && run(6, () => false).p.start === 1, 'all right starts at the top, all wrong at level 1');
+  ok(P.placementStart(1).done && P.placementStart(1).start === 1, 'a one-level skill needs no placement');
+  const p0 = P.placementStart(6), p1 = P.placementStep(p0, { correct: true });
+  ok(p0.probes === 0 && p1.probes === 1, 'placementStep does not change its input');
+  const ig = P.placementStep(p0, { ignored: true, correct: true });
+  ok(ig.level === p0.level && ig.probes === 0 && !ig.done, 'a too-quick answer is asked again at the same level');
+  const sk = P.SKILLS[0], st0 = P.newState();
+  ok(P.needsPlacement(st0, sk), 'a new skill needs placement');
+  const placed = P.placeState(st0, 4);
+  ok(placed.placed && placed.level === 4 && placed.streak === 0 && !P.needsPlacement(placed, sk), 'after placement the skill starts at the found level and is not placed again');
+  ok(!P.needsPlacement(Object.assign(P.newState(), { attempts: 3 }), sk), 'a skill with history is not placed');
+  const inst = P.generators[sk.gen[0]].generate(5, 2), rec = P.record(sk, inst, { answer: '1', correct: false, points: 0, placement: true });
+  ok(rec.pl === 1 && P.record(sk, inst, { answer: '1', correct: false }).pl === undefined, 'placement attempts are marked in the log');
+}
+
 /* the verifier knows implicit numbers, and still catches a bad model */
 {
   const g = P.generators['g6-percent'], inst = g.generate(5, 1);
