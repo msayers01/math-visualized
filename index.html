@@ -179,6 +179,10 @@ a.topic:hover::before { transform: scaleY(1); }
 .stage canvas { display: block; }
 :root[data-theme="dark"] .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); } }
+.stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.3) 25%, rgba(70,90,130,.05) 100%); }
+:root[data-theme="dark"] .stage::after { background: radial-gradient(ellipse at center, rgba(120,150,220,.07) 25%, rgba(0,0,0,.32) 100%); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stage::after { background: radial-gradient(ellipse at center, rgba(120,150,220,.07) 25%, rgba(0,0,0,.32) 100%); } }
 .stage canvas:focus { outline: none; }
 .stage:has(canvas:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
 .hpulse { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--brass);
@@ -3593,11 +3597,20 @@ class Plane {
     }
     this.ptr = null; this.pressed = false; this.dpr = 1; this.interactive = false;
     const cv = this.canvas, rel = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-    cv.addEventListener('pointermove', e => { if (e.pointerType === 'touch') return; this.ptr = rel(e); this.requestDraw(); });
-    cv.addEventListener('pointerleave', () => { this.ptr = null; this.requestDraw(); });
+    cv.addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch' && !this.pressed) return;
+      const p = this.ptr = rel(e), prev = this._hov; let hov = -1;
+      for (let i = 0; i < this.handles.length; i++) if (Math.hypot(p[0] - this.handles[i].px, p[1] - this.handles[i].py) < 22) { hov = i; break; }
+      this._hov = hov;
+      if (hov !== prev) this.requestDraw();   /* no handle near: nothing to redraw */
+    });
+    cv.addEventListener('pointerleave', e => { if (!this.pressed || e.pointerType !== 'touch' && !cv.hasPointerCapture(e.pointerId)) { this.ptr = null; this.pressed = false; } if (this._hov !== -1 && this._hov !== undefined) { this._hov = -1; this.requestDraw(); } });
+    /* a release outside the canvas (no capture) must not leave the press state stuck */
+    this._rel = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
+    this._scr = () => { if (this.ptr) { this.ptr = null; this.requestDraw(); } };
+    addEventListener('pointerup', this._rel); addEventListener('pointercancel', this._rel); addEventListener('scroll', this._scr, { passive: true });
     cv.addEventListener('pointerdown', e => { this.ptr = rel(e); this.pressed = true; this.touchPtr = e.pointerType === 'touch'; this.requestDraw(); });
-    const up = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
-    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    cv.addEventListener('lostpointercapture', () => this._rel());
     this.handles = []; this.focusIdx = 0; this.kbd = false; this.touched = false; this.pulses = [];
     cv.addEventListener('pointerdown', () => { this.kbd = false; });
     cv.addEventListener('blur', () => { this.kbd = false; this.requestDraw(); });
@@ -3626,14 +3639,13 @@ class Plane {
     this.dark = lum(this.pal.stage) < .4;
     if (!this.transparent) {
       c.fillStyle = this.pal.stage; c.fillRect(0, 0, this.w, this.h);
-      /* a faint centre light and edge falloff give the figure depth without touching the lessons' own colours */
-      const g = c.createRadialGradient(this.w / 2, this.h / 2, Math.min(this.w, this.h) * .25, this.w / 2, this.h / 2, Math.hypot(this.w, this.h) * .62);
-      g.addColorStop(0, this.dark ? 'rgba(120,150,220,.07)' : 'rgba(255,255,255,.3)');
-      g.addColorStop(1, this.dark ? 'rgba(0,0,0,.32)' : 'rgba(70,90,130,.05)');
-      c.fillStyle = g; c.fillRect(0, 0, this.w, this.h);
     }
     this.handles = [];
+    const t0 = performance.now();
     this.onDraw(c, this);
+    this._cost = (this._cost || 0) * .7 + (performance.now() - t0) * .3;
+    if (this.focusIdx >= this.handles.length) this.focusIdx = 0;
+    if (this.interactive) this.canvas.tabIndex = this.handles.length ? 0 : -1;
     this.syncPulses();
   }
   /* idle 'grab me' rings: DOM overlays animated by CSS (compositor only, no canvas redraws); gone after first touch */
@@ -3650,11 +3662,11 @@ class Plane {
   }
   destroy() {
     this.ro.disconnect(); cancelAnimationFrame(this._raf);
-    removeEventListener('themechange', this._theme); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
+    removeEventListener('themechange', this._theme); removeEventListener('pointerup', this._rel); removeEventListener('pointercancel', this._rel); removeEventListener('scroll', this._scr); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
   }
   /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
   glow(color, blur = 10) {
-    if (!this.dark || this._glowing) return;
+    if (!this.dark || this._glowing || this._cost > 6) return;
     this._glowing = true; this.ctx.save();
     this.ctx.shadowColor = color; this.ctx.shadowBlur = blur * this.dpr;
   }
@@ -3668,7 +3680,7 @@ class Plane {
     if (stroke) {
       c.strokeStyle = stroke; c.lineWidth = width; c.setLineDash(dash || []);
       c.lineJoin = 'round'; c.lineCap = 'round';
-      if (width >= 2 && !dash) this.glow(stroke, 8);
+      if (width >= 2 && !dash && pts.length < 300) this.glow(stroke, 8);
       c.stroke(); this.unglow(); c.setLineDash([]);
     }
   }
@@ -3701,19 +3713,22 @@ class Plane {
     if (!isFinite(px + py) || !isFinite(r)) return;
     /* A handle is a hollow stage-coloured disc with a brass rim (the lessons' convention): it gets a soft halo, a
        lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
-    const handle = r >= 7 && lw >= 2.5 && fill === this.pal.stage && stroke === this.pal.brass;
+    const handle = r >= 7 && lw >= 2.5 && stroke === this.pal.brass && (!fill || fill === this.pal.stage || fill === this.pal.yellow);
     if (handle) {
       const idx = this.handles.length; if (this.interactive) this.handles.push({ px, py, x, y });
       const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;
       const k = act ? 1.18 : hov ? 1.1 : 1, rr = r * k;
-      const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
-      halo.addColorStop(0, tint(stroke, act ? .38 : hov ? .3 : .2)); halo.addColorStop(1, tint(stroke, 0));
-      c.fillStyle = halo; c.beginPath(); c.arc(px, py, rr * 3.2, 0, Math.PI * 2); c.fill();
-      c.save(); c.shadowColor = this.dark ? tint(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = (act ? 14 : 8) * this.dpr; c.shadowOffsetY = (this.dark ? 0 : 2) * this.dpr;
-      c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.fillStyle = fill; c.fill(); c.restore();
+      const cheap = this._cost > 6;   /* an already slow lesson skips the gradient halo and shadow */
+      if (!cheap) {
+        const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
+        halo.addColorStop(0, tint(stroke, act ? .38 : hov ? .3 : .2)); halo.addColorStop(1, tint(stroke, 0));
+        c.fillStyle = halo; c.beginPath(); c.arc(px, py, rr * 3.2, 0, Math.PI * 2); c.fill();
+      }
+      c.save(); if (cheap) c.shadowBlur = 0; else { c.shadowColor = this.dark ? tint(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = (act ? 14 : 8) * this.dpr; c.shadowOffsetY = (this.dark ? 0 : 2) * this.dpr; }
+      c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); if (fill) { c.fillStyle = fill; c.fill(); } c.restore();
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
       if (this.kbd && idx === this.focusIdx) { c.save(); c.setLineDash([4, 4]); c.beginPath(); c.arc(px, py, rr + 7, 0, Math.PI * 2); c.strokeStyle = this.pal.text; c.lineWidth = 1.5; c.stroke(); c.restore(); }
-      c.beginPath(); c.arc(px, py, Math.max(1.5, rr * (act ? .5 : .32)), 0, Math.PI * 2); c.fillStyle = stroke; c.globalAlpha = act ? .9 : .55; c.fill(); c.globalAlpha = 1;
+      if (!fill || fill === this.pal.stage) { c.beginPath(); c.arc(px, py, Math.max(1.5, rr * (act ? .5 : .32)), 0, Math.PI * 2); c.fillStyle = stroke; c.globalAlpha = act ? .9 : .55; c.fill(); c.globalAlpha = 1; }
       return;
     }
     c.beginPath(); c.arc(px, py, r, 0, Math.PI * 2);
@@ -3826,10 +3841,11 @@ function draggable(plane, { hit, move, hover }) {
   cv.setAttribute('aria-label', 'Interactive figure. Arrow keys move the selected handle; Enter selects the next handle.');
   cv.addEventListener('keydown', e => {
     const n = plane.handles.length; if (!n) return;
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); plane.kbd = true; plane.focusIdx = (plane.focusIdx + 1) % n; plane.draw(); return; }
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses(); plane.focusIdx = (plane.focusIdx + 1) % n; plane.draw(); return; }
     const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]; if (!dir) return;
+    const i = Math.min(plane.focusIdx, n - 1), q = plane.handles[i], hd = hit(q.px, q.py); if (hd == null) return;
     e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses();
-    const i = Math.min(plane.focusIdx, n - 1), q = plane.handles[i], hd = hit(q.px, q.py); if (hd == null) { plane.draw(); return; }
     for (const u of (e.shiftKey ? [1, 2] : [.1, .25, .5, 1])) {
       move(hd, q.x + dir[0] * u, q.y + dir[1] * u); plane.draw();
       const q2 = plane.handles[i]; if (!q2 || Math.hypot(q2.px - q.px, q2.py - q.py) > .5) break;
@@ -69704,7 +69720,7 @@ function polishPage(r, v) {
   if (stage && v) {
     stage.setAttribute('role', 'group'); stage.setAttribute('aria-label', 'Interactive figure: ' + v.title + '. The controls panel changes it.');
     const cv = stage.querySelectorAll('canvas');
-    cv.forEach((c, k) => { c.setAttribute('role', 'img'); c.setAttribute('aria-label', (v.title + ' figure') + (cv.length > 1 ? ` ${k + 1} of ${cv.length}` : '')); });
+    cv.forEach((c, k) => { if (c.hasAttribute('tabindex')) return; c.setAttribute('role', 'img'); c.setAttribute('aria-label', (v.title + ' figure') + (cv.length > 1 ? ` ${k + 1} of ${cv.length}` : '')); });
   }
   app.querySelectorAll('[title=""]').forEach(e => e.removeAttribute('title'));
   if (routedOnce) {

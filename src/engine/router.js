@@ -27,7 +27,7 @@ function polishPage(r, v) {
   if (stage && v) {
     stage.setAttribute('role', 'group'); stage.setAttribute('aria-label', 'Interactive figure: ' + v.title + '. The controls panel changes it.');
     const cv = stage.querySelectorAll('canvas');
-    cv.forEach((c, k) => { c.setAttribute('role', 'img'); c.setAttribute('aria-label', (v.title + ' figure') + (cv.length > 1 ? ` ${k + 1} of ${cv.length}` : '')); });
+    cv.forEach((c, k) => { if (c.hasAttribute('tabindex')) return; c.setAttribute('role', 'img'); c.setAttribute('aria-label', (v.title + ' figure') + (cv.length > 1 ? ` ${k + 1} of ${cv.length}` : '')); });
   }
   app.querySelectorAll('[title=""]').forEach(e => e.removeAttribute('title'));
   if (routedOnce) {
