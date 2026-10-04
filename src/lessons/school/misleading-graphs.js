@@ -5,6 +5,7 @@
   /* ---------- small helpers (all block scoped) ---------- */
   const R2 = v => String(+v.toFixed(2));
   const R3 = v => String(+v.toFixed(3));
+  const tm = v => R2(v) + (+R2(v) === 1 ? ' time' : ' times');
   const sgnPct = v => (v < 0 ? '−' : '+') + String(Math.abs(Math.round(v * 1000) / 10)) + '%';
   const kk = t => `<span class="k">${t}</span>`;
   const ok = t => `<b style="color:var(--green)">${t}</b>`;
@@ -129,23 +130,23 @@
     hook: 'Two lunch menus sell 60 and 75 a day. Can you draw a chart that makes Menu B look more than twice as good without changing a single number?',
     steps: [
       { title: 'Cut the axis',
-        text: String.raw`<p>A bar stands for its whole value, counted from zero. Menu A sells \(60\) lunches and Menu B sells \(75\), so B is \(75 \div 60 = 1.25\) times A.</p><p>Make a guess, then watch. When the axis starts at \(50\), the bars show only \(10\) and \(25\), and B looks \(2.5\) times as tall. Move the slider to try other starts.</p>`,
+        text: String.raw`<p>A bar stands for its whole value, counted from zero. Menu A sells \(60\) lunches and Menu B sells \(75\), so B is \(75 \div 60 = 1.25\) times A.</p><p>Make a guess, then watch what a cut axis does to the bars. Afterwards, move the slider to try other starts.</p>`,
         set: { mode: 'bar', s: 0 } },
       { title: 'Choose the frame',
-        text: String.raw`<p>A line graph can lie by what it leaves out. Guess how months \(1\) to \(6\) will look, then see. Months \(1\) to \(6\) go from \(50\) to \(72\), up \(44\%\). The whole year goes from \(50\) to \(52\), up \(4\%\).</p><p>Move the window to make the line fall. Then change the graph shape: the same change looks steeper in a tall box.</p>`,
+        text: String.raw`<p>A line graph can lie by what it leaves out. Guess how months \(1\) to \(6\) will look, then see.</p><p>Move the window to make the line fall. Then change the graph shape: the same change looks steeper in a tall box.</p>`,
         set: { mode: 'line', w0: 1, w1: 12, r: .6 } },
       { title: 'Size and two scales',
-        text: String.raw`<p>Week 2 has twice the value of Week 1. Draw its circle with twice the width and twice the height, and the area is \(2 \times 2 = 4\) times as big. The picture shouts \(4\) when the value says \(2\).</p><p>Find the width that is honest. Then press <b>Two axes</b>: with two vertical scales, the picture can make unrelated lines cross.</p>`,
+        text: String.raw`<p>Week 2 has twice the value of Week 1. A designer draws its circle twice as wide and twice as tall. Guess how many times as big the area is, then see.</p><p>Find the width that is honest. Then press <b>Two axes</b>: with two vertical scales, the picture can make unrelated lines cross.</p>`,
         set: { mode: 'area', k: 1 } },
       { title: 'Fix it',
-        text: String.raw`<p>This graph has four problems. Use the controls until the checklist passes all four: the axis starts at zero, the whole record is shown, equal gaps mean equal time, and the source and sample are stated.</p><p>Then try the practice problems. The same checklist solves every one.</p>`,
+        text: String.raw`<p>This graph has four problems. Use the controls until the checklist passes all four: the axis starts at zero, the whole record is shown, equal gaps mean equal time, and the source and sample are stated.</p><p>Then try the practice problems. The checklist helps with most of them.</p>`,
         set: { mode: 'fix', fs: 60, fwhole: 0, fspace: 0, fsrc: 0 } }
     ],
     formal: String.raw`
       <p>A graph is an argument made with a picture. Every number on it can be true and the picture can still mislead. Some graphs mislead on purpose and some by accident. The same short checklist catches both.</p>
       <h3>The checklist</h3>
       <ul>
-        <li><b>Bars start at zero.</b> A bar's length stands for its whole value.</li>
+        <li><b>Bars start at zero.</b> A bar's length stands for its whole value. A line graph shows change, so it may start higher, but then say so.</li>
         <li><b>Equal intervals.</b> Equal steps on an axis mean equal amounts, and each graph has one scale per axis. If two scales are needed, draw two graphs.</li>
         <li><b>The whole time range.</b> Say how far back the data go, and do not stop where the story is best.</li>
         <li><b>Area matches value.</b> If a picture grows in two directions, its area must match the value, not its width.</li>
@@ -277,8 +278,8 @@
           c.stroke();
           for (let v = o.y0; v <= o.y1 + 1e-9; v += o.tick) T(String(v), R.x0 - 8, Y(v), { align: 'right' });
           seg(R.x0, R.y1, R.x1, R.y1, pal['grid-strong'], 2); seg(R.x0, R.y1, R.x0, R.y0, pal['grid-strong'], 2);
-          const need = 24, per = w / Math.max(1, o.xt.length), every = Math.max(1, Math.ceil(need / per));
-          o.xt.forEach(([v, l], i) => { if (i % every === 0 || i === o.xt.length - 1) { seg(X(v), R.y1, X(v), R.y1 + 5, pal['grid-strong'], 1.5); T(l, X(v), R.y1 + 18, { color: pal.muted }); } });
+          let lastX = -1e9; const need = 24, per = w / Math.max(1, o.xt.length), every = Math.max(1, Math.ceil(need / per));
+          o.xt.forEach(([v, l], i) => { if ((i % every === 0 || i === o.xt.length - 1) && X(v) - lastX >= need) { lastX = X(v); seg(X(v), R.y1, X(v), R.y1 + 5, pal['grid-strong'], 1.5); T(l, X(v), R.y1 + 18, { color: pal.muted }); } });
           const poly = (pts, col, wd, dash) => { c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(X(x), Y(y)) : c.moveTo(X(x), Y(y))); c.strokeStyle = col; c.lineWidth = wd; c.setLineDash(dash || []); c.lineJoin = 'round'; c.stroke(); c.setLineDash([]); };
           if (o.hl) {
             poly(o.pts, alpha(pal.muted, .8), 2, [5, 5]);
@@ -349,7 +350,7 @@
           const whole = st.w0 === 1 && st.w1 === 12, ang = Math.round(Math.atan(st.r * (last - first) / 40) * 180 / Math.PI);
           const chg = (last - first) / first;
           const hb = head([['Museum visitors per day, by month (made up)'],
-            [`Looks like: ${tiltWord(ang)}`, whole && st.r >= .6 && st.r <= .9 ? pal.green : pal.red, true],
+            [`First point to last point looks like: ${tiltWord(ang)}`, whole && st.r >= .6 && st.r <= .9 ? pal.green : pal.red, true],
             [`Months ${st.w0} to ${st.w1}: ${first} to ${last}, ${chg >= 0 ? 'up' : 'down'} ${Math.abs(Math.round(chg * 1000) / 10)}%`]]);
           const fh = foot(LINE_SRC), L = lay = lineLayout(p, hb, fh);
           const pts = []; for (let m = st.w0; m <= st.w1; m++) pts.push([m, VIS[m - 1]]);
@@ -373,8 +374,8 @@
         if (st.mode === 'area') {
           const k = st.k, ar = k * k, honest = Math.abs(ar - 2) <= .1;
           const hb = head([['Club pizza slices per week (made up)'],
-            [`Week 2 is drawn with width ${R2(k)} times Week 1's`, honest ? pal.green : pal.red, true],
-            [`Its area is ${R2(ar)} times Week 1's. The value is 2 times.`]]);
+            [`Week 2 is drawn with width ${tm(k)} Week 1's`, honest ? pal.green : pal.red, true],
+            [`Its area is ${tm(ar)} Week 1's. The value is 2 times.`]]);
           const fh = foot(AREA_SRC);
           const availH = p.h - fh - hb - 150, d1 = clamp(Math.min((W / 2 - 24) / 2.2, availH / 2.2), 28, 100);
           const R = { x0: 14, x1: W - 14, y0: hb + 8, y1: hb + 8 + d1 * 2.2 + 26 };
@@ -383,7 +384,7 @@
           const by = R.y1 + 34, bx = 14, maxw = W - 28 - 100, unit = maxw / Math.max(4, ar);
           [['Value ratio', 2, pal.green], ['Area ratio', ar, honest ? pal.green : pal.red]].forEach(([lab, v, col], i) => {
             const y = by + i * 42; c.fillStyle = alpha(col, .85); c.fillRect(bx, y - 9, Math.max(2, v * unit), 18);
-            T(lab + ': ' + R2(v) + ' times', bx, y - 20, { align: 'left', bold: true, color: pal.text });
+            T(lab + ': ' + tm(v), bx, y - 20, { align: 'left', bold: true, color: pal.text });
           });
         }
 
@@ -402,7 +403,7 @@
         if (st.mode === 'fix') {
           const fx = fixInfo(), hb = head([['Cafeteria salads sold per day (made up)'],
             [`Looks like: ${sgnPct(fx.drawn)} from the first bar to the last`, fx.pass === 4 ? pal.green : pal.red, true],
-            [`True change: ${sgnPct(fx.truth)}.  Checks passed: ${fx.pass} of 4`]]);
+            [`True change over the weeks shown: ${sgnPct(fx.truth)}.  Checks passed: ${fx.pass} of 4`]]);
           const fh = foot(st.fsrc ? FIX_SRC : 'No source or sample size given.', st.fsrc ? pal.muted : pal.red);
           const R = { x0: clamp(W * .11, 40, 54), x1: W - 20, y0: hb + 18, y1: p.h - fh - 50 };
           bars(R, { items: fx.items, nslots: fx.nslots, gaps: fx.gaps, start: st.fs, top: 100, tick: 20 });
@@ -420,7 +421,7 @@
             T('Month', (R.x0 + R.x1) / 2, R.y1 + 38, { color: pal.muted });
           } else if (pr.t === 'circ') {
             const d1 = clamp(Math.min((W / 2 - 24) / 2, (R.y1 - R.y0 - 26) / 2.2), 22, 70);
-            circles({ x0: 14, x1: W - 14, y0: R.y0, y1: R.y1 }, d1, 2, ['Value 1', 'Value 3: width ?'], true);
+            circles({ x0: 14, x1: W - 14, y0: R.y0, y1: R.y1 }, d1, 1, ['Value 1', 'Value 3: how wide? (not drawn)'], true);
           } else if (pr.t === 'dual') {
             dualC({ x0: R.x0, x1: R.x1 - 12, y0: R.y0, y1: R.y1 }, pr.M, false);
           } else if (pr.t === 'shape') {
@@ -428,7 +429,7 @@
             const half = (W - 28) / 2, ah = R.y1 - R.y0 - 20;
             [[.3, 'Graph A', 0], [1.2, 'Graph B', 1]].forEach(([r, nm, i]) => {
               const x0 = 14 + i * half + 38, wd = Math.min(half - 52, ah / r), bx = { x0, x1: x0 + wd, y0: R.y1 - wd * r, y1: R.y1 };
-              lineC(bx, { pts, x0: 1, x1: 6, y0: 15, y1: 35, tick: 10, xt });
+              lineC(bx, { pts, x0: 1, x1: 6, y0: 10, y1: 40, tick: 30, xt });
               T(nm, x0 + wd / 2, bx.y0 - 12, { bold: true });
             });
           } else if (pr.t === 'int') {
@@ -584,15 +585,15 @@
         const ys = VIS.slice(st.w0 - 1, st.w1), f = ys[0], l = ys[ys.length - 1], chg = (l - f) / f, ang = Math.round(Math.atan(st.r * (l - f) / 40) * 180 / Math.PI);
         const whole = st.w0 === 1 && st.w1 === 12, shapeOk = st.r >= .6 && st.r <= .9;
         T_line.fb.innerHTML = predFb('line');
-        T_line.ro.innerHTML = `${kk('Window')} months ${st.w0} to ${st.w1} (${st.w1 - st.w0 + 1} of 12)<br>${kk('First to last')} ${f} to ${l}, ${sgnPct(chg)}<br>${kk('Whole year')} 50 to 52, ${sgnPct(.04)}<br>${kk('Shape')} height ÷ width = ${R2(st.r)}, tilt about ${Math.abs(ang)}°, so it looks ${tiltWord(ang)}<br>` +
+        T_line.ro.innerHTML = `${kk('Window')} months ${st.w0} to ${st.w1} (${st.w1 - st.w0 + 1} of 12)<br>${kk('First to last')} ${f} to ${l}, ${sgnPct(chg)}<br>${kk('Whole year')} 50 to 52, ${sgnPct(.04)}<br>${kk('Shape')} height ÷ width = ${R2(st.r)}, tilt about ${Math.abs(ang)}°, so first point to last point looks ${tiltWord(ang)}<br>` +
           (whole ? ok('Whole range shown.') : no('Not the whole range: months ' + (st.w0 > 1 ? '1 to ' + (st.w0 - 1) : '') + (st.w0 > 1 && st.w1 < 12 ? ' and ' : '') + (st.w1 < 12 ? (st.w1 + 1) + ' to 12' : '') + ' are hidden.')) + '<br>' +
-          (shapeOk ? ok('Medium shape.') : no('Extreme shape: it stretches or flattens the change.'));
+          (shapeOk ? ok('Shape in the fair range.') : no('Extreme shape: it stretches or flattens the change.'));
       };
       const updArea = () => {
         const ar = st.k * st.k, honest = Math.abs(ar - 2) <= .1;
         T_area.fb.innerHTML = predFb('area');
-        T_area.ro.innerHTML = `${kk('Value ratio')} 20 ÷ 10 = 2<br>${kk('Width')} ${R2(st.k)} times Week 1's<br>${kk('Area')} ${R2(st.k)} × ${R2(st.k)} = ${R2(ar)} times Week 1's<br>` +
-          (honest ? ok(`Honest: the area, ${R2(ar)} times, matches the value, 2 times.`) : no(`Not honest: the area is ${R2(ar)} times but the value is 2 times.`));
+        T_area.ro.innerHTML = `${kk('Value ratio')} 20 ÷ 10 = 2<br>${kk('Width')} ${tm(st.k)} Week 1's<br>${kk('Area')} ${R2(st.k)} × ${R2(st.k)} = ${tm(ar)} Week 1's<br>` +
+          (honest ? ok(`Honest: the area, ${tm(ar)}, matches the value, 2 times.`) : no(`Not honest: the area is ${tm(ar)} but the value is 2 times.`));
       };
       const updDual = () => {
         T_dual.fb.innerHTML = predFb('dual');

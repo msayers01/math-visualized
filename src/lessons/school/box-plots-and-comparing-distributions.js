@@ -61,11 +61,11 @@
       q: 'Five scores: 10, 11, 12, 13, 14. The median is 12 and the mean is 12. Move just ONE dot so that the mean is at least 15 but the median is still 12. Then press Check.',
       ok: (v, S) => S.med === 12 && S.mean >= 15 && diffCount(PROBS[4].A, v) === 1 },
     { name: 'Compare two classes', kind: 'choice', view: 'compare', A: [8, 10, 11, 12, 13, 14, 15, 15, 16, 17, 20], B: [4, 6, 9, 10, 11, 14, 16, 18, 19, 21, 25], after: { iqr: true },
-      q: 'Class P: minimum 8, Q1 11, median 14, Q3 16, maximum 20. Class Q: minimum 4, Q1 9, median 14, Q3 19, maximum 25. Which statement is true?',
-      ch: [['Q did better, because its highest score, 25, is higher.', 'One top score is not the typical score. The medians are equal, 14, so the middle student scored the same in both classes.'],
-        ['P is more consistent, because its box is longer.', 'It is the other way round. P has the shorter box (IQR 16 − 11 = 5, against 19 − 9 = 10 for Q), and a shorter box means more consistent.'],
-        ['P did better, because its IQR is smaller.', 'A smaller IQR means more consistent, not higher. For "did better" compare the medians, and they are equal.'],
-        ['The medians are equal, so the typical score is the same. P is more consistent: its IQR is 5 and Q\'s is 10.', 'Yes. Center: both medians are 14. Spread: P\'s box is half as long as Q\'s. Q has the highest and the lowest scores, so it is the less predictable class.']], ans: 3 },
+      q: 'Class A: minimum 8, Q1 11, median 14, Q3 16, maximum 20. Class B: minimum 4, Q1 9, median 14, Q3 19, maximum 25. Which statement is true?',
+      ch: [['B did better, because its highest score, 25, is higher.', 'One top score is not the typical score. The medians are equal, 14, so the middle student scored the same in both classes.'],
+        ['A is more consistent, because its box is longer.', 'It is the other way round. A has the shorter box (IQR 16 − 11 = 5, against 19 − 9 = 10 for B), and a shorter box means more consistent.'],
+        ['A did better, because its IQR is smaller.', 'A smaller IQR means more consistent, not higher. For "did better" compare the medians, and they are equal.'],
+        ['The medians are equal, so the typical score is the same. A is more consistent: its IQR is 5 and B\'s is 10.', 'Yes. Center: both medians are 14. Spread: A\'s box is half as long as B\'s. B has the highest and the lowest scores, so it is the less predictable class.']], ans: 3 },
     { name: 'Name the skew', kind: 'choice', view: 'build', A: [2, 2, 3, 3, 4, 4, 5, 7, 9, 12, 20], after: { mean: true },
       q: 'A box plot has minimum 2, Q1 3, median 4, Q3 9 and maximum 20. The mean is about 6.5. Which description fits?',
       ch: [['Skewed left: a long tail toward small values', 'The long whisker (9 to 20 on the right, against 2 to 3 on the left) points toward large values, so the tail is on the right.'],
@@ -100,7 +100,7 @@
     hook: String.raw`Two classes took the same quiz. Class A has the higher middle score, but Class B's scores are packed close together. Which class did better? Which one is more consistent? How can one small picture answer both?`,
     steps: [
       { title: 'Build a box plot from five numbers',
-        text: String.raw`<p>These 11 quiz scores are on a dot plot. Sorted, the <b>median</b> is the middle score: \(11\). It goes in neither half. The <b>lower half</b> has 5 scores, and its median is <b>Q1</b>, \(8\). The <b>upper half</b> has 5 scores, and its median is <b>Q3</b>, \(15\).</p><p>The box runs from Q1 to Q3. The whiskers reach the smallest score, \(4\), and the largest, \(16\). Drag a dot to move the box.</p>`,
+        text: String.raw`<p>These 11 quiz scores are on a dot plot. Sorted, the <b>median</b> is the middle score: \(11\). It goes in neither half. The <b>lower half</b> has 5 scores, and its median is <b>Q1</b>, \(8\). The <b>upper half</b> has 5 scores, and its median is <b>Q3</b>, \(15\).</p><p>The box runs from Q1 to Q3. The whiskers reach the smallest score, \(4\), and the largest, \(16\).</p>`,
         set: { view: 'build', A: S1, halves: true, iqr: false, mean: false } },
       { title: 'The box length is the IQR',
         text: String.raw`<p>Now two classes. Class A's median is \(14\) and Class B's is \(12\), so A did better in the middle. The <b>interquartile range</b> (IQR) is the length of the box, Q3 minus Q1. A's IQR is \(8\). B's is \(3\).</p><p>B's scores are bunched together, so B is more <b>consistent</b>. Compare the centers first, then the spreads.</p>`,
@@ -109,7 +109,7 @@
         text: String.raw`<p>This set has a long tail to the right. We call it <b>right-skewed</b>. The median, \(6\), is close to Q1, \(4\), and far from Q3, \(13\). The right whisker runs out to \(25\).</p><p>The yellow diamond is the mean, about \(9.2\). The long tail pulls it above the median. Drag the top dot left and watch the shape even out.</p>`,
         set: { view: 'build', A: SK, halves: false, iqr: false, mean: true } },
       { title: 'One outlier: mean against median',
-        text: String.raw`<p>Eleven scores sit between 10 and 16. The median is \(13\), the mean is about \(12.8\), and the IQR is \(3\).</p><p>Use the <b>Predict first</b> buttons: the top score will slide to 30. Then watch. The mean jumps to about \(14.1\), but the median stays \(13\) and the IQR stays \(3\). The median counts only the order of the scores. The mean counts how big they are.</p>`,
+        text: String.raw`<p>Eleven scores sit between 10 and 16. The median is \(13\), the mean is about \(12.8\), and the IQR is \(3\).</p><p>Use the <b>Predict first</b> buttons: the top score will slide to 30. Then watch the mean, the median and the IQR. The median counts only the order of the scores. The mean counts how big they are.</p>`,
         set: { view: 'build', A: OUT, halves: false, iqr: true, mean: true } }
     ],
     formal: String.raw`
@@ -131,7 +131,7 @@
       <h3>Skew</h3>
       <p>A data set is <b>skewed right</b> when its long tail points toward large values, and <b>skewed left</b> when the tail points toward small values. In a box plot the median sits closer to one end of the box and the whisker on the other side is longer. For a right-skewed set the mean is usually above the median.</p>
       <h3>Outliers: mean against median</h3>
-      <p>The median depends only on the order of the values. The mean adds up their sizes. So one far-away value changes the mean a lot and the median very little. Take \(10\ 11\ 11\ 12\ 12\ 13\ 13\ 14\ 14\ 15\ 16\). The mean is about \(12.8\) and the median is \(13\). Change the \(16\) to \(30\). The mean becomes about \(14.1\), but the median is still \(13\) and the IQR is still \(3\). The median and the IQR are <em>resistant</em> to outliers. The mean and the range are not. That is why news reports often quote the median salary.</p>
+      <p>The median depends only on the order of the values. The mean adds up their sizes. So one far-away value changes the mean a lot and the median very little. Take \(10\ 11\ 11\ 12\ 12\ 13\ 13\ 14\ 14\ 15\ 16\). The mean is about \(12.8\) and the median is \(13\). Change the \(16\) to \(30\). The mean becomes about \(14.1\), but the median is still \(13\) and the IQR is still \(3\). The median and the IQR are <em>resistant</em> to outliers. The mean and the range are not. Reports of a typical salary or house price often use the median for this reason.</p>
       <h3>Which display answers the question?</h3>
       <p><b>Dot plot:</b> shows every value. Best for small data sets and for spotting gaps and outliers. <b>Histogram:</b> groups values into bins and shows the shape (one hump or two, symmetric or skewed). Best for many values. The picture changes with the bin width, so try more than one. A value on a bin's edge goes in the bin to its right. <b>Box plot:</b> shows the five numbers. Best for comparing the center and spread of two or more groups. It hides the individual values and the shape. In the two-hump example, the box plot looks like one ordinary box, and its median is a score nobody got.</p>
       <h3>What this lesson does not do</h3>
@@ -143,7 +143,7 @@
                   'The longer part holds fewer values, because the values in it are farther apart.',
                   'The box holds all the values, and the whiskers show the outliers.'], answer: 1,
         why: 'The median splits the values into two equal halves, and each half is split again at its own median. So each piece holds about a quarter of the values. A longer piece only means those values are spread out more. A longer piece does not hold more of them, and it does not hold fewer.',
-        hint: 'How many pieces does the median and the quartiles cut the data into? Does the length of a piece change how many values it holds?' },
+        hint: 'How many pieces do the median and the quartiles cut the data into? Does the length of a piece change how many values it holds?' },
       { q: 'Nine students scored 3, 5, 6, 8, 9, 11, 12, 14 and 20 points. Use the quartile method, where the median goes in neither half. What is the IQR?',
         choices: ['6', '17', '7.5', '8'], answer: 2,
         why: String.raw`The median is the 5th value, \(9\). The lower half is \(3, 5, 6, 8\), so \(Q_1=(5+6)/2=5.5\). The upper half is \(11, 12, 14, 20\), so \(Q_3=(12+14)/2=13\). The IQR is \(13-5.5=7.5\). Choosing 6 keeps the median in both halves. Choosing 17 is the range, \(20-3\). Choosing 8 is \(14-6\), single values instead of medians of the halves.`,
