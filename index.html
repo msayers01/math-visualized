@@ -63354,7 +63354,7 @@ register({
   const CMB = [{ A: [2, 1, -3], B: [1, -3, 2] }, { A: [3, -2, 4], B: [1, -2, 1] }, { A: [1, 4, 1], B: [1, 2, -3] }];
   const STR = [
     { name: '4x² − 25',
-      pred: { q: 'In 4x² − 25, what is squared? Which pair are the two things that are squared?', ans: 0,
+      pred: { q: 'Which two things are squared in 4x² − 25?', ans: 0,
         opts: [['2x and 5', 'Yes. (2x)(2x) = 4x² and 5 · 5 = 25.'], ['4x and 25', 'Not quite. (4x)² is 16x², and 25² is 625.'], ['2x and 25', 'Not quite. 25 is 5 squared, so the second thing is 5.']] },
       forms: [
         { lab: 'Start', t: [['4x² − 25', '']], f: x => 4 * x * x - 25, why: 'This is the expression we are given.' },
@@ -63384,7 +63384,7 @@ register({
         { lab: 'Start', t: [['x² + 6x + 9', '']], f: x => x * x + 6 * x + 9, why: 'This is the expression we are given.' },
         { lab: 'Pattern', t: [['x²', 'A'], [' + 2 · ', ''], ['x', 'A'], [' · ', ''], ['3', 'B'], [' + ', ''], ['3²', 'B']], f: x => x * x + 2 * x * 3 + 9, why: 'Look for A² + 2AB + B². Here A = x and B = 3, since 2 · x · 3 = 6x and 3² = 9.' },
         { lab: 'Factor', t: [['(', ''], ['x', 'A'], [' + ', ''], ['3', 'B'], [')²', '']], f: x => (x + 3) ** 2, why: 'A² + 2AB + B² = (A + B)². In tiles it is a square with side x + 3.' }] },
-    { name: '3(x + 2) + 5(x + 2)',
+    { name: '3(x + 2) + 5(x + 2)', noB: true,
       pred: { q: 'Which part appears in BOTH terms of 3(x + 2) + 5(x + 2)?', ans: 1,
         opts: [['3 and 5', 'Not quite. 3 is only in the first term and 5 only in the second.'], ['(x + 2)', 'Yes. The same block (x + 2) is in both terms, like a common factor.'], ['x', 'Not quite. x is inside the bracket, but the term 3(x + 2) is not 3x only.']] },
       forms: [
@@ -63409,9 +63409,9 @@ register({
         ['x² + 10x + 7', 'The numbers are swapped. The strips come from adding (2 + 5 = 7). The corner comes from multiplying (2 × 5 = 10).']] },
     { kind: 'choice', view: { mode: 'mul', a: -3, b: 2 }, ans: 0,
       q: 'The rectangle has width x − 3 and height x + 2. Red tiles with a minus sign are negative. Which polynomial is its area?',
-      ch: [['x² − x − 6', 'There are 2 blue strips and 3 red strips. A blue and a red strip cancel, so 1 red strip is left: −x. The corner is (−3) × 2 = −6, so it has 6 red unit tiles.'],
-        ['x² + x − 6', 'There are more RED strips (3) than blue strips (2), so the net is negative: −x, not +x.'],
-        ['x² − 5x − 6', 'Blue and red strips cancel in pairs. 3 red and 2 blue leave 1 red, so the strips make −x. Adding the sizes 3 + 2 ignores the colors.'],
+      ch: [['x² − x − 6', 'There are 2 green strips and 3 red strips. A green and a red strip cancel, so 1 red strip is left: −x. The corner is (−3) × 2 = −6, so it has 6 red unit tiles.'],
+        ['x² + x − 6', 'There are more RED strips (3) than green strips (2), so the net is negative: −x, not +x.'],
+        ['x² − 5x − 6', 'Green and red strips cancel in pairs. 3 red and 2 green leave 1 red, so the strips make −x. Adding the sizes 3 + 2 ignores the colors.'],
         ['x² − x + 6', 'The corner is (−3) × 2. A negative times a positive is negative, so the unit tiles are red: −6.']] },
     { kind: 'fac', t: [7, 12], accept: [[3, 4], [4, 3]],
       q: 'Build a rectangle from 1 square tile, 7 strips and 12 unit tiles. That is x² + 7x + 12. Set the width and the height so the tiles fit exactly, then check.' },
@@ -63457,7 +63457,7 @@ register({
     if (V.mode === 'dsq') return { key: 'dsq', ans: 0,
       q: 'The L-shape has area x² − 9. You will cut it into two rectangles and slide them together into ONE rectangle. What are its sides?',
       opts: [['x − 3 by x + 3', 'Yes. Slide and you will see it: one side is x − 3 and the other is x + 3.'],
-        ['x − 3 by x − 3', 'Not quite. That is a square of area x² − 6x + 9, which is more than the L-shape.'], ['x by x − 9', 'Not quite. That has area x² − 9x, not x² − 9.']] };
+        ['x − 3 by x − 3', 'Not quite. That square has area x² − 6x + 9, not x² − 9.'], ['x by x − 9', 'Not quite. That has area x² − 9x, not x² − 9.']] };
     if (V.mode === 'str') { const c = STR[V.sc]; return c.pred ? { key: 'str' + V.sc, ...c.pred } : null; }
     return null;
   };
@@ -63470,7 +63470,7 @@ register({
     L.push(`${kk('Strips')} ${n(p)} + ${par(q)} = ${n(s)}, you need ${n(S)}: ${okS ? good('right') : bad('not equal')}`);
     L.push(`${kk('Corner')} ${n(p)} × ${par(q)} = ${n(pr)}, you need ${n(P0)}: ${okP ? good('right') : bad('not equal')}`);
     if (p * q < 0 || (p !== 0 && q !== 0 && p * q > 0 && p < 0)) { /* mixed or both red strips */ }
-    if (p * q < 0) L.push('One strip is blue and the other red, so they cancel in pairs. Only the difference is left.');
+    if (p * q < 0) L.push('One strip is green and the other red, so they cancel in pairs. Only the difference is left.');
     let end;
     if (okS && okP) end = good('It fits exactly.') + ` ${poly(1, S, P0)} = ${facs(p, q)}. No gaps, no tiles left over.` + (p === q && p !== 0 ? ' This rectangle is a square, so the trinomial is a perfect square.' : '');
     else if (!okP && !okS) end = bad('Not yet.') + ` Both counts are off. Start with the corner: the two numbers must multiply to ${n(P0)}.`;
@@ -63523,12 +63523,12 @@ register({
         text: String.raw`<p>Cut a square of side 3 from a corner of a square of side \(x\). The L-shape left over has area \(x^2-9\).</p><p>Cut the L into two rectangles and slide them together into one rectangle. Predict its sides, then slide. Try other cuts with the slider, or drag the corner.</p>`,
         set: { mode: 'dsq', db: 3, rev: 0 } },
       { title: 'One value, many forms',
-        text: String.raw`<p>\((x+1)^2-9\) can be seen as one square minus another. Take the whole bracket \(x+1\) as one block A, and \(B=3\).</p><p>Predict B, then press Rewrite to step through the forms. At \(x=3\) every row gives 7, so every row is the same expression. Also try Add and subtract, and Common factor, in the Workshop menu.</p>`,
+        text: String.raw`<p>\((x+1)^2-9\) can be seen as one square minus another. Take the whole bracket \(x+1\) as one block A, and \(B=3\).</p><p>Predict B, then press Rewrite to step through the forms. At \(x=3\) each row gives 7 once you rewrite. That is a good check, not a proof: the rows match because each rewrite uses a rule. Also try the other Workshop modes.</p>`,
         set: { mode: 'str', sc: 2, sf: 0, sv: 3 } }
     ],
     formal: String.raw`
       <h3>What the tiles mean</h3>
-      <p>An algebra tile is a rectangle whose area stands for a term. The big square has side \(x\), so its area is \(x^2\). The strip is \(x\) long and 1 wide, so its area is \(x\). The small square is 1 by 1, so its area is 1. We draw \(x\) as a fixed length, but it stands for any length. A <em>polynomial</em> is a sum of terms such as \(x^2\), \(5x\) and \(6\). A red tile has negative area. A blue strip and a red strip together make zero, so they cancel as a <em>zero pair</em>.</p>
+      <p>An algebra tile is a rectangle whose area stands for a term. The big square has side \(x\), so its area is \(x^2\). The strip is \(x\) long and 1 wide, so its area is \(x\). The small square is 1 by 1, so its area is 1. We draw \(x\) as a fixed length, but it stands for any length. A <em>polynomial</em> is a sum of terms such as \(x^2\), \(5x\) and \(6\). A red tile has negative area. A green strip and a red strip together make zero, so they cancel as a <em>zero pair</em>.</p>
       <h3>Add and subtract</h3>
       <p>To add, put the tiles together and combine tiles of the same shape: these are the <em>like terms</em>. To subtract, add the opposite. The opposite of a polynomial flips every tile, so \(-(x^2-3x+2)=-x^2+3x-2\). The minus sign multiplies every term, not just the first. For example
       \[ (2x^2+x-3)-(x^2-3x+2)=(2x^2+x-3)+(-x^2+3x-2)=x^2+4x-5. \]</p>
@@ -63537,7 +63537,7 @@ register({
       \[ (x+a)(x+b)=x\cdot x+x\cdot b+a\cdot x+a\cdot b=x^2+(a+b)x+ab. \]
       The corner has \(a\times b\) unit tiles. The two strips together have \(a+b\) strips. Colors follow the signs: a negative times a positive is negative, and a negative times a negative is positive. Example: \((x-3)(x+2)=x^2+2x-3x-6=x^2-x-6\). The same rule works for bigger polynomials: multiply every term of one by every term of the other, then combine like terms. For example \((x+1)(x^2+x+1)=x^3+x^2+x+x^2+x+1=x^3+2x^2+2x+1\).</p>
       <h3>Factor a trinomial</h3>
-      <p>Factoring undoes multiplying. To factor \(x^2+bx+c\), look for two numbers \(p\) and \(q\) with \(p\cdot q=c\) (the corner) and \(p+q=b\) (the strips). Then \(x^2+bx+c=(x+p)(x+q)\). Why this works: expanding \((x+p)(x+q)\) gives exactly \(x^2+(p+q)x+pq\), so if the two numbers do both jobs, the tiles must fit. If \(c\) is positive, \(p\) and \(q\) have the same sign (the sign of \(b\)). If \(c\) is negative, they have opposite signs. Some trinomials do not factor over whole numbers: for \(x^2+3x+5\), the pairs multiplying to 5 are \(1,5\) and \(-1,-5\), with sums 6 and \(-6\), never 3. This lesson factors only trinomials that start with \(1x^2\).</p>
+      <p>Factoring undoes multiplying. This lesson factors only trinomials that start with \(x^2\), not \(2x^2+5x+3\). To factor \(x^2+bx+c\), look for two numbers \(p\) and \(q\) with \(p\cdot q=c\) (the corner) and \(p+q=b\) (the strips). Then \(x^2+bx+c=(x+p)(x+q)\). Why this works: expanding \((x+p)(x+q)\) gives exactly \(x^2+(p+q)x+pq\), so if the two numbers do both jobs, the tiles must fit. If \(c\) is positive, \(p\) and \(q\) have the same sign (the sign of \(b\)). If \(c\) is negative, they have opposite signs. Some trinomials do not factor over whole numbers: for \(x^2+3x+5\), the pairs multiplying to 5 are \(1,5\) and \(-1,-5\), with sums 6 and \(-6\), never 3. This lesson factors only trinomials that start with \(1x^2\).</p>
       <h3>Common monomial factor</h3>
       <p>The distributive law says \(a(b+c)=ab+ac\). Run it backwards: if every term has the same factor, pull it out. For \(4x^2+6x\), every term is a multiple of \(2x\), so \(4x^2+6x=2x(2x+3)\). In tiles: put the tiles in rows of height \(2x\). Check by multiplying: \(2x\cdot2x=4x^2\) and \(2x\cdot 3=6x\). Take out the <em>greatest</em> common factor, so the bracket has no common factor left. Do this step first, before any other factoring.</p>
       <h3>Difference of two squares</h3>
@@ -63547,7 +63547,7 @@ register({
       <h3>Use structure to write an expression in more than one way</h3>
       <p>The same expression can be read in different ways. \(4x^2-25\) is \((2x)^2-5^2\), a difference of squares with \(A=2x\) and \(B=5\), so it equals \((2x-5)(2x+5)\). \((x+1)^2-9\) has the block \(x+1\) in place of \(A\): \(((x+1)-3)((x+1)+3)=(x-2)(x+4)\). \(x^2+6x+9\) matches \(A^2+2AB+B^2\) with \(A=x\), \(B=3\), so it is \((x+3)^2\). \(3(x+2)+5(x+2)\) has the block \((x+2)\) twice, so it is \(8(x+2)\). Equivalent forms give the same value for every \(x\). Trying one value is a quick check, not a proof. To be sure, expand both forms and compare tiles.</p>`,
     check: [
-      { q: 'A rectangle of algebra tiles has width x + 3 and height x + 1. Which list shows the tiles inside it?',
+      { q: 'A rectangle of algebra tiles has width x + 3 and height x + 1. Which list shows the tiles inside it? (A square tile has area x², a strip has area x, a unit tile has area 1.)',
         choices: ['1 square tile (x²), 3 strips (x) and 4 unit tiles', '1 square tile (x²), 4 strips (x) and 3 unit tiles', '1 square tile (x²), 4 strips (x) and 4 unit tiles', '1 square tile (x²), no strips and 3 unit tiles'], answer: 1,
         why: String.raw`Split the rectangle into four boxes: \(x\cdot x=x^2\) (1 square), \(x\cdot 1=x\) (1 strip), \(3\cdot x=3x\) (3 strips) and \(3\cdot1=3\) (3 unit tiles). The strips ADD: \(1+3=4\). The corner MULTIPLIES: \(3\times1=3\). So the area is \(x^2+4x+3\). The first choice swaps the 4 and the 3. The third adds \(3+1\) for the corner. The last forgets the strips along the edges.`,
         hint: 'Draw the four boxes: x by x, x by 1, 3 by x and 3 by 1. Count how many of each shape you get.' },
@@ -63715,7 +63715,7 @@ register({
         if (V.op === 'none') text(c, 'Choose Add or Subtract.', p.w / 2, p.h - 16, { size: hf, color: pal.muted, weight: 500 });
       };
 
-      const XD = 6;
+      const XD = 7;
       const drawDsq = (c, p, V) => {
         const pal = p.pal, b = V.db, rev = V.rev, x = XD;
         const mT = 46, mB = 16 + 48, ah = p.h - mT - mB, aw = p.w - 70;
@@ -63760,7 +63760,7 @@ register({
           text(c, `x = ${V.sv} gives ${f.f(V.sv)}`, p.w / 2, yc + rowH * .33, { size: 13, color: pal.muted, weight: 500 });
         }
         let lx = 14;
-        [['A', 'A', pal.blue], ['B', 'B', pal.red], ['AB', 'the middle term 2AB', pal.violet]].forEach(([r, lab, cl]) => { if (!roles.has(r)) return; text(c, lab === r ? `${r} (colored)` : lab, lx, p.h - 16, { size: 13, color: cl, align: 'left' }); c.font = `600 13px ${FONT}`; lx += c.measureText(lab === r ? `${r} (colored)` : lab).width + 18; });
+        [['A', 'A', pal.blue], ['B', 'B', pal.red], ['AB', 'the middle term 2AB', pal.violet]].forEach(([r, lab, cl]) => { if (!roles.has(r) || (r === 'B' && cs.noB)) return; text(c, lab === r ? `${r} (colored)` : lab, lx, p.h - 16, { size: 13, color: cl, align: 'left' }); c.font = `600 13px ${FONT}`; lx += c.measureText(lab === r ? `${r} (colored)` : lab).width + 18; });
       };
 
       P.onDraw = (c, p) => {
@@ -63867,8 +63867,8 @@ register({
         if (V.locked) { L.push('Make your prediction first. Then the tiles and sliders unlock.'); return lines(L); }
         L.push(`${kk('Square')} x · x gives 1 x² tile`);
         L.push(`${kk('Strips')} x · ${par(a)} gives ${n(a)} and x · ${par(b)} gives ${n(b)}: ${n(a)} + ${par(b)} = ${n(Sm)} strips`);
-        if (a * b < 0) L.push('One side is red and one is blue, so a blue strip and a red strip cancel in pairs.');
-        L.push(`${kk('Corner')} ${n(a)} × ${par(b)} = ${n(Pr)} unit tiles` + (a < 0 && b < 0 ? ' (red times red is blue: positive)' : a * b < 0 ? ' (red times blue is red: negative)' : ''));
+        if (a * b < 0) L.push('One side is positive and one is negative, so a green strip and a red strip cancel in pairs.');
+        L.push(`${kk('Corner')} ${n(a)} × ${par(b)} = ${n(Pr)} unit tiles` + (a < 0 && b < 0 ? ' (red times red is yellow: positive)' : a * b < 0 ? ' (red times positive is red: negative)' : ''));
         L.push(`<b>Area = ${poly(1, Sm, Pr)}</b>`);
         return lines(L);
       };
@@ -63881,7 +63881,7 @@ register({
         const L = [`${kk('A')} ${poly(...cs.A)}`, `${kk('B')} ${poly(...cs.B)}`];
         if (V.op === 'none') { L.push('Choose Add or Subtract.'); return lines(L); }
         if (V.op === 'add') L.push('Adding: put the tiles of A and B together.');
-        else if (!V.flip) L.push('Subtracting B means adding the OPPOSITE of B. Flip every tile of B first: blue becomes red and red becomes blue.');
+        else if (!V.flip) L.push('Subtracting B means adding the OPPOSITE of B. Flip every tile of B first: positive tiles become red and red tiles become positive.');
         else L.push(`${kk('−B')} ${poly(...Bs)}. Now add A and −B.`);
         if (V.done) {
           ['x² tiles', 'x tiles', 'unit tiles'].forEach((nm, i) => {
@@ -64269,10 +64269,10 @@ register({
     hook: String.raw`A phone tower reaches every point within 5 km. Where exactly does its signal stop, and how could you test, with one calculation and no ruler, whether your house at a given spot is covered?`,
     steps: [
       { title: 'A circle is the points at one distance',
-        text: String.raw`<p>A garden sprinkler waters everything within 3 m. The edge of that patch is a <b>circle</b>: all points exactly 3 m from the <b>center</b> C. The distance from C to the edge is the <b>radius</b> \(r\) (violet).</p><p>T is a test point. Drag T, or use the sliders. When its distance \(d\) from C equals \(r=3\), T is on the circle.</p>`,
+        text: String.raw`<p>A garden sprinkler waters everything within 3 m. The edge of that patch is a <b>circle</b>: all points exactly 3 m from the <b>center</b> C. C is the center, written \((h,k)\). The distance from C to the edge is the <b>radius</b> \(r\) (violet).</p><p>T is a test point. Drag T, or use the sliders. When its distance \(d\) from C equals \(r=3\), T is on the circle.</p>`,
         set: { mode: 'explore', h: 0, k: 0, r: 3, tx: 0, ty: 3, tri: false, chal: 'free' } },
       { title: 'The distance formula is a right triangle',
-        text: String.raw`<p>Here \(C=(1,-1)\) and \(T=(4,3)\). Go 3 right (\(x-h\), green), then 4 up (\(y-k\), red). With \(d\) (blue) these make a right triangle: \(d^2=3^2+4^2=25\), so \(d=5\).</p><p>T is on the circle when \(d=r\), so \((x-h)^2+(y-k)^2=r^2\). Then try a <b>Challenge</b> in the panel: build a circle from its equation.</p>`,
+        text: String.raw`<p>Call the center \(C=(h,k)\) and the test point \(T=(x,y)\). Go 3 right (\(x-h\), green), then 4 up (\(y-k\), red). With \(d\) (blue) these make a right triangle: \(d^2=3^2+4^2=25\), so \(d=5\).</p><p>T is on the circle when \(d=r\), so \((x-h)^2+(y-k)^2=r^2\). Try a <b>Challenge</b> in the panel.</p>`,
         set: { mode: 'explore', h: 1, k: -1, r: 5, tx: 4, ty: 3, tri: true, chal: 'free' } },
       { title: 'Predict: inside, on or outside?',
         text: String.raw`<p>First decide, then look. The circle and T are fixed. Is T inside the circle, on it, or outside? Press a button to commit to a guess.</p><p>Then compare \(d^2\) with \(r^2\). Less than means inside, equal means on, greater than means outside. No square root is needed.</p>`,
@@ -64300,7 +64300,7 @@ register({
       <p><b>From a graph.</b> Read the center \((h,k)\) from the grid. Count the radius from the center to any point on the circle. Then write \((x-h)^2+(y-k)^2=r^2\), with the sign of h and k flipped inside the brackets and \(r\) squared.</p>
       <p><b>From two points.</b> If the center is \(C\) and the circle passes through \(P\), then \(r^2\) is the squared distance \(CP\). For \(C=(1,-1)\) and \(P=(4,3)\): \(r^2=3^2+4^2=25\), so the equation is \((x-1)^2+(y+1)^2=25\).</p>
       <h3>Completing the square</h3>
-      <p>Multiplying out \((x-h)^2+(y-k)^2=r^2\) gives \(x^2+y^2+bx+cy+d=0\) with \(b=-2h\), \(c=-2k\) and \(d=h^2+k^2-r^2\). To go back, notice that \((x+\tfrac b2)^2=x^2+bx+\tfrac{b^2}{4}\). So \(x^2+bx\) becomes a perfect square when you add \((\tfrac b2)^2\), and adding the same number to both sides keeps the equation true.</p>
+      <p>Multiplying out \((x-h)^2+(y-k)^2=r^2\) gives \(x^2+y^2+bx+cy+d=0\) with \(b=-2h\), \(c=-2k\) and \(d=h^2+k^2-r^2\). To go back, notice that \((x+\tfrac b2)^2=x^2+bx+\tfrac{b^2}{4}\). So \(x^2+bx\) becomes a perfect square when you add \((\tfrac b2)^2\), and adding the same number to both sides keeps the equation true. The cases here are chosen so that the center is a whole-number point and \(r^2\) is a perfect square.</p>
       <p><b>Example.</b> \(x^2+y^2-6x+4y-12=0\).</p>
       <ol>
         <li>Group and move the constant: \((x^2-6x)+(y^2+4y)=12\).</li>
@@ -64447,8 +64447,8 @@ register({
         const L = labeler(c, p), fs = clamp(p.scale * .62, 12.5, 15), lines = compLines(), hd = [lines[0]];
         if (lines.length > 1) hd.push(lines[lines.length - 1]);
         header(c, p, L, hd);
-        ring(p, e.h, e.k, e.r, { fill: alpha(pal.blue, .08), stroke: pal.blue, width: 3.5 });
         if (cp.cs >= 4) {
+          ring(p, e.h, e.k, e.r, { fill: alpha(pal.blue, .08), stroke: pal.blue, width: 3.5 });
           const bd = p.bounds();
           p.path([[e.h, bd.y0], [e.h, bd.y1]], { stroke: pal.green, width: 2, dash: [6, 6] });
           p.path([[bd.x0, e.k], [bd.x1, e.k]], { stroke: pal.red, width: 2, dash: [6, 6] });

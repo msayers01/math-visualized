@@ -259,10 +259,10 @@
     hook: String.raw`A phone tower reaches every point within 5 km. Where exactly does its signal stop, and how could you test, with one calculation and no ruler, whether your house at a given spot is covered?`,
     steps: [
       { title: 'A circle is the points at one distance',
-        text: String.raw`<p>A garden sprinkler waters everything within 3 m. The edge of that patch is a <b>circle</b>: all points exactly 3 m from the <b>center</b> C. The distance from C to the edge is the <b>radius</b> \(r\) (violet).</p><p>T is a test point. Drag T, or use the sliders. When its distance \(d\) from C equals \(r=3\), T is on the circle.</p>`,
+        text: String.raw`<p>A garden sprinkler waters everything within 3 m. The edge of that patch is a <b>circle</b>: all points exactly 3 m from the <b>center</b> C. C is the center, written \((h,k)\). The distance from C to the edge is the <b>radius</b> \(r\) (violet).</p><p>T is a test point. Drag T, or use the sliders. When its distance \(d\) from C equals \(r=3\), T is on the circle.</p>`,
         set: { mode: 'explore', h: 0, k: 0, r: 3, tx: 0, ty: 3, tri: false, chal: 'free' } },
       { title: 'The distance formula is a right triangle',
-        text: String.raw`<p>Here \(C=(1,-1)\) and \(T=(4,3)\). Go 3 right (\(x-h\), green), then 4 up (\(y-k\), red). With \(d\) (blue) these make a right triangle: \(d^2=3^2+4^2=25\), so \(d=5\).</p><p>T is on the circle when \(d=r\), so \((x-h)^2+(y-k)^2=r^2\). Then try a <b>Challenge</b> in the panel: build a circle from its equation.</p>`,
+        text: String.raw`<p>Call the center \(C=(h,k)\) and the test point \(T=(x,y)\). Go 3 right (\(x-h\), green), then 4 up (\(y-k\), red). With \(d\) (blue) these make a right triangle: \(d^2=3^2+4^2=25\), so \(d=5\).</p><p>T is on the circle when \(d=r\), so \((x-h)^2+(y-k)^2=r^2\). Try a <b>Challenge</b> in the panel.</p>`,
         set: { mode: 'explore', h: 1, k: -1, r: 5, tx: 4, ty: 3, tri: true, chal: 'free' } },
       { title: 'Predict: inside, on or outside?',
         text: String.raw`<p>First decide, then look. The circle and T are fixed. Is T inside the circle, on it, or outside? Press a button to commit to a guess.</p><p>Then compare \(d^2\) with \(r^2\). Less than means inside, equal means on, greater than means outside. No square root is needed.</p>`,
@@ -290,7 +290,7 @@
       <p><b>From a graph.</b> Read the center \((h,k)\) from the grid. Count the radius from the center to any point on the circle. Then write \((x-h)^2+(y-k)^2=r^2\), with the sign of h and k flipped inside the brackets and \(r\) squared.</p>
       <p><b>From two points.</b> If the center is \(C\) and the circle passes through \(P\), then \(r^2\) is the squared distance \(CP\). For \(C=(1,-1)\) and \(P=(4,3)\): \(r^2=3^2+4^2=25\), so the equation is \((x-1)^2+(y+1)^2=25\).</p>
       <h3>Completing the square</h3>
-      <p>Multiplying out \((x-h)^2+(y-k)^2=r^2\) gives \(x^2+y^2+bx+cy+d=0\) with \(b=-2h\), \(c=-2k\) and \(d=h^2+k^2-r^2\). To go back, notice that \((x+\tfrac b2)^2=x^2+bx+\tfrac{b^2}{4}\). So \(x^2+bx\) becomes a perfect square when you add \((\tfrac b2)^2\), and adding the same number to both sides keeps the equation true.</p>
+      <p>Multiplying out \((x-h)^2+(y-k)^2=r^2\) gives \(x^2+y^2+bx+cy+d=0\) with \(b=-2h\), \(c=-2k\) and \(d=h^2+k^2-r^2\). To go back, notice that \((x+\tfrac b2)^2=x^2+bx+\tfrac{b^2}{4}\). So \(x^2+bx\) becomes a perfect square when you add \((\tfrac b2)^2\), and adding the same number to both sides keeps the equation true. The cases here are chosen so that the center is a whole-number point and \(r^2\) is a perfect square.</p>
       <p><b>Example.</b> \(x^2+y^2-6x+4y-12=0\).</p>
       <ol>
         <li>Group and move the constant: \((x^2-6x)+(y^2+4y)=12\).</li>
@@ -437,8 +437,8 @@
         const L = labeler(c, p), fs = clamp(p.scale * .62, 12.5, 15), lines = compLines(), hd = [lines[0]];
         if (lines.length > 1) hd.push(lines[lines.length - 1]);
         header(c, p, L, hd);
-        ring(p, e.h, e.k, e.r, { fill: alpha(pal.blue, .08), stroke: pal.blue, width: 3.5 });
         if (cp.cs >= 4) {
+          ring(p, e.h, e.k, e.r, { fill: alpha(pal.blue, .08), stroke: pal.blue, width: 3.5 });
           const bd = p.bounds();
           p.path([[e.h, bd.y0], [e.h, bd.y1]], { stroke: pal.green, width: 2, dash: [6, 6] });
           p.path([[bd.x0, e.k], [bd.x1, e.k]], { stroke: pal.red, width: 2, dash: [6, 6] });
