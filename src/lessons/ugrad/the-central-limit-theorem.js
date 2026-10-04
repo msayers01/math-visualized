@@ -63,14 +63,14 @@
         'One more value changes the SE only slightly: 12/√37 is about 1.97.'],
       end: 'The dashed grey curve is the old one for n = 36 (SE = 2). The blue curve for n = 144 is half as wide (SE = 12/12 = 1).' },
     { q: 'Weights of one kind of bag have mean 100 g and standard deviation 15 g, and are not normal. You average n = 25 bags at a time. About 95% of those averages fall between which two values?',
-      mu: 100, sd: 15, n: 25, band: true, lo: 55, hi: 145, tk: 15, opts: ['94 g to 106 g', '70 g to 130 g', '97 g to 103 g', '85 g to 115 g'], ans: 0,
+      mu: 100, sd: 15, n: 25, band: true, nocurve: true, lo: 55, hi: 145, tk: 15, opts: ['94 g to 106 g', '70 g to 130 g', '97 g to 103 g', '85 g to 115 g'], ans: 0,
       why: ['SE = 15/√25 = 3. About 95% of the means lie within 2 SE of 100: 100 ± 6, so 94 to 106.',
         '70 to 130 is 100 ± 2σ. That is the range for single bags. Averages are much less spread out.',
         '97 to 103 is only 100 ± 1 SE, which holds about 68% of the averages, not 95%.',
-        '85 to 115 is 100 ± σ, the range for about 68% of single bags. It is not about the averages.'],
+        '85 to 115 is 100 ± σ. That describes single bags, not the averages.'],
       end: 'The yellow band is μ ± 2 SE = 100 ± 6, from 94 to 106.' },
-    { q: 'A sample of n = 100 people has mean x̄ = 52 minutes of daily screen time. Assume σ = 20 minutes. Using x̄ ± 2 SE, which interval is the margin of error around 52?',
-      mu: 52, sd: 20, n: 100, band: true, lo: -8, hi: 112, tk: 20, opts: ['12 to 92', '50 to 54', '51.6 to 52.4', '48 to 56'], ans: 3,
+    { q: 'A sample of n = 100 people has mean x̄ = 52 minutes of daily screen time. Assume σ = 20 minutes. Using x̄ ± 2 SE, which interval is x̄ plus or minus the margin of error?',
+      mu: 52, sd: 20, n: 100, band: true, nocurve: true, lo: 0, hi: 104, tk: 20, opts: ['12 to 92', '50 to 54', '51.6 to 52.4', '48 to 56'], ans: 3,
       why: ['12 to 92 is 52 ± 2σ (σ = 20), the range for single people. The margin of error uses the standard error.',
         '50 to 54 is 52 ± 1 SE, since SE = 20/√100 = 2. The margin of error uses 2 SE, not 1.',
         '51.6 to 52.4 divides σ by n instead of √n and gets 0.2. The standard error is 20/√100 = 2.',
@@ -99,11 +99,14 @@
     p.label(text, xx, y, Object.assign({ italic: false }, o));
   };
 
+  /* on a phone the title and the mu label need more room apart */
+  const ty = p => p.w < 500 ? H + 6.4 : H + 4.5, muY = p => p.w < 500 ? H - .8 : H;
+
   /* label for a bracket: to its right when it fits, otherwise under it */
   const brLab = (p, a, b, y, text, col, fs) => {
     const w = text.length * fs * .85 * .56 / p.scale;
     if (b + 1.5 + w <= W) lab(p, text, b + 1.5, y, { size: fs, color: col, align: 'left' });
-    else lab(p, text, (a + b) / 2, y - 5, { size: fs, color: col });
+    else lab(p, text, (a + b) / 2 + 1.5, y - 5, { size: fs, color: col, align: 'left' });
   };
 
   register({
@@ -136,14 +139,14 @@
         text: String.raw`<p>The population on the top is never changed: the theorem is about the means, not about single values. It also needs enough data. This population has rare big values (\(\mu=${f2(PR.mu)}\), \(\sigma=${f2(PR.sd)}\), skewness \(${f2(PR.skew)}\)). At \(n=4\) the means are still lumpy and lopsided.</p><p>Slide \(n\) up to \(30\) and then \(100\) and watch the lopsidedness (skewness) of the means fall toward \(0\), the value for a bell. The more lopsided the population, the larger the \(n\) you need.</p>`,
         set: { mode: 'limits', pop: 'rare', n: 4, drop: 2000 } },
       { title: 'A use: the margin of error',
-        text: String.raw`<p>Because the means form a bell with spread \(\sigma/\sqrt{n}\), about \(95\%\) of them land within \(2\) standard errors of \(\mu\). That distance, \(2\sigma/\sqrt{n}\), is the <b>margin of error</b>.</p><p>Here \(n=25\), so \(2\,\mathrm{SE}=${f2(2 * PS.sd / 5)}\). The yellow band shows it and the readout counts how many means fall inside. Press <b>Quadruple n</b> to make \(n=100\). The band becomes half as wide.</p>`,
+        text: String.raw`<p>Because the means form a bell with spread \(\sigma/\sqrt{n}\), about \(95\%\) of them land within \(2\) standard errors of \(\mu\). That distance, \(2\sigma/\sqrt{n}\), is the <b>margin of error</b>.</p><p>Here \(n=25\), so \(2\,\mathrm{SE}=${f2(2 * PS.sd / 5)}\). The yellow band shows it and the readout gives the percentage of means inside. Press <b>Quadruple n</b> to make \(n=100\). The band becomes half as wide.</p>`,
         set: { mode: 'moe', pop: 'skew', n: 25, drop: 2000 } }
     ],
     formal: String.raw`
       <h3>Statement</h3>
       <p>Let \(X_1,X_2,\dots,X_n\) be <b>independent</b> random variables with the <b>same distribution</b>, mean \(\mu\) and <b>finite variance</b> \(\sigma^2\) (\(0&lt;\sigma^2&lt;\infty\)). Their sample mean is \(\bar X_n=\dfrac{X_1+\cdots+X_n}{n}\). Then the standardized mean
       \[ Z_n=\frac{\bar X_n-\mu}{\sigma/\sqrt{n}} \]
-      converges in distribution to the standard normal: \(P(Z_n\le z)\to\Phi(z)\) for every \(z\) as \(n\to\infty\). In practice this says that for large \(n\), \(\bar X_n\) is approximately normal with mean \(\mu\) and standard deviation \(\sigma/\sqrt{n}\), the <b>standard error</b>.</p>
+      converges in distribution to the standard normal: \(P(Z_n\le z)\to\Phi(z)\) for every \(z\) as \(n\to\infty\), where \(\Phi\) is the standard normal cumulative distribution function. In practice this says that for large \(n\), \(\bar X_n\) is approximately normal with mean \(\mu\) and standard deviation \(\sigma/\sqrt{n}\), the <b>standard error</b>.</p>
       <h3>What is exactly true for every n</h3>
       <p>Two facts need no limit. By linearity, \(E[\bar X_n]=\frac1n\sum E[X_i]=\mu\), so the center never moves. Because the \(X_i\) are independent, variances add:
       \[ \operatorname{Var}(\bar X_n)=\frac{1}{n^2}\sum_{i=1}^{n}\sigma^2=\frac{\sigma^2}{n}, \qquad \text{so the standard error is } \frac{\sigma}{\sqrt{n}}. \]
@@ -154,16 +157,16 @@
       the characteristic function of the standard normal. Lévy's continuity theorem turns convergence of characteristic functions into convergence in distribution. Only the mean and variance of the \(X_i\) survive. Everything else about the shape of the population is forgotten, which is why a lopsided, uniform or two-humped population all give the same bell.</p>
       <h3>Worked example: a margin of error</h3>
       <p>A poll asks \(n=400\) people a yes or no question and about half say yes. Score yes as \(1\) and no as \(0\): then \(\mu=p=0.5\) and \(\sigma=\sqrt{p(1-p)}=0.5\). The standard error of the share is \(0.5/\sqrt{400}=0.025\). About \(95\%\) of the time the sample share lies within \(1.96\) standard errors of the true share, so the margin of error is \(1.96\times0.025\approx0.049\), about \(\pm5\) points. (The lesson rounds \(1.96\) to \(2\).) To halve it, poll \(1600\) people.</p>
-      <p>For a mean, the same reasoning gives the interval \(\bar x\pm 1.96\,\sigma/\sqrt{n}\). With \(n=100\), \(\sigma=20\) and \(\bar x=52\) it is \(52\pm3.9\). In real data \(\sigma\) is unknown and is replaced by the sample standard deviation \(s\). For small \(n\) the Student \(t\) distribution corrects the multiplier \(1.96\) to a larger value.</p>
+      <p>For a mean, the same reasoning gives the interval \(\bar x\pm 1.96\,\sigma/\sqrt{n}\). With \(n=100\), \(\sigma=20\) and \(\bar x=52\) it is \(52\pm3.9\). (Practice rounds \(1.96\) to \(2\): \(52\pm4\).) In real data \(\sigma\) is unknown and is replaced by the sample standard deviation \(s\). For small \(n\) the Student \(t\) distribution corrects the multiplier \(1.96\) to a larger value.</p>
       <h3>What the theorem does not say</h3>
       <p><b>It does not make the population normal.</b> The \(X_i\) keep their own distribution. Only the distribution of \(\bar X_n\) approaches a bell. A histogram of the raw data stays lopsided however much data you collect.</p>
-      <p><b>It is a statement about a limit, so small \(n\) can fail.</b> The Berry–Esseen theorem bounds the error by \(C\,\rho/(\sigma^3\sqrt{n})\), where \(\rho=E|X-\mu|^3\). A lopsided population or rare large values make \(\rho/\sigma^3\) large, so you need a larger \(n\). The rule of thumb \(n\ge30\) is only a rule of thumb. The skewness of \(\bar X_n\) is the skewness of \(X\) divided by \(\sqrt{n}\): for the population with rare big values it is \(${f2(PR.skew)}\) at \(n=1\) and \(${f2(PR.skew / 2)}\) at \(n=4\).</p>
-      <p><b>The assumptions matter.</b> If the variance is infinite (a heavy tail, such as the Cauchy distribution), the theorem fails. The mean of \(n\) Cauchy values has exactly the same Cauchy distribution as one value, so averaging never narrows it. If the \(X_i\) are strongly dependent, \(\operatorname{Var}(\bar X_n)\) is not \(\sigma^2/n\). The lesson draws only populations on \([0,10]\), whose variance is always finite, so it cannot show the Cauchy failure. It is stated here as a theorem about the assumptions.</p>
+      <p><b>It is a statement about a limit, so small \(n\) can fail.</b> The Berry–Esseen theorem bounds the error by \(C\,\rho/(\sigma^3\sqrt{n})\), where \(C\) is an absolute constant and \(\rho=E|X-\mu|^3\). A lopsided population or rare large values make \(\rho/\sigma^3\) large, so you need a larger \(n\). The rule of thumb \(n\ge30\) is only a rule of thumb. The skewness of \(\bar X_n\) is the skewness of \(X\) divided by \(\sqrt{n}\): for the population with rare big values it is \(${f2(PR.skew)}\) at \(n=1\) and \(${f2(PR.skew / 2)}\) at \(n=4\).</p>
+      <p><b>The assumptions matter.</b> If the variance is infinite (a heavy tail, such as the Cauchy distribution, which has no mean either, so the hypotheses fail twice), the theorem fails. The mean of \(n\) Cauchy values has exactly the same Cauchy distribution as one value, so averaging never narrows it. If the \(X_i\) are strongly dependent, \(\operatorname{Var}(\bar X_n)\) is not \(\sigma^2/n\). The lesson draws only populations on \([0,10]\), whose variance is always finite, so it cannot show the Cauchy failure. It is stated here as a theorem about the assumptions.</p>
       <p><b>Related facts.</b> The Galton board is the special case where each \(X_i\) is \(0\) or \(1\): the sum is binomial, and the de Moivre–Laplace theorem is the CLT for that case.</p>`,
     check: [
-      { q: String.raw`A population of incomes is strongly skewed to the right, with mean \(\mu\) and standard deviation \(\sigma\). You take many samples of size \(n=40\) and plot the histogram of the sample means. Which description is most accurate?`,
+      { q: String.raw`A population of incomes is moderately skewed to the right (skewness about \(1\)), with mean \(\mu\) and standard deviation \(\sigma\). You take many samples of size \(n=40\) and plot the histogram of the sample means. Which description is most accurate?`,
         choices: ['It is skewed to the right, just like the population', String.raw`It is close to a bell, centered at \(\mu\), and much narrower than the population`, String.raw`It is close to a bell, centered at \(\mu\), with the same spread \(\sigma\) as the population`, 'It is close to a bell, centered at the median of the population'], answer: 1,
-        why: String.raw`The means are centered at \(\mu\) (always) and their spread is \(\sigma/\sqrt{40}\), about \(0.16\sigma\), much narrower than \(\sigma\). With \(40\) values the lopsidedness has mostly averaged out, so the histogram is close to a bell. The first choice forgets that averaging removes skew. The third forgets that the spread shrinks. The median is not what the means are centered on, since the average of the sample means equals the mean.`,
+        why: String.raw`The means are centered at \(\mu\) (always) and their spread is \(\sigma/\sqrt{40}\), about \(0.16\sigma\), much narrower than \(\sigma\). With \(40\) values the lopsidedness has mostly averaged out (the skewness is divided by \(\sqrt{40}\), about \(6\)), so the histogram is close to a bell. The first choice forgets that averaging removes skew. The third forgets that the spread shrinks. The median is not what the means are centered on, since the average of the sample means equals the mean.`,
         hint: 'Two things change when you average: the shape and the width. What stays fixed is the center.' },
       { q: String.raw`Heights in a large population have mean \(170\) cm and standard deviation \(12\) cm, and the distribution is not normal. You take samples of \(n=36\) people and compute each sample mean. About \(95\%\) of the sample means will fall between which two values?`,
         choices: [String.raw`\(158\) cm and \(182\) cm`, String.raw`\(164\) cm and \(176\) cm`, String.raw`\(168\) cm and \(172\) cm`, String.raw`\(166\) cm and \(174\) cm`], answer: 3,
@@ -232,23 +235,23 @@
 
       const practiceTop = (c, p, pr) => {
         const pal = p.pal, fs = fsOf(p), ux = x => (x - pr.lo) / (pr.hi - pr.lo) * W;
-        lab(p, 'One value (a single draw)', 0, H + 4.5, { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
+        lab(p, pr.nocurve ? 'One value (shape not given)' : 'One value (a single draw)', 0, ty(p), { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
         axis(p, fs, pr.lo, pr.hi, pr.tk, v => String(+v.toFixed(2)));
         if (pr.disc) {
           [0, 1].forEach(v => { const x = ux(v); p.path([[x - 3, 0], [x + 3, 0], [x + 3, H * .5], [x - 3, H * .5]], { fill: alpha(pal.muted, .35), stroke: pal.muted, width: 1.5, close: true }); lab(p, v ? 'yes = 1' : 'no = 0', x, H * .5 + 4, { size: fs, color: pal.text }); });
-        } else {
+        } else if (!pr.nocurve) {
           curveUnder(p, u => pdfN(pr.lo + u / W * (pr.hi - pr.lo), pr.mu, pr.sd) * pr.sd * Math.sqrt(2 * Math.PI) * H * CURVEK, 0, W, alpha(pal.muted, .3), pal.muted, 2.5);
         }
         vline(p, ux(pr.mu), H - 1.5, pal.yellow);
-        lab(p, 'μ = ' + String(+pr.mu.toFixed(2)), ux(pr.mu), H, { size: fs, color: pal.yellow });
+        lab(p, 'μ = ' + String(+pr.mu.toFixed(2)), ux(pr.mu), muY(p), { size: fs, color: pal.yellow });
         const a = ux(pr.mu - pr.sd), b = ux(pr.mu + pr.sd);
         bracket(p, a, b, H - 5.5, pal.green); brLab(p, a, b, H - 5.5, 'σ = ' + String(+pr.sd.toFixed(2)), pal.green, fs);
       };
       const practiceBot = (c, p, pr) => {
         const pal = p.pal, fs = fsOf(p), ux = x => (x - pr.lo) / (pr.hi - pr.lo) * W, sem = pr.sd / Math.sqrt(pr.n);
-        lab(p, xReveal ? `Sample means, n = ${pr.n}` : 'Sample means', 0, H + 4.5, { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
+        lab(p, xReveal ? `Sample means, n = ${pr.n}` : 'Sample means', 0, ty(p), { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
         axis(p, fs, pr.lo, pr.hi, pr.tk, v => String(+v.toFixed(2)));
-        if (!xReveal) { lab(p, 'Answer the question to see the sample means', W / 2, H * .45, { size: fs, color: pal.muted }); return; }
+        if (!xReveal) { lab(p, 'Answer to see the sample means', W / 2, H * .45, { size: fs, color: pal.muted }); return; }
         const peak = 1 / (sem * Math.sqrt(2 * Math.PI)), kk = H * CURVEK / peak, dens = x => pdfN(x, pr.mu, sem) * kk;
         const toX = u => pr.lo + u / W * (pr.hi - pr.lo);
         if (pr.band) curveUnder(p, u => dens(toX(u)), Math.max(0, ux(pr.mu - 2 * sem)), Math.min(W, ux(pr.mu + 2 * sem)), alpha(pal.yellow, .4));
@@ -266,7 +269,7 @@
         const pal = p.pal, fs = fsOf(p);
         if (mode === 'practice') { const pr = PROBS[xi]; if (pr.nopic) { lab(p, 'No picture for this one.', W / 2, H * .6, { size: fs + 1, color: pal.muted }); lab(p, 'Use what you know about the mean.', W / 2, H * .45, { size: fs + 1, color: pal.muted }); } else practiceTop(c, p, pr); return; }
         const editable = mode !== 'predict';
-        lab(p, 'Population: one value x' + (editable ? ' (drag the rings)' : ''), 0, H + 4.5, { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
+        lab(p, 'Population: one value x' + (editable ? ' (drag the rings)' : ''), 0, ty(p), { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
         axis(p, fs, 0, 10, 2, v => String(v));
         st.w.forEach((w, i) => {
           const x0 = i * 10, x1 = x0 + 10, hb = hbar(w);
@@ -274,7 +277,7 @@
         });
         const ux = S.mu * 10;
         vline(p, ux, H - 1.5, pal.yellow);
-        lab(p, 'μ = ' + f2(S.mu), ux, H, { size: fs, color: pal.yellow });
+        lab(p, 'μ = ' + f2(S.mu), ux, muY(p), { size: fs, color: pal.yellow });
         const a = (S.mu - S.sd) * 10, b = (S.mu + S.sd) * 10;
         bracket(p, a, b, H - 5.5, pal.green); brLab(p, a, b, H - 5.5, 'σ = ' + f2(S.sd), pal.green, fs);
         /* the last sample: stacked blue dots and a yellow marker for its mean */
@@ -298,7 +301,7 @@
         const pal = p.pal, fs = fsOf(p);
         if (mode === 'practice') { const pr = PROBS[xi]; if (pr.nopic) { lab(p, 'Reason about the center, spread and shape.', W / 2, H * .5, { size: fs, color: pal.muted }); } else practiceBot(c, p, pr); return; }
         const sem = se(), peak = 1 / (sem * Math.sqrt(2 * Math.PI)), hide = mode === 'predict' && pPhase === 0;
-        lab(p, 'Sample means x̄, n = ' + st.n, 0, H + 4.5, { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
+        lab(p, 'Sample means x̄, n = ' + st.n, 0, ty(p), { size: fs, color: pal.text, align: 'left', dx: p.w < 500 ? 30 : 14 });
         axis(p, fs, 0, 10, 2, v => String(v));
         if (hide) { lab(p, 'Choose a prediction first.', W / 2, H * .5, { size: fs + 1, color: pal.muted }); return; }
         let maxD = peak; if (N) counts.forEach(k => { maxD = Math.max(maxD, k / (N * BW)); });
@@ -310,7 +313,7 @@
         });
         if (ov) curveUnder(p, u => dens(u / 10), 0, W, null, pal.blue, 3.5);
         vline(p, S.mu * 10, H - 1.5, pal.yellow);
-        lab(p, 'μ = ' + f2(S.mu), S.mu * 10, H, { size: fs, color: pal.yellow });
+        lab(p, 'μ = ' + f2(S.mu), S.mu * 10, muY(p), { size: fs, color: pal.yellow });
         const a = (S.mu - sem) * 10, b = (S.mu + sem) * 10;
         bracket(p, a, b, H - 5.5, pal.green); brLab(p, a, b, H - 5.5, 'SE = σ/√n = ' + f2(sem), pal.green, fs);
         if (band) lab(p, '±2 SE band', (S.mu + 2 * sem) * 10 + 1.5, H * .2, { size: fs, color: pal.text, align: 'left' });

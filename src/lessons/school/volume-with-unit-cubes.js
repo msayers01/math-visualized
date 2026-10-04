@@ -81,16 +81,17 @@
         return { ok: false, msg: `You have ${st.k} layers, which is ${n} cubes. That is too many. Take away ${plural((n - 40) / 10, 'layer')}.` };
       } },
     { kind: 'mc', sc: { mode: 'box', l: 4, w: 3, h: 1, k: 1, hideH: true },
-      q: 'The base of a box is 4 × 3, as shown. The box holds 36 cubes. How many layers tall is it?',
+      after: { h: 3, k: 3 },
+      q: 'The base of a box is 4 × 3. One layer is packed, as shown. The box holds 36 cubes in all. How many layers tall is it?',
       ch: [['3 layers', 'One layer is 12 cubes. 12 × 3 = 36, so the box is 3 tall. You can check with division: 36 ÷ 12 = 3.'],
-           ['24', '24 is 36 − 12. Subtracting does not find layers. Ask: how many 12s make 36?'],
-           ['9', '9 is 36 ÷ 4. Divide by the whole layer, 12, not only the length.'],
-           ['12', '12 is the cubes in one layer, not the number of layers. How many layers of 12 make 36?']], ans: 0 },
+           ['24 layers', '24 is 36 − 12. Subtracting does not find layers. Ask: how many 12s make 36?'],
+           ['9 layers', '9 is 36 ÷ 4. Divide by the whole layer, 12, not only the length.'],
+           ['12 layers', '12 is the cubes in one layer, not the number of layers. How many layers of 12 make 36?']], ans: 0 },
     { kind: 'mc', sc: { mode: 'fig', fig: 3, fk: 2, rot: 0 },
       q: 'This figure is made of unit cubes. It is 2 layers high and has an empty gap. How many unit cubes does it have?',
       ch: [['5', '5 is only one layer. Both layers have 5 cubes.'],
            ['12', '12 counts the empty gap. There are 6 spots, but one is empty.'],
-           ['8', '8 is too few. Count each layer: both have 5 cubes.'],
+           ['8', '8 misses 2 cubes. Count both layers: 5 + 5.'],
            ['10', 'One layer has 5 cubes. Two layers make 5 + 5 = 10 cubic units.']], ans: 3 },
     { kind: 'mc', sc: { mode: 'fig', fig: 5, fk: 1, rot: 0 },
       q: 'Four cubes make a 2 × 2 square, one layer. What is its surface area in square units? Count every outside face, hidden ones too.',
@@ -147,7 +148,7 @@
       <p>The cubes in one layer are in rows and columns, so the cubes in a layer are length × width. Every layer is the same. The number of layers is the height, because each layer is 1 unit thick. So volume = (cubes in a layer) × (number of layers).</p>
       <p>That gives two ways to write the same number. <b>Length × width × height</b> is 4 × 3 × 2 = 24. <b>Height × area of the base</b> is 2 × 12 = 24. They always match, because the area of the base is length × width.</p>
       <h3>Figures made of cubes</h3>
-      <p>A figure built from unit cubes does not have to be a box. Its volume is still the number of cubes. You can count layer by layer, or tower by tower. For the stairs, the layers hold 3, 2 and 1 cubes. 3 + 2 + 1 = 6 cubic units. The towers hold 1, 2 and 3 cubes. 1 + 2 + 3 = 6. Same answer.</p>
+      <p>A figure built from unit cubes does not have to be a box. Its volume is still the number of cubes. You can count layer by layer, or stack by stack (a stack is the cubes piled on one square). For the stairs, the layers hold 3, 2 and 1 cubes. 3 + 2 + 1 = 6 cubic units. The stacks hold 1, 2 and 3 cubes. 1 + 2 + 3 = 6. Same answer.</p>
       <h3>Surface area of a figure</h3>
       <p>Surface area is the number of unit faces on the outside of the figure. Each face is a square with side 1 unit, so we write <em>square units</em>. Do not mix them up: volume is in cubic units, surface area is in square units.</p>
       <p>Count six sides: Top, Bottom, Front, Back, Left and Right. Some sides are hidden when you look at the figure, so turn it, or think about the other side. Two cubes that touch hide the faces between them. Those faces are inside, so they are not counted.</p>
@@ -167,10 +168,10 @@
         why: 'One layer is 6 × 4 = 24 cubes. The box has 3 layers, so it holds 3 × 24 = 72 cubes. Maya has 2 layers, which is 48 cubes. She needs 72 − 48 = 24 more. That is one more layer. 72 is the whole box and 48 is what she already has.',
         hint: 'Find the cubes in one layer first. Then find all the cubes in the box. Then take away what she has.' },
       { q: 'Jo has 3 unit cubes glued in a straight row. Jo says: "Each cube has 6 faces, so the surface area is 3 × 6 = 18 square units." What is wrong?',
-        choices: ['Faces where two cubes touch are inside the figure, so they do not count. The surface area is 14.',
-                  'A cube has 8 faces, so the surface area is 24.',
-                  'Nothing is wrong. The surface area is 18.',
-                  'Surface area is the number of cubes, so the answer is 3.'], answer: 0,
+        choices: ['A cube has 8 faces, so the surface area is 24.',
+                  'Surface area is the number of cubes, so the answer is 3.',
+                  'Touching faces are inside and do not count. The surface area is 14.',
+                  'Nothing is wrong. The surface area is 18.'], answer: 2,
         why: 'The row has 2 places where cubes touch. Each touch hides 2 faces, one on each cube. So 4 faces are inside. 18 − 4 = 14 square units. Check by sides: Top 3, Bottom 3, Front 3, Back 3, and 1 face on each end (2). 3 + 3 + 3 + 3 + 2 = 14.',
         hint: 'Look at where two cubes are glued together. Can you see those faces from the outside?' }
     ],
@@ -362,10 +363,11 @@
         else if (st.counted.size < 6) t += `Total so far: ${sum}. Count the other sides too.<br>`;
         else t += `<b>Surface area = ${SIDES.map(s => cnt[s]).join(' + ')} = ${sum} square units</b><br>`;
         if (st.dir) {
-          if (st.dir === 'Bottom') t += 'Bottom faces sit on the table, so you cannot see them. One bottom face for each tower, so Bottom equals Top.';
+          if (st.dir === 'Bottom') t += 'Bottom faces sit on the table, so you cannot see them. One bottom face for each stack, so Bottom equals Top.';
           else if (!visible(st.dir, st.rot)) t += `The ${st.dir} side is hidden from here. Turn the figure to see it.`;
-          else if (st.dir === 'Top') t += 'Top: one face for each tower. A step that is lower still shows its top.';
-          else t += 'Where a taller tower stands next to a shorter one, the extra cubes show a face too.';
+          else if (st.dir === 'Top') t += 'Top: one face for each stack. A step that is lower still shows its top.';
+          else if (st.dir === 'Front' || st.dir === 'Back') t += 'Nothing blocks this side, so every cube shows one face here.';
+          else t += 'A face shows where a stack is taller than the one beside it, or has nothing beside it.';
         }
         return t;
       };
@@ -498,7 +500,7 @@
         tally();
       };
       const finishOne = () => {
-        prSolved = true; st.hideH = false; if (!prTried) prFirst++; prDone++; pnext.disabled = false; pcheck.disabled = true; tally(); sync();
+        prSolved = true; st.hideH = false; if (pr().after) { Object.assign(st, pr().after); v.fill = target(); } if (!prTried) prFirst++; prDone++; pnext.disabled = false; pcheck.disabled = true; tally(); sync();
       };
       const pickChoice = i => {
         const q = pr(); if (prSolved) return;
@@ -514,7 +516,7 @@
         const q = pr(); if (prSolved) return;
         const r = q.check(st);
         if (r.ok) { pfb.innerHTML = good('Yes.') + ' ' + r.msg; finishOne(); }
-        else { prTried = true; pfb.innerHTML = bad('Not yet.') + ' ' + r.msg + ' Change the box and check again.'; }
+        else { prTried = true; pfb.innerHTML = bad('Not yet.') + ' ' + r.msg + (q.kind === 'layers' ? ' Add or remove layers and check again.' : ' Change the box and check again.'); }
       };
       const nextProb = () => {
         if (prIdx === PR.length - 1 && prSolved && pnext.textContent === 'Finish') {

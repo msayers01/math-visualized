@@ -64,7 +64,7 @@
     { name: 'Why multiply?', kind: 'choice', pic: { t: 'rect', len: 6, wid: 4, rows: 4, totals: true, dims: 'both', hint: 'The numbers on the right are running totals.' },
       q: 'A rug is 6 units long and 4 units wide. Why can we find its area with 6 × 4?',
       ch: [['Because 6 + 4 + 6 + 4 gives the area.', 'That sum is the perimeter, the distance around. It does not count squares.'],
-           ['Because multiplying always gives the biggest answer.', 'That is not the reason. We multiply here because the squares come in equal rows.'],
+           ['Because 6 × 4 is the same as 6 + 4.', '6 + 4 = 10, but 6 × 4 = 24. Multiplying counts equal rows. It is not adding the sides.'],
            ['Because 6 + 4 = 10, and that is the number of squares.', 'Adding the sides does not count the squares. The 6 squares in a row repeat 4 times.'],
            ['Because there are 4 rows with 6 squares in each row, so 6 + 6 + 6 + 6 = 6 × 4.', 'Yes. Equal rows are added again and again. Repeated adding of the same number is multiplying.']], ans: 3 },
     { name: 'Missing side', kind: 'choice', pic: { t: 'rect', len: 6, wid: 3, rows: 0, plain: true, dims: 'both', widLabel: '?', hint: 'Area is 18 square units.' },
@@ -120,9 +120,9 @@
       <p>Area tells how much flat space a shape covers. To measure it, cover the shape with unit squares. A unit square is 1 unit wide and 1 unit tall. Its area is 1 square unit. The area of a shape is the number of unit squares that fit inside it with no gaps and no overlaps.</p>
       <h3>Why length × width works</h3>
       <p>The squares in a rectangle sit in equal rows. The length tells how many squares are in one row. The width tells how many rows there are. So you add the same number again and again, and that is multiplying.</p>
-      <p>Worked example. A rectangle is 5 units long and 4 units wide. Each row has 5 squares. There are 4 rows. 5 + 5 + 5 + 5 = 20, so 5 × 4 = 20. The area is A = l × w = 5 × 4 = 20 square units.</p>
+      <p>Worked example. A rectangle is 5 units long and 4 units wide. Each row has 5 squares. There are 4 rows. 5 + 5 + 5 + 5 = 20, so 5 × 4 = 20. The area is length × width = 5 × 4 = 20 square units.</p>
       <h3>Perimeter counts edges</h3>
-      <p>Perimeter is the distance around a shape. Walk along every side and add the lengths. A rectangle has two sides of length l and two sides of width w. So the perimeter is l + w + l + w. You can also add l and w, and then double it: 2 × (l + w).</p>
+      <p>Perimeter is the distance around a shape. Walk along every side and add the lengths. A rectangle has two sides as long as its length and two sides as long as its width. So the perimeter is length + width + length + width. You can also add the length and the width, and then double it: 2 × (length + width).</p>
       <p>Worked example. A rectangle is 7 units long and 3 units wide. 7 + 3 + 7 + 3 = 20. Or 2 × (7 + 3) = 2 × 10 = 20. The perimeter is 20 units.</p>
       <h3>Units</h3>
       <p>Perimeter is a length, so we label it in units. Area counts squares, so we label it in square units. A 5 by 3 rectangle has perimeter 16 units and area 15 square units. The two numbers answer two different questions.</p>
@@ -145,7 +145,7 @@
         choices: ['10 units of ribbon and 24 squares', '24 units of ribbon and 20 squares', '20 units of ribbon and 10 squares', '20 units of ribbon and 24 squares'], answer: 3,
         why: 'The ribbon goes around: 6 + 4 + 6 + 4 = 20 units. The squares fill 4 rows of 6: 6 × 4 = 24 squares. 10 is 6 + 4, only two sides. Swapping the two answers mixes up perimeter and area.',
         hint: 'The ribbon is a perimeter. The squares are an area. Work out each one separately.' },
-      { q: 'Ben wants the area of an L-shape. The L is a rectangle 6 units wide and 5 units tall, with a corner 3 units wide and 2 units tall missing. Ben writes. Step 1: the big rectangle is 6 × 5 = 30. Step 2: the missing corner is 3 × 2 = 6. Step 3: the area is 30 + 6 = 36 square units. Which statement is true?',
+      { q: 'An L-shape is a 6 by 5 rectangle with a 3 by 2 corner cut out. Ben finds its area. Step 1: 6 × 5 = 30. Step 2: 3 × 2 = 6. Step 3: 30 + 6 = 36 square units. Which statement is true?',
         choices: ['Step 1 and Step 2 are right. Step 3 is wrong. The corner is missing, so take it away: 30 − 6 = 24 square units.',
                   'Step 1 is wrong. The big rectangle should be 6 + 5 = 11.',
                   'Step 2 is wrong. The corner should be 3 + 2 = 5.',
@@ -292,7 +292,7 @@
 
       P.onDraw = (c, p) => {
         const pal = p.pal;
-        p.fit(GW, GH, { l: 2.1, r: 1.9, t: 2, b: 1.6 });
+        p.fit(GW, GH, { l: 2.1, r: 1.9, t: 2.4, b: 1.6 });
         drawGrid(p);
         if (st.practice) {
           const pr = PROBS[prIdx], pic = pr.kind === 'build' ? { t: 'rect', len: st.len, wid: st.wid, rows: st.wid, dims: 'both' } : pr.pic;
@@ -331,7 +331,7 @@
 
       const setSize = (l, w) => {
         cancel(); st.len = clamp(l, 1, GW); st.wid = clamp(w, 1, GH);
-        st.rowsF = st.wid; st.walkF = perim(); st.said = '';
+        st.rowsF = st.mode === 'area' ? Math.min(rows(), st.wid) : st.wid; st.walkF = perim(); st.said = '';
       };
       const setSi = i => {
         const list = shapesFor(st.hold); st.si = clamp(i, 0, list.length - 1);
@@ -341,6 +341,7 @@
         st.rowsF = st.wid; st.walkF = perim();
       };
 
+      const resets = [];
       const predict = (title, q, opts, onPick) => {
         let done = false;
         const fbk = h('div', { class: 'ctl readout', 'aria-live': 'polite' }), row = h('div', { class: 'ctl buttons' });
@@ -351,6 +352,7 @@
         }));
         row.append(...btns);
         addTo(h('p', { class: 'ctl-title' }, title), h('p', { class: 'hint' }, q), row, fbk);
+        resets.push(() => { done = false; fbk.innerHTML = ''; btns.forEach(b => { b.disabled = false; b.classList.remove('primary'); }); });
       };
       const sizeRows = (act) => [
         h('div', { class: 'ctl buttons' }, mkBtn('Length −1', () => act(-1, 0)), mkBtn('Length +1', () => act(1, 0))),
@@ -418,7 +420,7 @@
       /* practice */
       C.title('Practice');
       C.hint('Nine short problems. Nothing here is saved or scored.');
-      startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; sync(); } else { st.practice = true; loadProb(); sync(); } } }])[0];
+      startBtn = C.buttons([{ label: 'Start practice', primary: true, onClick: () => { cancel(); if (st.practice) { st.practice = false; if (st.mode === 'same') setSi(st.si); sync(); } else { st.practice = true; loadProb(); sync(); } } }])[0];
       grp('practice', () => {
         pwrap = h('div', { style: 'display:flex;flex-direction:column;gap:14px' });
         ptally = h('p', { class: 'ctl-title' });
@@ -547,7 +549,7 @@
         cancel();
         const nums = {};
         for (const k in patch) { if (FLAGS.includes(k)) st[k] = patch[k]; else nums[k] = patch[k]; }
-        st.practice = false; st.said = '';
+        st.practice = false; st.said = ''; resets.forEach(f => f());
         if (st.mode === 'same') setSi(st.si); else { st.rowsF = st.wid; st.walkF = perim(); }
         Object.assign(st, nums); sync();
       };

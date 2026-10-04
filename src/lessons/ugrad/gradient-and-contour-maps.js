@@ -80,20 +80,20 @@
   const PROBS = [
     { kind: 'compass', fn: 'bowl', x: 2, y: 1, view: 'x',
       q: 'The landscape is a bowl, P is at (2, 1). Which of the eight directions is steepest uphill at P?',
-      why: 'On a bowl, uphill is away from the lowest point, across the contour. It is not toward the middle.' },
+      why: 'On a bowl, uphill is across the contour, at a right angle to it. It is not toward the middle.' },
     { kind: 'choice', fn: 'hill', x: 1, y: 1, view: 'x', marks: [{ x: .5, y: 0, t: 'A' }, { x: 2, y: 0, t: 'B' }],
       q: 'On the hill, which marked place is steeper: A at (0.5, 0) or B at (2, 0)? Look at the contours.',
       ch: [['A is steeper', () => `Near A the contours are far apart: the slope there is only |∇f| = ${gm2('hill', .5, 0)}. The top of a hill is nearly flat.`],
            ['B is steeper', () => `Near B the contours crowd together. The steepness is |∇f| = ${gm2('hill', 2, 0)} at B and only ${gm2('hill', .5, 0)} at A. Crowded contours mean steep ground.`],
-           ['They are equally steep', () => `Both are at height values you can read from the shading, but steepness is about how fast the height changes, which is how close the contours are. B is steeper: ${gm2('hill', 2, 0)} against ${gm2('hill', .5, 0)}.`]], ans: 1 },
+           ['They are equally steep', () => `Height and steepness are different things. Steepness is how close the contours are: B is steeper, ${gm2('hill', 2, 0)} against ${gm2('hill', .5, 0)}.`]], ans: 1 },
     { kind: 'choice', fn: 'saddle', x: 2, y: -1, view: 'y',
       q: 'The landscape is the saddle f = (x² − y²)/2. P is at (2, −1). Treat x as a constant and differentiate with respect to y. What is the partial derivative fy at P?',
       ch: [['−1', () => 'fy = −y, and y = −1 here, so −y = −(−1) = +1. Watch the sign. The red cut in the lower graph is rising at P.'],
            ['1', () => 'fy = −y = −(−1) = 1. The red cut rises there: walking north from P, f increases by about 1 per unit.'],
            ['2', () => 'That is fx = x = 2. For fy only the y part changes, and −y²/2 has derivative −y.'],
            ['−2', () => 'The factor 1/2 cancels against the 2 from differentiating y², so fy = −y, not −2y.']], ans: 1,
-      after: 'showG' },
-    { kind: 'choice', fn: 'bowl', x: 2, y: 1, view: 'u', showU: true, th: Math.atan2(.8, .6) / DEG,
+      after: 'showG', hide: true },
+    { kind: 'choice', fn: 'bowl', x: 2, y: 1, view: 'u', showU: true, th: Math.atan2(.8, .6) / DEG, hide: true,
       q: 'The landscape is the bowl f = x²/4 + y²/2, P is at (2, 1), and u = (0.6, 0.8) is a unit vector. First find ∇f = (fx, fy) at P. Then what is Dᵤf = ∇f · u?',
       ch: [['−0.2', () => 'That subtracts the second product. Both terms are added: fx·0.6 + fy·0.8 with fx = fy = 1 gives 0.6 + 0.8.'],
            ['1', () => 'That would be fx alone, the rate due east. The direction u also has a north part.'],
@@ -141,7 +141,7 @@
     hook: String.raw`You stand on a foggy hillside and can only feel the ground under your feet. Which way is steepest uphill, and how steep is it? A hiker's map draws the whole hill as curves of equal height.`,
     steps: [
       { title: 'Read the map',
-        text: String.raw`<p>The hill is drawn as a <b>contour map</b>. Each thin curve joins points of equal height, like the lines on a hiker's map. Darker shading means higher ground.</p><p>The <b>violet</b> curve is the contour through <b>P</b>. P is at \((1,1)\) and its height is \(f=2.75\). Where contours crowd together the ground is steep. Drag P around and watch the height.</p>`,
+        text: String.raw`<p>The hill is drawn as a <b>contour map</b>. Each thin curve joins points of equal height, like the lines on a hiker's map. More yellow means higher ground.</p><p>The <b>violet</b> curve is the contour through <b>P</b>. P is at \((1,1)\) and its height is \(f=2.75\). Where contours crowd together the ground is steep. Drag P around and watch the height.</p>`,
         set: { x: 1, y: 1, th: 0, view: 'x', showG: false, showU: false } },
       { title: 'Slopes along x and y',
         text: String.raw`<p>Hold \(y\) fixed and walk east. The height follows the <b>green</b> cut in the lower graph. Its slope at P is the <b>partial derivative</b> \(f_x=-0.69\): east is downhill.</p><p>Press <b>y-cut</b> to hold \(x\) fixed and walk north instead. That <b>red</b> slope is \(f_y=-1.37\), a steeper descent.</p>`,
@@ -150,7 +150,7 @@
         text: String.raw`<p>Which way is steepest uphill from P? Commit to a guess with the eight buttons under <b>Predict, then see</b>.</p><p>Then the <b>gradient</b> \(\nabla f=(f_x,f_y)=(-0.69,-1.37)\) appears as an arrow. It meets the violet contour at a right angle and points uphill. Its length shows the steepness, \(|\nabla f|=1.54\).</p>`,
         set: { x: 1, y: 1, th: 0, view: 'x', showG: false, showU: false } },
       { title: 'Any direction at all',
-        text: String.raw`<p>The blue arrow <b>u</b> has length 1. Drag its tip, or use <b>Direction angle</b>. The rate of change that way is \(D_u f=\nabla f\cdot u\). Due east (0°) it is \(f_x=-0.69\).</p><p>Turn u along \(\nabla f\) (about 243°): the rate is largest, 1.54. Turn it along the violet contour (about 153° or 333°): the rate is 0. Then try <b>Climb the hill</b>.</p>`,
+        text: String.raw`<p>The blue arrow <b>u</b> has length 1. Drag its tip or use <b>Direction angle</b>. The rate that way is \(D_u f=\nabla f\cdot u\); due east (0°) it is \(f_x=-0.69\).</p><p>Along \(\nabla f\) (about 243°) the rate is largest, 1.54. Along the violet contour (about 153° or 333°, or press <b>Turn u along the contour</b>) it is 0 or very close to it. Then try <b>Climb the hill</b>.</p>`,
         set: { x: 1, y: 1, th: 0, view: 'u', showG: true, showU: true } }
     ],
     formal: String.raw`
@@ -213,6 +213,10 @@
       stage.classList.add('split');
       const top = h('div', { class: 'pane', style: 'flex: 11 1 0' }), bot = h('div', { class: 'pane', style: 'flex: 8 1 0' });
       stage.append(top, bot);
+      /* on a phone the default stage is short, so the map is tiny: give it more room */
+      const mq = window.matchMedia('(max-width: 600px)');
+      const roomy = () => { stage.style.minHeight = mq.matches ? '470px' : ''; };
+      roomy(); mq.addEventListener('change', roomy);
       const P1 = new Plane(top, { span: 3.55 }), P2 = new Plane(bot, { span: 5 });
       const panel = stage.nextElementSibling;
 
@@ -284,14 +288,14 @@
           const ux = gx / gl, uy = gy / gl, a = 10 / sc;
           c.strokeStyle = pal.text; c.lineWidth = 1.8; c.beginPath();
           c.moveTo(p.X(st.x + a * ux), p.Y(st.y + a * uy)); c.lineTo(p.X(st.x + a * (ux - uy)), p.Y(st.y + a * (uy + ux))); c.lineTo(p.X(st.x - a * uy), p.Y(st.y + a * ux)); c.stroke();
-          txt(c, p, '∇f', p.X(tx) + ux * 18, p.Y(ty) - uy * 18, { size: fs + 2, weight: 700, align: 'center' });
+          txt(c, p, '∇f', p.X(tx) + ux * 22, p.Y(ty) - uy * 22, { size: fs + 2, weight: 700, align: 'center' });
         }
         /* the unit direction u */
         if (fl.showU) {
           const ux = Math.cos(st.th * DEG), uy = Math.sin(st.th * DEG);
           p.arrow(st.x, st.y, st.x + ux, st.y + uy, pal.blue, 3);
           p.dot(st.x + ux, st.y + uy, 7, pal.stage, pal.brass, 3);
-          txt(c, p, 'u', p.X(st.x + ux / 2) - uy * 15, p.Y(st.y + uy / 2) - ux * 15, { size: fs + 2, weight: 700, color: pal.blue, align: 'center' });
+          txt(c, p, 'u', p.X(st.x + ux * .6) - uy * 18, p.Y(st.y + uy * .6) - ux * 18, { size: fs + 2, weight: 700, color: pal.blue, align: 'center' });
         }
         marks.forEach(m => { p.dot(m.x, m.y, 7, pal.stage, pal.text, 2.5); txt(c, p, m.t, p.X(m.x) + 14, p.Y(m.y) - 14, { size: fs + 3, weight: 700, align: 'center' }); });
         if (!marks.length) p.dot(st.x, st.y, 8, pal.yellow, pal.brass, 3);
@@ -305,7 +309,7 @@
         }
         if (marks.length) { c.textBaseline = 'alphabetic'; return; }
         /* info box */
-        const narrow = p.w < 520, lines = narrow ? [`P = (${n2(st.x)}, ${n2(st.y)})`, `f = ${n2(fv())}`] : [`P = (${n2(st.x)}, ${n2(st.y)})`, `height f = ${n2(fv())}`, 'darker shading = higher'];
+        const narrow = p.w < 520, lines = narrow ? [`P = (${n2(st.x)}, ${n2(st.y)})`, `f = ${n2(fv())}`] : [`P = (${n2(st.x)}, ${n2(st.y)})`, `height f = ${n2(fv())}`, 'more yellow = higher'];
         c.font = `500 ${fs}px ${FS}`; const bw = Math.max(...lines.map(t => c.measureText(t).width)) + 14, bh = fs * 1.2 * lines.length + 8;
         c.fillStyle = alpha(pal.stage, .88); c.fillRect(5, 5, bw, bh); c.strokeStyle = pal['grid-strong']; c.lineWidth = 1; c.strokeRect(5, 5, bw, bh);
         lines.forEach((t, i) => txt(c, p, t, 12, 5 + fs * .95 + i * fs * 1.2 + 1, { size: fs, color: i === 2 ? pal.muted : i === 1 ? pal.violet : pal.text, halo: false }));
@@ -353,17 +357,18 @@
         line(pts, col, 3.4);
         const f0 = F.f(st.x, st.y), s = gx * dx + gy * dy;
         line([[sx(-1.4), sy(f0 - 1.4 * s)], [sx(1.4), sy(f0 + 1.4 * s)]], pal.text, 2, [6, 4]);
-        line([[sx(0), sy(f0)], [sx(1), sy(f0)]], pal.muted, 2.4); line([[sx(1), sy(f0)], [sx(1), sy(f0 + s)]], pal.violet, 2.4);
+        const hideAns = practice && !prSolved && !!PROBS[prIdx].hide;   /* the triangle and slope label would give the answer away */
+        if (!hideAns) { line([[sx(0), sy(f0)], [sx(1), sy(f0)]], pal.muted, 2.4); line([[sx(1), sy(f0)], [sx(1), sy(f0 + s)]], pal.violet, 2.4); }
         c.restore();
         const ly = clamp((sy(f0) + sy(f0 + s)) / 2, T + 10, T + hh - 10);
-        txt(c, p, 'run 1', (sx(0) + sx(1)) / 2, clamp(sy(f0) + (s > 0 ? 13 : -13), T + 8, T + hh - 8), { size: fs - 1, color: pal.muted, align: 'center' });
-        txt(c, p, 'rise ' + n2(s), clamp(sx(1) + 6, L, L + w - 56), ly, { size: fs - 1, color: pal.violet });
+        if (!hideAns) txt(c, p, 'run 1', (sx(0) + sx(1)) / 2, clamp(sy(f0) + (s > 0 ? 13 : -13), T + 8, T + hh - 8), { size: fs - 1, color: pal.muted, align: 'center' });
+        if (!hideAns) txt(c, p, 'rise ' + n2(s), clamp(sx(1) + 6, L, L + w - 56), ly, { size: fs - 1, color: pal.violet });
         c.beginPath(); c.arc(sx(0), sy(f0), 7, 0, 7); c.fillStyle = pal.yellow; c.fill(); c.strokeStyle = pal.brass; c.lineWidth = 3; c.stroke();
         txt(c, p, 'P', sx(0) - 12, clamp(sy(f0) - 14, T + 8, T + hh - 8), { size: fs, weight: 700, align: 'center' });
         const nm = fl.view === 'x' ? `x-cut (y stays ${n2(st.y)})` : fl.view === 'y' ? `y-cut (x stays ${n2(st.x)})` : `u-cut (θ = ${Math.round(wrap360(st.th))}°)`;
         const sn = fl.view === 'x' ? 'slope fx = ' : fl.view === 'y' ? 'slope fy = ' : 'slope Dᵤf = ';
         txt(c, p, nm, L, 13, { size: fs, weight: 600, color: col });
-        txt(c, p, sn + n2(s), L + w, 13, { size: fs, weight: 600, color: pal.text, align: 'right' });
+        if (!hideAns) txt(c, p, sn + n2(s), L + w, 13, { size: fs, weight: 600, color: pal.text, align: 'right' });
         txt(c, p, 't: steps from P along the cut', L + w / 2, p.h - 8, { size: fs - 1, color: pal.muted, align: 'center' });
         txt(c, p, 'f', L - 24, T + 4, { size: fs, color: pal.muted, align: 'center' });
         c.textBaseline = 'alphabetic';
@@ -402,7 +407,7 @@
       C.title('Landscape');
       selFn = C.select({ label: 'Example', options: FKEYS.map(k => ({ value: k, label: FN[k].label })), value: 'hill', onChange: v => setFn(v) });
       ro = C.readout();
-      C.hint('Drag P, or the tip of u, on the map. Every drag also has a slider or button. Darker shading means higher ground.');
+      C.hint('Drag P, or the tip of u, on the map. Every drag also has a slider or button. More yellow means higher ground.');
       C.title('Point P');
       xS = C.slider({ label: 'x of P', min: -3, max: 3, step: .01, value: st.x, format: v => n2(v), onInput: v => { moved(); st.x = v; sync(); } });
       yS = C.slider({ label: 'y of P', min: -3, max: 3, step: .01, value: st.y, format: v => n2(v), onInput: v => { moved(); st.y = v; sync(); } });
@@ -453,7 +458,7 @@
         const px = st.x, py = st.y; st.x = nx; st.y = ny; trail.push([nx, ny]); const f1 = fv();
         let msg = `${good('Step ' + (trail.length - 1) + ':')} new point = old point ${sgn} η∇f = (${n2(px)}, ${n2(py)}) ${sgn} ${n2(eta)}·(${n2(gx)}, ${n2(gy)}) = (${n2(nx)}, ${n2(ny)}). Height ${n2(f0)} → ${n2(f1)}.`;
         if (stuck) msg += ' You are at the edge of the map.';
-        else if ((dir > 0 && f1 < f0 - 1e-9) || (dir < 0 && f1 > f0 + 1e-9)) msg += ` ${bad('Overshoot:')} the height went the wrong way, so the step was too big and jumped over the ridge. Try a smaller η.`;
+        else if ((dir > 0 && f1 < f0 - 1e-9) || (dir < 0 && f1 > f0 + 1e-9)) msg += ` ${bad('Overshoot:')} the height went the wrong way, so the step was too big and jumped past the goal. Try a smaller η.`;
         else if (nx !== r2(px + dir * eta * gx) || ny !== r2(py + dir * eta * gy)) msg += ' The step was cut off at the edge of the map.';
         climbMsg = msg; sync();
       };
@@ -549,7 +554,7 @@
         if (immediate) { Object.assign(st, nums); sync(); } else { sync(); cancel = animateTo(st, nums, 800, sync, () => { st.th = wrap360(st.th); sync(); }); }
       };
       apply({ x: 1, y: 1, th: 0, view: 'x', showG: false, showU: false }, true);
-      return { destroy: () => { cancel(); P1.destroy(); P2.destroy(); }, apply };
+      return { destroy: () => { cancel(); mq.removeEventListener('change', roomy); stage.style.minHeight = ''; P1.destroy(); P2.destroy(); }, apply };
     }
   });
 }
