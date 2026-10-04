@@ -597,7 +597,7 @@
       };
       const rwPick = i => {
         const sg = rwStages()[st.rws], o = sg.ch[i], right = i === sg.ans, txt = sg.final ? o[1] : e(o[1]);
-        if (right) { st.rws++; st.rwMsg = good('Right.') + ' ' + (sg.final ? txt.replace(/^/, '') : txt); rwRender(); }
+        if (right) { st.rws++; st.rwMsg = good('Right.') + ' ' + txt; rwRender(); }
         else { rwOpts.children[i].disabled = true; st.rwMsg = bad('Not quite.') + ' ' + txt + ' Try another answer.'; rwFb.innerHTML = st.rwMsg; }
         sync();
       };
