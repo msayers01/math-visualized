@@ -147,6 +147,7 @@
     "lessons/school/misleading-graphs.js",
     "lessons/ugrad/taylor-series.js",
     "lessons/ugrad/vectors-span-and-linear-combinations.js",
+    "lessons/ugrad/solving-matrix-equations-ax-plus-b.js",
     "lessons/ugrad/gradient-and-contour-maps.js",
     "lessons/ugrad/the-central-limit-theorem.js"
   ],

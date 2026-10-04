@@ -51,6 +51,13 @@ function palette() {
     o[k] = cs.getPropertyValue('--' + k).trim();
   return o;
 }
+/* relative luminance of a #rrggbb colour (0 for anything else) */
+function lum(hex) {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return 0;
+  const n = parseInt(m[1], 16); return (.2126 * (n >> 16) + .7152 * (n >> 8 & 255) + .0722 * (n & 255)) / 255;
+}
+/* alpha() for colours that may not be 6-digit hex: falls back to the colour unchanged */
+function tint(col, a) { return /^#[0-9a-f]{6}$/i.test(col || '') ? alpha(col, a) : col; }
 function alpha(hex, a) {
   const m = hex.replace('#', '');
   return `rgba(${parseInt(m.slice(0,2),16)},${parseInt(m.slice(2,4),16)},${parseInt(m.slice(4,6),16)},${a})`;

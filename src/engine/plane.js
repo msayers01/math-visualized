@@ -17,6 +17,16 @@ class Plane {
       });
       this.canvas.addEventListener('pointerleave', () => this.coordEl.classList.remove('on'));
     }
+    this.ptr = null; this.pressed = false;
+    const cv = this.canvas, rel = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    cv.addEventListener('pointermove', e => { if (e.pointerType === 'touch') return; this.ptr = rel(e); this.requestDraw(); });
+    cv.addEventListener('pointerleave', () => { this.ptr = null; this.requestDraw(); });
+    cv.addEventListener('pointerdown', e => { this.ptr = rel(e); this.pressed = true; this.touchPtr = e.pointerType === 'touch'; this.requestDraw(); });
+    const up = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
+    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    this.handles = []; this.focusIdx = 0; this.kbd = false; this.touched = false; this.pulses = [];
+    cv.addEventListener('pointerdown', () => { this.kbd = false; this.touched = true; this.clearPulses(); });
+    cv.addEventListener('blur', () => { this.kbd = false; this.requestDraw(); });
     this._theme = () => this.draw();
     addEventListener('themechange', this._theme);
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
@@ -39,17 +49,41 @@ class Plane {
     this.pal = palette();
     const c = this.ctx;
     c.clearRect(0, 0, this.w, this.h);
-    if (!this.transparent) { c.fillStyle = this.pal.stage; c.fillRect(0, 0, this.w, this.h); }
+    this.dark = lum(this.pal.stage) < .4;
+    if (!this.transparent) {
+      c.fillStyle = this.pal.stage; c.fillRect(0, 0, this.w, this.h);
+      /* a faint centre light and edge falloff give the figure depth without touching the lessons' own colours */
+      const g = c.createRadialGradient(this.w / 2, this.h / 2, Math.min(this.w, this.h) * .25, this.w / 2, this.h / 2, Math.hypot(this.w, this.h) * .62);
+      g.addColorStop(0, this.dark ? 'rgba(120,150,220,.07)' : 'rgba(255,255,255,.3)');
+      g.addColorStop(1, this.dark ? 'rgba(0,0,0,.32)' : 'rgba(70,90,130,.05)');
+      c.fillStyle = g; c.fillRect(0, 0, this.w, this.h);
+    }
+    this.handles = [];
     this.onDraw(c, this);
+    this.syncPulses();
   }
+  /* idle 'grab me' rings: DOM overlays animated by CSS (compositor only, no canvas redraws); gone after first touch */
+  syncPulses() {
+    const hs = this.touched || reduceMotion ? [] : this.handles.slice(0, 4);
+    while (this.pulses.length > hs.length) this.pulses.pop().remove();
+    while (this.pulses.length < hs.length) { const e = h('i', { class: 'hpulse', 'aria-hidden': 'true' }); this.host.append(e); this.pulses.push(e); }
+    hs.forEach((q, i) => { this.pulses[i].style.transform = `translate(${q.px}px, ${q.py}px)`; });
+  }
+  clearPulses() { this.pulses.forEach(e => e.remove()); this.pulses = []; }
   requestDraw() {
     if (this._raf) return;
     this._raf = requestAnimationFrame(() => { this._raf = null; this.draw(); });
   }
   destroy() {
     this.ro.disconnect(); cancelAnimationFrame(this._raf);
-    removeEventListener('themechange', this._theme); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
+    removeEventListener('themechange', this._theme); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
   }
+  /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
+  glow(color, blur = 10) {
+    if (!this.dark) return;
+    this.ctx.shadowColor = color; this.ctx.shadowBlur = blur;
+  }
+  unglow() { this.ctx.shadowBlur = 0; this.ctx.shadowColor = 'transparent'; }
   /* primitives */
   path(pts, { stroke, width = 2, fill, close = false, dash } = {}) {
     const c = this.ctx; c.beginPath();
@@ -58,7 +92,9 @@ class Plane {
     if (fill) { c.fillStyle = fill; c.fill(); }
     if (stroke) {
       c.strokeStyle = stroke; c.lineWidth = width; c.setLineDash(dash || []);
-      c.lineJoin = 'round'; c.lineCap = 'round'; c.stroke(); c.setLineDash([]);
+      c.lineJoin = 'round'; c.lineCap = 'round';
+      if (width >= 2 && !dash) this.glow(stroke, 8);
+      c.stroke(); this.unglow(); c.setLineDash([]);
     }
   }
   /* polyline that breaks at non-finite points or huge jumps (for singular maps) */
@@ -70,21 +106,45 @@ class Plane {
       if (pen && Math.hypot(px - lx, py - ly) < maxJump) c.lineTo(px, py); else c.moveTo(px, py);
       pen = true; lx = px; ly = py;
     }
-    c.strokeStyle = stroke; c.lineWidth = width; c.lineJoin = 'round'; c.stroke();
+    c.strokeStyle = stroke; c.lineWidth = width; c.lineJoin = 'round'; c.lineCap = 'round';
+    if (width >= 1.5) this.glow(stroke, 9);
+    c.stroke(); this.unglow();
   }
   arrow(x0, y0, x1, y1, color, width = 3.5) {
     const c = this.ctx, ax = this.X(x0), ay = this.Y(y0), bx = this.X(x1), by = this.Y(y1);
     const ang = Math.atan2(by - ay, bx - ax), len = Math.hypot(bx - ax, by - ay), hl = Math.min(16, len * .45);
-    c.strokeStyle = color; c.fillStyle = color; c.lineWidth = width; c.lineCap = 'round';
+    c.strokeStyle = color; c.fillStyle = color; c.lineWidth = width; c.lineCap = 'round'; c.lineJoin = 'round';
+    this.glow(color, 8);
     c.beginPath(); c.moveTo(ax, ay); c.lineTo(bx - Math.cos(ang) * hl * .8, by - Math.sin(ang) * hl * .8); c.stroke();
     c.beginPath(); c.moveTo(bx, by);
     c.lineTo(bx - hl * Math.cos(ang - .42), by - hl * Math.sin(ang - .42));
     c.lineTo(bx - hl * Math.cos(ang + .42), by - hl * Math.sin(ang + .42));
-    c.closePath(); c.fill();
+    c.closePath(); c.fill(); this.unglow();
   }
   dot(x, y, r, fill, stroke, lw = 2) {
-    const c = this.ctx; c.beginPath(); c.arc(this.X(x), this.Y(y), r, 0, Math.PI * 2);
-    if (fill) { c.fillStyle = fill; c.fill(); }
+    const c = this.ctx, px = this.X(x), py = this.Y(y);
+    /* A handle is a hollow stage-coloured disc with a brass rim (the lessons' convention): it gets a soft halo, a
+       lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
+    const handle = r >= 7 && lw >= 2.5 && fill === this.pal.stage && stroke === this.pal.brass;
+    if (handle) {
+      const idx = this.handles.length; this.handles.push({ px, py, x, y });
+      const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;
+      const k = act ? 1.18 : hov ? 1.1 : 1, rr = r * k;
+      const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
+      halo.addColorStop(0, alpha(stroke, act ? .38 : hov ? .3 : .2)); halo.addColorStop(1, alpha(stroke, 0));
+      c.fillStyle = halo; c.beginPath(); c.arc(px, py, rr * 3.2, 0, Math.PI * 2); c.fill();
+      c.save(); c.shadowColor = this.dark ? alpha(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = act ? 14 : 8; c.shadowOffsetY = this.dark ? 0 : 2;
+      c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.fillStyle = fill; c.fill(); c.restore();
+      c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+      if (this.kbd && idx === this.focusIdx) { c.save(); c.setLineDash([4, 4]); c.beginPath(); c.arc(px, py, rr + 7, 0, Math.PI * 2); c.strokeStyle = this.pal.text; c.lineWidth = 1.5; c.stroke(); c.restore(); }
+      c.beginPath(); c.arc(px, py, Math.max(1.5, rr * (act ? .5 : .32)), 0, Math.PI * 2); c.fillStyle = stroke; c.globalAlpha = act ? .9 : .55; c.fill(); c.globalAlpha = 1;
+      return;
+    }
+    c.beginPath(); c.arc(px, py, r, 0, Math.PI * 2);
+    if (fill) {
+      if (r >= 4 && fill !== this.pal.stage) { c.save(); c.shadowColor = this.dark ? tint(fill, .6) : 'rgba(20,30,50,.22)'; c.shadowBlur = this.dark ? 8 : 4; c.shadowOffsetY = this.dark ? 0 : 1; c.fillStyle = fill; c.fill(); c.restore(); }
+      else { c.fillStyle = fill; c.fill(); }
+    }
     if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw; c.stroke(); }
   }
   label(text, x, y, { color, size = 20, italic = true, align = 'center', alpha: a = 1, dx = 0, dy = 0, halo = true } = {}) {
@@ -119,14 +179,26 @@ class Plane {
     }
   }
   grid(step = 1, { color, axes = true } = {}) {
-    const b = this.bounds(), c = this.ctx;
-    c.lineWidth = 1; c.strokeStyle = color || this.pal.grid; c.beginPath();
-    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step) { c.moveTo(this.X(x), 0); c.lineTo(this.X(x), this.h); }
-    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step) { c.moveTo(0, this.Y(y)); c.lineTo(this.w, this.Y(y)); }
+    const b = this.bounds(), c = this.ctx, col = color || this.pal.grid, sx = this.scale * step;
+    /* faint subdivisions appear once the cells are big enough to read them */
+    if (sx >= 64) {
+      const sub = step / 4; c.lineWidth = 1; c.strokeStyle = col; c.globalAlpha = .32; c.beginPath();
+      for (let x = Math.ceil(b.x0 / sub) * sub; x <= b.x1; x += sub) { if (Math.abs(x / step - Math.round(x / step)) < 1e-6) continue; c.moveTo(this.X(x), 0); c.lineTo(this.X(x), this.h); }
+      for (let y = Math.ceil(b.y0 / sub) * sub; y <= b.y1; y += sub) { if (Math.abs(y / step - Math.round(y / step)) < 1e-6) continue; c.moveTo(0, this.Y(y)); c.lineTo(this.w, this.Y(y)); }
+      c.stroke(); c.globalAlpha = 1;
+    }
+    c.lineWidth = 1; c.strokeStyle = col; c.beginPath();
+    for (let x = Math.ceil(b.x0 / step) * step; x <= b.x1; x += step) { c.moveTo(Math.round(this.X(x)) + .5, 0); c.lineTo(Math.round(this.X(x)) + .5, this.h); }
+    for (let y = Math.ceil(b.y0 / step) * step; y <= b.y1; y += step) { c.moveTo(0, Math.round(this.Y(y)) + .5); c.lineTo(this.w, Math.round(this.Y(y)) + .5); }
     c.stroke();
     if (axes) {
-      c.strokeStyle = this.pal['grid-strong']; c.lineWidth = 1.5; c.beginPath();
-      c.moveTo(this.X(0), 0); c.lineTo(this.X(0), this.h); c.moveTo(0, this.Y(0)); c.lineTo(this.w, this.Y(0)); c.stroke();
+      const ox = this.X(0), oy = this.Y(0), st = this.pal['grid-strong'];
+      c.strokeStyle = st; c.fillStyle = st; c.lineWidth = 1.6; c.lineCap = 'round'; c.beginPath();
+      c.moveTo(ox, 0); c.lineTo(ox, this.h); c.moveTo(0, oy); c.lineTo(this.w, oy); c.stroke();
+      /* small arrowheads where the axes leave the frame (only when the axis is actually on screen) */
+      const tri = (x, y, a) => { c.beginPath(); c.moveTo(x, y); c.lineTo(x - 8 * Math.cos(a - .42), y - 8 * Math.sin(a - .42)); c.lineTo(x - 8 * Math.cos(a + .42), y - 8 * Math.sin(a + .42)); c.closePath(); c.fill(); };
+      if (ox > 12 && ox < this.w - 12) tri(ox, 2, -Math.PI / 2);
+      if (oy > 12 && oy < this.h - 12) tri(this.w - 2, oy, 0);
     }
   }
 }

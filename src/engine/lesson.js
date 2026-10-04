@@ -37,6 +37,7 @@ function Stepper(steps, onEnter, { onStep, tools } = {}) {
     const s = steps[i];
     count.textContent = `${i + 1} / ${steps.length}`;
     title.textContent = s.title; text.innerHTML = s.text; typeset(text);
+    if (!first) for (const el of [title, text]) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; }
     dots.forEach((d, j) => { d.classList.toggle('on', j === i); d.classList.toggle('done', j < i); j === i ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current'); });
     back.disabled = i === 0; next.disabled = i === steps.length - 1;
     end.hidden = !(steps.length > 1 && i === steps.length - 1);
