@@ -11,6 +11,8 @@ Instructions for any AI working on this project (including in a new chat):
 - If a request is ambiguous about level, assume middle & high school and ask before touching upper-level content.
 - **Status: the original 13 school lessons are complete; at the owner's request (2026-10-01) school work continued as a Grade 8 and Algebra 1 sequence plus teacher tools, then (Grade 8 paused) as Grade 6 and 7 foundations, not full courses. 29 school lessons are built (Grade 8 batches 1 and 2, Grade 6-7 batches F-A and F-B all done and audited); Grade 8 coverage is 30 of 38 benchmarks, Grade 6 12 of 34, Grade 7 14 of 35. Grade 8/Algebra 1 batches 3 to 5 are paused.** Ask the owner before starting each next batch (see Open items).
 
+- **Done (2026-10-04, owner's request): Grade 4 and Grade 5 lessons** (ARCHITECTURE 0.34): six lessons in new courses grade4 and grade5, untagged because no Grade 4/5 standards are in the catalog. Next: ask the owner for the Grade 4/5 standards PDF to tag them, and which topics to add.
+
 ## Project
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 

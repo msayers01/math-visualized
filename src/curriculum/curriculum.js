@@ -59,6 +59,13 @@ const SKILLS = [
 /* One entry per lesson: its course, skill level and aligned benchmarks.
    Entries are grouped by course for reading; the displayed order is computed. */
 const ALIGN = [
+  /* Grade 4 and Grade 5 (no Minnesota catalog for these grades yet, so no benchmark tags) */
+  { id: 'equivalent-fractions-on-a-number-line', course: 'grade4', skill: 'intro', standards: [] },
+  { id: 'multiplying-with-area-models', course: 'grade4', skill: 'mid', standards: [] },
+  { id: 'angles-and-turns', course: 'grade4', skill: 'intro', standards: [] },
+  { id: 'decimals-and-place-value', course: 'grade5', skill: 'intro', standards: [] },
+  { id: 'adding-fractions-with-unlike-denominators', course: 'grade5', skill: 'mid', standards: [] },
+  { id: 'the-coordinate-plane-first-quadrant', course: 'grade5', skill: 'intro', standards: [] },
   /* Grade 6 */
   { id: 'area-by-decomposition', course: 'grade6', skill: 'intro', standards: ['6.2.3.5', '6.2.4.3'] },
   { id: 'statistical-questions-and-data-displays', course: 'grade6', skill: 'intro', standards: ['6.1.1.1', '6.1.1.4'] },
