@@ -29,7 +29,7 @@ function draggable(plane, { hit, move, hover }) {
   cv.addEventListener('pointerdown', e => {
     const [px, py] = pos(e); const hd = e.pointerType === 'touch' ? fatHit(px, py) : hit(px, py);
     if (hd == null) return;
-    active = hd; cv.setPointerCapture(e.pointerId); e.preventDefault();
+    active = hd; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.style.cursor = 'grabbing';
     move(active, ...plane.toMath(px, py));
   });
   cv.addEventListener('pointermove', e => {
@@ -37,7 +37,7 @@ function draggable(plane, { hit, move, hover }) {
     if (active != null) move(active, ...plane.toMath(px, py));
     else if (e.pointerType !== 'touch') cv.style.cursor = (hover ? hover(px, py) : hit(px, py) != null) ? 'grab' : 'default';
   });
-  const end = () => { active = null; };
+  const end = () => { active = null; cv.style.cursor = ''; };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
 }
 
