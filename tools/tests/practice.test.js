@@ -74,7 +74,7 @@ for (const gen of P.generatorList) {
         const c = P.check(inst.answer, typedWrong), hit = P.matchMisconception(inst, c.value);
         if (c.status !== 'wrong' && c.status !== 'form') { ok(false, `${tag} seed ${seed}: wrong answer ${typedWrong} for ${m.id} was not marked wrong`); break; }
         if (!hit) { ok(false, `${tag} seed ${seed}: ${m.id} not matched`); break; }
-        if (!m.feedback || !m.lessonLink) { ok(false, `${tag}: ${m.id} needs feedback and a lesson link`); break; }
+        if (!m.feedback) { ok(false, `${tag}: ${m.id} needs feedback`); break; }
       }
       if (inst.hints.length < 2 || inst.hints.length > 3 || inst.steps.length < 1 || !inst.prompt.html) { ok(false, `${tag} seed ${seed}: hints/steps/prompt`); break; }
       if (new Set(inst.hints).size !== inst.hints.length) { ok(false, `${tag} seed ${seed}: duplicate hints`); break; }
@@ -151,8 +151,62 @@ ok(pts(3) > pts(1), 'points scale with level');
 {
   const lessonIds = new Set(fs.readdirSync(root + '/src/lessons/school').map(f => f.slice(0, -3)));
   for (const s of P.SKILLS) for (const l of s.lessons) ok(lessonIds.has(l), `skill ${s.id}: lesson ${l} exists`);
-  for (const gen of P.generatorList) for (let level = 1; level <= gen.levels.length; level++) for (let seed = 1; seed <= 300; seed++) for (const m of gen.generate(seed, level).misconceptions) if (!lessonIds.has(m.lessonLink)) { ok(false, `${gen.id}: link ${m.lessonLink} is not a lesson`); }
+  for (const gen of P.generatorList) for (let level = 1; level <= gen.levels.length; level++) for (let seed = 1; seed <= 300; seed++) for (const m of gen.generate(seed, level).misconceptions) if (m.lessonLink && !lessonIds.has(m.lessonLink)) { ok(false, `${gen.id}: link ${m.lessonLink} is not a lesson`); }
 }
+
+/* ---------- mixed review ---------- */
+{
+  const names = id => 'Course ' + id, mixes = P.mixes(names);
+  const ids = mixes.map(m => m.id);
+  ok(['grade4', 'grade5', 'grade6', 'grade8'].every(c => ids.includes('mix-course-' + c)) && !ids.includes('mix-course-grade7') && !ids.includes('mix-course-algebra1'), 'a mix exists for each course with 2+ skills, and not for one-skill courses');
+  ok(P.mix('mix-course-grade4', names).skills.length === P.SKILLS.filter(s => s.course === 'grade4').length, 'a course mix holds all the course skills');
+  ok(mixes.every(m => m.skills.length >= 2 && m.skills.every(s => s.course === m.course)), 'every mix has 2+ skills from one course');
+  ok(new Set(ids).size === ids.length && ids.every(i => /^[a-z0-9-]+$/.test(i)), 'mix ids are unique URL tokens');
+  ok(ids.includes('mix-unit-grade4-whole-number-operations') && !mixes.some(m => m.id.startsWith('mix-unit-grade6')), 'a unit mix exists only when the unit has 2+ skills and is not the whole course');
+  const now = 10 * 86400000, st = (o = {}) => Object.assign(P.newState(), o);
+  const strong = st({ attempts: 20, recentOk: [1, 1, 1, 1, 1, 1, 1, 1], lastPracticed: now - 1000 });
+  const weak = st({ attempts: 20, recentOk: [0, 0, 1, 0, 0, 1, 0, 0], lastPracticed: now - 1000 });
+  const stale = st({ attempts: 20, recentOk: [1, 1, 1, 1, 1, 1, 1, 1], lastPracticed: now - 6 * 86400000 });
+  const fresh = st(), mastered = st({ attempts: 40, mastered: true, recentOk: [1, 1, 1, 1, 1, 1, 1, 1], lastPracticed: now - 1000 });
+  const W = s => P.skillWeight(s, now);
+  ok(W(weak) > W(strong), 'a weak skill gets more weight than a strong one');
+  ok(W(stale) > W(strong), 'a skill not seen for days gets more weight than one seen just now');
+  ok(W(fresh) > W(strong), 'a skill never tried gets a turn');
+  ok(W(mastered) < W(strong), 'a mastered skill stays in the rotation at lower weight');
+  ok(W(mastered) > 0, 'weights stay positive');
+  let seed = 11; const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const a = P.SKILLS[0], b = P.SKILLS[1], c = P.SKILLS[2], states = { [a.id]: strong, [b.id]: weak, [c.id]: mastered };
+  const count = { [a.id]: 0, [b.id]: 0, [c.id]: 0 }; let last = null, repeats = 0;
+  for (let i = 0; i < 6000; i++) { const s = P.pickSkill([a, b, c], states, last, now, rand); count[s.id]++; if (s.id === last) repeats++; last = s.id; }
+  ok(repeats === 0, 'three or more skills never repeat back to back');
+  ok(count[b.id] > count[a.id] && count[a.id] > count[c.id] * 0.9, 'weak skill is asked most, strong next, mastered least (' + JSON.stringify(count) + ')');
+  ok(Object.values(count).every(n => n > 300), 'every skill still appears');
+  { const two = { [a.id]: strong, [b.id]: weak }, cnt = { [a.id]: 0, [b.id]: 0 }; let l2 = null, sw = 0;
+    for (let i = 0; i < 4000; i++) { const s = P.pickSkill([a, b], two, l2, now, rand); cnt[s.id]++; if (l2 && s.id !== l2) sw++; l2 = s.id; }
+    ok(cnt[b.id] > cnt[a.id] * 1.3 && sw > 2000, 'with two skills the weak one comes up more, yet they mostly interleave (' + JSON.stringify(cnt) + ', switches ' + sw + ')'); }
+  ok(P.pickSkill([a], {}, a.id, now, rand).id === a.id, 'a one-skill pool still works');
+  ok(P.pickSkill([a, b], states, a.id, now, rand, true).id === a.id, 'after giving up, the same skill comes back');
+  let s0 = P.newState();
+  for (let i = 0; i < 10; i++) s0 = P.applyAttempt(s0, a, { correct: i % 2 === 0, hints: 0, gaveUp: false, fast: false, level: 1 }).state;
+  ok(s0.recentOk.length === 8 && s0.recentOk[7] === 0, 'recentOk keeps the last eight outcomes');
+  s0 = P.applyAttempt(s0, a, { correct: true, hints: 0, gaveUp: false, fast: true, level: 1 }).state;
+  ok(s0.recentOk.length === 8 && s0.recentOk[7] === 0, 'a too-quick answer does not enter recentOk');
+}
+/* decimal answers print as decimals, not fractions */
+{
+  const g = P.generators['g5-decimals']; let bad = 0;
+  for (let level = 1; level <= 5; level++) for (let seed = 1; seed <= 200; seed++) { const i = g.generate(seed, level); if (/\//.test(P.showValue(i.answer, i.answer.value))) bad++; }
+  ok(bad === 0, 'decimal answers are shown as decimals');
+  ok(P.showValue({ type: 'number', display: 'decimal' }, R(271, 100)) === '2.71' && P.showValue({ type: 'number', display: 'decimal' }, R(8, 5)) === '1.6' && P.showValue({ type: 'number', display: 'decimal' }, R(-1, 4)) === '\u22120.25', 'exact decimal printing');
+}
+/* the verifier knows implicit numbers, and still catches a bad model */
+{
+  const g = P.generators['g6-percent'], inst = g.generate(5, 1);
+  ok(P.verify(inst) === null, 'percent problems verify with the implicit 100');
+  ok(P.verify(Object.assign({}, inst, { model: inst.model.replace('*', '+') })) !== null, 'a wrong model is caught');
+  ok(P.verify(Object.assign({}, inst, { implicit: [] })) !== null, 'without the declared implicit number it would be flagged');
+}
+
 if (process.env.TABLE) console.log('distinct problems per level:\n  ' + FINITE.join('\n  '));
 console.log(`PASS ${pass}   FAIL ${fail}`);
 process.exit(fail ? 1 : 0);

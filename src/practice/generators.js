@@ -333,4 +333,6 @@
       };
     }
   });
+  /* helpers shared with generators2.js */
+  Practice.kit = { make, wrongs, mc, abs, join, pieces, fracTex, linTex, coefTex, NZ, CAP };
 }

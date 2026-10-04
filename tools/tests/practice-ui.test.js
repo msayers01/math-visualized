@@ -23,7 +23,8 @@ const ok = (c, m) => { if (c) { pass++; console.log('ok  ', m); } else { fail++;
   /* picker */
   await go('#practice');
   await pg.waitForSelector('.pr-card');
-  ok((await pg.locator('.pr-card').count()) === 5, 'picker lists the five skills');
+  ok((await pg.locator('.pr-card:not(.pr-mix)').count()) === 12, 'picker lists the twelve skills');
+  ok((await pg.locator('.pr-mix').count()) === 6, 'picker offers six mixed reviews (course and unit)');
   ok(await pg.locator('.nav a[href="#practice"]').count() === 1, 'nav has a Practice link');
   ok(!!(await pg.locator('text=Grade 4 Mathematics').count()), 'skills are grouped by course');
 
@@ -99,7 +100,7 @@ const ok = (c, m) => { if (c) { pass++; console.log('ok  ', m); } else { fail++;
   await go('#practice~multiply-multi-digit'); await pg.waitForSelector('#pr-answer');
   ok((await cur()).state.totalPoints === pts && pts > 0, 'points survive a reload');
   await go('#practice'); await pg.waitForSelector('.pr-card');
-  ok(/Level \d of 6/.test(await pg.locator('.pr-card >> nth=0').innerText()), 'picker shows level progress');
+  ok(/Level \d of 6/.test(await pg.locator('.pr-card:not(.pr-mix) >> nth=0').innerText()), 'picker shows level progress');
   ok(/Mistakes to review/.test(await pg.locator('body').innerText()), 'picker lists mistakes to review (regenerated from the log)');
 
   /* fractions: right value, wrong form does not end the attempt */
@@ -117,6 +118,31 @@ const ok = (c, m) => { if (c) { pass++; console.log('ok  ', m); } else { fail++;
   await go('#practice~pythagorean-side-lengths'); await pg.waitForSelector('.pr-fig');
   ok((await pg.locator('.pr-fig text').count()) === 3, 'right triangle figure has three labels');
   ok(/\?/.test(await pg.locator('.pr-fig').textContent()), 'one side is marked ?');
+
+
+  /* mixed review: skills take turns, the summary lists each */
+  await go('#practice~mix-course-grade6'); await pg.waitForSelector('#pr-answer');
+  ok(/Mixed review/.test(await pg.locator('h1').innerText()), 'a mixed review has its own title');
+  const seq = [];
+  for (let i = 0; i < 10; i++) {
+    c = await askRight(); const id = await pg.evaluate(() => window.__practice.skill.id); seq.push(id);
+    ok(/Correct\./.test(await pg.locator('.pr-fb').innerText()), 'mixed problem ' + (i + 1) + ' answered');
+    ok(/Skill: /.test(await pg.locator('.pr-skillline').innerText()), 'the skill is named on screen');
+    if (i < 9) await next();
+  }
+  ok(new Set(seq).size === 2, 'both grade 6 skills appeared in ten problems: ' + [...new Set(seq)].join(', '));
+  ok(seq.filter((x, i) => i && x !== seq[i - 1]).length >= 3, 'the skills interleave (' + seq.map(x => x[0]).join('') + ')');
+  await pg.click('text=End session');
+  const sumText = await pg.locator('.pr-sumlist').innerText();
+  ok(/Percent of a number/.test(sumText) && /The mean of a data set/.test(sumText), 'the summary lists each skill');
+  /* weak skills come up more: seed storage, then sample the scheduler the page uses */
+  await go('#practice');
+  await pg.evaluate(() => { localStorage.setItem('continuum-practice-v1', JSON.stringify({ skills: {
+    'percent-of-a-number': { level: 2, streak: 0, miss: 0, totalPoints: 50, mastered: false, lastPracticed: Date.now(), attempts: 20, recentOk: [0, 0, 1, 0, 0, 1, 0, 0], topRecent: [], recentSeeds: [], recentHashes: [] },
+    'mean-of-a-data-set': { level: 2, streak: 0, miss: 0, totalPoints: 50, mastered: false, lastPracticed: Date.now(), attempts: 20, recentOk: [1, 1, 1, 1, 1, 1, 1, 1], topRecent: [], recentSeeds: [], recentHashes: [] } }, log: [] })); });
+  await go('#practice~mix-course-grade6'); await pg.waitForSelector('#pr-answer');
+  const picks = await pg.evaluate(() => { const m = Practice.mix('mix-course-grade6', x => x), st = {}; m.skills.forEach(s => st[s.id] = PracticeStore.state(s.id)); const n = {}; let last = null; for (let i = 0; i < 400; i++) { const s = Practice.pickSkill(m.skills, st, last, Date.now()); n[s.id] = (n[s.id] || 0) + 1; last = s.id; } return n; });
+  ok(picks['percent-of-a-number'] > picks['mean-of-a-data-set'], 'the page schedules the weak skill more often: ' + JSON.stringify(picks));
 
   /* summary */
   await pg.evaluate(() => { window.__skew += 20000; });

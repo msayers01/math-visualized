@@ -61,7 +61,7 @@ const Practice = {};
   Practice.say = (key, params = {}) => {
     const s = Practice.T[key];
     if (typeof s !== 'string') throw new Error('missing practice string: ' + key);
-    return s.replace(/\{(\w+)\}/g, (m, k) => {
+    return s.replace(/\{([A-Za-z_]\w*)\}/g, (m, k) => {
       if (!(k in params)) throw new Error(`practice string ${key} needs {${k}}`);
       return String(params[k]);
     });

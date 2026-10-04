@@ -52,3 +52,7 @@
 .pr-slips ul { padding-left: 1.2em; line-height: 1.6; max-width: 66ch; }
 @media (max-width: 640px) { .pr-prompt { font-size: 1.08rem; } .pr-keypad { max-width: 320px; } }
 .pr-eq { margin: 6px 0 0 18px; }
+.pr-mix { border-style: dashed; border-color: var(--line-strong); }
+.pr-skillline { margin: 4px 0 0; font-weight: 500; }
+.pr-skillline:empty { display: none; }
+.pr-sumlist { padding-left: 1.2em; line-height: 1.7; }

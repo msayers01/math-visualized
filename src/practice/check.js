@@ -25,10 +25,16 @@
   };
   Practice.parseNumber = parseNumber;
 
+  /* drop a trailing unit (one or two words from the allowed list, or a % sign): "24 square units", "25%", "13 ft" */
   const stripUnits = (s, units) => {
     if (!units) return s;
-    const m = clean(s).match(/^(.*?)\s*([a-zA-Z.]+)$/);
-    return m && units.includes(m[2].toLowerCase().replace(/\.$/, '')) ? m[1] : s;
+    let t = clean(s);
+    if (units.includes('%')) t = t.replace(/\s*%$/, '');
+    for (let k = 0; k < 2; k++) {
+      const m = t.match(/^(.*?)\s*([a-zA-Z.]+)$/);
+      if (m && m[1] !== '' && units.includes(m[2].toLowerCase().replace(/\.$/, ''))) t = m[1]; else break;
+    }
+    return t;
   };
   const stripLabel = (s, name) => clean(s).replace(new RegExp('^' + name + '\\s*=\\s*', 'i'), '');
   const splitList = s => clean(s).replace(/^[\[({]\s*|\s*[\])}]$/g, '').split(/\s*(?:,|;|\band\b)\s*/i).filter(x => x !== '');
@@ -82,7 +88,14 @@
 
   /* plain text for a value, used in echoes ("Reading your answer as ...") and in worked solutions */
   Practice.showValue = (spec, v) => {
-    const one = x => rat.str(x).replace('-', '−');
+    const dec = x => {   /* a terminating decimal, exactly (the denominator has only the factors 2 and 5) */
+      let d = x.d, twos = 0, fives = 0;
+      while (d % 2 === 0) { d /= 2; twos++; } while (d % 5 === 0) { d /= 5; fives++; }
+      if (d !== 1) return rat.str(x);
+      const places = Math.max(twos, fives), scaled = Math.abs(x.n) * 10 ** places / x.d, str = String(scaled).padStart(places + 1, '0');
+      return (x.n < 0 ? '-' : '') + (places ? str.slice(0, -places) + '.' + str.slice(-places) : str);
+    };
+    const one = x => (spec.display === 'decimal' ? dec(x) : rat.str(x)).replace('-', '\u2212');
     if (spec.type === 'number') return one(v);
     if (spec.type === 'pair') return '(' + v.map(one).join(', ') + ')';
     return '{' + v.map(one).join(', ') + '}';

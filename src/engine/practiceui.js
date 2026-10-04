@@ -13,7 +13,7 @@ const PracticeStore = (() => {
     for (const k of ['level', 'streak', 'miss', 'totalPoints', 'lastPracticed', 'attempts', 'forceLevel']) if (Number.isFinite(+s[k])) base[k] = Math.max(0, +s[k]);
     base.level = Math.max(1, base.level);
     base.mastered = !!s.mastered; base.placed = !!s.placed;
-    for (const k of ['topRecent', 'recentSeeds', 'recentHashes']) if (Array.isArray(s[k])) base[k] = s[k].slice(-80);
+    for (const k of ['topRecent', 'recentOk', 'recentSeeds', 'recentHashes']) if (Array.isArray(s[k])) base[k] = s[k].slice(-80);
     return base;
   };
   const load = () => {
@@ -38,7 +38,19 @@ const PracticeStore = (() => {
 })();
 
 /* A right triangle drawn from the problem's own numbers, so the picture can never disagree with the text. */
+function practiceRectangle(fig) {
+  const W = 260, H = 170, pad = 34, s = Math.min((W - 2 * pad) / fig.l, (H - 2 * pad) / fig.w), w = fig.l * s, hh = fig.w * s, x0 = (W - w) / 2, y0 = (H - hh) / 2;
+  const NS = 'http://www.w3.org/2000/svg', el = (t, at, txt) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; return e; };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pr-fig', role: 'img', 'aria-label': `Rectangle. Length ${fig.unknown === 'l' ? 'unknown' : fig.l}, width ${fig.unknown === 'w' ? 'unknown' : fig.w}. ${fig.center}.` });
+  svg.append(el('rect', { x: x0, y: y0, width: w, height: hh, fill: 'color-mix(in srgb, var(--blue) 14%, transparent)', stroke: 'var(--blue)', 'stroke-width': 2 }));
+  const label = (x, y, txt, anchor) => svg.append(el('text', { x, y, 'text-anchor': anchor, fill: 'var(--text)', 'font-size': 16, 'font-family': 'var(--sans)', 'font-weight': 600 }, txt));
+  label(x0 + w / 2, y0 - 8, fig.unknown === 'l' ? '?' : fig.l, 'middle');
+  label(x0 - 8, y0 + hh / 2 + 5, fig.unknown === 'w' ? '?' : fig.w, 'end');
+  label(x0 + w / 2, y0 + hh / 2 + 5, fig.center, 'middle');
+  return svg;
+}
 function practiceFigure(fig) {
+  if (fig.kind === 'rectangle') return practiceRectangle(fig);
   const [a, b] = fig.legs, W = 240, H = 170, pad = 34, s = Math.min((W - 2 * pad) / a, (H - 2 * pad) / b);
   const w = a * s, hh = b * s, x0 = (W - w) / 2, y0 = H - pad, q = 12;
   const NS = 'http://www.w3.org/2000/svg', el = (t, at, txt) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; return e; };
@@ -52,10 +64,11 @@ function practiceFigure(fig) {
   return svg;
 }
 
-function renderPractice(app, skillId) {
-  const skill = skillId && Practice.skill(skillId);
-  document.title = (skill ? skill.title + ' | ' : '') + 'Practice | Continuum';
-  return skill ? practiceSession(app, skill) : practicePicker(app);
+function renderPractice(app, id) {
+  const skill = id && Practice.skill(id), mix = !skill && id && Practice.mix(id, c => COURSE[c].name);
+  const scope = skill ? { id: skill.id, title: skill.title, skills: [skill], mix: false } : mix ? { id: mix.id, title: mix.title, skills: mix.skills, mix: true } : null;
+  document.title = (scope ? scope.title + ' | ' : '') + 'Practice | Continuum';
+  return scope ? practiceSession(app, scope) : practicePicker(app);
 }
 
 function practicePicker(app) {
@@ -65,17 +78,27 @@ function practicePicker(app) {
   const total = PracticeStore.total();
   wrap.append(h('p', { class: 'pr-total', 'aria-live': 'polite' }, `Total points: ${total}`));
   if (!PracticeStore.storageOk()) wrap.append(h('p', { class: 'pr-warn', role: 'status' }, 'This browser is not saving your practice, so it will be lost when you close the tab.'));
+  const mixes = Practice.mixes(c => COURSE[c].name);
   for (const c of COURSES) {
     const skills = Practice.SKILLS.filter(s => s.course === c.id);
     if (!skills.length) continue;
+    const mixCard = m => {
+      const started = m.skills.filter(sk => PracticeStore.state(sk.id).attempts).length;
+      return h('a', { class: 'pr-card pr-mix', href: '#practice~' + m.id },
+        h('span', { class: 'pr-unit' }, 'Mixed review'),
+        h('span', { class: 'pr-card-t' }, m.title.replace('Mixed review: ', '')),
+        h('span', { class: 'pr-card-b' }, 'Skills take turns, so you practise switching between ideas. The ones you need most come up more often.'),
+        h('span', { class: 'pr-card-m' }, `${m.skills.length} skills \u00b7 ${started} started`));
+    };
     wrap.append(h('section', { class: 'pr-course', 'aria-label': c.name }, h('h2', { class: 'pr-course-h' }, c.name),
+      mixes.filter(m => m.course === c.id).map(mixCard),
       skills.map(s => {
         const st = PracticeStore.state(s.id), top = Practice.levelCount(s);
         return h('a', { class: 'pr-card', href: '#practice~' + s.id },
           h('span', { class: 'pr-unit' }, s.unit),
           h('span', { class: 'pr-card-t' }, s.title),
           h('span', { class: 'pr-card-b' }, s.blurb),
-          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` · ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '★ Mastered') : null));
+          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` \u00b7 ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '\u2605 Mastered') : null));
       })));
   }
   /* the audit trail, put to use: the last few misconceptions, regenerated from their records, with a lesson to revisit */
@@ -92,17 +115,19 @@ function practicePicker(app) {
   return () => {};
 }
 
-function practiceSession(app, skill) {
-  const top = Practice.levelCount(skill), keypad = ['grade4', 'grade5', 'grade6'].includes(skill.course);
-  let state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null;
-  const startLevel = state.level, session = { solved: 0, tried: 0, points: 0, misc: {} };
+function practiceSession(app, scope) {
+  const keypad = ['grade4', 'grade5', 'grade6'].includes(scope.skills[0].course);
+  let skill = scope.skills[0], top = Practice.levelCount(skill), state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null, lastId = null, repeat = false;
+  const per = {};   /* per skill, this session: start level, solved, tried, points, misconceptions */
+  const note = sk => (per[sk.id] = per[sk.id] || { skill: sk, startLevel: PracticeStore.state(sk.id).level, solved: 0, tried: 0, points: 0, misc: {} });
+  let sessionPoints = 0;
   const wrap = h('div', { class: 'wrap pr-page' });
   const back = h('a', { class: 'pr-back', href: '#practice' }, '← All skills');
   const lvl = h('span', { class: 'pr-stat-v' }), lvlDesc = h('p', { class: 'pr-lvldesc' }), pips = h('span', { class: 'pr-pips', role: 'img' }),
-    sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' });
+    sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' }), skillLine = h('p', { class: 'pr-skillline', 'aria-live': 'polite' });
   const stat = (k, v) => h('div', { class: 'pr-stat' }, h('span', { class: 'pr-stat-k' }, k), v);
-  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, skill.title),
-    h('div', { class: 'pr-stats' }, stat('Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), lvlDesc);
+  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, scope.title),
+    h('div', { class: 'pr-stats' }, stat(scope.mix ? 'Level in this skill' : 'Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), skillLine, lvlDesc);
   const promptEl = h('div', { class: 'pr-prompt', id: 'pr-prompt' }), figEl = h('div', { class: 'pr-figwrap' });
   const input = h('input', { type: 'text', id: 'pr-answer', class: 'pr-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', inputmode: keypad ? 'none' : 'text', 'aria-describedby': 'pr-help pr-echo' });
   const help = h('p', { class: 'pr-help', id: 'pr-help' }), echo = h('p', { class: 'pr-echo', id: 'pr-echo', 'aria-live': 'polite' });
@@ -129,17 +154,25 @@ function practiceSession(app, skill) {
   app.append(wrap);
 
   const draw = () => {
+    top = Practice.levelCount(skill);
     lvl.textContent = `${state.level} of ${top}`;
     lvlDesc.textContent = Practice.say(Practice.generatorsOf(skill)[0].levels[state.level - 1].desc);
+    skillLine.textContent = scope.mix ? 'Skill: ' + skill.title : '';
     const have = Math.min(state.streak, Practice.LADDER.up);
     pips.textContent = ''; pips.setAttribute('aria-label', `${have} of ${Practice.LADDER.up} correct in a row`);
     for (let i = 0; i < Practice.LADDER.up; i++) pips.append(h('span', { class: 'pr-pip' + (i < have ? ' on' : '') }));
     if (state.mastered) pips.append(h('span', { class: 'pr-badge' }, '★ Mastered'));
-    sPts.textContent = session.points; tPts.textContent = state.totalPoints;
-    if (window.__practice) window.__practice.state = state;
+    sPts.textContent = sessionPoints; tPts.textContent = PracticeStore.total();
+    if (window.__practice) { window.__practice.state = state; window.__practice.skill = skill; }
   };
   const setFb = (kind, html) => { fb.className = 'pr-fb ' + kind; fb.innerHTML = html; typeset(fb); };
   function load() {
+    if (scope.mix) {
+      const states = {}; for (const sk of scope.skills) states[sk.id] = PracticeStore.state(sk.id);
+      skill = Practice.pickSkill(scope.skills, states, lastId, Date.now(), Math.random, repeat);
+    }
+    repeat = false; lastId = skill.id; note(skill);
+    state = PracticeStore.state(skill.id);
     inst = Practice.nextInstance(state, skill);
     Practice.markSeen(state, inst); PracticeStore.put(skill.id, state);
     hints = 0; answered = false; hintBox = null; t0 = performance.now();
@@ -148,7 +181,8 @@ function practiceSession(app, skill) {
     help.textContent = inst.answer.help; echo.textContent = ''; input.value = ''; input.disabled = false;
     fb.className = 'pr-fb'; fb.textContent = ''; stepsEl.replaceChildren();
     btnCheck.hidden = btnSol.hidden = false; btnNext.hidden = true; btnHint.hidden = false; btnHint.disabled = false; btnHint.textContent = 'Hint';
-    draw(); window.__practice = { skill, inst, state };   /* the current problem, for the tests */
+    window.__practice = { skill, inst, state };   /* the current problem, for the tests */
+    draw();
     input.focus({ preventScroll: true });
   }
   function hint() {
@@ -164,7 +198,7 @@ function practiceSession(app, skill) {
     if (open) d.open = true;
     stepsEl.append(d); typeset(d);
   };
-  const lessonLinks = () => skill.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
+  const lessonsOf = sk => sk.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
   function finish(o) {   /* o: { correct, gaveUp, answer, misconception } */
     answered = true;
     const ms = performance.now() - t0, fast = o.correct && !o.gaveUp && !hints && ms < Practice.generators[inst.generatorId].minTimeMs;
@@ -172,8 +206,9 @@ function practiceSession(app, skill) {
     state = out.state;
     const rec = Practice.record(skill, inst, { answer: o.answer, correct: o.correct && !o.gaveUp, hints, misconception: o.misconception, timeMs: ms, points: out.points, gaveUp: o.gaveUp });
     PracticeStore.put(skill.id, state, rec);
-    session.tried++; if (o.correct && !o.gaveUp) session.solved++; session.points += out.points;
-    if (o.misconception) session.misc[o.misconception] = (session.misc[o.misconception] || 0) + 1;
+    const n = note(skill); n.tried++; if (o.correct && !o.gaveUp) n.solved++; n.points += out.points; sessionPoints += out.points;
+    if (o.misconception) n.misc[o.misconception] = (n.misc[o.misconception] || 0) + 1;
+    if (o.gaveUp) repeat = true;
     input.disabled = true; btnCheck.hidden = btnSol.hidden = btnHint.hidden = true; btnNext.hidden = false;
     draw();
     return { out, fast };
@@ -191,11 +226,11 @@ function practiceSession(app, skill) {
       if (fast) bits.push('That was very quick, so it did not count toward points or levels. Read each problem, then answer.');
       else bits.push(`<b>Correct.</b> +${out.points} point${out.points === 1 ? '' : 's'}.`);
       if (out.change > 0) bits.push(`Level up! You are on level ${state.level}.`);
-      if (out.newlyMastered) bits.push('You have mastered this skill. Keep going, or try mixed practice later.');
+      if (out.newlyMastered) bits.push('You have mastered this skill. It stays in your mixed review.');
       msg = bits.join(' ');
     } else {
       msg = `<b>Not quite.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. `;
-      if (m) { msg += escapeHtml(m.feedback) + ' '; const l = VIZ.find(v => v.id === m.lessonLink); if (l) msg += `<a href="${lessonToken(l.id)}">Review: ${escapeHtml(l.title)}</a>`; }
+      if (m) { msg += escapeHtml(m.feedback) + ' '; const l = m.lessonLink && VIZ.find(v => v.id === m.lessonLink); if (l) msg += `<a href="${lessonToken(l.id)}">Review: ${escapeHtml(l.title)}</a>`; }
       if (out.change < 0) msg += ` Let's go back to level ${state.level} for a bit.`;
     }
     setFb(correct ? 'ok' : 'no', msg);
@@ -211,14 +246,16 @@ function practiceSession(app, skill) {
   }
   function next() { load(); }
   function summary() {
-    const mis = Object.entries(session.misc);
-    const sample = id => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === skill.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };
+    const rows = Object.values(per).filter(n => n.tried), solved = rows.reduce((t, n) => t + n.solved, 0), tried = rows.reduce((t, n) => t + n.tried, 0);
+    const sample = (sk, id) => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === sk.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };
+    const slips = rows.flatMap(n => Object.entries(n.misc).map(([id, c]) => ({ n, id, c, m: sample(n.skill, id) })));
+    const levelText = n => { const lv = PracticeStore.state(n.skill.id).level; return lv > n.startLevel ? `up from level ${n.startLevel} to ${lv}` : lv < n.startLevel ? `back from level ${n.startLevel} to ${lv} to build up` : `stayed at level ${lv}`; };
     wrap.replaceChildren(back, h('h1', { class: 'display pr-title' }, 'Session summary'),
-      h('p', { class: 'pr-sum' }, `You solved ${session.solved} of ${session.tried} problem${session.tried === 1 ? '' : 's'} and earned ${session.points} points.`),
-      h('p', { class: 'pr-sum' }, state.level > startLevel ? `You moved up from level ${startLevel} to level ${state.level}.` : state.level < startLevel ? `You moved from level ${startLevel} to level ${state.level} to build up.` : `You stayed at level ${state.level} of ${top}.`),
-      mis.length ? h('section', { class: 'pr-slips' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'),
-        h('ul', {}, mis.map(([id, n]) => { const m = sample(id), l = m && VIZ.find(v => v.id === m.lessonLink); return h('li', {}, `${m ? m.feedback : id} (${n} time${n === 1 ? '' : 's'}) `, l ? h('a', { href: lessonToken(l.id) }, 'Review: ' + l.title) : null); }))) : null,
-      lessonLinks().length && !mis.length ? h('p', {}, 'Lessons for this skill: ', lessonLinks().flatMap((a, i) => i ? [', ', a] : [a])) : null,
+      h('p', { class: 'pr-sum' }, `You solved ${solved} of ${tried} problem${tried === 1 ? '' : 's'} and earned ${sessionPoints} points.`),
+      rows.length ? h('ul', { class: 'pr-sumlist' }, rows.map(n => h('li', {}, `${n.skill.title}: ${n.solved} of ${n.tried} right, ${levelText(n)}.`))) : null,
+      slips.length ? h('section', { class: 'pr-slips' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'),
+        h('ul', {}, slips.map(({ n, id, c, m }) => { const l = m && m.lessonLink && VIZ.find(v => v.id === m.lessonLink); return h('li', {}, `${m ? m.feedback : id} (${c} time${c === 1 ? '' : 's'}) `, l ? h('a', { href: lessonToken(l.id) }, 'Review: ' + l.title) : null); }))) : null,
+      !slips.length && rows.length ? h('p', {}, 'Lessons for these skills: ', rows.flatMap(n => lessonsOf(n.skill)).flatMap((a, i) => i ? [', ', a] : [a])) : null,
       h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', onclick: () => route() }, 'Practice again'), h('a', { class: 'btn', href: '#practice' }, 'All skills')));
     const hd = wrap.querySelector('h1'); hd.setAttribute('tabindex', '-1'); hd.focus({ preventScroll: true });
   }

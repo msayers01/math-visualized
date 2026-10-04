@@ -713,6 +713,10 @@ label.facet .facet-k { margin-bottom: 0; }
 .pr-slips ul { padding-left: 1.2em; line-height: 1.6; max-width: 66ch; }
 @media (max-width: 640px) { .pr-prompt { font-size: 1.08rem; } .pr-keypad { max-width: 320px; } }
 .pr-eq { margin: 6px 0 0 18px; }
+.pr-mix { border-style: dashed; border-color: var(--line-strong); }
+.pr-skillline { margin: 4px 0 0; font-weight: 500; }
+.pr-skillline:empty { display: none; }
+.pr-sumlist { padding-left: 1.2em; line-height: 1.7; }
 /* ---------- Tour: "How this works" ---------- */
 .tour-btn { display: inline-flex; align-items: center; gap: 8px; }
 .tour-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
@@ -1284,7 +1288,7 @@ const Practice = {};
   Practice.say = (key, params = {}) => {
     const s = Practice.T[key];
     if (typeof s !== 'string') throw new Error('missing practice string: ' + key);
-    return s.replace(/\{(\w+)\}/g, (m, k) => {
+    return s.replace(/\{([A-Za-z_]\w*)\}/g, (m, k) => {
       if (!(k in params)) throw new Error(`practice string ${key} needs {${k}}`);
       return String(params[k]);
     });
@@ -1417,10 +1421,16 @@ const Practice = {};
   };
   Practice.parseNumber = parseNumber;
 
+  /* drop a trailing unit (one or two words from the allowed list, or a % sign): "24 square units", "25%", "13 ft" */
   const stripUnits = (s, units) => {
     if (!units) return s;
-    const m = clean(s).match(/^(.*?)\s*([a-zA-Z.]+)$/);
-    return m && units.includes(m[2].toLowerCase().replace(/\.$/, '')) ? m[1] : s;
+    let t = clean(s);
+    if (units.includes('%')) t = t.replace(/\s*%$/, '');
+    for (let k = 0; k < 2; k++) {
+      const m = t.match(/^(.*?)\s*([a-zA-Z.]+)$/);
+      if (m && m[1] !== '' && units.includes(m[2].toLowerCase().replace(/\.$/, ''))) t = m[1]; else break;
+    }
+    return t;
   };
   const stripLabel = (s, name) => clean(s).replace(new RegExp('^' + name + '\\s*=\\s*', 'i'), '');
   const splitList = s => clean(s).replace(/^[\[({]\s*|\s*[\])}]$/g, '').split(/\s*(?:,|;|\band\b)\s*/i).filter(x => x !== '');
@@ -1474,7 +1484,14 @@ const Practice = {};
 
   /* plain text for a value, used in echoes ("Reading your answer as ...") and in worked solutions */
   Practice.showValue = (spec, v) => {
-    const one = x => rat.str(x).replace('-', '−');
+    const dec = x => {   /* a terminating decimal, exactly (the denominator has only the factors 2 and 5) */
+      let d = x.d, twos = 0, fives = 0;
+      while (d % 2 === 0) { d /= 2; twos++; } while (d % 5 === 0) { d /= 5; fives++; }
+      if (d !== 1) return rat.str(x);
+      const places = Math.max(twos, fives), scaled = Math.abs(x.n) * 10 ** places / x.d, str = String(scaled).padStart(places + 1, '0');
+      return (x.n < 0 ? '-' : '') + (places ? str.slice(0, -places) + '.' + str.slice(-places) : str);
+    };
+    const one = x => (spec.display === 'decimal' ? dec(x) : rat.str(x)).replace('-', '\u2212');
     if (spec.type === 'number') return one(v);
     if (spec.type === 'pair') return '(' + v.map(one).join(', ') + ')';
     return '{' + v.map(one).join(', ') + '}';
@@ -1625,7 +1642,191 @@ Practice.T = {
   'sys.s.back': 'Put \\(x = {x}\\) into equation 1. That leaves \\({eq}\\), so \\(y = {y}\\).',
   'a1-system-solve.mc.swapped-the-order': 'You have the right two numbers, but in the wrong order. A pair is written (x, y): x first.',
   'a1-system-solve.mc.sign-slip-on-y': 'Your x is right, but check the sign of y when you put x back in.',
-  'a1-system-solve.mc.sign-slip-on-x': 'Your y is right, but check the sign of x. Look at the step where x came from.'
+  'a1-system-solve.mc.sign-slip-on-x': 'Your y is right, but check the sign of x. Look at the step where x came from.',
+  /* ---- more answer formats ---- */
+  'ans.decimal': 'Enter a decimal, like 2.87. A fraction is fine too.',
+  'ans.integer': 'Enter a whole number. Use a minus sign for a negative number, like -4.',
+  'ans.percent': 'Enter the percent as a number, like 25. The % sign is optional.',
+
+  /* ---- G4: division ---- */
+  'div.lv1': 'A two-digit number divided by 2 to 5. No remainder.',
+  'div.lv2': 'A three-digit number divided by 2 to 5. No remainder.',
+  'div.lv3': 'A three-digit number divided by 6 to 9. No remainder.',
+  'div.lv4': 'A four-digit number divided by a one-digit number. No remainder.',
+  'div.lv5': 'Quotients with a zero inside, like 4 0 5.',
+  'div.p.eq': 'Find \\({a} \\div {d}\\).',
+  'div.p.stickers': 'There are {a} stickers. They are shared equally among {d} children. How many stickers does each child get?',
+  'div.p.boxes': 'A box holds {d} crayons. How many boxes are needed to hold {a} crayons?',
+  'div.h1': 'Ask: how many groups of {d} fit? Break the answer into place-value pieces: hundreds, tens and ones.',
+  'div.h2': 'Try {p} groups first. \\({d} \\times {p} = {prod}\\). That leaves {left} still to divide.',
+  'div.h3': 'The answer is the sum of these pieces: {list}.',
+  'div.s1': 'Find pieces of the answer. For each piece, multiply by {d}: {list}.',
+  'div.s2': 'Check that the products add up to the number you started with: \\({sum} = {a}\\).',
+  'div.s3': 'So \\({a} \\div {d} = {sum} = {q}\\).',
+  'g4-divide.mc.multiplied-instead-of-dividing': 'It looks like you multiplied. Dividing is splitting into equal groups, so the answer is smaller than the number you start with.',
+  'g4-divide.mc.subtracted-instead-of-dividing': 'It looks like you subtracted. Ask instead how many groups of the divisor fit into the number.',
+  'g4-divide.mc.answer-ten-times-too-big': 'Your digits are right, but the answer is ten times too big. Estimate first: about how many groups should you get? Then check each place.',
+  'g4-divide.mc.dropped-the-zero': 'It looks like a zero was left out. A zero in the answer holds a place. Without it the digits slide into the wrong places.',
+
+  /* ---- G4: rectangles ---- */
+  'rect.lv1': 'Find the area of a small rectangle.',
+  'rect.lv2': 'Find the perimeter of a small rectangle.',
+  'rect.lv3': 'Area or perimeter of a larger rectangle.',
+  'rect.lv4': 'Find a missing side from the area.',
+  'rect.lv5': 'Find a missing side from the perimeter.',
+  'rect.p.area': 'A rectangle is {l} {u} long and {w} {u} wide. What is its area, in square {u}?',
+  'rect.p.perim': 'A rectangle is {l} {u} long and {w} {u} wide. What is its perimeter, in {u}?',
+  'rect.p.missA': 'A rectangle has an area of {A} square {u} and is {w} {u} wide. How long is it, in {u}?',
+  'rect.p.missP': 'A rectangle has a perimeter of {P} {u} and is {l} {u} long. How wide is it, in {u}?',
+  'rect.c.area.q': 'Area = ?',
+  'rect.c.perim.q': 'Perimeter = ?',
+  'rect.c.area': 'Area = {A}',
+  'rect.c.perim': 'Perimeter = {P}',
+  'rect.h1.area': 'Area counts the squares inside. Multiply the length by the width.',
+  'rect.h2.area': 'Multiply \\({l} \\times {w}\\).',
+  'rect.h1.perim': 'Perimeter is the distance around. Add up all four sides.',
+  'rect.h2.perim': 'A rectangle has two sides of {l} and two sides of {w}.',
+  'rect.h1.missA': 'Area is length times width. Work backward: divide the area by the side you know.',
+  'rect.h2.missA': 'Divide \\({A} \\div {w}\\).',
+  'rect.h1.missP': 'The perimeter is two lengths plus two widths. Take away the two lengths you know, then split what is left between the two widths.',
+  'rect.h2.missP': 'Two lengths make 2 \\(\\times\\) {l}. Subtract that from {P}.',
+  'rect.s.area': 'Area = length \\(\\times\\) width, so \\({l} \\times {w} = {A}\\).',
+  'rect.s.perim1': 'Add one length and one width: \\({l} + {w} = {s}\\).',
+  'rect.s.perim2': 'A rectangle has two of each, so double it: \\(2 \\times {s} = {P}\\).',
+  'rect.s.missA1': 'Area = length \\(\\times\\) width, so length = area \\(\\div\\) width.',
+  'rect.s.missA2': '\\({A} \\div {w} = {l}\\).',
+  'rect.s.missP1': 'The two lengths use up \\(2 \\times {l}\\). What is left for the two widths is \\({P} - 2 \\times {l} = {rest}\\).',
+  'rect.s.missP2': 'Split it between two widths: \\({rest} \\div 2 = {w}\\).',
+  'g4-rectangle.mc.added-instead-of-multiplying': 'It looks like you added the length and the width. Area counts squares inside, so multiply.',
+  'g4-rectangle.mc.found-the-perimeter': 'It looks like you found the perimeter, the distance around. Area is the space inside: length times width.',
+  'g4-rectangle.mc.added-just-two-sides': 'It looks like you added only two sides. A rectangle has four sides: two lengths and two widths.',
+  'g4-rectangle.mc.found-the-area': 'It looks like you found the area. Perimeter is the distance around, so add the sides.',
+  'g4-rectangle.mc.multiplied-instead-of-dividing': 'It looks like you multiplied. To find a missing side from the area, divide the area by the side you know.',
+  'g4-rectangle.mc.subtracted-instead-of-dividing': 'It looks like you subtracted. Area is length times width, so the opposite is to divide.',
+  'g4-rectangle.mc.forgot-to-halve': 'You found what is left for the two widths, but there are two of them. Split it in half.',
+  'g4-rectangle.mc.took-away-only-one-length': 'It looks like you took away only one length. A rectangle has two lengths, so take away both.',
+
+  /* ---- G5: decimals ---- */
+  'dec.lv1': 'Add tenths, like 0.3 + 0.4.',
+  'dec.lv2': 'Add hundredths, like 0.25 + 0.36.',
+  'dec.lv3': 'Add decimals with different numbers of places, like 2.5 + 0.37.',
+  'dec.lv4': 'Subtract decimals, including from a whole number.',
+  'dec.lv5': 'Add or subtract up to thousandths.',
+  'dec.unit1': 'tenths',
+  'dec.unit2': 'hundredths',
+  'dec.unit3': 'thousandths',
+  'dec.p.add': 'Add. \\({a} + {b}\\)',
+  'dec.p.sub': 'Subtract. \\({a} - {b}\\)',
+  'dec.p.run': 'Sam ran {a} miles on Monday and {b} miles on Tuesday. How many miles did he run in all?',
+  'dec.p.board': 'A board is {a} meters long. A piece {b} meters long is cut off. How long is the rest, in meters?',
+  'dec.h1': 'Line up the decimal points, so tenths sit under tenths and hundredths under hundredths. Add zeros to fill in the empty places.',
+  'dec.h2': 'Give both numbers the same number of decimal places: \\({A}\\) and \\({B}\\).',
+  'dec.s1': 'Give both numbers the same number of decimal places: \\({A}\\) and \\({B}\\). The places now line up.',
+  'dec.s2add': 'Think of them as {unit}. Add: \\({sa} + {sb} = {top}\\) {unit}.',
+  'dec.s2sub': 'Think of them as {unit}. Subtract: \\({sa} - {sb} = {top}\\) {unit}.',
+  'dec.s3': '{top} {unit} is written \\({ans}\\).',
+  'g5-decimals.mc.added-as-whole-numbers': 'It looks like you added the digits as if the decimal points were not there. Line up the places first: tenths with tenths, hundredths with hundredths.',
+  'g5-decimals.mc.misplaced-the-decimal-point': 'Your digits are right, but the decimal point is one place off. Estimate first: is the answer about as big as you expect?',
+
+  /* ---- G5: order of operations ---- */
+  'oo.lv1': 'Two operations, no brackets.',
+  'oo.lv2': 'Division and subtraction.',
+  'oo.lv3': 'Brackets.',
+  'oo.lv4': 'Three operations.',
+  'oo.lv5': 'Several brackets and operations.',
+  'oo.p': 'Evaluate. \\({tex}\\)',
+  'oo.h1': 'Order: brackets first, then multiply and divide from left to right, then add and subtract from left to right.',
+  'oo.h2': 'Start with {first}',
+  'oo.first.brackets': 'whatever is inside the brackets.',
+  'oo.first.muldiv': 'the multiplication or division.',
+  'oo.first.addsub': 'the addition or subtraction.',
+  'oo.s.unbracket': 'The brackets only hold one number now: \\({expr}\\).',
+  'oo.s.brackets-muldiv': 'Brackets first. Inside them, multiply or divide first: \\({expr}\\).',
+  'oo.s.brackets-addsub': 'Brackets first. Work inside them: \\({expr}\\).',
+  'oo.s.muldiv': 'Multiply or divide before adding or subtracting: \\({expr}\\).',
+  'oo.s.addsub': 'Now add or subtract: \\({expr}\\).',
+  'g5-order-of-operations.mc.went-left-to-right': 'It looks like you worked straight from left to right. Multiplication and division come before addition and subtraction.',
+  'g5-order-of-operations.mc.ignored-the-brackets': 'It looks like the brackets were skipped. Whatever is inside brackets is done first.',
+
+  /* ---- G7: integers ---- */
+  'int.lv1': 'Add a positive and a negative number.',
+  'int.lv2': 'Subtract to land below zero.',
+  'int.lv3': 'Negative numbers added and subtracted, including subtracting a negative.',
+  'int.lv4': 'Any signs, bigger numbers.',
+  'int.lv5': 'Three terms.',
+  'int.p.eval': 'Work it out. \\({tex}\\)',
+  'int.p.rise': 'The temperature is {a} degrees. It rises {b} degrees. What is the new temperature?',
+  'int.p.fall': 'The temperature is {a} degrees. It falls {b} degrees. What is the new temperature?',
+  'int.right': 'right',
+  'int.left': 'left',
+  'int.h1': 'Picture a number line. Adding a positive moves right. Adding a negative moves left. Subtracting does the opposite.',
+  'int.h2': 'Start at {acc}. Move {dir} {n}.',
+  'int.s.flip': 'Subtracting \\({t}\\) is the same as adding {n}, so the move reverses.',
+  'int.s.move': 'Start at \\({acc}\\). Move {dir} {n}. You land on \\({res}\\).',
+  'g7-integers.mc.sign-of-the-answer-flipped': 'You have the right size but the wrong sign. Check which way you moved on the number line, and whether you ended up above or below zero.',
+  'g7-integers.mc.ignored-the-negative-signs': 'It looks like the negative signs were ignored. A negative number sits left of zero, and that changes which way you move.',
+  'g7-integers.mc.subtracting-a-negative-as-a-plain-subtract': 'It looks like subtracting a negative was treated like subtracting a positive. Taking away a negative is the same as adding the positive.',
+
+  /* ---- G6: percent ---- */
+  'pct.lv1': 'Percent of a number: 10%, 25% and 50%.',
+  'pct.lv2': 'Percent of a number: multiples of 10%.',
+  'pct.lv3': 'Percent of a number: 5%, 15%, 35%, 45% and 75%.',
+  'pct.lv4': 'Find what percent one number is of another.',
+  'pct.lv5': 'Find the whole when you know the part and the percent.',
+  'pct.p.of': 'What is {p}% of {n}?',
+  'pct.p.class': 'A class has {n} students. {p}% of them walk to school. How many students walk?',
+  'pct.p.shirt': 'A shirt costs {n} dollars. It is on sale for {p}% off. How many dollars does the sale take off?',
+  'pct.p.what': 'What percent of {n} is {part}?',
+  'pct.p.walk': 'A class has {n} students. {part} of them walk to school. What percent of the class walks?',
+  'pct.p.whole': '{part} is {p}% of what number?',
+  'pct.p.sale': 'A jacket is on sale for {p}% off, which takes off {part} dollars. What was the original price, in dollars?',
+  'pct.h1.of': 'Percent means out of 100. Write the percent as a fraction over 100, then multiply.',
+  'pct.h2.of': 'Multiply \\({n} \\times \\frac{{p}}{100}\\).',
+  'pct.h1.pc': 'Write the part over the whole as a fraction, then make the bottom 100.',
+  'pct.h2.pc': 'Start with \\(\\frac{{part}}{{n}}\\).',
+  'pct.h1.wh': 'The percent tells how many hundredths the part is. Work backward from the part to the whole.',
+  'pct.h2.wh': '{p}% means \\(\\frac{{p}}{100}\\) of the whole is {part}. What number times \\(\\frac{{p}}{100}\\) gives {part}?',
+  'pct.s.of1': '{p}% means {p} out of 100, which is \\(\\frac{{p}}{100}\\).',
+  'pct.s.of2': 'Multiply: \\({n} \\times \\frac{{p}}{100} = {frac} = {part}\\).',
+  'pct.s.pc1': 'Write the part over the whole: \\(\\frac{{part}}{{n}}\\).',
+  'pct.s.pc2': 'Rewrite it with 100 on the bottom: it equals \\(\\frac{{p}}{100}\\).',
+  'pct.s.pc3': 'Out of 100 means percent, so it is {p}%.',
+  'pct.s.wh1': '{p}% of the whole is {part}. So {part} is \\(\\frac{{p}}{100}\\) of the whole.',
+  'pct.s.wh2': 'Divide by the fraction: \\({part} \\div \\frac{{p}}{100} = {part} \\times \\frac{100}{{p}} = {n}\\).',
+  'g6-percent.mc.forgot-to-divide-by-100': 'It looks like the last step is missing. Percent means out of 100, so divide by 100 after you multiply.',
+  'g6-percent.mc.divided-by-the-percent-number': 'It looks like you divided the number by the percent. Instead, write the percent as a fraction over 100 and multiply.',
+  'g6-percent.mc.used-the-percent-as-the-answer': 'The percent is the rate, not the amount. Find that rate of the number.',
+  'g6-percent.mc.inverted-the-fraction': 'It looks like the fraction is upside down. The percent is the part over the whole.',
+  'g6-percent.mc.gave-the-decimal-not-the-percent': 'That fraction is right, but a percent is out of 100. Multiply by 100 to turn it into a percent.',
+  'g6-percent.mc.gave-the-part-as-the-percent': 'That number is the part, not the percent. Compare the part with the whole.',
+  'g6-percent.mc.found-the-percent-of-the-part': 'It looks like you found the percent of the part. The part is already the percent of the whole, so work backward.',
+  'g6-percent.mc.divided-by-100-only': 'It looks like you only divided by 100. The part is only the percent of the whole, so divide it by that percent as a fraction.',
+  'g6-percent.mc.used-the-percent-as-the-whole': 'The percent is not the whole. The whole is the number that the percent of is the part.',
+
+  /* ---- G6: mean ---- */
+  'mean.lv1': 'The mean of three small numbers.',
+  'mean.lv2': 'The mean of four or five numbers.',
+  'mean.lv3': 'The mean of five or six larger numbers.',
+  'mean.lv4': 'Find a missing value from the mean.',
+  'mean.lv5': 'The mean of six to eight values.',
+  'mean.p.eq': 'Find the mean of this data set: {list}.',
+  'mean.p.games': 'A player scored these points in {n} games: {list}. What is the mean number of points per game?',
+  'mean.p.quiz': 'A student got these scores on {n} quizzes: {list}. What is the mean score?',
+  'mean.p.missing': 'The mean of {n} test scores is {m}. All but one of the scores are {list}. What is the missing score?',
+  'mean.h1': 'The mean shares the total equally. Add everything, then divide by how many values there are.',
+  'mean.h2': 'Add all the values. Then divide the total by {n}.',
+  'mean.h1.m': 'If you know the mean and how many values there are, you can find the total.',
+  'mean.h2.m': 'Total = mean \\(\\times\\) count = \\({m} \\times {n}\\).',
+  'mean.s.a1': 'Add all the values: \\({sum} = {total}\\).',
+  'mean.s.a2': 'Divide by how many values there are: \\({total} \\div {n} = {m}\\).',
+  'mean.s.m1': 'The total of all the scores is the mean times the count: \\({n} \\times {m} = {total}\\).',
+  'mean.s.m2': 'The scores you know add to \\({sum} = {ks}\\).',
+  'mean.s.m3': 'The missing score is what is left: \\({total} - {ks} = {x}\\).',
+  'g6-mean.mc.forgot-to-divide': 'It looks like you stopped after adding. The mean shares the total equally, so divide by how many values there are.',
+  'g6-mean.mc.divided-by-the-wrong-count': 'It looks like you divided by the wrong number. Count every value in the data set, then divide the total by that count.',
+  'g6-mean.mc.gave-the-median': 'It looks like you gave the middle value. That is the median. The mean is the total shared equally.',
+  'g6-mean.mc.found-the-mean-of-the-known-scores': 'It looks like you averaged only the scores you know. Use the mean of all the scores to find the total first.',
+  'g6-mean.mc.forgot-to-subtract-the-known-scores': 'You found the total of all the scores. Now take away the scores you already know.'
 };
 
 /* =====================================================================
@@ -1963,6 +2164,294 @@ Practice.T = {
       };
     }
   });
+  /* helpers shared with generators2.js */
+  Practice.kit = { make, wrongs, mc, abs, join, pieces, fracTex, linTex, coefTex, NZ, CAP };
+}
+
+/* =====================================================================
+   PRACTICE (generators, part 2): the easiest skills to build exactly: whole-number division, rectangles, decimals, order of
+   operations, integers, percent of a number, and the mean. Same contract as generators.js. `implicit` lists numbers that
+   appear in the model but not in the text (the 100 in a percent, the count in a mean), so the verifier can still compare
+   the printed numbers with the model's.
+   ===================================================================== */
+{
+  const { make, wrongs, mc, abs, join, pieces, fracTex } = Practice.kit;
+  const { R, rat, gcd, say } = Practice;
+  const dec = (i, p) => { if (!p) return String(i); const s = String(abs(i)).padStart(p + 1, '0'); return (i < 0 ? '-' : '') + s.slice(0, -p) + '.' + s.slice(-p); };
+
+  /* ---------------- G4: division by a one-digit number (exact) ---------------- */
+  make({
+    id: 'g4-divide', version: 1, skillId: 'divide-multi-digit', minTimeMs: 2000,
+    levels: [
+      { desc: 'div.lv1', dLo: 2, dHi: 5, qLo: 11, qHi: 19, zeros: 'none' },
+      { desc: 'div.lv2', dLo: 2, dHi: 5, qLo: 21, qHi: 99, zeros: 'none' },
+      { desc: 'div.lv3', dLo: 6, dHi: 9, qLo: 21, qHi: 99, zeros: 'none' },
+      { desc: 'div.lv4', dLo: 3, dHi: 9, qLo: 101, qHi: 499, zeros: 'none' },
+      { desc: 'div.lv5', dLo: 3, dHi: 9, qLo: 101, qHi: 999, zeros: 'inside' }
+    ],
+    build(r, level, K) {
+      const d = r.int(K.dLo, K.dHi), q = r.int(K.qLo, K.qHi), a = q * d, qs = String(q);
+      if (K.zeros === 'none' && qs.includes('0')) return null;
+      if (K.zeros === 'inside' && !(qs.length === 3 && qs[1] === '0' && qs[2] !== '0')) return null;
+      const lv = 'g4-divide', ps = pieces(q), ans = R(q);
+      const rows = ps.map(p => `\\(${d} \\times ${p} = ${d * p}\\)`);
+      const steps = [say('div.s1', { d, list: join(rows) }), say('div.s2', { a, sum: ps.map(p => d * p).join(' + ') }), say('div.s3', { a, d, sum: ps.join(' + '), q })];
+      const hints = [say('div.h1', { d }), say('div.h2', { d, p: ps[0], prod: d * ps[0], left: a - d * ps[0] }), say('div.h3', { list: join(ps.map(p => `\\(${p}\\)`)) })];
+      const cands = [mc('multiplied-instead-of-dividing', lv, R(a * d), null), mc('subtracted-instead-of-dividing', lv, R(a - d), null), mc('answer-ten-times-too-big', lv, R(q * 10), null)];
+      if (qs.includes('0')) cands.push(mc('dropped-the-zero', lv, R(+qs.replace(/0/g, '')), null));
+      const v = r.int(0, 2), text = v === 0 ? say('div.p.eq', { a, d }) : v === 1 ? say('div.p.stickers', { a, d }) : say('div.p.boxes', { a, d });
+      return { prompt: { html: text }, model: `${a}/${d}`, tags: v ? ['word-problem'] : [], answer: { type: 'number', value: ans, form: 'any', help: say('ans.whole') }, hints, steps, misconceptions: wrongs(ans, cands), canonical: `div|${a}|${d}` };
+    }
+  });
+
+  /* ---------------- G4: perimeter and area of rectangles ---------------- */
+  const UNITS = ['centimeters', 'meters', 'feet', 'inches'];
+  make({
+    id: 'g4-rectangle', version: 1, skillId: 'perimeter-area-rectangles', minTimeMs: 2000,
+    levels: [
+      { desc: 'rect.lv1', kinds: ['area'], lLo: 3, lHi: 9, wLo: 2, wHi: 6 },
+      { desc: 'rect.lv2', kinds: ['perim'], lLo: 3, lHi: 9, wLo: 2, wHi: 6 },
+      { desc: 'rect.lv3', kinds: ['area', 'perim'], lLo: 8, lHi: 25, wLo: 5, wHi: 15 },
+      { desc: 'rect.lv4', kinds: ['missA'], lLo: 3, lHi: 15, wLo: 2, wHi: 12 },
+      { desc: 'rect.lv5', kinds: ['missP'], lLo: 5, lHi: 20, wLo: 3, wHi: 14 }
+    ],
+    build(r, level, K) {
+      let l = r.int(K.lLo, K.lHi), w = r.int(K.wLo, K.wHi);
+      if (l === w) return null;
+      if (level >= 3 && l < w) [l, w] = [w, l];
+      const kind = r.pick(K.kinds), u = r.pick(UNITS), A = l * w, P = 2 * (l + w), lv = 'g4-rectangle', link = 'area-by-decomposition';
+      let text, model, ans, steps, hints, cands, fig, implicit = [];
+      if (kind === 'area') {
+        text = say('rect.p.area', { l, w, u }); model = `${l}*${w}`; ans = R(A); fig = { kind: 'rectangle', l, w, unknown: null, center: say('rect.c.area.q') };
+        steps = [say('rect.s.area', { l, w, A })]; hints = [say('rect.h1.area'), say('rect.h2.area', { l, w })];
+        cands = [mc('added-instead-of-multiplying', lv, R(l + w), link), mc('found-the-perimeter', lv, R(P), link)];
+      } else if (kind === 'perim') {
+        text = say('rect.p.perim', { l, w, u }); model = `2*(${l}+${w})`; implicit = ['2']; ans = R(P); fig = { kind: 'rectangle', l, w, unknown: null, center: say('rect.c.perim.q') };
+        steps = [say('rect.s.perim1', { l, w, s: l + w }), say('rect.s.perim2', { s: l + w, P })]; hints = [say('rect.h1.perim'), say('rect.h2.perim', { l, w })];
+        cands = [mc('added-just-two-sides', lv, R(l + w), null), mc('found-the-area', lv, R(A), null)];
+      } else if (kind === 'missA') {
+        text = say('rect.p.missA', { A, w, u }); model = `${A}/${w}`; ans = R(l); fig = { kind: 'rectangle', l, w, unknown: 'l', center: say('rect.c.area', { A }) };
+        steps = [say('rect.s.missA1', { A, w }), say('rect.s.missA2', { A, w, l })]; hints = [say('rect.h1.missA'), say('rect.h2.missA', { A, w })];
+        cands = [mc('multiplied-instead-of-dividing', lv, R(A * w), link), mc('subtracted-instead-of-dividing', lv, R(A - w), link)];
+      } else {
+        text = say('rect.p.missP', { P, l, u }); model = `(${P}-2*${l})/2`; implicit = ['2']; ans = R(w); fig = { kind: 'rectangle', l, w, unknown: 'w', center: say('rect.c.perim', { P }) };
+        steps = [say('rect.s.missP1', { P, l, rest: P - 2 * l }), say('rect.s.missP2', { rest: P - 2 * l, w })]; hints = [say('rect.h1.missP'), say('rect.h2.missP', { P, l })];
+        cands = [mc('forgot-to-halve', lv, R(P - 2 * l), null), mc('took-away-only-one-length', lv, R(P - l, 2), null)];
+      }
+      return { prompt: { html: text }, model, implicit, figure: fig, answer: { type: 'number', value: ans, form: 'any', units: ['cm', 'm', 'ft', 'in', 'feet', 'inches', 'centimeters', 'meters', 'square', 'sq', 'units'], help: say('ans.length') },
+        hints, steps, misconceptions: wrongs(ans, cands), canonical: `rect|${kind}|${Math.min(l, w)}|${Math.max(l, w)}`, tags: [] };
+    }
+  });
+
+  /* ---------------- G5: adding and subtracting decimals ---------------- */
+  make({
+    id: 'g5-decimals', version: 1, skillId: 'add-subtract-decimals', minTimeMs: 2500,
+    levels: [
+      { desc: 'dec.lv1', ops: ['add'], pa: [1], pb: [1], whole: 0 },
+      { desc: 'dec.lv2', ops: ['add'], pa: [2], pb: [2], whole: 0 },
+      { desc: 'dec.lv3', ops: ['add'], pa: [1, 2], pb: [1, 2], whole: 9, differ: true },
+      { desc: 'dec.lv4', ops: ['sub'], pa: [0, 1, 2], pb: [1, 2], whole: 9, differ: true },
+      { desc: 'dec.lv5', ops: ['add', 'sub'], pa: [1, 2, 3], pb: [2, 3], whole: 9, differ: true }
+    ],
+    build(r, level, K) {
+      const pa = r.pick(K.pa), pb = r.pick(K.pb);
+      if (K.differ && pa === pb) return null;
+      const mk = (p, whole) => { const v = r.int(1, whole * 10 ** p + 10 ** p - 1); return v; };
+      let ia = mk(pa, K.whole), ib = mk(pb, K.whole);
+      if (pa > 0 && ia % 10 === 0) return null; if (pb > 0 && ib % 10 === 0) return null;   /* no trailing zero */
+      if (pa === 0) ia = r.int(2, 9);
+      const P = Math.max(pa, pb), sa = ia * 10 ** (P - pa), sb = ib * 10 ** (P - pb), op = r.pick(K.ops);
+      if (op === 'sub' && sa <= sb) return null;
+      const top = op === 'add' ? sa + sb : sa - sb, ans = R(top, 10 ** P), sym = op === 'add' ? '+' : '-', a = dec(ia, pa), b = dec(ib, pb), lv = 'g5-decimals';
+      const unit = say('dec.unit' + P), pad = (i, p) => dec(i * 10 ** (P - p), P);
+      const steps = [say('dec.s1', { P, A: pad(ia, pa), B: pad(ib, pb) }), say(op === 'add' ? 'dec.s2add' : 'dec.s2sub', { sa, sb, top, unit }), say('dec.s3', { top, unit, ans: dec(top, P) })];
+      const hints = [say('dec.h1'), say('dec.h2', { P, A: pad(ia, pa), B: pad(ib, pb) })];
+      const cands = [mc('misplaced-the-decimal-point', lv, rat.mul(ans, R(10)), 'decimals-and-place-value')];
+      if (pa !== pb) cands.unshift(mc('added-as-whole-numbers', lv, R(op === 'add' ? ia + ib : abs(ia - ib), 10 ** P), 'decimals-and-place-value'));
+      const kind = op === 'add' ? (r.chance(.5) ? 'run' : 'eq') : (r.chance(.5) ? 'board' : 'eq');
+      const text = kind === 'eq' ? say(op === 'add' ? 'dec.p.add' : 'dec.p.sub', { a, b }) : say('dec.p.' + kind, { a, b });
+      return { prompt: { html: text }, model: `${a}${sym}${b}`, tags: kind === 'eq' ? [] : ['word-problem'], answer: { type: 'number', value: ans, form: 'any', display: 'decimal', help: say('ans.decimal') },
+        hints, steps, misconceptions: wrongs(ans, cands), canonical: op === 'add' ? `dadd|${Math.min(sa, sb)}|${Math.max(sa, sb)}|${P}` : `dsub|${sa}|${sb}|${P}` };
+    }
+  });
+
+  /* ---------------- G5: order of operations ---------------- */
+  /* An expression is an array of tokens: numbers, + - * / and ( ). */
+  const OO = {
+    flat(tk, mode) {     /* evaluate a bracket-free token list; null when it leaves the whole numbers */
+      let t = tk.slice();
+      if (mode === 'prec') {
+        for (let i = 1; i < t.length;) {
+          if (t[i] === '*' || t[i] === '/') {
+            const v = t[i] === '*' ? t[i - 1] * t[i + 1] : (t[i + 1] !== 0 && t[i - 1] % t[i + 1] === 0 ? t[i - 1] / t[i + 1] : null);
+            if (v === null) return null; t.splice(i - 1, 3, v);
+          } else i += 2;
+        }
+      }
+      let acc = t[0];
+      for (let i = 1; i < t.length; i += 2) {
+        const o = t[i], x = t[i + 1];
+        acc = o === '+' ? acc + x : o === '-' ? acc - x : o === '*' ? acc * x : (x !== 0 && acc % x === 0 ? acc / x : null);
+        if (acc === null || acc < 0) return null;
+      }
+      return acc;
+    },
+    value(tk, mode = 'prec') {
+      if (mode === 'nobr') tk = tk.filter(x => x !== '(' && x !== ')');
+      let t = tk.slice();
+      for (;;) {
+        const close = t.indexOf(')');
+        if (close < 0) break;
+        const open = t.lastIndexOf('(', close), v = OO.flat(t.slice(open + 1, close), mode === 'nobr' ? 'prec' : mode);
+        if (v === null) return null; t.splice(open, close - open + 1, v);
+      }
+      return OO.flat(t, mode === 'nobr' ? 'prec' : mode);
+    },
+    /* one step of the worked solution: [newTokens, kind] */
+    reduce(tk) {
+      let t = tk.slice();
+      const close = t.indexOf(')');
+      if (close >= 0) {
+        const open = t.lastIndexOf('(', close), inner = t.slice(open + 1, close);
+        if (inner.length === 1) { t.splice(open, 3, inner[0]); return [t, 'oo.s.unbracket']; }
+        const [r, kind] = OO.reduce(inner); t.splice(open + 1, close - open - 1, ...r); return [t, 'oo.s.brackets-' + kind];
+      }
+      for (let i = 1; i < t.length; i += 2) if (t[i] === '*' || t[i] === '/') { const v = t[i] === '*' ? t[i - 1] * t[i + 1] : t[i - 1] / t[i + 1]; t.splice(i - 1, 3, v); return [t, 'muldiv']; }
+      const v = t[1] === '+' ? t[0] + t[2] : t[0] - t[2]; t.splice(0, 3, v); return [t, 'addsub'];
+    },
+    tex: tk => tk.map(x => x === '*' ? '\\times' : x === '/' ? '\\div' : x).join(' ').replace(/\( /g, '(').replace(/ \)/g, ')'),
+    plain: tk => tk.join('')
+  };
+  const T_OO = [
+    [['n', '+', 'n', '*', 'n'], ['n', '*', 'n', '+', 'n'], ['n', '*', 'n', '-', 'n'], ['n', '-', 'n', '*', 'n']],
+    [['n', '-', 'n', '/', 'n'], ['n', '/', 'n', '+', 'n'], ['n', '+', 'n', '/', 'n'], ['n', '*', 'n', '/', 'n', '+', 'n']],
+    [['(', 'n', '+', 'n', ')', '*', 'n'], ['n', '*', '(', 'n', '-', 'n', ')'], ['(', 'n', '+', 'n', ')', '/', 'n'], ['n', '+', '(', 'n', '+', 'n', ')', '*', 'n']],
+    [['n', '+', 'n', '*', 'n', '-', 'n'], ['n', '*', 'n', '-', 'n', '*', 'n'], ['(', 'n', '+', 'n', ')', '*', 'n', '-', 'n'], ['n', '*', 'n', '+', 'n', '/', 'n']],
+    [['n', '*', '(', 'n', '+', 'n', '*', 'n', ')'], ['(', 'n', '+', 'n', ')', '*', '(', 'n', '-', 'n', ')'], ['n', '+', '(', 'n', '-', 'n', ')', '*', 'n', '/', 'n']]
+  ];
+  make({
+    id: 'g5-order-of-operations', version: 1, skillId: 'order-of-operations', minTimeMs: 2500,
+    levels: [{ desc: 'oo.lv1' }, { desc: 'oo.lv2' }, { desc: 'oo.lv3' }, { desc: 'oo.lv4' }, { desc: 'oo.lv5' }],
+    build(r, level) {
+      const tpl = r.pick(T_OO[level - 1]), tk = tpl.map(x => (x === 'n' ? r.int(2, 12) : x));
+      const ans = OO.value(tk);
+      if (ans === null || ans < 2 || ans > 300) return null;
+      const ltr = OO.value(tk, 'ltr'), nobr = tk.includes('(') ? OO.value(tk, 'nobr') : null, lv = 'g5-order-of-operations';
+      if ((ltr === null || ltr === ans) && (nobr === null || nobr === ans)) return null;   /* the trap must be real */
+      const steps = []; let cur = tk;
+      while (cur.length > 1) { const [nx, kind] = OO.reduce(cur); steps.push(say(kind.startsWith('oo.s.') ? kind : 'oo.s.' + kind, kind.startsWith('oo.s.brackets-') ? { expr: OO.tex(nx) } : { expr: OO.tex(nx) })); cur = nx; }
+      const hints = [say('oo.h1'), say('oo.h2', { first: say(tk.includes('(') ? 'oo.first.brackets' : tk.some(x => x === '*' || x === '/') ? 'oo.first.muldiv' : 'oo.first.addsub') })];
+      if (steps.length > 2) hints.push(steps.slice(0, -1).join(' '));
+      const cands = [mc('went-left-to-right', lv, ltr === null ? null : R(ltr), null), mc('ignored-the-brackets', lv, nobr === null ? null : R(nobr), null)];
+      return { prompt: { html: say('oo.p', { tex: OO.tex(tk) }) }, model: OO.plain(tk), answer: { type: 'number', value: R(ans), form: 'any', help: say('ans.whole') }, hints, steps, misconceptions: wrongs(R(ans), cands), canonical: 'oo|' + OO.plain(tk), tags: [] };
+    }
+  });
+
+  /* ---------------- G7: adding and subtracting integers ---------------- */
+  const sgnTex = n => (n < 0 ? `(${n})` : String(n));
+  make({
+    id: 'g7-integers', version: 1, skillId: 'add-subtract-integers', minTimeMs: 2000,
+    levels: [{ desc: 'int.lv1' }, { desc: 'int.lv2' }, { desc: 'int.lv3' }, { desc: 'int.lv4' }, { desc: 'int.lv5' }],
+    build(r, level) {
+      const NZr = (lo, hi) => r.intExcept(lo, hi, 0);
+      let t, ops;
+      if (level === 1) { t = [r.int(-9, -1), r.int(1, 9)]; ops = ['+']; if (r.chance(.4)) { t = [r.int(1, 9), r.int(-9, -1)]; } }
+      else if (level === 2) { t = [r.int(1, 9), r.int(1, 12)]; ops = ['-']; if (t[1] <= t[0]) return null; if (r.chance(.4)) t = [r.int(-9, -1), r.int(1, 9)]; }
+      else if (level === 3) { t = [r.int(-9, -1), r.int(-9, -1)]; ops = [r.pick(['+', '-'])]; }
+      else if (level === 4) { t = [NZr(-25, 25), NZr(-25, 25)]; ops = [r.pick(['+', '-'])]; }
+      else { t = [NZr(-15, 15), NZr(-15, 15), NZr(-15, 15)]; ops = [r.pick(['+', '-']), r.pick(['+', '-'])]; }
+      const run = (ts, os, f = x => x) => ts.slice(1).reduce((acc, x, i) => (os[i] === '+' ? acc + f(x) : acc - f(x)), ts[0]);
+      const ans = run(t, ops);
+      if (ans === 0) return null;
+      const tex = t.map((x, i) => (i === 0 ? String(x) : `${ops[i - 1]} ${sgnTex(x)}`)).join(' '), plain = t.map((x, i) => (i === 0 ? String(x) : `${ops[i - 1]}${x < 0 ? '(' + x + ')' : x}`)).join(''), lv = 'g7-integers';
+      const steps = []; let acc = t[0];
+      t.slice(1).forEach((x, i) => {
+        const o = ops[i], right = (o === '+') === (x > 0);
+        if (o === '-' && x < 0) steps.push(say('int.s.flip', { t: sgnTex(x), n: abs(x) }));
+        const res = o === '+' ? acc + x : acc - x;
+        steps.push(say('int.s.move', { acc, dir: say(right ? 'int.right' : 'int.left'), n: abs(x), res }));
+        acc = res;
+      });
+      const o0 = ops[0], x0 = t[1], right0 = (o0 === '+') === (x0 > 0);
+      const hints = [say('int.h1'), say('int.h2', { acc: t[0], dir: say(right0 ? 'int.right' : 'int.left'), n: abs(x0) })];
+      const cands = [mc('sign-of-the-answer-flipped', lv, R(-ans), 'negative-numbers-and-absolute-value'), mc('ignored-the-negative-signs', lv, R(run(t.map(abs), ops)), 'negative-numbers-and-absolute-value'),
+        mc('subtracting-a-negative-as-a-plain-subtract', lv, R(t.slice(1).reduce((a, x, i) => (ops[i] === '+' ? a + x : a - abs(x)), t[0])), 'negative-numbers-and-absolute-value')];
+      const word = level <= 2 && t.length === 2 && x0 > 0 && r.chance(.4);
+      const text = word ? say(o0 === '+' ? 'int.p.rise' : 'int.p.fall', { a: t[0], b: x0 }) : say('int.p.eval', { tex });
+      return { prompt: { html: text }, model: plain, tags: word ? ['word-problem'] : [], answer: { type: 'number', value: R(ans), form: 'any', help: say('ans.integer') }, hints, steps, misconceptions: wrongs(R(ans), cands), canonical: 'int|' + plain };
+    }
+  });
+
+  /* ---------------- G6: percent of a number, the percent, and the whole ---------------- */
+  make({
+    id: 'g6-percent', version: 1, skillId: 'percent-of-a-number', minTimeMs: 2500,
+    levels: [
+      { desc: 'pct.lv1', kind: 'of', ps: [10, 25, 50] }, { desc: 'pct.lv2', kind: 'of', ps: [20, 30, 40, 60, 70, 80, 90] }, { desc: 'pct.lv3', kind: 'of', ps: [5, 15, 35, 45, 75] },
+      { desc: 'pct.lv4', kind: 'percent', ps: [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80] }, { desc: 'pct.lv5', kind: 'whole', ps: [10, 20, 25, 30, 40, 50, 60, 75] }
+    ],
+    build(r, level, K) {
+      const p = r.pick(K.ps), n = r.int(2, 40) * 10;
+      if ((p * n) % 100 !== 0) return null;
+      const part = p * n / 100, lv = 'g6-percent', link = 'percents-on-tape-and-number-lines';
+      let text, model, ans, steps, hints, cands, tags = [], v = r.int(0, 1);
+      if (K.kind === 'of') {
+        text = v ? say(r.chance(.5) ? 'pct.p.class' : 'pct.p.shirt', { p, n }) : say('pct.p.of', { p, n }); if (v) tags = ['word-problem'];
+        model = `${p}*${n}/100`; ans = R(part);
+        steps = [say('pct.s.of1', { p }), say('pct.s.of2', { n, p, part, frac: `\\frac{${n * p}}{100}` })];
+        hints = [say('pct.h1.of'), say('pct.h2.of', { p, n })];
+        cands = [mc('forgot-to-divide-by-100', lv, R(p * n), link), mc('divided-by-the-percent-number', lv, R(n, p), link), mc('used-the-percent-as-the-answer', lv, R(p), link)];
+      } else if (K.kind === 'percent') {
+        text = v ? say('pct.p.walk', { n, part }) : say('pct.p.what', { n, part }); if (v) tags = ['word-problem'];
+        model = `${part}/${n}*100`; ans = R(p);
+        const g = gcd(part, n);
+        steps = [say('pct.s.pc1', { part, n }), say('pct.s.pc2', { p }), say('pct.s.pc3', { p })];
+        hints = [say('pct.h1.pc'), say('pct.h2.pc', { part, n })];
+        cands = [mc('inverted-the-fraction', lv, R(n * 100, part), link), mc('gave-the-decimal-not-the-percent', lv, R(part, n), link), mc('gave-the-part-as-the-percent', lv, R(part), link)];
+      } else {
+        text = v ? say('pct.p.sale', { p, part }) : say('pct.p.whole', { p, part }); if (v) tags = ['word-problem'];
+        model = `${part}*100/${p}`; ans = R(n);
+        steps = [say('pct.s.wh1', { p, part }), say('pct.s.wh2', { part, p, n })];
+        hints = [say('pct.h1.wh'), say('pct.h2.wh', { p, part })];
+        cands = [mc('found-the-percent-of-the-part', lv, R(part * p, 100), link), mc('divided-by-100-only', lv, R(part, 100), link), mc('used-the-percent-as-the-whole', lv, R(p), link)];
+      }
+      return { prompt: { html: text }, model, implicit: ['100'], tags, answer: { type: 'number', value: ans, form: 'any', units: ['%', 'percent'], help: say(K.kind === 'percent' ? 'ans.percent' : 'ans.number') }, hints, steps, misconceptions: wrongs(ans, cands), canonical: `pct|${K.kind}|${p}|${n}` };
+    }
+  });
+
+  /* ---------------- G6: the mean of a data set ---------------- */
+  make({
+    id: 'g6-mean', version: 1, skillId: 'mean-of-a-data-set', minTimeMs: 3000,
+    levels: [
+      { desc: 'mean.lv1', n: [3, 3], hi: 20, dev: 5 }, { desc: 'mean.lv2', n: [4, 5], hi: 30, dev: 8 }, { desc: 'mean.lv3', n: [5, 6], hi: 100, dev: 25 },
+      { desc: 'mean.lv4', n: [4, 6], hi: 100, dev: 20, missing: true }, { desc: 'mean.lv5', n: [6, 8], hi: 100, dev: 35 }
+    ],
+    build(r, level, K) {
+      const n = r.int(K.n[0], K.n[1]), m = r.int(Math.max(3, Math.floor(K.dev / 2)), K.hi - Math.floor(K.dev / 2));
+      let devs = []; for (let i = 0; i < n - 1; i++) devs.push(r.int(-K.dev, K.dev));
+      devs.push(-devs.reduce((t, x) => t + x, 0));
+      const vals = devs.map(d => m + d);
+      if (vals.some(x => x < 0 || x > K.hi + K.dev) || new Set(vals).size < 2) return null;
+      for (let i = vals.length - 1; i > 0; i--) { const j = r.int(0, i); [vals[i], vals[j]] = [vals[j], vals[i]]; }
+      const sum = vals.reduce((t, x) => t + x, 0), lv = 'g6-mean', link = 'mean-median-and-spread';
+      let text, model, ans, steps, hints, cands, tags = [];
+      if (K.missing) {
+        const known = vals.slice(0, -1), x = vals[vals.length - 1], ks = sum - x;
+        text = say('mean.p.missing', { n, m, list: known.join(', ') }); model = `${n}*${m}-(${known.join('+')})`; ans = R(x);
+        steps = [say('mean.s.m1', { n, m, total: n * m }), say('mean.s.m2', { sum: known.join(' + '), ks }), say('mean.s.m3', { total: n * m, ks, x })];
+        hints = [say('mean.h1.m'), say('mean.h2.m', { n, m })];
+        cands = [mc('found-the-mean-of-the-known-scores', lv, R(ks, n - 1), link), mc('forgot-to-subtract-the-known-scores', lv, R(n * m), link)];
+      } else {
+        const word = r.chance(.5); if (word) tags = ['word-problem'];
+        text = word ? say(r.chance(.5) ? 'mean.p.games' : 'mean.p.quiz', { n, list: vals.join(', ') }) : say('mean.p.eq', { list: vals.join(', ') });
+        model = `(${vals.join('+')})/${n}`; ans = R(m);
+        const sorted = vals.slice().sort((a, b) => a - b), med = n % 2 ? R(sorted[(n - 1) / 2]) : R(sorted[n / 2 - 1] + sorted[n / 2], 2);
+        steps = [say('mean.s.a1', { sum: vals.join(' + '), total: sum }), say('mean.s.a2', { total: sum, n, m })];
+        hints = [say('mean.h1'), say('mean.h2', { n })];
+        cands = [mc('forgot-to-divide', lv, R(sum), link), mc('divided-by-the-wrong-count', lv, R(sum, n - 1), link), mc('gave-the-median', lv, med, link)];
+      }
+      return { prompt: { html: text }, model, implicit: [String(n)], tags, answer: { type: 'number', value: ans, form: 'any', help: say('ans.number') }, hints, steps, misconceptions: wrongs(ans, cands), canonical: `mean|${K.missing ? 'm' : 'a'}|${vals.slice().sort((a, b) => a - b).join(',')}|${m}` };
+    }
+  });
 }
 
 /* =====================================================================
@@ -1983,8 +2472,22 @@ Practice.T = {
   Practice.SKILLS = [
     { id: 'multiply-multi-digit', course: 'grade4', unit: 'Whole-number operations', title: 'Multiply multi-digit numbers', gen: ['g4-multiply'],
       blurb: 'Use an area model to multiply: two digits by one digit, up to three digits by two.', lessons: ['multiplying-with-area-models'], standards: ['4.3.5.7'] },
-    { id: 'add-subtract-unlike-fractions', course: 'grade5', unit: 'Fractions', title: 'Add and subtract fractions with unlike denominators', gen: ['g5-fraction-sum'],
+    { id: 'divide-multi-digit', course: 'grade4', unit: 'Whole-number operations', title: 'Divide by a one-digit number', gen: ['g4-divide'],
+      blurb: 'Break the dividend into pieces the divisor goes into, up to four-digit dividends.', lessons: ['multiplying-with-area-models'], standards: ['4.3.5.8'] },
+    { id: 'perimeter-area-rectangles', course: 'grade4', unit: 'Measurement', title: 'Perimeter and area of rectangles', gen: ['g4-rectangle'],
+      blurb: 'Find the area or perimeter, or a missing side.', lessons: ['area-by-decomposition'], standards: ['4.2.3.4', '4.2.3.6'] },
+    { id: 'add-subtract-unlike-fractions', course: 'grade5', unit: 'Fractions and decimals', title: 'Add and subtract fractions with unlike denominators', gen: ['g5-fraction-sum'],
       blurb: 'Rename with a common denominator, then add or subtract.', lessons: ['adding-fractions-with-unlike-denominators', 'equivalent-fractions-on-a-number-line'], standards: ['5.3.5.11'] },
+    { id: 'add-subtract-decimals', course: 'grade5', unit: 'Fractions and decimals', title: 'Add and subtract decimals', gen: ['g5-decimals'],
+      blurb: 'Line up the places, from tenths to thousandths.', lessons: ['decimals-and-place-value'], standards: ['5.3.5.13'] },
+    { id: 'order-of-operations', course: 'grade5', unit: 'Expressions', title: 'Order of operations', gen: ['g5-order-of-operations'],
+      blurb: 'Brackets, then multiply and divide, then add and subtract.', lessons: [], standards: ['5.3.6.2'] },
+    { id: 'percent-of-a-number', course: 'grade6', unit: 'Number sense', title: 'Percent of a number', gen: ['g6-percent'],
+      blurb: 'Find a percent of a number, find the percent, or find the whole.', lessons: ['percents-on-tape-and-number-lines'], standards: ['6.3.5.11'] },
+    { id: 'mean-of-a-data-set', course: 'grade6', unit: 'Data', title: 'The mean of a data set', gen: ['g6-mean'],
+      blurb: 'Add and share equally, or find a missing value from the mean.', lessons: ['mean-median-and-spread'], standards: ['6.1.1.3'] },
+    { id: 'add-subtract-integers', course: 'grade7', unit: 'Number sense', title: 'Add and subtract integers', gen: ['g7-integers'],
+      blurb: 'Use the number line, including subtracting a negative.', lessons: ['negative-numbers-and-absolute-value'], standards: ['7.3.5.4', '7.3.5.6'] },
     { id: 'solve-linear-equations', course: 'grade8', unit: 'Equations', title: 'Solve linear equations', gen: ['g8-linear-equation'],
       blurb: 'From one step up to brackets and variables on both sides.', lessons: ['solving-equations-with-a-balance'], standards: ['8.3.6.3'] },
     { id: 'pythagorean-side-lengths', course: 'grade8', unit: 'Right triangles', title: 'Find a side of a right triangle', gen: ['g8-pythagorean-side'],
@@ -1999,7 +2502,7 @@ Practice.T = {
   /* ---- the ladder ---- */
   const LADDER = Practice.LADDER = { up: 3, down: 2, masteryWindow: 6, masteryNeeded: 5 };
   Practice.newState = () => ({ level: 1, streak: 0, miss: 0, totalPoints: 0, mastered: false, lastPracticed: 0, attempts: 0, forceLevel: 0,
-    topRecent: [], recentSeeds: [], recentHashes: [], rating: null, placed: false });
+    topRecent: [], recentOk: [], recentSeeds: [], recentHashes: [], rating: null, placed: false });
 
   /* Points: scale with level; streak bonus; level-up bonus; fewer with hints; none for giving up, a wrong answer or a guess;
      a quarter once the skill is mastered. */
@@ -2011,6 +2514,7 @@ Practice.T = {
     const res = { points: 0, change: 0, newlyMastered: false, ignored: false };
     if (o.fast && o.correct && !o.gaveUp) { res.ignored = true; res.state = s; return res; }   /* a guess: no points, no ladder move */
     const clean = o.correct && !o.hints && !o.gaveUp;
+    s.recentOk = (s.recentOk || []).concat(o.correct && !o.gaveUp ? 1 : 0).slice(-8);
     if (o.level === top) {
       s.topRecent.push(clean ? 1 : 0);
       if (s.topRecent.length > LADDER.masteryWindow) s.topRecent.shift();
@@ -2064,9 +2568,10 @@ Practice.T = {
       const got = Practice.cas.answerOf(inst);
       if (!Practice.sameValue(inst.answer.type, got, inst.answer.value)) return 'the CAS disagrees with the constructed answer';
       /* the printed numbers must be the model's numbers (digits only; exponents are not data) */
-      const nums = s => [...new Set((s.replace(/\^\d/g, '').match(/\d+/g) || []))].sort().join(',');
-      const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' '));
-      if (shown !== nums(inst.model)) return `the text shows numbers ${shown} but the model has ${nums(inst.model)}`;
+      const nums = s => new Set(s.replace(/\^\d/g, '').match(/\d+/g) || []);
+      const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' ')), model = nums(inst.model), implicit = inst.implicit || [];
+      const extra = [...shown].filter(x => !model.has(x)), hidden = [...model].filter(x => !shown.has(x) && !implicit.includes(x));
+      if (extra.length || hidden.length) return `the text and the model disagree on numbers (text only: ${extra}; model only: ${hidden})`;
       return null;
     } catch (e) { return 'the CAS could not read the problem: ' + e.message; }
   };
@@ -2092,6 +2597,48 @@ Practice.T = {
   };
   Practice.instanceRecord = inst => ({ g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed });
   Practice.regenerate = rec => { const gen = byId[rec.g]; if (!gen || gen.version !== rec.v) return null; return gen.generate(rec.seed, rec.lvl); };
+}
+
+/* ---- mixed review (v2): skills of one unit or course take turns ---- */
+{
+  const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  /* the mixes on offer: one per course with two or more skills, and one per unit with two or more skills (when the unit is not the whole course).
+     nameOf maps a course id to its display name. */
+  Practice.mixes = (nameOf = id => id) => {
+    const out = [], courses = [...new Set(Practice.SKILLS.map(s => s.course))];
+    for (const c of courses) {
+      const inC = Practice.SKILLS.filter(s => s.course === c);
+      if (inC.length < 2) continue;
+      out.push({ id: 'mix-course-' + c, course: c, title: 'Mixed review: ' + nameOf(c), skills: inC });
+      for (const u of [...new Set(inC.map(s => s.unit))]) {
+        const inU = inC.filter(s => s.unit === u);
+        if (inU.length >= 2 && inU.length < inC.length) out.push({ id: `mix-unit-${c}-${slug(u)}`, course: c, title: 'Mixed review: ' + u, skills: inU });
+      }
+    }
+    return out;
+  };
+  Practice.mix = (id, nameOf) => Practice.mixes(nameOf).find(m => m.id === id);
+  /* How much a skill needs a turn: never tried, weak lately, or not seen for a while count for more; a mastered skill stays in
+     the rotation at half weight (review). */
+  Practice.skillWeight = (state, now = Date.now()) => {
+    if (!state.attempts) return 3;
+    const ok = state.recentOk || [], acc = ok.length >= 3 ? ok.reduce((t, v) => t + v, 0) / ok.length : (ok.reduce((t, v) => t + v, 0) + 1.8) / (ok.length + 3);
+    const days = Math.min(7, Math.max(0, (now - (state.lastPracticed || now)) / 86400000));
+    let w = 1 + 4 * (1 - acc) + .4 * days;
+    if (state.mastered) w = Math.max(.4, w * .5);
+    return w;
+  };
+  /* skills: the mix's skills; states: id -> state; lastId: the skill just asked (never twice in a row with 3 or more skills; soft-avoided with 2; `repeat` forces it) */
+  Practice.pickSkill = (skills, states, lastId, now, rand = Math.random, repeat = false) => {
+    if (repeat && lastId && skills.some(s => s.id === lastId)) return skills.find(s => s.id === lastId);
+    /* three or more skills: never the same one twice in a row. Two skills: the one just asked is down-weighted, so they still interleave
+       but the weaker one can come up twice. */
+    const hard = skills.length >= 3, pool = hard ? skills.filter(s => s.id !== lastId) : skills;
+    const ws = pool.map(s => Practice.skillWeight(states[s.id] || Practice.newState(), now) * (!hard && skills.length > 1 && s.id === lastId ? .25 : 1)), total = ws.reduce((t, v) => t + v, 0);
+    let x = rand() * total;
+    for (let i = 0; i < pool.length; i++) { x -= ws[i]; if (x < 0) return pool[i]; }
+    return pool[pool.length - 1];
+  };
 }
 
 /* =====================================================================
@@ -3265,7 +3812,7 @@ const PracticeStore = (() => {
     for (const k of ['level', 'streak', 'miss', 'totalPoints', 'lastPracticed', 'attempts', 'forceLevel']) if (Number.isFinite(+s[k])) base[k] = Math.max(0, +s[k]);
     base.level = Math.max(1, base.level);
     base.mastered = !!s.mastered; base.placed = !!s.placed;
-    for (const k of ['topRecent', 'recentSeeds', 'recentHashes']) if (Array.isArray(s[k])) base[k] = s[k].slice(-80);
+    for (const k of ['topRecent', 'recentOk', 'recentSeeds', 'recentHashes']) if (Array.isArray(s[k])) base[k] = s[k].slice(-80);
     return base;
   };
   const load = () => {
@@ -3290,7 +3837,19 @@ const PracticeStore = (() => {
 })();
 
 /* A right triangle drawn from the problem's own numbers, so the picture can never disagree with the text. */
+function practiceRectangle(fig) {
+  const W = 260, H = 170, pad = 34, s = Math.min((W - 2 * pad) / fig.l, (H - 2 * pad) / fig.w), w = fig.l * s, hh = fig.w * s, x0 = (W - w) / 2, y0 = (H - hh) / 2;
+  const NS = 'http://www.w3.org/2000/svg', el = (t, at, txt) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; return e; };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pr-fig', role: 'img', 'aria-label': `Rectangle. Length ${fig.unknown === 'l' ? 'unknown' : fig.l}, width ${fig.unknown === 'w' ? 'unknown' : fig.w}. ${fig.center}.` });
+  svg.append(el('rect', { x: x0, y: y0, width: w, height: hh, fill: 'color-mix(in srgb, var(--blue) 14%, transparent)', stroke: 'var(--blue)', 'stroke-width': 2 }));
+  const label = (x, y, txt, anchor) => svg.append(el('text', { x, y, 'text-anchor': anchor, fill: 'var(--text)', 'font-size': 16, 'font-family': 'var(--sans)', 'font-weight': 600 }, txt));
+  label(x0 + w / 2, y0 - 8, fig.unknown === 'l' ? '?' : fig.l, 'middle');
+  label(x0 - 8, y0 + hh / 2 + 5, fig.unknown === 'w' ? '?' : fig.w, 'end');
+  label(x0 + w / 2, y0 + hh / 2 + 5, fig.center, 'middle');
+  return svg;
+}
 function practiceFigure(fig) {
+  if (fig.kind === 'rectangle') return practiceRectangle(fig);
   const [a, b] = fig.legs, W = 240, H = 170, pad = 34, s = Math.min((W - 2 * pad) / a, (H - 2 * pad) / b);
   const w = a * s, hh = b * s, x0 = (W - w) / 2, y0 = H - pad, q = 12;
   const NS = 'http://www.w3.org/2000/svg', el = (t, at, txt) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; return e; };
@@ -3304,10 +3863,11 @@ function practiceFigure(fig) {
   return svg;
 }
 
-function renderPractice(app, skillId) {
-  const skill = skillId && Practice.skill(skillId);
-  document.title = (skill ? skill.title + ' | ' : '') + 'Practice | Continuum';
-  return skill ? practiceSession(app, skill) : practicePicker(app);
+function renderPractice(app, id) {
+  const skill = id && Practice.skill(id), mix = !skill && id && Practice.mix(id, c => COURSE[c].name);
+  const scope = skill ? { id: skill.id, title: skill.title, skills: [skill], mix: false } : mix ? { id: mix.id, title: mix.title, skills: mix.skills, mix: true } : null;
+  document.title = (scope ? scope.title + ' | ' : '') + 'Practice | Continuum';
+  return scope ? practiceSession(app, scope) : practicePicker(app);
 }
 
 function practicePicker(app) {
@@ -3317,17 +3877,27 @@ function practicePicker(app) {
   const total = PracticeStore.total();
   wrap.append(h('p', { class: 'pr-total', 'aria-live': 'polite' }, `Total points: ${total}`));
   if (!PracticeStore.storageOk()) wrap.append(h('p', { class: 'pr-warn', role: 'status' }, 'This browser is not saving your practice, so it will be lost when you close the tab.'));
+  const mixes = Practice.mixes(c => COURSE[c].name);
   for (const c of COURSES) {
     const skills = Practice.SKILLS.filter(s => s.course === c.id);
     if (!skills.length) continue;
+    const mixCard = m => {
+      const started = m.skills.filter(sk => PracticeStore.state(sk.id).attempts).length;
+      return h('a', { class: 'pr-card pr-mix', href: '#practice~' + m.id },
+        h('span', { class: 'pr-unit' }, 'Mixed review'),
+        h('span', { class: 'pr-card-t' }, m.title.replace('Mixed review: ', '')),
+        h('span', { class: 'pr-card-b' }, 'Skills take turns, so you practise switching between ideas. The ones you need most come up more often.'),
+        h('span', { class: 'pr-card-m' }, `${m.skills.length} skills \u00b7 ${started} started`));
+    };
     wrap.append(h('section', { class: 'pr-course', 'aria-label': c.name }, h('h2', { class: 'pr-course-h' }, c.name),
+      mixes.filter(m => m.course === c.id).map(mixCard),
       skills.map(s => {
         const st = PracticeStore.state(s.id), top = Practice.levelCount(s);
         return h('a', { class: 'pr-card', href: '#practice~' + s.id },
           h('span', { class: 'pr-unit' }, s.unit),
           h('span', { class: 'pr-card-t' }, s.title),
           h('span', { class: 'pr-card-b' }, s.blurb),
-          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` · ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '★ Mastered') : null));
+          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` \u00b7 ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '\u2605 Mastered') : null));
       })));
   }
   /* the audit trail, put to use: the last few misconceptions, regenerated from their records, with a lesson to revisit */
@@ -3344,17 +3914,19 @@ function practicePicker(app) {
   return () => {};
 }
 
-function practiceSession(app, skill) {
-  const top = Practice.levelCount(skill), keypad = ['grade4', 'grade5', 'grade6'].includes(skill.course);
-  let state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null;
-  const startLevel = state.level, session = { solved: 0, tried: 0, points: 0, misc: {} };
+function practiceSession(app, scope) {
+  const keypad = ['grade4', 'grade5', 'grade6'].includes(scope.skills[0].course);
+  let skill = scope.skills[0], top = Practice.levelCount(skill), state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null, lastId = null, repeat = false;
+  const per = {};   /* per skill, this session: start level, solved, tried, points, misconceptions */
+  const note = sk => (per[sk.id] = per[sk.id] || { skill: sk, startLevel: PracticeStore.state(sk.id).level, solved: 0, tried: 0, points: 0, misc: {} });
+  let sessionPoints = 0;
   const wrap = h('div', { class: 'wrap pr-page' });
   const back = h('a', { class: 'pr-back', href: '#practice' }, '← All skills');
   const lvl = h('span', { class: 'pr-stat-v' }), lvlDesc = h('p', { class: 'pr-lvldesc' }), pips = h('span', { class: 'pr-pips', role: 'img' }),
-    sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' });
+    sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' }), skillLine = h('p', { class: 'pr-skillline', 'aria-live': 'polite' });
   const stat = (k, v) => h('div', { class: 'pr-stat' }, h('span', { class: 'pr-stat-k' }, k), v);
-  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, skill.title),
-    h('div', { class: 'pr-stats' }, stat('Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), lvlDesc);
+  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, scope.title),
+    h('div', { class: 'pr-stats' }, stat(scope.mix ? 'Level in this skill' : 'Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), skillLine, lvlDesc);
   const promptEl = h('div', { class: 'pr-prompt', id: 'pr-prompt' }), figEl = h('div', { class: 'pr-figwrap' });
   const input = h('input', { type: 'text', id: 'pr-answer', class: 'pr-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', inputmode: keypad ? 'none' : 'text', 'aria-describedby': 'pr-help pr-echo' });
   const help = h('p', { class: 'pr-help', id: 'pr-help' }), echo = h('p', { class: 'pr-echo', id: 'pr-echo', 'aria-live': 'polite' });
@@ -3381,17 +3953,25 @@ function practiceSession(app, skill) {
   app.append(wrap);
 
   const draw = () => {
+    top = Practice.levelCount(skill);
     lvl.textContent = `${state.level} of ${top}`;
     lvlDesc.textContent = Practice.say(Practice.generatorsOf(skill)[0].levels[state.level - 1].desc);
+    skillLine.textContent = scope.mix ? 'Skill: ' + skill.title : '';
     const have = Math.min(state.streak, Practice.LADDER.up);
     pips.textContent = ''; pips.setAttribute('aria-label', `${have} of ${Practice.LADDER.up} correct in a row`);
     for (let i = 0; i < Practice.LADDER.up; i++) pips.append(h('span', { class: 'pr-pip' + (i < have ? ' on' : '') }));
     if (state.mastered) pips.append(h('span', { class: 'pr-badge' }, '★ Mastered'));
-    sPts.textContent = session.points; tPts.textContent = state.totalPoints;
-    if (window.__practice) window.__practice.state = state;
+    sPts.textContent = sessionPoints; tPts.textContent = PracticeStore.total();
+    if (window.__practice) { window.__practice.state = state; window.__practice.skill = skill; }
   };
   const setFb = (kind, html) => { fb.className = 'pr-fb ' + kind; fb.innerHTML = html; typeset(fb); };
   function load() {
+    if (scope.mix) {
+      const states = {}; for (const sk of scope.skills) states[sk.id] = PracticeStore.state(sk.id);
+      skill = Practice.pickSkill(scope.skills, states, lastId, Date.now(), Math.random, repeat);
+    }
+    repeat = false; lastId = skill.id; note(skill);
+    state = PracticeStore.state(skill.id);
     inst = Practice.nextInstance(state, skill);
     Practice.markSeen(state, inst); PracticeStore.put(skill.id, state);
     hints = 0; answered = false; hintBox = null; t0 = performance.now();
@@ -3400,7 +3980,8 @@ function practiceSession(app, skill) {
     help.textContent = inst.answer.help; echo.textContent = ''; input.value = ''; input.disabled = false;
     fb.className = 'pr-fb'; fb.textContent = ''; stepsEl.replaceChildren();
     btnCheck.hidden = btnSol.hidden = false; btnNext.hidden = true; btnHint.hidden = false; btnHint.disabled = false; btnHint.textContent = 'Hint';
-    draw(); window.__practice = { skill, inst, state };   /* the current problem, for the tests */
+    window.__practice = { skill, inst, state };   /* the current problem, for the tests */
+    draw();
     input.focus({ preventScroll: true });
   }
   function hint() {
@@ -3416,7 +3997,7 @@ function practiceSession(app, skill) {
     if (open) d.open = true;
     stepsEl.append(d); typeset(d);
   };
-  const lessonLinks = () => skill.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
+  const lessonsOf = sk => sk.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
   function finish(o) {   /* o: { correct, gaveUp, answer, misconception } */
     answered = true;
     const ms = performance.now() - t0, fast = o.correct && !o.gaveUp && !hints && ms < Practice.generators[inst.generatorId].minTimeMs;
@@ -3424,8 +4005,9 @@ function practiceSession(app, skill) {
     state = out.state;
     const rec = Practice.record(skill, inst, { answer: o.answer, correct: o.correct && !o.gaveUp, hints, misconception: o.misconception, timeMs: ms, points: out.points, gaveUp: o.gaveUp });
     PracticeStore.put(skill.id, state, rec);
-    session.tried++; if (o.correct && !o.gaveUp) session.solved++; session.points += out.points;
-    if (o.misconception) session.misc[o.misconception] = (session.misc[o.misconception] || 0) + 1;
+    const n = note(skill); n.tried++; if (o.correct && !o.gaveUp) n.solved++; n.points += out.points; sessionPoints += out.points;
+    if (o.misconception) n.misc[o.misconception] = (n.misc[o.misconception] || 0) + 1;
+    if (o.gaveUp) repeat = true;
     input.disabled = true; btnCheck.hidden = btnSol.hidden = btnHint.hidden = true; btnNext.hidden = false;
     draw();
     return { out, fast };
@@ -3443,11 +4025,11 @@ function practiceSession(app, skill) {
       if (fast) bits.push('That was very quick, so it did not count toward points or levels. Read each problem, then answer.');
       else bits.push(`<b>Correct.</b> +${out.points} point${out.points === 1 ? '' : 's'}.`);
       if (out.change > 0) bits.push(`Level up! You are on level ${state.level}.`);
-      if (out.newlyMastered) bits.push('You have mastered this skill. Keep going, or try mixed practice later.');
+      if (out.newlyMastered) bits.push('You have mastered this skill. It stays in your mixed review.');
       msg = bits.join(' ');
     } else {
       msg = `<b>Not quite.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. `;
-      if (m) { msg += escapeHtml(m.feedback) + ' '; const l = VIZ.find(v => v.id === m.lessonLink); if (l) msg += `<a href="${lessonToken(l.id)}">Review: ${escapeHtml(l.title)}</a>`; }
+      if (m) { msg += escapeHtml(m.feedback) + ' '; const l = m.lessonLink && VIZ.find(v => v.id === m.lessonLink); if (l) msg += `<a href="${lessonToken(l.id)}">Review: ${escapeHtml(l.title)}</a>`; }
       if (out.change < 0) msg += ` Let's go back to level ${state.level} for a bit.`;
     }
     setFb(correct ? 'ok' : 'no', msg);
@@ -3463,14 +4045,16 @@ function practiceSession(app, skill) {
   }
   function next() { load(); }
   function summary() {
-    const mis = Object.entries(session.misc);
-    const sample = id => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === skill.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };
+    const rows = Object.values(per).filter(n => n.tried), solved = rows.reduce((t, n) => t + n.solved, 0), tried = rows.reduce((t, n) => t + n.tried, 0);
+    const sample = (sk, id) => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === sk.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };
+    const slips = rows.flatMap(n => Object.entries(n.misc).map(([id, c]) => ({ n, id, c, m: sample(n.skill, id) })));
+    const levelText = n => { const lv = PracticeStore.state(n.skill.id).level; return lv > n.startLevel ? `up from level ${n.startLevel} to ${lv}` : lv < n.startLevel ? `back from level ${n.startLevel} to ${lv} to build up` : `stayed at level ${lv}`; };
     wrap.replaceChildren(back, h('h1', { class: 'display pr-title' }, 'Session summary'),
-      h('p', { class: 'pr-sum' }, `You solved ${session.solved} of ${session.tried} problem${session.tried === 1 ? '' : 's'} and earned ${session.points} points.`),
-      h('p', { class: 'pr-sum' }, state.level > startLevel ? `You moved up from level ${startLevel} to level ${state.level}.` : state.level < startLevel ? `You moved from level ${startLevel} to level ${state.level} to build up.` : `You stayed at level ${state.level} of ${top}.`),
-      mis.length ? h('section', { class: 'pr-slips' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'),
-        h('ul', {}, mis.map(([id, n]) => { const m = sample(id), l = m && VIZ.find(v => v.id === m.lessonLink); return h('li', {}, `${m ? m.feedback : id} (${n} time${n === 1 ? '' : 's'}) `, l ? h('a', { href: lessonToken(l.id) }, 'Review: ' + l.title) : null); }))) : null,
-      lessonLinks().length && !mis.length ? h('p', {}, 'Lessons for this skill: ', lessonLinks().flatMap((a, i) => i ? [', ', a] : [a])) : null,
+      h('p', { class: 'pr-sum' }, `You solved ${solved} of ${tried} problem${tried === 1 ? '' : 's'} and earned ${sessionPoints} points.`),
+      rows.length ? h('ul', { class: 'pr-sumlist' }, rows.map(n => h('li', {}, `${n.skill.title}: ${n.solved} of ${n.tried} right, ${levelText(n)}.`))) : null,
+      slips.length ? h('section', { class: 'pr-slips' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'),
+        h('ul', {}, slips.map(({ n, id, c, m }) => { const l = m && m.lessonLink && VIZ.find(v => v.id === m.lessonLink); return h('li', {}, `${m ? m.feedback : id} (${c} time${c === 1 ? '' : 's'}) `, l ? h('a', { href: lessonToken(l.id) }, 'Review: ' + l.title) : null); }))) : null,
+      !slips.length && rows.length ? h('p', {}, 'Lessons for these skills: ', rows.flatMap(n => lessonsOf(n.skill)).flatMap((a, i) => i ? [', ', a] : [a])) : null,
       h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', onclick: () => route() }, 'Practice again'), h('a', { class: 'btn', href: '#practice' }, 'All skills')));
     const hd = wrap.querySelector('h1'); hd.setAttribute('tabindex', '-1'); hd.focus({ preventScroll: true });
   }

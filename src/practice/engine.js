@@ -16,8 +16,22 @@
   Practice.SKILLS = [
     { id: 'multiply-multi-digit', course: 'grade4', unit: 'Whole-number operations', title: 'Multiply multi-digit numbers', gen: ['g4-multiply'],
       blurb: 'Use an area model to multiply: two digits by one digit, up to three digits by two.', lessons: ['multiplying-with-area-models'], standards: ['4.3.5.7'] },
-    { id: 'add-subtract-unlike-fractions', course: 'grade5', unit: 'Fractions', title: 'Add and subtract fractions with unlike denominators', gen: ['g5-fraction-sum'],
+    { id: 'divide-multi-digit', course: 'grade4', unit: 'Whole-number operations', title: 'Divide by a one-digit number', gen: ['g4-divide'],
+      blurb: 'Break the dividend into pieces the divisor goes into, up to four-digit dividends.', lessons: ['multiplying-with-area-models'], standards: ['4.3.5.8'] },
+    { id: 'perimeter-area-rectangles', course: 'grade4', unit: 'Measurement', title: 'Perimeter and area of rectangles', gen: ['g4-rectangle'],
+      blurb: 'Find the area or perimeter, or a missing side.', lessons: ['area-by-decomposition'], standards: ['4.2.3.4', '4.2.3.6'] },
+    { id: 'add-subtract-unlike-fractions', course: 'grade5', unit: 'Fractions and decimals', title: 'Add and subtract fractions with unlike denominators', gen: ['g5-fraction-sum'],
       blurb: 'Rename with a common denominator, then add or subtract.', lessons: ['adding-fractions-with-unlike-denominators', 'equivalent-fractions-on-a-number-line'], standards: ['5.3.5.11'] },
+    { id: 'add-subtract-decimals', course: 'grade5', unit: 'Fractions and decimals', title: 'Add and subtract decimals', gen: ['g5-decimals'],
+      blurb: 'Line up the places, from tenths to thousandths.', lessons: ['decimals-and-place-value'], standards: ['5.3.5.13'] },
+    { id: 'order-of-operations', course: 'grade5', unit: 'Expressions', title: 'Order of operations', gen: ['g5-order-of-operations'],
+      blurb: 'Brackets, then multiply and divide, then add and subtract.', lessons: [], standards: ['5.3.6.2'] },
+    { id: 'percent-of-a-number', course: 'grade6', unit: 'Number sense', title: 'Percent of a number', gen: ['g6-percent'],
+      blurb: 'Find a percent of a number, find the percent, or find the whole.', lessons: ['percents-on-tape-and-number-lines'], standards: ['6.3.5.11'] },
+    { id: 'mean-of-a-data-set', course: 'grade6', unit: 'Data', title: 'The mean of a data set', gen: ['g6-mean'],
+      blurb: 'Add and share equally, or find a missing value from the mean.', lessons: ['mean-median-and-spread'], standards: ['6.1.1.3'] },
+    { id: 'add-subtract-integers', course: 'grade7', unit: 'Number sense', title: 'Add and subtract integers', gen: ['g7-integers'],
+      blurb: 'Use the number line, including subtracting a negative.', lessons: ['negative-numbers-and-absolute-value'], standards: ['7.3.5.4', '7.3.5.6'] },
     { id: 'solve-linear-equations', course: 'grade8', unit: 'Equations', title: 'Solve linear equations', gen: ['g8-linear-equation'],
       blurb: 'From one step up to brackets and variables on both sides.', lessons: ['solving-equations-with-a-balance'], standards: ['8.3.6.3'] },
     { id: 'pythagorean-side-lengths', course: 'grade8', unit: 'Right triangles', title: 'Find a side of a right triangle', gen: ['g8-pythagorean-side'],
@@ -32,7 +46,7 @@
   /* ---- the ladder ---- */
   const LADDER = Practice.LADDER = { up: 3, down: 2, masteryWindow: 6, masteryNeeded: 5 };
   Practice.newState = () => ({ level: 1, streak: 0, miss: 0, totalPoints: 0, mastered: false, lastPracticed: 0, attempts: 0, forceLevel: 0,
-    topRecent: [], recentSeeds: [], recentHashes: [], rating: null, placed: false });
+    topRecent: [], recentOk: [], recentSeeds: [], recentHashes: [], rating: null, placed: false });
 
   /* Points: scale with level; streak bonus; level-up bonus; fewer with hints; none for giving up, a wrong answer or a guess;
      a quarter once the skill is mastered. */
@@ -44,6 +58,7 @@
     const res = { points: 0, change: 0, newlyMastered: false, ignored: false };
     if (o.fast && o.correct && !o.gaveUp) { res.ignored = true; res.state = s; return res; }   /* a guess: no points, no ladder move */
     const clean = o.correct && !o.hints && !o.gaveUp;
+    s.recentOk = (s.recentOk || []).concat(o.correct && !o.gaveUp ? 1 : 0).slice(-8);
     if (o.level === top) {
       s.topRecent.push(clean ? 1 : 0);
       if (s.topRecent.length > LADDER.masteryWindow) s.topRecent.shift();
@@ -97,9 +112,10 @@
       const got = Practice.cas.answerOf(inst);
       if (!Practice.sameValue(inst.answer.type, got, inst.answer.value)) return 'the CAS disagrees with the constructed answer';
       /* the printed numbers must be the model's numbers (digits only; exponents are not data) */
-      const nums = s => [...new Set((s.replace(/\^\d/g, '').match(/\d+/g) || []))].sort().join(',');
-      const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' '));
-      if (shown !== nums(inst.model)) return `the text shows numbers ${shown} but the model has ${nums(inst.model)}`;
+      const nums = s => new Set(s.replace(/\^\d/g, '').match(/\d+/g) || []);
+      const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' ')), model = nums(inst.model), implicit = inst.implicit || [];
+      const extra = [...shown].filter(x => !model.has(x)), hidden = [...model].filter(x => !shown.has(x) && !implicit.includes(x));
+      if (extra.length || hidden.length) return `the text and the model disagree on numbers (text only: ${extra}; model only: ${hidden})`;
       return null;
     } catch (e) { return 'the CAS could not read the problem: ' + e.message; }
   };
@@ -125,4 +141,46 @@
   };
   Practice.instanceRecord = inst => ({ g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed });
   Practice.regenerate = rec => { const gen = byId[rec.g]; if (!gen || gen.version !== rec.v) return null; return gen.generate(rec.seed, rec.lvl); };
+}
+
+/* ---- mixed review (v2): skills of one unit or course take turns ---- */
+{
+  const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  /* the mixes on offer: one per course with two or more skills, and one per unit with two or more skills (when the unit is not the whole course).
+     nameOf maps a course id to its display name. */
+  Practice.mixes = (nameOf = id => id) => {
+    const out = [], courses = [...new Set(Practice.SKILLS.map(s => s.course))];
+    for (const c of courses) {
+      const inC = Practice.SKILLS.filter(s => s.course === c);
+      if (inC.length < 2) continue;
+      out.push({ id: 'mix-course-' + c, course: c, title: 'Mixed review: ' + nameOf(c), skills: inC });
+      for (const u of [...new Set(inC.map(s => s.unit))]) {
+        const inU = inC.filter(s => s.unit === u);
+        if (inU.length >= 2 && inU.length < inC.length) out.push({ id: `mix-unit-${c}-${slug(u)}`, course: c, title: 'Mixed review: ' + u, skills: inU });
+      }
+    }
+    return out;
+  };
+  Practice.mix = (id, nameOf) => Practice.mixes(nameOf).find(m => m.id === id);
+  /* How much a skill needs a turn: never tried, weak lately, or not seen for a while count for more; a mastered skill stays in
+     the rotation at half weight (review). */
+  Practice.skillWeight = (state, now = Date.now()) => {
+    if (!state.attempts) return 3;
+    const ok = state.recentOk || [], acc = ok.length >= 3 ? ok.reduce((t, v) => t + v, 0) / ok.length : (ok.reduce((t, v) => t + v, 0) + 1.8) / (ok.length + 3);
+    const days = Math.min(7, Math.max(0, (now - (state.lastPracticed || now)) / 86400000));
+    let w = 1 + 4 * (1 - acc) + .4 * days;
+    if (state.mastered) w = Math.max(.4, w * .5);
+    return w;
+  };
+  /* skills: the mix's skills; states: id -> state; lastId: the skill just asked (never twice in a row with 3 or more skills; soft-avoided with 2; `repeat` forces it) */
+  Practice.pickSkill = (skills, states, lastId, now, rand = Math.random, repeat = false) => {
+    if (repeat && lastId && skills.some(s => s.id === lastId)) return skills.find(s => s.id === lastId);
+    /* three or more skills: never the same one twice in a row. Two skills: the one just asked is down-weighted, so they still interleave
+       but the weaker one can come up twice. */
+    const hard = skills.length >= 3, pool = hard ? skills.filter(s => s.id !== lastId) : skills;
+    const ws = pool.map(s => Practice.skillWeight(states[s.id] || Practice.newState(), now) * (!hard && skills.length > 1 && s.id === lastId ? .25 : 1)), total = ws.reduce((t, v) => t + v, 0);
+    let x = rand() * total;
+    for (let i = 0; i < pool.length; i++) { x -= ws[i]; if (x < 0) return pool[i]; }
+    return pool[pool.length - 1];
+  };
 }
