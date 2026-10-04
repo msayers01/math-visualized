@@ -49,9 +49,9 @@ function route() {
   }
   try {
     teardown = r.page === 'viz' && v ? renderViz(app, v, r.step) : r.page === 'ticket' && v ? renderTicket(app, v, r.key)
-             : r.page === 'progress' ? renderProgress(app) : r.page === 'teacher' ? renderTeacher(app) : renderHome(app);
+             : r.page === 'practice' ? renderPractice(app, r.skill) : r.page === 'progress' ? renderProgress(app) : r.page === 'teacher' ? renderTeacher(app) : renderHome(app);
   } catch (err) { teardown = null; showRouteError(err); window.scrollTo(0, 0); routedOnce = true; return; }
-  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress' && r.page !== 'teacher';
+  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress' && r.page !== 'teacher' && r.page !== 'practice';
   const target = home && r.level ? document.getElementById('level-' + r.level) : home && r.filters ? document.getElementById('finder') : null;
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
   else window.scrollTo(0, 0);

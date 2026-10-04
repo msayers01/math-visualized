@@ -1,0 +1,54 @@
+/* ---------- Practice: skill picker and the endless problem loop ---------- */
+.pr-page { padding-top: 28px; padding-bottom: 56px; max-width: 880px; }
+.pr-title { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 300; margin: 0 0 .3em; }
+.pr-lede { max-width: 60ch; color: var(--muted); }
+.pr-total { margin: 4px 0 18px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.pr-warn { border: 1px solid var(--yellow); border-radius: 4px; padding: 10px 14px; background: color-mix(in srgb, var(--yellow) 12%, transparent); }
+.pr-course-h { font-family: var(--display); font-weight: 400; font-size: 1.2rem; letter-spacing: -.03em; margin: 26px 0 10px; }
+.pr-card { display: grid; gap: 3px; padding: 14px 18px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; transition: border-color .2s; }
+.pr-card:hover { border-color: var(--brass); }
+.pr-unit { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pr-card-t { font-family: var(--display); font-size: 1.1rem; letter-spacing: -.025em; }
+.pr-card-b { font-size: .92rem; color: var(--muted); }
+.pr-card-m { font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pr-badge { display: inline-block; margin-left: 10px; padding: 1px 10px; border: 1px solid var(--brass); border-radius: 999px; color: var(--brass); font-size: .78rem; }
+.pr-back { display: inline-block; margin-bottom: 14px; color: var(--muted); text-decoration: none; min-height: 32px; }
+.pr-back:hover { color: var(--text); }
+.pr-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 10px 0 6px; }
+.pr-stat { display: grid; gap: 2px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+.pr-stat-k { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.pr-stat-v { font-family: var(--display); font-size: 1.15rem; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 6px; }
+.pr-pips { display: inline-flex; align-items: center; gap: 6px; min-height: 1.6rem; }
+.pr-pip { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line-strong); }
+.pr-pip.on { background: var(--brass); border-color: var(--brass); }
+.pr-lvldesc { margin: 4px 0 14px; font-size: .92rem; color: var(--muted); }
+.pr-card-main { border: 1px solid var(--line); border-radius: 4px; background: var(--surface); padding: clamp(16px, 3vw, 26px); }
+.pr-prompt { font-size: 1.2rem; line-height: 1.6; max-width: 62ch; }
+.pr-figwrap:not(:empty) { margin: 12px 0 0; }
+.pr-fig { width: min(260px, 100%); height: auto; display: block; }
+.pr-answer { margin-top: 18px; max-width: 460px; }
+.pr-label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: 4px; }
+.pr-input { width: 100%; font: inherit; font-size: 1.25rem; padding: 10px 14px; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); color: var(--text); }
+.pr-input:disabled { opacity: .7; }
+.pr-help, .pr-echo { margin: 6px 0 0; font-size: .86rem; color: var(--muted); }
+.pr-echo { min-height: 1.3em; }
+.pr-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.pr-key { font: inherit; font-size: 1.15rem; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); color: var(--text); cursor: pointer; }
+.pr-key:hover { border-color: var(--brass); }
+.pr-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pr-btns .btn[hidden] { display: none; }
+.pr-fb { margin-top: 16px; font-size: 1rem; line-height: 1.55; }
+.pr-fb:empty { display: none; }
+.pr-fb:focus { outline: none; }
+.pr-fb.ok b { color: var(--green-ink); }
+.pr-fb.no b { color: var(--red-ink); }
+.pr-fb.warn b { color: var(--yellow); }
+.pr-hintwrap, .pr-solution { margin-top: 14px; }
+.pr-h2 { font-family: var(--display); font-weight: 400; font-size: 1rem; margin: 0 0 4px; }
+.pr-hints, .pr-solution ol { margin: 6px 0 0; padding-left: 1.3em; line-height: 1.6; }
+.pr-solution summary { cursor: pointer; min-height: 32px; font-weight: 500; }
+.pr-foot { margin-top: 18px; }
+.pr-sum { font-size: 1.1rem; }
+.pr-slips ul { padding-left: 1.2em; line-height: 1.6; max-width: 66ch; }
+@media (max-width: 640px) { .pr-prompt { font-size: 1.08rem; } .pr-keypad { max-width: 320px; } }
+.pr-eq { margin: 6px 0 0 18px; }

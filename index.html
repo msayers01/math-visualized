@@ -659,6 +659,60 @@ label.facet .facet-k { margin-bottom: 0; }
 .teacher-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .teacher-row input { flex: 1 1 14rem; min-width: 0; font: inherit; font-size: 1rem; padding: 10px 12px; border: 1px solid var(--line, #ccc); border-radius: 8px; background: var(--card, transparent); color: var(--text); }
 .teacher-msg { min-height: 1.4em; margin: 0; color: var(--muted); font-size: .92rem; }
+/* ---------- Practice: skill picker and the endless problem loop ---------- */
+.pr-page { padding-top: 28px; padding-bottom: 56px; max-width: 880px; }
+.pr-title { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 300; margin: 0 0 .3em; }
+.pr-lede { max-width: 60ch; color: var(--muted); }
+.pr-total { margin: 4px 0 18px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.pr-warn { border: 1px solid var(--yellow); border-radius: 4px; padding: 10px 14px; background: color-mix(in srgb, var(--yellow) 12%, transparent); }
+.pr-course-h { font-family: var(--display); font-weight: 400; font-size: 1.2rem; letter-spacing: -.03em; margin: 26px 0 10px; }
+.pr-card { display: grid; gap: 3px; padding: 14px 18px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; transition: border-color .2s; }
+.pr-card:hover { border-color: var(--brass); }
+.pr-unit { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pr-card-t { font-family: var(--display); font-size: 1.1rem; letter-spacing: -.025em; }
+.pr-card-b { font-size: .92rem; color: var(--muted); }
+.pr-card-m { font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pr-badge { display: inline-block; margin-left: 10px; padding: 1px 10px; border: 1px solid var(--brass); border-radius: 999px; color: var(--brass); font-size: .78rem; }
+.pr-back { display: inline-block; margin-bottom: 14px; color: var(--muted); text-decoration: none; min-height: 32px; }
+.pr-back:hover { color: var(--text); }
+.pr-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 10px 0 6px; }
+.pr-stat { display: grid; gap: 2px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+.pr-stat-k { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.pr-stat-v { font-family: var(--display); font-size: 1.15rem; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 6px; }
+.pr-pips { display: inline-flex; align-items: center; gap: 6px; min-height: 1.6rem; }
+.pr-pip { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line-strong); }
+.pr-pip.on { background: var(--brass); border-color: var(--brass); }
+.pr-lvldesc { margin: 4px 0 14px; font-size: .92rem; color: var(--muted); }
+.pr-card-main { border: 1px solid var(--line); border-radius: 4px; background: var(--surface); padding: clamp(16px, 3vw, 26px); }
+.pr-prompt { font-size: 1.2rem; line-height: 1.6; max-width: 62ch; }
+.pr-figwrap:not(:empty) { margin: 12px 0 0; }
+.pr-fig { width: min(260px, 100%); height: auto; display: block; }
+.pr-answer { margin-top: 18px; max-width: 460px; }
+.pr-label { display: block; font-size: .85rem; color: var(--muted); margin-bottom: 4px; }
+.pr-input { width: 100%; font: inherit; font-size: 1.25rem; padding: 10px 14px; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); color: var(--text); }
+.pr-input:disabled { opacity: .7; }
+.pr-help, .pr-echo { margin: 6px 0 0; font-size: .86rem; color: var(--muted); }
+.pr-echo { min-height: 1.3em; }
+.pr-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; }
+.pr-key { font: inherit; font-size: 1.15rem; min-height: 48px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-solid); color: var(--text); cursor: pointer; }
+.pr-key:hover { border-color: var(--brass); }
+.pr-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pr-btns .btn[hidden] { display: none; }
+.pr-fb { margin-top: 16px; font-size: 1rem; line-height: 1.55; }
+.pr-fb:empty { display: none; }
+.pr-fb:focus { outline: none; }
+.pr-fb.ok b { color: var(--green-ink); }
+.pr-fb.no b { color: var(--red-ink); }
+.pr-fb.warn b { color: var(--yellow); }
+.pr-hintwrap, .pr-solution { margin-top: 14px; }
+.pr-h2 { font-family: var(--display); font-weight: 400; font-size: 1rem; margin: 0 0 4px; }
+.pr-hints, .pr-solution ol { margin: 6px 0 0; padding-left: 1.3em; line-height: 1.6; }
+.pr-solution summary { cursor: pointer; min-height: 32px; font-weight: 500; }
+.pr-foot { margin-top: 18px; }
+.pr-sum { font-size: 1.1rem; }
+.pr-slips ul { padding-left: 1.2em; line-height: 1.6; max-width: 66ch; }
+@media (max-width: 640px) { .pr-prompt { font-size: 1.08rem; } .pr-keypad { max-width: 320px; } }
+.pr-eq { margin: 6px 0 0 18px; }
 /* ---------- Tour: "How this works" ---------- */
 .tour-btn { display: inline-flex; align-items: center; gap: 8px; }
 .tour-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
@@ -686,14 +740,14 @@ label.facet .facet-k { margin-bottom: 0; }
   <div class="wrap bar">
     <a class="wordmark" href="#/">Continuum</a>
     <nav class="nav" aria-label="Levels">
-      <a href="#/level/school">School</a><a href="#/level/ugrad">Undergraduate</a><a href="#/level/grad">Graduate</a><a href="#progress">My progress</a>
+      <a href="#/level/school">School</a><a href="#/level/ugrad">Undergraduate</a><a href="#/level/grad">Graduate</a><a href="#practice">Practice</a><a href="#progress">My progress</a>
     </nav>
     <button class="theme-btn" id="themeBtn" type="button"></button>
   </div>
 </header>
 <main id="app" tabindex="-1" aria-label="Continuum"></main>
 <noscript><p style="max-width:40em;margin:4em auto;padding:0 1em;font:17px sans-serif">Continuum needs JavaScript to draw its interactive lessons. Please turn JavaScript on and reload.</p></noscript>
-<footer class="wrap" aria-label="Site"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#progress">My progress</a><button type="button" class="foot-link foot-btn" id="teacherBtn" aria-pressed="false">Teacher mode</button></div><p class="credit">By Michael Sayers</p></footer>
+<footer class="wrap" aria-label="Site"><div class="foot"><span class="wm">Continuum</span><span id="footStat"></span><a class="foot-link" href="#practice">Practice</a><a class="foot-link" href="#progress">My progress</a><button type="button" class="foot-link foot-btn" id="teacherBtn" aria-pressed="false">Teacher mode</button></div><p class="credit">By Michael Sayers</p></footer>
 
 <script>
 /* =====================================================================
@@ -1166,6 +1220,879 @@ const ALIGN = [
   { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
   { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
 ];
+
+/* =====================================================================
+   PRACTICE (core): the namespace, a seeded random generator, exact rational numbers, and message lookup.
+   Everything under src/practice/ is pure (no DOM), so tools/tests/practice.test.js can run it in Node.
+   Everything is one script, so the only top-level name this folder adds is `Practice`.
+   ===================================================================== */
+const Practice = {};
+{
+  /* mulberry32: the same seed always gives the same stream, in every browser and in Node */
+  Practice.rng = seed => {
+    let a = seed >>> 0;
+    const next = () => {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const int = (lo, hi) => lo + Math.floor(next() * (hi - lo + 1));
+    return {
+      next, int,
+      pick: arr => arr[Math.floor(next() * arr.length)],
+      chance: p => next() < p,
+      /* an integer in [lo, hi] other than the listed ones */
+      intExcept: (lo, hi, ...skip) => { for (let i = 0; i < 200; i++) { const v = int(lo, hi); if (!skip.includes(v)) return v; } throw new Error('intExcept: nothing left in range'); }
+    };
+  };
+
+  /* Exact rationals on safe integers. A result that would leave the safe range throws, so a generator can never
+     show a number that was silently rounded. */
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a; };
+  const SAFE = 2 ** 50;
+  const R = (n, d = 1) => {
+    if (!Number.isInteger(n) || !Number.isInteger(d)) throw new Error('rational needs integers');
+    if (d === 0) throw new Error('division by zero');
+    if (d < 0) { n = -n; d = -d; }
+    const g = gcd(n, d) || 1;
+    n /= g; d /= g;
+    if (Math.abs(n) > SAFE || d > SAFE) throw new Error('number too large');
+    return { n: n + 0, d };   /* + 0 turns -0 into 0 */
+  };
+  const lcm = (a, b) => Math.abs(a * b) / gcd(a, b);
+  Practice.gcd = gcd; Practice.lcm = lcm;
+  Practice.R = R;
+  Practice.rat = {
+    add: (a, b) => R(a.n * b.d + b.n * a.d, a.d * b.d),
+    sub: (a, b) => R(a.n * b.d - b.n * a.d, a.d * b.d),
+    mul: (a, b) => R(a.n * b.n, a.d * b.d),
+    div: (a, b) => R(a.n * b.d, a.d * b.n),
+    neg: a => R(-a.n, a.d),
+    eq: (a, b) => a.n === b.n && a.d === b.d,
+    isInt: a => a.d === 1,
+    isZero: a => a.n === 0,
+    cmp: (a, b) => Math.sign(a.n * b.d - b.n * a.d),
+    toNum: a => a.n / a.d,
+    /* "3", "-3/4" */
+    str: a => (a.d === 1 ? String(a.n) : a.n + '/' + a.d)
+  };
+
+  /* Words and sentences live in Practice.T (strings.js), keyed, with {name} slots, so they can be translated later. A missing
+     key or slot throws: a half-built sentence must never reach a student. */
+  Practice.say = (key, params = {}) => {
+    const s = Practice.T[key];
+    if (typeof s !== 'string') throw new Error('missing practice string: ' + key);
+    return s.replace(/\{(\w+)\}/g, (m, k) => {
+      if (!(k in params)) throw new Error(`practice string ${key} needs {${k}}`);
+      return String(params[k]);
+    });
+  };
+}
+
+/* =====================================================================
+   PRACTICE (cas): a small exact-arithmetic checker, independent of the generators.
+   A generator builds a problem from its answer; this module re-reads the finished problem (its `model` string, a plain
+   ASCII statement such as "2*x+3=11" or "3/4+2/3") and works the answer out from scratch with exact fractions.
+   It shares no code with the generators except the rational type, so a bug in a generator's algebra shows up here.
+   Grammar: numbers (3, 0.25), variables x and y, + - * / ^ (whole-number powers), sqrt(...) of perfect squares,
+   brackets, and implicit multiplication (2x, 3(x+1)).
+   ===================================================================== */
+{
+  const { R, rat } = Practice;
+  const tokenize = src => {
+    const out = [], re = /\s*(\d+(?:\.\d+)?|[a-z]+|[-+*\/^()=;])/gy;
+    let m, pos = 0;
+    while (pos < src.length) {
+      re.lastIndex = pos; m = re.exec(src);
+      if (!m) { if (/^\s*$/.test(src.slice(pos))) break; throw new Error('cannot read "' + src.slice(pos) + '"'); }
+      out.push(m[1]); pos = re.lastIndex;
+    }
+    return out;
+  };
+  const num = s => { const [w, f = ''] = s.split('.'); return R(+(w + f), 10 ** f.length); };
+  const isqrt = n => { const r = Math.round(Math.sqrt(n)); return r * r === n ? r : null; };
+
+  /* parse(src) -> function(env) -> rational, env like { x: R(2) } */
+  Practice.cas = {};
+  Practice.cas.parse = src => {
+    const t = tokenize(src); let i = 0;
+    const peek = () => t[i], eat = x => { if (t[i] !== x) throw new Error(`expected ${x} in "${src}"`); i++; };
+    const startsAtom = k => k !== undefined && (/^\d/.test(k) || /^[a-z]+$/.test(k) || k === '(');
+    function expr() {
+      let f = term();
+      while (peek() === '+' || peek() === '-') { const op = t[i++], g = term(), a = f; f = op === '+' ? e => rat.add(a(e), g(e)) : e => rat.sub(a(e), g(e)); }
+      return f;
+    }
+    function term() {
+      let f = unary();
+      for (;;) {
+        const k = peek();
+        if (k === '*' || k === '/') { i++; const g = unary(), a = f; f = k === '*' ? e => rat.mul(a(e), g(e)) : e => rat.div(a(e), g(e)); }
+        else if (startsAtom(k) && !/^\d/.test(k)) { const g = power(), a = f; f = e => rat.mul(a(e), g(e)); }   /* implicit: 2x, 3(x+1), 2sqrt(..) */
+        else return f;
+      }
+    }
+    function unary() { if (peek() === '-') { i++; const g = unary(); return e => rat.neg(g(e)); } if (peek() === '+') { i++; return unary(); } return power(); }
+    function power() {
+      const b = atom();
+      if (peek() === '^') {
+        i++; const x = unary();
+        return e => { const base = b(e), p = x(e); if (!rat.isInt(p) || p.n < 0 || p.n > 6) throw new Error('only small whole-number powers'); let r = R(1); for (let k = 0; k < p.n; k++) r = rat.mul(r, base); return r; };
+      }
+      return b;
+    }
+    function atom() {
+      const k = t[i++];
+      if (k === undefined) throw new Error('unexpected end of "' + src + '"');
+      if (/^\d/.test(k)) { const v = num(k); return () => v; }
+      if (k === 'sqrt') { eat('('); const g = expr(); eat(')'); return e => { const v = g(e), a = isqrt(v.n), b = isqrt(v.d); if (v.n < 0 || a === null || b === null) throw new Error('not a perfect square'); return R(a, b); }; }
+      if (/^[a-z]+$/.test(k)) return e => { if (!(k in e)) throw new Error('unknown variable ' + k); return e[k]; };
+      if (k === '(') { const g = expr(); eat(')'); return g; }
+      throw new Error('unexpected ' + k + ' in "' + src + '"');
+    }
+    const f = expr();
+    if (i !== t.length) throw new Error('unexpected ' + t[i] + ' in "' + src + '"');
+    return f;
+  };
+  Practice.cas.value = (src, env = {}) => Practice.cas.parse(src)(env);
+
+  /* "lhs=rhs" -> function(env) = lhs - rhs */
+  const diff = eq => { const p = eq.split('='); if (p.length !== 2) throw new Error('not an equation: ' + eq); const L = Practice.cas.parse(p[0]), Rr = Practice.cas.parse(p[1]); return e => rat.sub(L(e), Rr(e)); };
+
+  /* One linear equation in x. Sampled at x = 0, 1, 2, 3 (a line has constant steps), then solved from the slope. */
+  Practice.cas.solveLinear = eq => {
+    const f = diff(eq), v = [0, 1, 2, 3].map(k => f({ x: R(k) })), s = rat.sub(v[1], v[0]);
+    for (let k = 2; k < 4; k++) if (!rat.eq(rat.sub(v[k], v[k - 1]), s)) throw new Error('not linear: ' + eq);
+    if (rat.isZero(s)) throw new Error('no single solution: ' + eq);
+    return rat.neg(rat.div(v[0], s));
+  };
+  /* Two linear equations in x and y, joined by ";": a x + b y = c each, solved by Cramer's rule. */
+  Practice.cas.solveSystem = src => {
+    const rows = src.split(';').map(eq => {
+      const f = diff(eq), f00 = f({ x: R(0), y: R(0) }), a = rat.sub(f({ x: R(1), y: R(0) }), f00), b = rat.sub(f({ x: R(0), y: R(1) }), f00);
+      if (!rat.eq(f({ x: R(1), y: R(1) }), rat.add(f00, rat.add(a, b))) || !rat.eq(f({ x: R(2), y: R(3) }), rat.add(f00, rat.add(rat.mul(R(2), a), rat.mul(R(3), b))))) throw new Error('not linear: ' + eq);
+      return { a, b, c: rat.neg(f00) };
+    });
+    if (rows.length !== 2) throw new Error('need two equations');
+    const [p, q] = rows, det = rat.sub(rat.mul(p.a, q.b), rat.mul(q.a, p.b));
+    if (rat.isZero(det)) throw new Error('no single solution');
+    return [rat.div(rat.sub(rat.mul(p.c, q.b), rat.mul(q.c, p.b)), det), rat.div(rat.sub(rat.mul(p.a, q.c), rat.mul(q.a, p.c)), det)];
+  };
+
+  /* Re-derive the answer of a finished problem from its model, as the same shape the generator uses for `answer.value`. */
+  Practice.cas.answerOf = inst => {
+    const m = inst.model;
+    if (inst.answer.type === 'pair') return Practice.cas.solveSystem(m);
+    if (inst.ask === 'solve') return Practice.cas.solveLinear(m);
+    return Practice.cas.value(m);
+  };
+}
+
+/* =====================================================================
+   PRACTICE (check): reading what a student typed and comparing it with the answer by value.
+   answer = { type: 'number' | 'pair' | 'set', value, form?: 'any' | 'simplified', units?: [...] }
+   value: number -> {n,d};  pair and set -> [{n,d}, ...]  (pair is ordered, set is not).
+   check() returns { status, shown } with status 'correct', 'form' (right value, wrong form), 'wrong' or 'invalid'
+   (could not be read: this does not count as an attempt).
+   ===================================================================== */
+{
+  const { R, rat, gcd } = Practice;
+  const clean = s => String(s).replace(/[−–—]/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace(/ /g, ' ').trim();
+
+  /* one number: "-3", "0.25", "3/4", "1 1/2", "-1 1/2". Returns { v, literalFraction, reduced } or null. */
+  const parseNumber = raw => {
+    let s = clean(raw).replace(/\s+/g, ' ');
+    if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
+    let sign = 1;
+    const sg = s.match(/^([+-])\s*(.*)$/);
+    if (sg) { sign = sg[1] === '-' ? -1 : 1; s = sg[2]; }
+    let m;
+    if ((m = s.match(/^(\d+)$/))) return { v: R(sign * +m[1]) };
+    if ((m = s.match(/^(\d*)\.(\d+)$/))) { if (m[2].length > 9) return null; return { v: R(sign * +((m[1] || '0') + m[2]), 10 ** m[2].length) }; }
+    if ((m = s.match(/^(\d+)\s*\/\s*(\d+)$/))) { if (+m[2] === 0) return null; return { v: R(sign * +m[1], +m[2]), fraction: true, reduced: gcd(+m[1], +m[2]) === 1 }; }
+    if ((m = s.match(/^(\d+) (\d+)\s*\/\s*(\d+)$/))) { if (+m[3] === 0) return null; return { v: R(sign * (+m[1] * +m[3] + +m[2]), +m[3]), fraction: true, reduced: gcd(+m[2], +m[3]) === 1 && +m[2] < +m[3] }; }
+    return null;
+  };
+  Practice.parseNumber = parseNumber;
+
+  const stripUnits = (s, units) => {
+    if (!units) return s;
+    const m = clean(s).match(/^(.*?)\s*([a-zA-Z.]+)$/);
+    return m && units.includes(m[2].toLowerCase().replace(/\.$/, '')) ? m[1] : s;
+  };
+  const stripLabel = (s, name) => clean(s).replace(new RegExp('^' + name + '\\s*=\\s*', 'i'), '');
+  const splitList = s => clean(s).replace(/^[\[({]\s*|\s*[\])}]$/g, '').split(/\s*(?:,|;|\band\b)\s*/i).filter(x => x !== '');
+
+  /* parse an answer for a given spec into a value (same shape as spec.value), or { error } */
+  Practice.parseAnswer = (spec, input) => {
+    const text = clean(input);
+    if (!text) return { error: 'empty' };
+    if (spec.type === 'number') {
+      const p = parseNumber(stripUnits(stripLabel(text, spec.name || 'x'), spec.units));
+      return p ? { value: p.v, p } : { error: 'unreadable' };
+    }
+    if (spec.type === 'pair') {
+      /* "(2, -1)", "2, -1", "x=2, y=-1" (labels may come in either order) */
+      const parts = splitList(text.replace(/^\(|\)$/g, ''));
+      if (parts.length !== 2) return { error: 'unreadable' };
+      const lab = parts.map(x => (x.match(/^([xy])\s*=\s*(.*)$/i) || []));
+      let vals;
+      if (lab.every(l => l.length)) { if (lab[0][1].toLowerCase() === lab[1][1].toLowerCase()) return { error: 'unreadable' }; vals = lab.slice().sort((a, b) => a[1].toLowerCase() < b[1].toLowerCase() ? -1 : 1).map(l => parseNumber(l[2])); }
+      else if (lab.some(l => l.length)) return { error: 'unreadable' };
+      else vals = parts.map(parseNumber);
+      return vals.every(Boolean) ? { value: vals.map(p => p.v) } : { error: 'unreadable' };
+    }
+    if (spec.type === 'set') {
+      const vals = splitList(text).map(x => parseNumber(stripUnits(x, spec.units)));
+      return vals.length && vals.every(Boolean) ? { value: vals.map(p => p.v) } : { error: 'unreadable' };
+    }
+    throw new Error('unknown answer type ' + spec.type);
+  };
+
+  /* do two values (same type) agree? */
+  Practice.sameValue = (type, a, b) => {
+    if (type === 'number') return rat.eq(a, b);
+    if (type === 'pair') return a.length === b.length && a.every((v, i) => rat.eq(v, b[i]));
+    if (type === 'set') {
+      const key = v => v.map(x => rat.str(x)).sort().join('|');
+      const uniq = v => [...new Set(v.map(x => rat.str(x)))].sort().join('|');
+      return uniq(a) === uniq(b) && key(a) !== undefined;
+    }
+    throw new Error('unknown answer type ' + type);
+  };
+
+  Practice.check = (spec, input) => {
+    const r = Practice.parseAnswer(spec, input);
+    if (r.error) return { status: 'invalid', reason: r.error };
+    const shown = Practice.showValue(spec, r.value);
+    if (!Practice.sameValue(spec.type, r.value, spec.value)) return { status: 'wrong', value: r.value, shown };
+    if (spec.type === 'number' && spec.form === 'simplified' && r.p.fraction && !r.p.reduced) return { status: 'form', value: r.value, shown };
+    return { status: 'correct', value: r.value, shown };
+  };
+
+  /* plain text for a value, used in echoes ("Reading your answer as ...") and in worked solutions */
+  Practice.showValue = (spec, v) => {
+    const one = x => rat.str(x).replace('-', '−');
+    if (spec.type === 'number') return one(v);
+    if (spec.type === 'pair') return '(' + v.map(one).join(', ') + ')';
+    return '{' + v.map(one).join(', ') + '}';
+  };
+
+  /* which misconception (if any) does this wrong answer match? */
+  Practice.matchMisconception = (inst, value) => {
+    for (const m of inst.misconceptions || []) if (Practice.sameValue(inst.answer.type, value, m.wrongAnswer)) return m;
+    return null;
+  };
+}
+
+/* =====================================================================
+   PRACTICE (strings): every sentence a student sees from the practice generators, keyed, with {slots}.
+   Nothing is written into the logic, so a translation is a copy of this table. TeX is in String.raw-style
+   double-backslash form inside normal strings. Do not put a literal {word} in TeX: {word} is a slot.
+   ===================================================================== */
+Practice.T = {
+  /* ---- answer formats (shown under the answer box) ---- */
+  'ans.whole': 'Enter a whole number.',
+  'ans.number': 'Enter a number. You can write a whole number, a decimal, or a fraction like 3/4.',
+  'ans.fraction': 'Enter a fraction in simplest form, like 5/6. A mixed number like 1 1/6 or a decimal that ends is fine too.',
+  'ans.length': 'Enter a number. You may add the unit if you like.',
+  'ans.pair': 'Enter the pair as (x, y), for example (2, -1).',
+  'word.add': 'Add',
+  'word.subtract': 'Subtract',
+  'form.simplify': 'That value is right, but the fraction is not in simplest form. Divide the top and bottom by the same number, then enter it again.',
+
+  /* ---- G4: multiplying multi-digit numbers ---- */
+  'mult.lv1': 'A two-digit number times a one-digit number, small.',
+  'mult.lv2': 'A two-digit number times a one-digit number, up to 99 by 9.',
+  'mult.lv3': 'A three-digit number times a one-digit number.',
+  'mult.lv4': 'Two two-digit numbers, small.',
+  'mult.lv5': 'Two two-digit numbers, up to 99 by 99.',
+  'mult.lv6': 'A three-digit number times a two-digit number.',
+  'mult.p.eq': 'Find \\({a} \\times {b}\\).',
+  'mult.p.chairs': 'A hall has {a} rows of chairs with {b} chairs in each row. How many chairs are there in all?',
+  'mult.p.boxes': 'One box holds {b} pencils. How many pencils are in {a} boxes?',
+  'mult.h1': 'Draw an area model. Break each number into hundreds, tens and ones, and multiply the pieces.',
+  'mult.h2': 'Start with the first piece. {first}',
+  'mult.h3': 'Here are all the pieces of the area model: {list}. Now add them.',
+  'mult.s1': 'Break each number into place-value pieces: \\({a} = {pa}\\) and \\({b} = {pb}\\).',
+  'mult.s1b': 'Break {a} into place-value pieces: \\({a} = {pa}\\). The other number, {b}, stays whole.',
+  'mult.s2': 'Multiply each piece by each piece: {list}.',
+  'mult.s3': 'Add the pieces: \\({sum}\\).',
+  'g4-multiply.mc.missing-middle-pieces': 'It looks like you multiplied tens by tens and ones by ones only. An area model has four pieces. Do not forget tens times ones, and ones times tens.',
+  'g4-multiply.mc.digits-without-place-value': 'It looks like you multiplied the digits as if each one meant just itself. A 4 in the tens place means 40. Multiply the whole pieces, like 40 times 5.',
+  'g4-multiply.mc.left-out-the-ones-piece': 'It looks like one piece is missing. The ones digit also has to be multiplied, then added to the rest.',
+
+  /* ---- G5: adding and subtracting fractions ---- */
+  'frac.lv1': 'Add two fractions when one denominator is a multiple of the other. The sum is less than 1.',
+  'frac.lv2': 'Add two fractions with different denominators that share no factor. The sum is less than 1.',
+  'frac.lv3': 'Add two fractions with unlike denominators. The sum can be more than 1.',
+  'frac.lv4': 'Subtract fractions with unlike denominators.',
+  'frac.lv5': 'Add or subtract with larger denominators that share a factor, like 6 and 4.',
+  'frac.p.add': 'Add. \\({T1} + {T2}\\)',
+  'frac.p.sub': 'Subtract. \\({T1} - {T2}\\)',
+  'frac.p.pizza': 'Mia ate \\({T1}\\) of a pizza at lunch and \\({T2}\\) of the same pizza at dinner. How much of the pizza did she eat in all?',
+  'frac.p.cups': 'A recipe uses \\({T1}\\) cup of milk and \\({T2}\\) cup of juice. How many cups of liquid is that in all?',
+  'frac.p.ribbon': 'Jo has \\({T1}\\) of a yard of ribbon and cuts off \\({T2}\\) of a yard. How much ribbon is left, in yards?',
+  'frac.h1': 'You can only add or subtract pieces of the same size. Find a common denominator first.',
+  'frac.h2': 'The smallest number that both {d1} and {d2} go into is {L}. Use {L} as the denominator.',
+  'frac.h3': 'Rewrite \\({T1}\\) as \\({s1}\\) and \\({T2}\\) as \\({s2}\\). Then work with the tops.',
+  'frac.s1': 'Find a common denominator. The smallest number that both {d1} and {d2} go into is {L}.',
+  'frac.s2': 'Rewrite both fractions with denominator {L}: \\({T1} = {s1}\\) and \\({T2} = {s2}\\).',
+  'frac.s3add': 'Add the tops and keep the bottom: \\({a} + {b} = {r}\\).',
+  'frac.s3sub': 'Subtract the tops and keep the bottom: \\({a} - {b} = {r}\\).',
+  'frac.s4': 'Simplify: \\({r} = {ans}\\).',
+  'g5-fraction-sum.mc.added-tops-and-bottoms': 'It looks like you added the tops and added the bottoms. Pieces of different sizes cannot be counted together. Rename both fractions with a common denominator first, then add only the tops.',
+  'g5-fraction-sum.mc.subtracted-tops-and-bottoms': 'It looks like you subtracted the tops and subtracted the bottoms. The bottom tells the size of the pieces, and it stays the same. Rename both fractions with a common denominator first.',
+  'g5-fraction-sum.mc.forgot-to-rename-the-tops': 'You found the common denominator, but the tops have to change too. When you cut each piece into smaller pieces, you get more pieces. Multiply the top by the same number as the bottom.',
+
+  /* ---- G8: linear equations ---- */
+  'lin.lv1': 'One step: add or subtract a number. Example: x + 4 = 9.',
+  'lin.lv2': 'One step: multiply to undo a division, or divide. Example: 3x = 21.',
+  'lin.lv3': 'Two steps. Example: 2x + 3 = 11.',
+  'lin.lv4': 'Variables on both sides. Example: 5x + 2 = 2x + 14.',
+  'lin.lv5': 'Brackets that need distributing. Example: 3(x + 2) = 18.',
+  'lin.lv6': 'Brackets and variables on both sides, with negatives.',
+  'lin.p.solve': 'Solve for \\(x\\). \\({eq}\\)',
+  'lin.w.add': 'I think of a number and add {b}. The result is {d}. What is the number?',
+  'lin.w.sub': 'I think of a number and subtract {b}. The result is {d}. What is the number?',
+  'lin.w.mul': 'I think of a number and multiply it by {a}. The result is {d}. What is the number?',
+  'lin.w.muladd': 'I think of a number, multiply it by {a}, then add {b}. The result is {d}. What is the number?',
+  'lin.w.mulsub': 'I think of a number, multiply it by {a}, then subtract {b}. The result is {d}. What is the number?',
+  'lin.h1.one': 'Get x alone. Do the opposite of what was done to x.',
+  'lin.h1.paren': 'First get rid of the brackets by distributing. Then get x alone.',
+  'lin.h1.both': 'Collect the x terms on one side and the plain numbers on the other, then divide.',
+  'lin.h2.distribute': 'Distribute {a}: multiply it by every term inside the brackets.',
+  'lin.h2.move': '{op} {t} on both sides.',
+  'lin.h2.divide': 'Divide both sides by {A}.',
+  'lin.s.distribute': 'Distribute {a} to both terms inside the brackets: \\({eq}\\).',
+  'lin.s.xterm': '{op} \\({t}\\) on both sides to collect the x terms: \\({eq}\\).',
+  'lin.s.const': '{op} {t} on both sides to get the x term alone: \\({eq}\\).',
+  'lin.s.divide': 'Divide both sides by {A}: \\(x = {ans}\\).',
+  'lin.s.done': 'So \\(x = {ans}\\).',
+  'g8-linear-equation.mc.moved-the-number-with-the-wrong-sign': 'It looks like you added when you should have subtracted (or the other way round). To undo +b, subtract b from both sides. To undo -b, add b.',
+  'g8-linear-equation.mc.multiplied-only-the-first-term': 'It looks like you multiplied only the first term inside the brackets. The number outside multiplies every term inside.',
+  'g8-linear-equation.mc.moved-the-x-term-with-the-wrong-sign': 'It looks like the x terms were combined with the wrong sign. To move a term to the other side, do the opposite: subtract if it was added, add if it was subtracted.',
+  'g8-linear-equation.mc.divided-only-one-term': 'It looks like you divided only one term by the number in front of x. Subtract the plain number first, then divide the whole right side.',
+  'g8-linear-equation.mc.forgot-to-divide': 'It looks like the last step is missing. After you move the plain number, divide both sides by the number in front of x.',
+  'g8-linear-equation.mc.subtracted-instead-of-dividing': 'It looks like you subtracted. The number in front of x multiplies it, so the opposite is to divide.',
+
+  /* ---- G8: Pythagorean theorem ---- */
+  'pyth.lv1': 'Find the hypotenuse of a small right triangle, like 3 and 4.',
+  'pyth.lv2': 'Find the hypotenuse when the sides are multiples, like 6 and 8.',
+  'pyth.lv3': 'Find a missing leg.',
+  'pyth.lv4': 'Find any missing side in larger triangles.',
+  'pyth.lv5': 'Real situations: ladders, screens and wires.',
+  'pyth.p.hyp': 'A right triangle has legs of length {a} and {b}. How long is the hypotenuse?',
+  'pyth.p.leg': 'A right triangle has a hypotenuse of length {c} and one leg of length {a}. How long is the other leg?',
+  'pyth.p.ladder': 'A {c} foot ladder leans against a wall. The foot of the ladder is {a} feet from the wall. How high up the wall does the ladder reach, in feet?',
+  'pyth.p.tv': 'A TV screen is {a} inches wide and {b} inches tall. How long is its diagonal, in inches?',
+  'pyth.p.wire': 'A pole is {a} metres tall. A wire runs from its top to a point on the ground {b} metres from the base of the pole. How long is the wire, in metres?',
+  'pyth.h1.hyp': 'The hypotenuse is the side across from the right angle. Use a squared plus b squared equals c squared.',
+  'pyth.h1.leg': 'The hypotenuse is the longest side, across from the right angle. Put it in as c, then solve for the missing leg.',
+  'pyth.s.theorem': 'In a right triangle, \\(a^2 + b^2 = c^2\\), where c is the hypotenuse.',
+  'pyth.s.hyp1': 'Put in the legs: \\({a}^2 + {b}^2 = c^2\\).',
+  'pyth.s.hyp2': 'Square them: \\({a2} + {b2} = {sum}\\), so \\(c^2 = {sum}\\).',
+  'pyth.s.hyp3': 'Take the square root: \\(c = \\sqrt{{sum}} = {ans}\\).',
+  'pyth.s.leg1': 'Put in the known leg and the hypotenuse: \\({k}^2 + u^2 = {c}^2\\), where u is the missing leg.',
+  'pyth.s.leg2': 'Square them: \\({k2} + u^2 = {c2}\\).',
+  'pyth.s.leg3': 'Subtract {k2} from both sides: \\(u^2 = {c2} - {k2} = {diff}\\).',
+  'pyth.s.leg4': 'Take the square root: \\(u = \\sqrt{{diff}} = {ans}\\).',
+  'g8-pythagorean-side.mc.added-the-legs': 'It looks like you added the two leg lengths. The hypotenuse is not the sum of the legs. Square each leg, add the squares, then take the square root.',
+  'g8-pythagorean-side.mc.forgot-the-square-root': 'You found the square of the side. The last step is to take the square root to get the length.',
+  'g8-pythagorean-side.mc.subtracted-the-lengths': 'It looks like you subtracted the lengths. Subtract the squares instead, then take the square root.',
+
+  /* ---- A1: systems of two linear equations ---- */
+  'sys.lv1': 'One equation is already solved for y. Substitute.',
+  'sys.lv2': 'Both equations in standard form. The y terms are opposites, so adding removes y.',
+  'sys.lv3': 'Multiply one equation first, then add or subtract.',
+  'sys.lv4': 'Multiply both equations before you eliminate.',
+  'sys.lv5': 'Negative coefficients and negative solutions.',
+  'sys.p.solve': 'Solve the system. Give the answer as a pair \\((x, y)\\).<div class="pr-eq">\\({e1}\\)</div><div class="pr-eq">\\({e2}\\)</div>',
+  'sys.h1.sub': 'One equation says what y equals. Put that expression in place of y in the other equation.',
+  'sys.h1.elim': 'Make the y terms match, or be opposites, by multiplying. Then add or subtract the equations to remove y.',
+  'sys.s.sub1': 'The first equation says \\({rhs}\\). Put that in place of y in the second equation: \\({eq}\\).',
+  'sys.s.sub2': 'Combine like terms: \\({eq}\\).',
+  'sys.s.sub3': 'Solve for x: \\({eq}\\), so \\(x = {x}\\).',
+  'sys.s.sub4': 'Find y from the first equation: \\({calc}\\).',
+  'sys.s.done': 'The solution is \\(({x}, {y})\\).',
+  'sys.s.pick': 'Remove y. The y numbers are {b1} and {b2}. The smallest size that both fit into is {L}.',
+  'sys.s.keep': 'The y terms already match in size: \\({e1}\\) and \\({e2}\\).',
+  'sys.s.scale': 'Multiply equation 1 by {m1} and equation 2 by {m2} so the y terms match in size: \\({e1}\\) and \\({e2}\\).',
+  'sys.s.add': 'The y terms are opposites. Add the equations: \\({eq}\\), so \\(x = {x}\\).',
+  'sys.s.subtract': 'The y terms are the same. Subtract the equations: \\({eq}\\), so \\(x = {x}\\).',
+  'sys.s.back': 'Put \\(x = {x}\\) into equation 1. That leaves \\({eq}\\), so \\(y = {y}\\).',
+  'a1-system-solve.mc.swapped-the-order': 'You have the right two numbers, but in the wrong order. A pair is written (x, y): x first.',
+  'a1-system-solve.mc.sign-slip-on-y': 'Your x is right, but check the sign of y when you put x back in.',
+  'a1-system-solve.mc.sign-slip-on-x': 'Your y is right, but check the sign of x. Look at the step where x came from.'
+};
+
+/* =====================================================================
+   PRACTICE (generators): one pure, deterministic generator per skill.
+   generate(seed, level) builds the ANSWER first and the problem around it (backward construction), rejects ugly or trivial cases and
+   resamples (capped; hitting the cap is a generator bug and throws), and returns:
+     prompt { html }, model (plain ASCII statement the CAS re-reads), ask ('value' | 'solve'), answer { type, value, form?, help, ... },
+     hints[], steps[], misconceptions[{ id, wrongAnswer, feedback, lessonLink }], tags[], canonical (for repeat detection), figure?
+   Change a generator's output => bump its `version`. The text is looked up in Practice.T (strings.js).
+   ===================================================================== */
+{
+  const { R, rat, gcd, lcm, say } = Practice;
+  const CAP = 300, abs = Math.abs;
+  const fail = Practice.generators = {};
+  const list = Practice.generatorList = [];
+
+  /* ---- shared formatting: TeX for the page, plain ASCII for the model ---- */
+  const coefTex = (c, v) => (c === 1 ? '' : c === -1 ? '-' : String(c)) + v;
+  /* c v + k  (flip puts the constant first) */
+  const linTex = (c, k, v = 'x', flip = false) => {
+    if (c === 0) return String(k);
+    if (k === 0) return coefTex(c, v);
+    if (flip) return `${k} ${c < 0 ? '-' : '+'} ${coefTex(abs(c), v)}`;
+    return `${coefTex(c, v)} ${k < 0 ? '-' : '+'} ${abs(k)}`;
+  };
+  const parenTex = (a, b) => `${a === 1 ? '' : a === -1 ? '-' : a}(x ${b < 0 ? '-' : '+'} ${abs(b)})`;
+  const eqTex = (a, b, c, d) => `${linTex(a, b)} = ${linTex(c, d)}`;
+  const fracTex = q => q.d === 1 ? String(q.n) : `${q.n < 0 ? '-' : ''}\\frac{${abs(q.n)}}{${q.d}}`;
+  const mixedTex = q => { if (q.d === 1 || abs(q.n) < q.d) return fracTex(q); const w = Math.trunc(q.n / q.d), r = abs(q.n) % q.d; return r ? `${w}\\frac{${r}}{${q.d}}` : String(w); };
+  const sgn = n => (n < 0 ? `(${n})` : String(n));
+  const join = items => items.join(', ');
+
+  /* Wraps a generator definition: seeded stream, constraint resampling with a loud cap, and a uniform result. */
+  const make = def => {
+    const gen = {
+      id: def.id, version: def.version, skillId: def.skillId, levels: def.levels, minTimeMs: def.minTimeMs,
+      generate(seed, level) {
+        if (!Number.isInteger(level) || level < 1 || level > def.levels.length) throw new Error(`${def.id}: no level ${level}`);
+        const r = Practice.rng(seed);
+        for (let tries = 0; tries < CAP; tries++) {
+          const p = def.build(r, level, def.levels[level - 1]);
+          if (p) return Object.assign({ generatorId: def.id, version: def.version, skillId: def.skillId, level, seed, ask: 'value', tags: [], misconceptions: [] }, p);
+        }
+        throw new Error(`${def.id} level ${level}: resample cap hit (seed ${seed})`);
+      }
+    };
+    fail[def.id] = gen; list.push(gen);
+    return gen;
+  };
+  /* keep only wrong answers that really differ from the right one and from each other */
+  const wrongs = (answer, cands) => {
+    const out = [];
+    for (const c of cands) {
+      if (!c || !c.wrongAnswer) continue;
+      if (rat.eq(c.wrongAnswer, answer) || out.some(o => rat.eq(o.wrongAnswer, c.wrongAnswer))) continue;
+      out.push(c);
+    }
+    return out;
+  };
+  const mc = (id, gid, wrongAnswer, lessonLink, params = {}) => ({ id, wrongAnswer, feedback: say(`${gid}.mc.${id}`, params), lessonLink });
+
+  /* =====================================================================
+     G4: multiplying multi-digit whole numbers (area model)
+     ===================================================================== */
+  const pieces = n => { const s = String(n); return s.split('').map((d, i) => +d * 10 ** (s.length - 1 - i)).filter(v => v); };
+  const digitSum = n => String(n).split('').reduce((t, d) => t + +d, 0);
+  make({
+    id: 'g4-multiply', version: 1, skillId: 'multiply-multi-digit', minTimeMs: 1500,
+    levels: [
+      { desc: 'mult.lv1', aLo: 12, aHi: 29, bLo: 2, bHi: 5 },
+      { desc: 'mult.lv2', aLo: 31, aHi: 99, bLo: 3, bHi: 9 },
+      { desc: 'mult.lv3', aLo: 112, aHi: 499, bLo: 3, bHi: 9 },
+      { desc: 'mult.lv4', aLo: 12, aHi: 35, bLo: 12, bHi: 25 },
+      { desc: 'mult.lv5', aLo: 23, aHi: 99, bLo: 21, bHi: 99 },
+      { desc: 'mult.lv6', aLo: 112, aHi: 499, bLo: 12, bHi: 45 }
+    ],
+    build(r, level, K) {
+      const a = r.int(K.aLo, K.aHi), b = r.int(K.bLo, K.bHi);
+      if (a % 10 === 0 || b % 10 === 0) return null;       /* trailing zeros make it too easy */
+      const ans = R(a * b), pa = pieces(a), pb = pieces(b), lv = 'g4-multiply';
+      const partial = (x, y) => `\\(${x} \\times ${y} = ${x * y}\\)`;
+      const all = []; for (const x of pa) for (const y of pb) all.push([x, y]);
+      const sumTex = `${all.map(([x, y]) => x * y).join(' + ')} = ${a * b}`;
+      const split = pb.length === 1
+        ? say('mult.s1b', { a, b, pa: pa.join(' + ') })
+        : say('mult.s1', { a, b, pa: pa.join(' + '), pb: pb.join(' + ') });
+      const steps = [split, say('mult.s2', { list: join(all.map(([x, y]) => partial(x, y))) }), say('mult.s3', { sum: sumTex })];
+      const hints = [say('mult.h1'), say('mult.h2', { first: partial(all[0][0], all[0][1]) }), say('mult.h3', { list: join(all.map(([x, y]) => `\\(${x * y}\\)`)) })];
+      const cands = [];
+      if (a < 100 && b > 9 && b < 100) { const p = Math.floor(a / 10), q = a % 10, rr = Math.floor(b / 10), s = b % 10; cands.push(mc('missing-middle-pieces', lv, R(p * rr * 100 + q * s), 'multiplying-with-area-models')); }
+      cands.push(mc('digits-without-place-value', lv, R(digitSum(a) * digitSum(b)), 'multiplying-with-area-models'));
+      cands.push(mc('left-out-the-ones-piece', lv, R((a - (a % 10)) * b), 'multiplying-with-area-models'));
+      const v = r.int(0, 2), text = v === 0 ? say('mult.p.eq', { a, b }) : v === 1 ? say('mult.p.chairs', { a, b }) : say('mult.p.boxes', { a, b });
+      return {
+        prompt: { html: text }, model: `${a}*${b}`, tags: v ? ['word-problem'] : [],
+        answer: { type: 'number', value: ans, form: 'any', help: say('ans.whole') },
+        hints, steps, misconceptions: wrongs(ans, cands), canonical: `mult|${Math.min(a, b)}|${Math.max(a, b)}`
+      };
+    }
+  });
+
+  /* =====================================================================
+     G5: adding and subtracting fractions with unlike denominators
+     ===================================================================== */
+  const MULT_PAIRS = [[2, 4], [3, 6], [4, 8], [5, 10], [2, 6], [3, 9], [2, 8]];
+  const coprime = (a, b) => gcd(a, b) === 1, divides = (a, b) => a % b === 0 || b % a === 0;
+  const properNum = (r, d) => { for (let i = 0; i < 40; i++) { const n = r.int(1, d - 1); if (gcd(n, d) === 1) return n; } return null; };
+  make({
+    id: 'g5-fraction-sum', version: 1, skillId: 'add-subtract-unlike-fractions', minTimeMs: 3000,
+    levels: [
+      { desc: 'frac.lv1', dens: 'multiple', ops: ['add'], lt1: true },
+      { desc: 'frac.lv2', dens: 'coprime', ops: ['add'], lt1: true },
+      { desc: 'frac.lv3', dens: 'unlike', ops: ['add'], lt1: false },
+      { desc: 'frac.lv4', dens: 'unlike', ops: ['sub'], lt1: true },
+      { desc: 'frac.lv5', dens: 'shared', ops: ['add', 'sub'], lt1: false }
+    ],
+    build(r, level, K) {
+      let d1, d2;
+      if (K.dens === 'multiple') { [d1, d2] = r.pick(MULT_PAIRS); if (r.chance(.5)) [d1, d2] = [d2, d1]; }
+      else if (K.dens === 'coprime') { d1 = r.int(2, 7); d2 = r.int(2, 7); if (!coprime(d1, d2) || divides(d1, d2)) return null; }
+      else if (K.dens === 'unlike') { d1 = r.int(2, 8); d2 = r.int(2, 8); if (d1 === d2 || divides(d1, d2)) return null; }
+      else { d1 = r.int(4, 12); d2 = r.int(4, 12); if (d1 === d2 || divides(d1, d2) || coprime(d1, d2)) return null; }
+      let n1 = properNum(r, d1), n2 = properNum(r, d2);
+      if (!n1 || !n2) return null;
+      const op = r.pick(K.ops);
+      let f1 = R(n1, d1), f2 = R(n2, d2);
+      if (op === 'sub' && rat.cmp(f1, f2) < 0) { [n1, n2, d1, d2] = [n2, n1, d2, d1]; [f1, f2] = [f2, f1]; }
+      const ans = op === 'add' ? rat.add(f1, f2) : rat.sub(f1, f2);
+      if (ans.d === 1 || rat.cmp(ans, R(0)) <= 0) return null;
+      if (K.lt1 && rat.cmp(ans, R(1)) >= 0) return null;
+      if (op === 'add' && !K.lt1 && r.chance(.5) && rat.cmp(ans, R(1)) < 0) return null;   /* levels 3 and up: half of the sums are over one */
+      const L = lcm(d1, d2), m1 = L / d1, m2 = L / d2, s1 = n1 * m1, s2 = n2 * m2, top = op === 'add' ? s1 + s2 : s1 - s2, sym = op === 'add' ? '+' : '-';
+      const T1 = fracTex(f1), T2 = fracTex(f2), lv = 'g5-fraction-sum';
+      const steps = [
+        say('frac.s1', { d1, d2, L }),
+        say('frac.s2', { T1, T2, s1: `\\frac{${s1}}{${L}}`, s2: `\\frac{${s2}}{${L}}`, L }),
+        say(op === 'add' ? 'frac.s3add' : 'frac.s3sub', { a: `\\frac{${s1}}{${L}}`, b: `\\frac{${s2}}{${L}}`, r: `\\frac{${top}}{${L}}` })
+      ];
+      if (gcd(top, L) !== 1 || top > L) steps.push(say('frac.s4', { r: `\\frac{${top}}{${L}}`, ans: mixedTex(ans) }));
+      const hints = [say('frac.h1'), say('frac.h2', { d1, d2, L }), say('frac.h3', { T1, T2, s1: `\\frac{${s1}}{${L}}`, s2: `\\frac{${s2}}{${L}}` })];
+      const cands = op === 'add'
+        ? [mc('added-tops-and-bottoms', lv, R(n1 + n2, d1 + d2), 'adding-fractions-with-unlike-denominators'), mc('forgot-to-rename-the-tops', lv, R(n1 + n2, L), 'adding-fractions-with-unlike-denominators')]
+        : [mc('subtracted-tops-and-bottoms', lv, R(n1 - n2, d1 - d2), 'adding-fractions-with-unlike-denominators'), mc('forgot-to-rename-the-tops', lv, R(n1 - n2, L), 'adding-fractions-with-unlike-denominators')];
+      const kind = op === 'add' ? (K.lt1 && r.chance(.34) ? 'pizza' : r.chance(.5) ? 'cups' : 'eq') : (r.chance(.5) ? 'ribbon' : 'eq');
+      const text = kind === 'eq' ? say(op === 'add' ? 'frac.p.add' : 'frac.p.sub', { T1, T2 }) : say('frac.p.' + kind, { T1, T2 });
+      return {
+        prompt: { html: text }, model: `${n1}/${d1}${sym}${n2}/${d2}`, tags: kind === 'eq' ? [] : ['word-problem'],
+        answer: { type: 'number', value: ans, form: 'simplified', help: say('ans.fraction') },
+        hints, steps, misconceptions: wrongs(ans, cands),
+        canonical: op === 'add' ? `fsum|${Math.min(n1 / d1, n2 / d2).toFixed(6)}|${Math.max(n1 / d1, n2 / d2).toFixed(6)}` : `fsub|${(n1 / d1).toFixed(6)}|${(n2 / d2).toFixed(6)}`
+      };
+    }
+  });
+
+  /* =====================================================================
+     G8: solving one-variable linear equations
+     The problem is  A(x + B) = c x + d  or  a x + b = c x + d,  chosen from the solution x.
+     ===================================================================== */
+  const NZ = (r, lo, hi) => r.intExcept(lo, hi, 0);
+  make({
+    id: 'g8-linear-equation', version: 1, skillId: 'solve-linear-equations', minTimeMs: 2500,
+    levels: [
+      { desc: 'lin.lv1' }, { desc: 'lin.lv2' }, { desc: 'lin.lv3' }, { desc: 'lin.lv4' }, { desc: 'lin.lv5' }, { desc: 'lin.lv6' }
+    ],
+    build(r, level) {
+      let x, a, b, c = 0, d, paren = false;
+      if (level === 1) { x = r.int(1, 15); a = 1; b = NZ(r, -9, 9); d = x + b; if (d < 1) return null; }
+      else if (level === 2) { x = r.int(1, 12); a = r.int(2, 9); b = 0; d = a * x; }
+      else if (level === 3) { x = NZ(r, -10, 12); a = r.int(2, 9); b = NZ(r, -15, 15); d = a * x + b; if (abs(d) > 100 || d === 0) return null; }
+      else if (level === 4) { x = NZ(r, -10, 10); a = r.int(2, 9); c = r.int(1, 8); if (a === c) return null; b = NZ(r, -12, 12); d = a * x + b - c * x; if (abs(d) > 60 || d === 0) return null; }
+      else if (level === 5) { paren = true; x = NZ(r, -9, 12); a = r.int(2, 6); b = NZ(r, -8, 8); d = a * (x + b); if (d === 0 || abs(d) > 80) return null; }
+      else { paren = true; x = NZ(r, -8, 8); a = r.pick([-6, -5, -4, -3, -2, 2, 3, 4, 5, 6]); c = NZ(r, -5, 5); if (a === c) return null; b = NZ(r, -8, 8); d = a * (x + b) - c * x; if (abs(d) > 60 || d === 0) return null; }
+      const B = paren ? a * b : b, P = a - c, ans = R(x), lv = 'g8-linear-equation';
+      if (x + 0 === 0 || (paren && x + b === 0)) return null;
+      /* surface form: arrangement of the same equation */
+      const plainL = paren ? `${a}*(x${b < 0 ? '-' : '+'}${abs(b)})` : (a === 0 ? '' : `${a === 1 ? '' : a + '*'}x`) + (b === 0 ? '' : `${b < 0 ? '-' : '+'}${abs(b)}`);
+      const plainR = (c === 0 ? '' : `${c === 1 ? '' : c === -1 ? '-' : c + '*'}x`) + (c === 0 ? String(d) : d === 0 ? '' : `${d < 0 ? '-' : '+'}${abs(d)}`);
+      const flip = !paren && b !== 0 && r.chance(.25), swap = r.chance(.25);
+      const L = paren ? parenTex(a, b) : linTex(a, b, 'x', flip), Rr = linTex(c, d, 'x', c !== 0 && r.chance(.25));
+      let prompt, tags = [];
+      const word = level <= 3 && r.chance(.34);
+      if (word) {
+        tags = ['word-problem'];
+        prompt = level === 1 ? say(b > 0 ? 'lin.w.add' : 'lin.w.sub', { b: abs(b), d }) : level === 2 ? say('lin.w.mul', { a, d }) : say(b > 0 ? 'lin.w.muladd' : 'lin.w.mulsub', { a, b: abs(b), d });
+      } else prompt = say('lin.p.solve', { eq: swap ? `${Rr} = ${L}` : `${L} = ${Rr}` });
+      /* worked solution */
+      const op = n => say(n < 0 ? 'word.add' : 'word.subtract'), steps = [];
+      let A = a;
+      const k = B;
+      if (paren) { steps.push(say('lin.s.distribute', { a, eq: eqTex(a, a * b, c, d) })); }
+      if (c !== 0) { steps.push(say('lin.s.xterm', { op: op(c), t: `${abs(c)}x`, eq: eqTex(A - c, k, 0, d) })); A = A - c; }
+      if (k !== 0) { steps.push(say('lin.s.const', { op: op(k), t: abs(k), eq: eqTex(A, 0, 0, d - k) })); }
+      if (A !== 1) steps.push(say('lin.s.divide', { A, ans: x })); else if (!steps.length) steps.push(say('lin.s.done', { ans: x }));
+      const first = paren ? say('lin.h2.distribute', { a }) : c !== 0 ? say('lin.h2.move', { op: op(c), t: `${abs(c)}x` }) : k !== 0 ? say('lin.h2.move', { op: op(k), t: abs(k) }) : say('lin.h2.divide', { A });
+      const hints = [say(c !== 0 ? 'lin.h1.both' : paren ? 'lin.h1.paren' : 'lin.h1.one'), first];
+      if (A !== 1 && steps.length > 1) hints.push(steps.slice(0, -1).join(' '));
+      const cands = [];
+      const sol = (num, den) => den === 0 ? null : R(num, den);
+      if (b !== 0 && !paren) cands.push(mc('moved-the-number-with-the-wrong-sign', lv, sol(d + b, P), 'solving-equations-with-a-balance'));
+      if (paren) cands.push(mc('multiplied-only-the-first-term', lv, sol(d - b, P), 'solving-equations-with-a-balance'));
+      if (c !== 0) cands.push(mc('moved-the-x-term-with-the-wrong-sign', lv, sol(d - B, a + c), 'solving-equations-with-a-balance'));
+      if (c === 0 && a !== 1 && b !== 0 && !paren) cands.push(mc('divided-only-one-term', lv, R(d, a) && rat.sub(R(d, a), R(b)), 'solving-equations-with-a-balance'));
+      if (c === 0 && a !== 1 && !paren) cands.push(mc('forgot-to-divide', lv, R(d - b), 'solving-equations-with-a-balance'));
+      if (c === 0 && b === 0 && a !== 1) cands.push(mc('subtracted-instead-of-dividing', lv, R(d - a), 'solving-equations-with-a-balance'));
+      const nums = s => (s.match(/\d+(?:\.\d+)?/g) || []);
+      return {
+        prompt: { html: prompt }, ask: 'solve', tags,
+        model: `${plainL}=${plainR}`,
+        answer: { type: 'number', value: ans, form: 'any', name: 'x', help: say('ans.number') },
+        hints, steps, misconceptions: wrongs(ans, cands),
+        canonical: `lin|${[`${a}|${b}|${paren ? 'p' : ''}`, `${c}|${d}`].sort().join('~')}`
+      };
+    }
+  });
+
+  /* =====================================================================
+     G8: the Pythagorean theorem (Euclid's formula builds the triples)
+     ===================================================================== */
+  const PRIM = [[2, 1], [3, 2], [4, 1], [4, 3], [5, 2], [5, 4]];
+  make({
+    id: 'g8-pythagorean-side', version: 1, skillId: 'pythagorean-side-lengths', minTimeMs: 2500,
+    levels: [
+      { desc: 'pyth.lv1', prims: 2, kLo: 1, kHi: 1, unknown: 'hyp' },
+      { desc: 'pyth.lv2', prims: 2, kLo: 2, kHi: 5, unknown: 'hyp' },
+      { desc: 'pyth.lv3', prims: 2, kLo: 1, kHi: 3, unknown: 'leg' },
+      { desc: 'pyth.lv4', prims: 6, kLo: 1, kHi: 3, unknown: 'any' },
+      { desc: 'pyth.lv5', prims: 3, kLo: 1, kHi: 4, unknown: 'word' }
+    ],
+    build(r, level, K) {
+      const [m, n] = r.pick(PRIM.slice(0, K.prims)), k = r.int(K.kLo, K.kHi);
+      let a = k * (m * m - n * n), b = k * 2 * m * n; const c = k * (m * m + n * n);
+      if (r.chance(.5)) [a, b] = [b, a];
+      if (c > 100 || a === b) return null;
+      const unknown = K.unknown === 'hyp' ? 'c' : K.unknown === 'leg' ? r.pick(['a', 'b']) : r.pick(['a', 'b', 'c']);
+      const lv = 'g8-pythagorean-side', figure = { kind: 'right-triangle', legs: [a, b], hyp: c, unknown };
+      const known = unknown === 'a' ? b : a, ans = R(unknown === 'c' ? c : unknown === 'a' ? a : b);
+      const models = unknown === 'c' ? `sqrt(${a}^2+${b}^2)` : `sqrt(${c}^2-${known}^2)`;
+      let text, tags = [];
+      if (K.unknown === 'word') {
+        tags = ['word-problem'];
+        const w = r.int(0, 2);
+        if (w === 0 && unknown !== 'c') text = say('pyth.p.ladder', { c, a: known });
+        else if (w === 1 && unknown === 'c') text = say('pyth.p.tv', { a, b });
+        else if (unknown === 'c') text = say('pyth.p.wire', { a, b });
+        else text = say('pyth.p.ladder', { c, a: known });
+      } else text = unknown === 'c' ? say('pyth.p.hyp', { a, b }) : say('pyth.p.leg', { c, a: known });
+      const steps = unknown === 'c'
+        ? [say('pyth.s.theorem'), say('pyth.s.hyp1', { a, b }), say('pyth.s.hyp2', { a2: a * a, b2: b * b, sum: a * a + b * b }), say('pyth.s.hyp3', { sum: a * a + b * b, ans: c })]
+        : [say('pyth.s.theorem'), say('pyth.s.leg1', { k: known, c }), say('pyth.s.leg2', { k2: known * known, c2: c * c }), say('pyth.s.leg3', { k2: known * known, c2: c * c, diff: c * c - known * known }), say('pyth.s.leg4', { diff: c * c - known * known, ans: ans.n })];
+      const hints = [say(unknown === 'c' ? 'pyth.h1.hyp' : 'pyth.h1.leg'), steps[1], steps[2]];
+      const cands = unknown === 'c'
+        ? [mc('added-the-legs', lv, R(a + b), 'pythagorean-theorem'), mc('forgot-the-square-root', lv, R(a * a + b * b), 'pythagorean-theorem')]
+        : [mc('subtracted-the-lengths', lv, R(c - known), 'pythagorean-theorem'), mc('forgot-the-square-root', lv, R(c * c - known * known), 'pythagorean-theorem')];
+      return {
+        prompt: { html: text }, model: models, tags, figure,
+        answer: { type: 'number', value: ans, form: 'any', units: ['units', 'unit', 'ft', 'feet', 'foot', 'cm', 'm', 'meters', 'metres', 'in', 'inches'], help: say('ans.length') },
+        hints, steps, misconceptions: wrongs(ans, cands), canonical: `pyth|${Math.min(a, b)}|${Math.max(a, b)}|${unknown === 'c' ? 'c' : 'leg'}`
+      };
+    }
+  });
+
+  /* =====================================================================
+     A1: solving a system of two linear equations (the solution point is chosen first)
+     ===================================================================== */
+  const sysTex = (a, b, c) => `${coefTex(a, 'x')} ${b < 0 ? '-' : '+'} ${coefTex(abs(b), 'y')} = ${c}`;
+  const pc = (c, v) => (c === 1 ? v : `${c}*${v}`);
+  const sysPlain = (a, b, c) => `${a < 0 ? '-' : ''}${pc(abs(a), 'x')}${b < 0 ? '-' : '+'}${pc(abs(b), 'y')}=${c}`;
+  make({
+    id: 'a1-system-solve', version: 1, skillId: 'solve-linear-systems', minTimeMs: 4000,
+    levels: [{ desc: 'sys.lv1' }, { desc: 'sys.lv2' }, { desc: 'sys.lv3' }, { desc: 'sys.lv4' }, { desc: 'sys.lv5' }],
+    build(r, level) {
+      let x, y, e1, e2, m, k;
+      if (level <= 3) { x = r.int(1, 8); y = r.int(1, 8); } else if (level === 4) { x = NZ(r, -4, 8); y = NZ(r, -4, 8); } else { x = NZ(r, -8, 8); y = NZ(r, -8, 8); }
+      if (level === 1) {
+        m = NZ(r, -3, 3); k = y - m * x; if (abs(k) > 15 || k === 0) return null;
+        const a = r.int(1, 4), b = r.int(1, 4), c = a * x + b * y;
+        if (m * b + a === 0 || c > 40) return null;
+        e1 = { form: 'slope', m, k }; e2 = { a, b, c };
+      } else {
+        let a1, b1, a2, b2;
+        if (level === 2) { a1 = r.int(1, 5); a2 = r.int(1, 5); b1 = r.int(1, 4); b2 = -b1; }
+        else if (level === 3) { a1 = r.int(1, 5); a2 = r.int(1, 5); b1 = r.int(1, 4); b2 = b1 * r.pick([2, 3]); }
+        else if (level === 4) { a1 = r.int(1, 5); a2 = r.int(1, 5); b1 = r.int(2, 5); b2 = r.int(2, 5); if (b1 === b2 || b1 % b2 === 0 || b2 % b1 === 0) return null; }
+        else { a1 = NZ(r, -6, 6); a2 = NZ(r, -6, 6); b1 = NZ(r, -6, 6); b2 = NZ(r, -6, 6); if (abs(b1) === abs(b2) || abs(b1) === 1 || abs(b2) === 1 || b1 % b2 === 0 || b2 % b1 === 0) return null; }
+        if (a1 * b2 - a2 * b1 === 0) return null;
+        const c1 = a1 * x + b1 * y, c2 = a2 * x + b2 * y;
+        if (abs(c1) > 60 || abs(c2) > 60) return null;
+        e1 = { a: a1, b: b1, c: c1 }; e2 = { a: a2, b: b2, c: c2 };
+      }
+      const lv = 'a1-system-solve', swap = r.chance(.5), ans = [R(x), R(y)];
+      const eqs = [level === 1 ? { tex: `y = ${linTex(m, k)}`, plain: `y=${m < 0 ? '-' : ''}${pc(abs(m), 'x')}${k < 0 ? '-' : '+'}${abs(k)}` } : { tex: sysTex(e1.a, e1.b, e1.c), plain: sysPlain(e1.a, e1.b, e1.c) },
+        { tex: sysTex(e2.a, e2.b, e2.c), plain: sysPlain(e2.a, e2.b, e2.c) }];
+      const ordered = swap && level !== 1 ? [eqs[1], eqs[0]] : eqs;
+      const prompt = say('sys.p.solve', { e1: ordered[0].tex, e2: ordered[1].tex });
+      let steps, hints;
+      if (level === 1) {
+        const { a, b, c } = e2, A = a + b * m, C = c - b * k;
+        const rhs = linTex(m, k);
+        steps = [
+          say('sys.s.sub1', { rhs: `y = ${rhs}`, eq: `${coefTex(a, 'x')} + ${b === 1 ? '' : b}(${rhs}) = ${c}` }),
+          say('sys.s.sub2', { eq: eqTex(A, b * k, 0, c) }),
+          say('sys.s.sub3', { eq: `${coefTex(A, 'x')} = ${C}`, x }),
+          say('sys.s.sub4', { calc: `y = ${m === 1 ? '' : m === -1 ? '-' : m + '\\cdot '}${sgn(x)}${k === 0 ? '' : (k < 0 ? ' - ' : ' + ') + abs(k)} = ${y}` }),
+          say('sys.s.done', { x, y })
+        ];
+        hints = [say('sys.h1.sub'), steps[0], steps[1]];
+      } else {
+        const { a: a1, b: b1, c: c1 } = e1, { a: a2, b: b2, c: c2 } = e2, Lc = lcm(abs(b1), abs(b2)), m1 = Lc / abs(b1), m2 = Lc / abs(b2);
+        const s1 = { a: a1 * m1, b: b1 * m1, c: c1 * m1 }, s2 = { a: a2 * m2, b: b2 * m2, c: c2 * m2 };
+        const add = s1.b === -s2.b, A = add ? s1.a + s2.a : s1.a - s2.a, C = add ? s1.c + s2.c : s1.c - s2.c;
+        steps = [
+          say('sys.s.pick', { b1, b2, L: Lc }),
+          m1 === 1 && m2 === 1 ? say('sys.s.keep', { e1: sysTex(s1.a, s1.b, s1.c), e2: sysTex(s2.a, s2.b, s2.c) })
+            : say('sys.s.scale', { m1, m2, e1: sysTex(s1.a, s1.b, s1.c), e2: sysTex(s2.a, s2.b, s2.c) }),
+          say(add ? 'sys.s.add' : 'sys.s.subtract', { eq: `${coefTex(A, 'x')} = ${C}`, x }),
+          say('sys.s.back', { x, eq: `${coefTex(b1, 'y')} = ${c1 - a1 * x}`, y }),
+          say('sys.s.done', { x, y })
+        ];
+        hints = [say('sys.h1.elim'), steps[1], steps[2].replace(/, so .*$/, '.')];
+      }
+      const cands = [];
+      cands.push({ id: 'swapped-the-order', wrongAnswer: [R(y), R(x)] });
+      cands.push({ id: 'sign-slip-on-y', wrongAnswer: [R(x), R(-y)] });
+      cands.push({ id: 'sign-slip-on-x', wrongAnswer: [R(-x), R(y)] });
+      const miscs = [];
+      for (const cd of cands) {
+        if (cd.wrongAnswer.every((v, i) => rat.eq(v, ans[i])) || miscs.some(o => o.wrongAnswer.every((v, i) => rat.eq(v, cd.wrongAnswer[i])))) continue;
+        miscs.push({ id: cd.id, wrongAnswer: cd.wrongAnswer, feedback: say(`${lv}.mc.${cd.id}`), lessonLink: level === 1 ? 'solving-systems-by-substitution' : 'solving-systems-by-elimination' });
+      }
+      const key = q => (q.a !== undefined ? `${q.a},${q.b},${q.c}` : `s${q.m},${q.k}`);
+      return {
+        prompt: { html: prompt }, model: ordered.map(e => e.plain).join(';'),
+        answer: { type: 'pair', value: ans, help: say('ans.pair') },
+        hints, steps, misconceptions: miscs, canonical: `sys|${[key(e1), key(e2)].sort().join('|')}`
+      };
+    }
+  });
+}
+
+/* =====================================================================
+   PRACTICE (engine): skills, the difficulty ladder, points, repeat avoidance, and the attempt record.
+   v1 ladder: 3 correct in a row (no hints) -> up a level; 2 wrong in a row -> down. A correct answer with hints keeps the
+   streak where it is. "Show solution" scores nothing and queues a similar problem at the same level.
+   State is plain JSON, one record per skill, so v2 (ratings, placement, mixed review) can add fields without a migration:
+   `rating` and `placed` are reserved for it.
+   An attempt is { s skill, g generator, v version, lvl, seed, a answer typed, ok, h hints, mc misconception, t ms, p points, gu gave up, at }.
+   With the instance record { g, v, lvl, seed } any attempt can be regenerated and re-graded (Practice.regrade). This build is a static
+   site with no server, so that check runs in the browser; the record is what a server would re-check.
+   ===================================================================== */
+{
+  const { rat } = Practice;
+  const byId = Practice.generators;
+
+  /* Course -> unit -> skill. `course` is an id from COURSES (curriculum.js). */
+  Practice.SKILLS = [
+    { id: 'multiply-multi-digit', course: 'grade4', unit: 'Whole-number operations', title: 'Multiply multi-digit numbers', gen: ['g4-multiply'],
+      blurb: 'Use an area model to multiply: two digits by one digit, up to three digits by two.', lessons: ['multiplying-with-area-models'], standards: ['4.3.5.7'] },
+    { id: 'add-subtract-unlike-fractions', course: 'grade5', unit: 'Fractions', title: 'Add and subtract fractions with unlike denominators', gen: ['g5-fraction-sum'],
+      blurb: 'Rename with a common denominator, then add or subtract.', lessons: ['adding-fractions-with-unlike-denominators', 'equivalent-fractions-on-a-number-line'], standards: ['5.3.5.11'] },
+    { id: 'solve-linear-equations', course: 'grade8', unit: 'Equations', title: 'Solve linear equations', gen: ['g8-linear-equation'],
+      blurb: 'From one step up to brackets and variables on both sides.', lessons: ['solving-equations-with-a-balance'], standards: ['8.3.6.3'] },
+    { id: 'pythagorean-side-lengths', course: 'grade8', unit: 'Right triangles', title: 'Find a side of a right triangle', gen: ['g8-pythagorean-side'],
+      blurb: 'Use the Pythagorean theorem to find a hypotenuse or a leg.', lessons: ['pythagorean-theorem', 'distance-and-the-pythagorean-theorem'], standards: ['8.2.3.1'] },
+    { id: 'solve-linear-systems', course: 'algebra1', unit: 'Systems', title: 'Solve a system of two linear equations', gen: ['a1-system-solve'],
+      blurb: 'Substitution and elimination, up to negative coefficients.', lessons: ['solving-systems-by-substitution', 'solving-systems-by-elimination', 'systems-of-equations'], standards: ['8.3.6.9'] }
+  ];
+  Practice.skill = id => Practice.SKILLS.find(s => s.id === id);
+  Practice.generatorsOf = skill => skill.gen.map(id => byId[id]);
+  Practice.levelCount = skill => Math.min(...Practice.generatorsOf(skill).map(g => g.levels.length));
+
+  /* ---- the ladder ---- */
+  const LADDER = Practice.LADDER = { up: 3, down: 2, masteryWindow: 6, masteryNeeded: 5 };
+  Practice.newState = () => ({ level: 1, streak: 0, miss: 0, totalPoints: 0, mastered: false, lastPracticed: 0, attempts: 0, forceLevel: 0,
+    topRecent: [], recentSeeds: [], recentHashes: [], rating: null, placed: false });
+
+  /* Points: scale with level; streak bonus; level-up bonus; fewer with hints; none for giving up, a wrong answer or a guess;
+     a quarter once the skill is mastered. */
+  Practice.POINTS = { perLevel: 10, streakStep: 2, streakCap: 5, levelUp: 25, hintFactor: [1, .75, .5, .25], masteredFactor: .25 };
+  /* outcome: { correct, hints, gaveUp, fast, level }; returns { state, points, change: -1|0|1, newlyMastered, ignored } and never mutates `state` */
+  Practice.applyAttempt = (state, skill, o) => {
+    const s = JSON.parse(JSON.stringify(state)), top = Practice.levelCount(skill), P = Practice.POINTS;
+    s.attempts++; s.lastPracticed = Date.now(); s.forceLevel = 0;
+    const res = { points: 0, change: 0, newlyMastered: false, ignored: false };
+    if (o.fast && o.correct && !o.gaveUp) { res.ignored = true; res.state = s; return res; }   /* a guess: no points, no ladder move */
+    const clean = o.correct && !o.hints && !o.gaveUp;
+    if (o.level === top) {
+      s.topRecent.push(clean ? 1 : 0);
+      if (s.topRecent.length > LADDER.masteryWindow) s.topRecent.shift();
+    }
+    if (o.correct && !o.gaveUp) {
+      s.miss = 0;
+      if (!o.hints) s.streak++;
+    } else { s.streak = 0; s.miss++; }
+    if (o.gaveUp) s.forceLevel = o.level;                /* a similar problem at the same level next */
+    const streakNow = s.streak;
+    let bonus = 0;
+    if (s.streak >= LADDER.up && s.level < top) { s.level++; s.streak = 0; s.miss = 0; res.change = 1; bonus = P.levelUp; }
+    else if (s.streak >= LADDER.up) s.streak = LADDER.up;   /* at the top: the streak keeps counting for the bonus */
+    else if (s.miss >= LADDER.down && s.level > 1) { s.level--; s.streak = 0; s.miss = 0; res.change = -1; }
+    else if (s.miss >= LADDER.down) s.miss = LADDER.down;
+    if (o.correct && !o.gaveUp) {
+      const base = P.perLevel * o.level, streakBonus = o.hints ? 0 : Math.min(streakNow, P.streakCap) * P.streakStep;
+      let pts = Math.round((base + streakBonus) * P.hintFactor[Math.min(o.hints, P.hintFactor.length - 1)]) + bonus;
+      if (state.mastered) pts = Math.max(1, Math.round(pts * P.masteredFactor));
+      res.points = pts; s.totalPoints += pts;
+    }
+    if (!s.mastered && s.topRecent.length >= LADDER.masteryWindow && s.topRecent.reduce((t, v) => t + v, 0) >= LADDER.masteryNeeded) { s.mastered = true; res.newlyMastered = true; }
+    res.state = s;
+    return res;
+  };
+
+  /* ---- choosing the next problem ---- */
+  const RECENT_SEEDS = 40, RECENT_HASHES = 60;
+  /* rand: a function returning [0,1); tests pass a seeded one */
+  Practice.nextInstance = (state, skill, rand = Math.random) => {
+    const level = Math.min(state.forceLevel || state.level, Practice.levelCount(skill)), gens = Practice.generatorsOf(skill);
+    let inst = null;
+    for (let tries = 0; tries < 60; tries++) {
+      const gen = gens[Math.floor(rand() * gens.length)], seed = Math.floor(rand() * 4294967296) >>> 0;
+      inst = Practice.verified(gen, seed, level);
+      if (!inst) continue;
+      if (!state.recentSeeds.includes(seed) && !state.recentHashes.includes(inst.canonical)) break;
+    }
+    if (!inst) throw new Error('could not build a verified problem for ' + skill.id);
+    return inst;
+  };
+  /* remember what was shown (a finite skill may then repeat, spaced out, once the window has moved on) */
+  Practice.markSeen = (state, inst) => {
+    state.recentSeeds.push(inst.seed); if (state.recentSeeds.length > RECENT_SEEDS) state.recentSeeds.shift();
+    state.recentHashes.push(inst.canonical); if (state.recentHashes.length > RECENT_HASHES) state.recentHashes.shift();
+  };
+
+  /* ---- independent verification: re-derive the answer from the finished problem and compare ---- */
+  Practice.verify = inst => {
+    try {
+      const got = Practice.cas.answerOf(inst);
+      if (!Practice.sameValue(inst.answer.type, got, inst.answer.value)) return 'the CAS disagrees with the constructed answer';
+      /* the printed numbers must be the model's numbers (digits only; exponents are not data) */
+      const nums = s => [...new Set((s.replace(/\^\d/g, '').match(/\d+/g) || []))].sort().join(',');
+      const shown = nums(inst.prompt.html.replace(/\\\w+/g, ' '));
+      if (shown !== nums(inst.model)) return `the text shows numbers ${shown} but the model has ${nums(inst.model)}`;
+      return null;
+    } catch (e) { return 'the CAS could not read the problem: ' + e.message; }
+  };
+  /* generate + verify; a disagreement is logged and the problem is discarded (the caller resamples). Never returns an unverified problem. */
+  Practice.verifyLog = [];
+  Practice.verified = (gen, seed, level) => {
+    const inst = gen.generate(seed, level), why = Practice.verify(inst);
+    if (why) { Practice.verifyLog.push({ g: gen.id, v: gen.version, level, seed, why }); if (Practice.verifyLog.length > 50) Practice.verifyLog.shift(); return null; }
+    return inst;
+  };
+
+  /* ---- records ---- */
+  Practice.record = (skill, inst, o) => ({ s: skill.id, g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed,
+    a: String(o.answer || '').slice(0, 60), ok: o.correct ? 1 : 0, h: o.hints | 0, mc: o.misconception || null, t: Math.round(o.timeMs || 0), p: o.points | 0, gu: o.gaveUp ? 1 : 0, at: o.at || Date.now() });
+  /* regenerate an attempt's problem and grade it again: { stale } if the generator changed, else { ok } */
+  Practice.regrade = rec => {
+    const gen = byId[rec.g];
+    if (!gen) return { stale: true };
+    if (gen.version !== rec.v) return { stale: true };
+    const inst = gen.generate(rec.seed, rec.lvl);
+    if (rec.gu) return { ok: false, inst };
+    return { ok: Practice.check(inst.answer, rec.a).status === 'correct', inst };
+  };
+  Practice.instanceRecord = inst => ({ g: inst.generatorId, v: inst.version, lvl: inst.level, seed: inst.seed });
+  Practice.regenerate = rec => { const gen = byId[rec.g]; if (!gen || gen.version !== rec.v) return null; return gen.generate(rec.seed, rec.lvl); };
+}
 
 /* =====================================================================
    CORE UTILITIES
@@ -1949,6 +2876,9 @@ function parseRoute(hash, ids = VIZ.map(v => v.id)) {
   if (/^#\/\?/.test(hash) || /^#find(~|$)/.test(hash)) return { page: 'home', filters: true };
   const t = hash.slice(1);
   if (t === 'progress') return { page: 'progress' };
+  if (t === 'practice') return { page: 'practice' };
+  const pr = t.match(/^practice~([a-z0-9-]+)$/);
+  if (pr) return { page: 'practice', skill: pr[1] };
   if (t === 'teacher') return { page: 'teacher' };
   if (Object.prototype.hasOwnProperty.call(LEVELS, t)) return { page: 'home', level: t };
   const m = t.match(/^([a-z0-9-]+)(?:\.([a-z0-9]+))?$/);
@@ -2319,6 +3249,241 @@ function TeacherLogin(onDone) {
   TeacherMode.onChange(() => { paint(); if (typeof route === 'function') route(); });
   paint();
 })();
+
+/* =====================================================================
+   PRACTICE (page): pick a skill, then an endless run of generated problems.
+   The logic (generators, checkers, ladder, points) is in src/practice/ and is tested in Node; this file only draws it.
+   Stored on this device only (localStorage, with an in-memory fallback): no name, no account, nothing is sent anywhere.
+   Per skill: the ladder state. Plus a short log of attempts, each small enough to regenerate from its { generator, version, level, seed }.
+   ===================================================================== */
+const PracticeStore = (() => {
+  const KEY = 'continuum-practice-v1', LOG_MAX = 300;
+  let mem = { skills: {}, log: [] }, failed = false;
+  const tidyState = s => {
+    const base = Practice.newState();
+    if (!s || typeof s !== 'object') return base;
+    for (const k of ['level', 'streak', 'miss', 'totalPoints', 'lastPracticed', 'attempts', 'forceLevel']) if (Number.isFinite(+s[k])) base[k] = Math.max(0, +s[k]);
+    base.level = Math.max(1, base.level);
+    base.mastered = !!s.mastered; base.placed = !!s.placed;
+    for (const k of ['topRecent', 'recentSeeds', 'recentHashes']) if (Array.isArray(s[k])) base[k] = s[k].slice(-80);
+    return base;
+  };
+  const load = () => {
+    if (failed) return mem;
+    try {
+      const d = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!d || typeof d !== 'object') return mem;
+      const out = { skills: {}, log: Array.isArray(d.log) ? d.log.filter(r => r && typeof r.g === 'string' && Number.isInteger(r.seed)).slice(-LOG_MAX) : [] };
+      for (const [id, s] of Object.entries(d.skills || {})) out.skills[id] = tidyState(s);
+      return (mem = out);
+    } catch (e) { return mem; }
+  };
+  const save = d => { mem = d; try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) { failed = true; } };
+  return {
+    state(id) { const d = load(); return d.skills[id] ? tidyState(d.skills[id]) : Practice.newState(); },
+    put(id, state, rec) { const d = load(); d.skills[id] = state; if (rec) { d.log.push(rec); if (d.log.length > LOG_MAX) d.log.shift(); } save(d); },
+    log() { return load().log.slice(); },
+    total() { return Object.values(load().skills).reduce((t, s) => t + (s.totalPoints || 0), 0); },
+    reset() { save({ skills: {}, log: [] }); },
+    storageOk() { return !failed; }
+  };
+})();
+
+/* A right triangle drawn from the problem's own numbers, so the picture can never disagree with the text. */
+function practiceFigure(fig) {
+  const [a, b] = fig.legs, W = 240, H = 170, pad = 34, s = Math.min((W - 2 * pad) / a, (H - 2 * pad) / b);
+  const w = a * s, hh = b * s, x0 = (W - w) / 2, y0 = H - pad, q = 12;
+  const NS = 'http://www.w3.org/2000/svg', el = (t, at, txt) => { const e = document.createElementNS(NS, t); for (const k in at) e.setAttribute(k, at[k]); if (txt != null) e.textContent = txt; return e; };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'pr-fig', role: 'img', 'aria-label': `Right triangle. The legs are ${fig.unknown === 'a' ? 'unknown' : a} and ${fig.unknown === 'b' ? 'unknown' : b}. The hypotenuse is ${fig.unknown === 'c' ? 'unknown' : fig.hyp}.` });
+  svg.append(el('polygon', { points: `${x0},${y0} ${x0 + w},${y0} ${x0},${y0 - hh}`, fill: 'color-mix(in srgb, var(--blue) 14%, transparent)', stroke: 'var(--blue)', 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+  svg.append(el('polyline', { points: `${x0 + q},${y0} ${x0 + q},${y0 - q} ${x0},${y0 - q}`, fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.5 }));
+  const label = (x, y, txt, anchor) => svg.append(el('text', { x, y, 'text-anchor': anchor, fill: 'var(--text)', 'font-size': 16, 'font-family': 'var(--sans)', 'font-weight': 600 }, txt));
+  label(x0 + w / 2, y0 + 20, fig.unknown === 'a' ? '?' : a, 'middle');
+  label(x0 - 10, y0 - hh / 2 + 5, fig.unknown === 'b' ? '?' : b, 'end');
+  label(x0 + w / 2 + 12, y0 - hh / 2 - 6, fig.unknown === 'c' ? '?' : fig.hyp, 'start');
+  return svg;
+}
+
+function renderPractice(app, skillId) {
+  const skill = skillId && Practice.skill(skillId);
+  document.title = (skill ? skill.title + ' | ' : '') + 'Practice | Continuum';
+  return skill ? practiceSession(app, skill) : practicePicker(app);
+}
+
+function practicePicker(app) {
+  const wrap = h('div', { class: 'wrap pr-page' });
+  wrap.append(h('h1', { class: 'display pr-title' }, 'Practice'),
+    h('p', { class: 'lede pr-lede' }, 'Pick a skill. Every problem is made fresh, so you can keep going. Get problems right and they get harder. Your points stay on this device.'));
+  const total = PracticeStore.total();
+  wrap.append(h('p', { class: 'pr-total', 'aria-live': 'polite' }, `Total points: ${total}`));
+  if (!PracticeStore.storageOk()) wrap.append(h('p', { class: 'pr-warn', role: 'status' }, 'This browser is not saving your practice, so it will be lost when you close the tab.'));
+  for (const c of COURSES) {
+    const skills = Practice.SKILLS.filter(s => s.course === c.id);
+    if (!skills.length) continue;
+    wrap.append(h('section', { class: 'pr-course', 'aria-label': c.name }, h('h2', { class: 'pr-course-h' }, c.name),
+      skills.map(s => {
+        const st = PracticeStore.state(s.id), top = Practice.levelCount(s);
+        return h('a', { class: 'pr-card', href: '#practice~' + s.id },
+          h('span', { class: 'pr-unit' }, s.unit),
+          h('span', { class: 'pr-card-t' }, s.title),
+          h('span', { class: 'pr-card-b' }, s.blurb),
+          h('span', { class: 'pr-card-m' }, st.attempts ? `Level ${st.level} of ${top}` : 'Not started', ` · ${st.totalPoints} points`, st.mastered ? h('span', { class: 'pr-badge' }, '★ Mastered') : null));
+      })));
+  }
+  /* the audit trail, put to use: the last few misconceptions, regenerated from their records, with a lesson to revisit */
+  const seen = [], slips = [];
+  for (const rec of PracticeStore.log().reverse()) {
+    if (!rec.mc || seen.includes(rec.g + rec.mc)) continue;
+    const inst = Practice.regenerate(rec), m = inst && inst.misconceptions.find(x => x.id === rec.mc);
+    if (!m) continue;
+    seen.push(rec.g + rec.mc); slips.push(h('li', {}, m.feedback + ' ', VIZ.some(v => v.id === m.lessonLink) ? h('a', { href: lessonToken(m.lessonLink) }, 'Review: ' + VIZ.find(v => v.id === m.lessonLink).title) : null));
+    if (slips.length >= 5) break;
+  }
+  if (slips.length) wrap.append(h('section', { class: 'pr-slips', 'aria-label': 'Mistakes to review' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'), h('ul', {}, slips)));
+  app.append(wrap);
+  return () => {};
+}
+
+function practiceSession(app, skill) {
+  const top = Practice.levelCount(skill), keypad = ['grade4', 'grade5', 'grade6'].includes(skill.course);
+  let state = PracticeStore.state(skill.id), inst = null, t0 = 0, hints = 0, answered = false, hintBox = null;
+  const startLevel = state.level, session = { solved: 0, tried: 0, points: 0, misc: {} };
+  const wrap = h('div', { class: 'wrap pr-page' });
+  const back = h('a', { class: 'pr-back', href: '#practice' }, '← All skills');
+  const lvl = h('span', { class: 'pr-stat-v' }), lvlDesc = h('p', { class: 'pr-lvldesc' }), pips = h('span', { class: 'pr-pips', role: 'img' }),
+    sPts = h('span', { class: 'pr-stat-v' }), tPts = h('span', { class: 'pr-stat-v' });
+  const stat = (k, v) => h('div', { class: 'pr-stat' }, h('span', { class: 'pr-stat-k' }, k), v);
+  const head = h('div', { class: 'pr-head' }, h('h1', { class: 'display pr-title' }, skill.title),
+    h('div', { class: 'pr-stats' }, stat('Level', lvl), stat('This session', sPts), stat('Total points', tPts), stat('Streak to next level', pips)), lvlDesc);
+  const promptEl = h('div', { class: 'pr-prompt', id: 'pr-prompt' }), figEl = h('div', { class: 'pr-figwrap' });
+  const input = h('input', { type: 'text', id: 'pr-answer', class: 'pr-input', autocomplete: 'off', autocapitalize: 'off', spellcheck: 'false', inputmode: keypad ? 'none' : 'text', 'aria-describedby': 'pr-help pr-echo' });
+  const help = h('p', { class: 'pr-help', id: 'pr-help' }), echo = h('p', { class: 'pr-echo', id: 'pr-echo', 'aria-live': 'polite' });
+  const fb = h('div', { class: 'pr-fb', role: 'status', 'aria-live': 'polite', tabindex: '-1' });
+  const stepsEl = h('div', { class: 'pr-steps' });
+  const btnCheck = h('button', { type: 'button', class: 'btn primary', onclick: () => check() }, 'Check'),
+    btnHint = h('button', { type: 'button', class: 'btn', onclick: () => hint() }, 'Hint'),
+    btnSol = h('button', { type: 'button', class: 'btn', onclick: () => giveUp() }, 'Show solution'),
+    btnNext = h('button', { type: 'button', class: 'btn primary', onclick: () => next() }, 'Next problem'),
+    btnEnd = h('button', { type: 'button', class: 'btn', onclick: () => summary() }, 'End session');
+  btnNext.hidden = true;
+  const insert = ch => {
+    const a = input.selectionStart ?? input.value.length, b = input.selectionEnd ?? a;
+    if (ch === 'back') { const s = a === b ? Math.max(0, a - 1) : a; input.value = input.value.slice(0, s) + input.value.slice(b); input.setSelectionRange(s, s); }
+    else { input.value = input.value.slice(0, a) + ch + input.value.slice(b); input.setSelectionRange(a + ch.length, a + ch.length); }
+    input.dispatchEvent(new Event('input')); input.focus();
+  };
+  const KEYS = [['7', '7'], ['8', '8'], ['9', '9'], ['4', '4'], ['5', '5'], ['6', '6'], ['1', '1'], ['2', '2'], ['3', '3'], ['−', '-', 'minus'], ['0', '0'], ['/', '/', 'fraction bar'], ['.', '.', 'decimal point'], [' ', ' ', 'space'], ['⌫', 'back', 'backspace']];
+  const pad = keypad ? h('div', { class: 'pr-keypad', role: 'group', 'aria-label': 'Number keypad' }, KEYS.map(([label, ch, aria]) => h('button', { type: 'button', class: 'pr-key', 'aria-label': aria || label, onclick: () => insert(ch) }, label === ' ' ? '␣' : label))) : null;
+  const answerBox = h('div', { class: 'pr-answer' }, h('label', { for: 'pr-answer', class: 'pr-label' }, 'Your answer'), input, help, echo, pad,
+    h('div', { class: 'btns pr-btns' }, btnCheck, btnHint, btnSol, btnNext));
+  const card = h('section', { class: 'pr-card-main', 'aria-label': 'Problem' }, promptEl, figEl, answerBox, fb, stepsEl);
+  wrap.append(back, head, card, h('div', { class: 'btns pr-foot' }, btnEnd));
+  app.append(wrap);
+
+  const draw = () => {
+    lvl.textContent = `${state.level} of ${top}`;
+    lvlDesc.textContent = Practice.say(Practice.generatorsOf(skill)[0].levels[state.level - 1].desc);
+    const have = Math.min(state.streak, Practice.LADDER.up);
+    pips.textContent = ''; pips.setAttribute('aria-label', `${have} of ${Practice.LADDER.up} correct in a row`);
+    for (let i = 0; i < Practice.LADDER.up; i++) pips.append(h('span', { class: 'pr-pip' + (i < have ? ' on' : '') }));
+    if (state.mastered) pips.append(h('span', { class: 'pr-badge' }, '★ Mastered'));
+    sPts.textContent = session.points; tPts.textContent = state.totalPoints;
+    if (window.__practice) window.__practice.state = state;
+  };
+  const setFb = (kind, html) => { fb.className = 'pr-fb ' + kind; fb.innerHTML = html; typeset(fb); };
+  function load() {
+    inst = Practice.nextInstance(state, skill);
+    Practice.markSeen(state, inst); PracticeStore.put(skill.id, state);
+    hints = 0; answered = false; hintBox = null; t0 = performance.now();
+    promptEl.innerHTML = inst.prompt.html; typeset(promptEl);
+    figEl.replaceChildren(inst.figure ? practiceFigure(inst.figure) : '');
+    help.textContent = inst.answer.help; echo.textContent = ''; input.value = ''; input.disabled = false;
+    fb.className = 'pr-fb'; fb.textContent = ''; stepsEl.replaceChildren();
+    btnCheck.hidden = btnSol.hidden = false; btnNext.hidden = true; btnHint.hidden = false; btnHint.disabled = false; btnHint.textContent = 'Hint';
+    draw(); window.__practice = { skill, inst, state };   /* the current problem, for the tests */
+    input.focus({ preventScroll: true });
+  }
+  function hint() {
+    if (answered || hints >= inst.hints.length) return;
+    hints++;
+    if (!hintBox) { hintBox = h('ol', { class: 'pr-hints' }); stepsEl.prepend(h('div', { class: 'pr-hintwrap' }, h('h2', { class: 'pr-h2' }, 'Hints'), hintBox)); }
+    const li = h('li', { html: inst.hints[hints - 1] }); hintBox.append(li); typeset(li);
+    btnHint.textContent = hints < inst.hints.length ? `Hint (${hints} of ${inst.hints.length} used)` : `All ${inst.hints.length} hints used`;
+    btnHint.disabled = hints >= inst.hints.length;
+  }
+  const showSteps = open => {
+    const d = h('details', { class: 'pr-solution' }, h('summary', {}, 'Show steps'), h('ol', {}, inst.steps.map(s => h('li', { html: s }))));
+    if (open) d.open = true;
+    stepsEl.append(d); typeset(d);
+  };
+  const lessonLinks = () => skill.lessons.filter(id => VIZ.some(v => v.id === id)).map(id => h('a', { href: lessonToken(id) }, VIZ.find(v => v.id === id).title));
+  function finish(o) {   /* o: { correct, gaveUp, answer, misconception } */
+    answered = true;
+    const ms = performance.now() - t0, fast = o.correct && !o.gaveUp && !hints && ms < Practice.generators[inst.generatorId].minTimeMs;
+    const out = Practice.applyAttempt(state, skill, { correct: o.correct, hints, gaveUp: !!o.gaveUp, fast, level: inst.level });
+    state = out.state;
+    const rec = Practice.record(skill, inst, { answer: o.answer, correct: o.correct && !o.gaveUp, hints, misconception: o.misconception, timeMs: ms, points: out.points, gaveUp: o.gaveUp });
+    PracticeStore.put(skill.id, state, rec);
+    session.tried++; if (o.correct && !o.gaveUp) session.solved++; session.points += out.points;
+    if (o.misconception) session.misc[o.misconception] = (session.misc[o.misconception] || 0) + 1;
+    input.disabled = true; btnCheck.hidden = btnSol.hidden = btnHint.hidden = true; btnNext.hidden = false;
+    draw();
+    return { out, fast };
+  }
+  function check() {
+    if (answered) return;
+    const r = Practice.check(inst.answer, input.value);
+    if (r.status === 'invalid') { setFb('no', r.reason === 'empty' ? 'Type an answer first. ' + escapeHtml(inst.answer.help) : 'I could not read that. ' + escapeHtml(inst.answer.help)); input.focus(); return; }
+    if (r.status === 'form') { setFb('warn', '<b>Nearly.</b> ' + escapeHtml(Practice.T['form.simplify'])); input.focus(); return; }
+    const correct = r.status === 'correct', m = correct ? null : Practice.matchMisconception(inst, r.value);
+    const { out, fast } = finish({ correct, answer: input.value, misconception: m && m.id });
+    let msg;
+    if (correct) {
+      const bits = [];
+      if (fast) bits.push('That was very quick, so it did not count toward points or levels. Read each problem, then answer.');
+      else bits.push(`<b>Correct.</b> +${out.points} point${out.points === 1 ? '' : 's'}.`);
+      if (out.change > 0) bits.push(`Level up! You are on level ${state.level}.`);
+      if (out.newlyMastered) bits.push('You have mastered this skill. Keep going, or try mixed practice later.');
+      msg = bits.join(' ');
+    } else {
+      msg = `<b>Not quite.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. `;
+      if (m) { msg += escapeHtml(m.feedback) + ' '; const l = VIZ.find(v => v.id === m.lessonLink); if (l) msg += `<a href="${lessonToken(l.id)}">Review: ${escapeHtml(l.title)}</a>`; }
+      if (out.change < 0) msg += ` Let's go back to level ${state.level} for a bit.`;
+    }
+    setFb(correct ? 'ok' : 'no', msg);
+    showSteps(!correct);
+    btnNext.focus();
+  }
+  function giveUp() {
+    if (answered) return;
+    finish({ correct: false, gaveUp: true, answer: input.value });
+    setFb('no', `<b>Here is the solution.</b> The answer is ${escapeHtml(Practice.showValue(inst.answer, inst.answer.value))}. No points for this one. Next you get a similar problem.`);
+    showSteps(true);
+    btnNext.focus();
+  }
+  function next() { load(); }
+  function summary() {
+    const mis = Object.entries(session.misc);
+    const sample = id => { for (const rec of PracticeStore.log().reverse()) { if (rec.s === skill.id && rec.mc === id) { const i = Practice.regenerate(rec); const m = i && i.misconceptions.find(x => x.id === id); if (m) return m; } } return null; };
+    wrap.replaceChildren(back, h('h1', { class: 'display pr-title' }, 'Session summary'),
+      h('p', { class: 'pr-sum' }, `You solved ${session.solved} of ${session.tried} problem${session.tried === 1 ? '' : 's'} and earned ${session.points} points.`),
+      h('p', { class: 'pr-sum' }, state.level > startLevel ? `You moved up from level ${startLevel} to level ${state.level}.` : state.level < startLevel ? `You moved from level ${startLevel} to level ${state.level} to build up.` : `You stayed at level ${state.level} of ${top}.`),
+      mis.length ? h('section', { class: 'pr-slips' }, h('h2', { class: 'pr-course-h' }, 'Mistakes to review'),
+        h('ul', {}, mis.map(([id, n]) => { const m = sample(id), l = m && VIZ.find(v => v.id === m.lessonLink); return h('li', {}, `${m ? m.feedback : id} (${n} time${n === 1 ? '' : 's'}) `, l ? h('a', { href: lessonToken(l.id) }, 'Review: ' + l.title) : null); }))) : null,
+      lessonLinks().length && !mis.length ? h('p', {}, 'Lessons for this skill: ', lessonLinks().flatMap((a, i) => i ? [', ', a] : [a])) : null,
+      h('div', { class: 'btns' }, h('button', { type: 'button', class: 'btn primary', onclick: () => route() }, 'Practice again'), h('a', { class: 'btn', href: '#practice' }, 'All skills')));
+    const hd = wrap.querySelector('h1'); hd.setAttribute('tabindex', '-1'); hd.focus({ preventScroll: true });
+  }
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+  input.addEventListener('input', () => {
+    if (answered || !inst) return;
+    const r = Practice.parseAnswer(inst.answer, input.value);
+    echo.textContent = !input.value.trim() ? '' : r.error ? 'I cannot read this yet.' : 'Reading your answer as ' + Practice.showValue(inst.answer, r.value) + '.';
+  });
+  load();
+  return () => { delete window.__practice; };
+}
+const escapeHtml = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* =====================================================================
    TOUR: "How this works" for a lesson's tools
@@ -57766,9 +58931,9 @@ function route() {
   }
   try {
     teardown = r.page === 'viz' && v ? renderViz(app, v, r.step) : r.page === 'ticket' && v ? renderTicket(app, v, r.key)
-             : r.page === 'progress' ? renderProgress(app) : r.page === 'teacher' ? renderTeacher(app) : renderHome(app);
+             : r.page === 'practice' ? renderPractice(app, r.skill) : r.page === 'progress' ? renderProgress(app) : r.page === 'teacher' ? renderTeacher(app) : renderHome(app);
   } catch (err) { teardown = null; showRouteError(err); window.scrollTo(0, 0); routedOnce = true; return; }
-  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress' && r.page !== 'teacher';
+  const home = !(r.page === 'viz' && v) && !(r.page === 'ticket' && v) && r.page !== 'progress' && r.page !== 'teacher' && r.page !== 'practice';
   const target = home && r.level ? document.getElementById('level-' + r.level) : home && r.filters ? document.getElementById('finder') : null;
   if (target) requestAnimationFrame(() => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }));
   else window.scrollTo(0, 0);

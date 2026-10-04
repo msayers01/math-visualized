@@ -13,6 +13,8 @@ Instructions for any AI working on this project (including in a new chat):
 
 - **Done (2026-10-04, owner's request): Grade 4 and Grade 5 lessons** (ARCHITECTURE 0.34): six lessons in new courses grade4 and grade5, tagged with the Grade 4/5 benchmarks the owner supplied (80 added, 265 total, 129 tagged); tags not yet independently audited. Next: ask which Grade 4/5 topics to add.
 
+- **Done (2026-10-04, owner's request): endless adaptive practice, v1** (ARCHITECTURE 0.35): `#practice`, five skills (Grade 4 multiplication, Grade 5 fractions, Grade 8 linear equations and Pythagorean theorem, Algebra 1 systems), procedural generators verified by an independent exact-arithmetic checker, ladder, points, misconceptions with lesson links. v2 (ratings, placement, mixed review, analytics, teacher view) is designed for but not built. Tests: `tools/tests/practice.test.js` (Node) and `practice-ui.test.js` (Playwright). Next: ask which skills to add and whether v2 should start.
+
 ## Project
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
