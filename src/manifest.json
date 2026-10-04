@@ -8,11 +8,22 @@
     "styles/motion.css",
     "styles/curriculum.css",
     "styles/teacher.css",
+    "styles/practice.css",
     "styles/tour.css"
   ],
   "curriculum": [
     "curriculum/standards-mn2022.js",
     "curriculum/curriculum.js"
+  ],
+  "practice": [
+    "practice/core.js",
+    "practice/cas.js",
+    "practice/check.js",
+    "practice/strings.js",
+    "practice/generators.js",
+    "practice/generators2.js",
+    "practice/generators3.js",
+    "practice/engine.js"
   ],
   "engine": [
     "engine/core.js",
@@ -29,6 +40,7 @@
     "engine/progress.js",
     "engine/teacher.js",
     "engine/teachermode.js",
+    "engine/practiceui.js",
     "engine/tour.js"
   ],
   "lessons": [

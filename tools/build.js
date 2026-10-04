@@ -96,6 +96,11 @@ function checkSyntax() {
   }
   if (bad.length) throw new Error('Syntax errors:\n  ' + bad.join('\n  '));
 }
+/* the practice folder is pure logic that the Node tests also load; compile it here and name the file */
+for (const f of man.practice || []) { try { new vm.Script(read(f), { filename: f }); } catch (e) { throw new Error('Syntax errors:\n  ' + String(e.stack || e.message).split('\n').slice(0, 4).join(' | ')); } }
+const pracOnDisk = fs.readdirSync(path.join(src, 'practice')).filter(n => n.endsWith('.js')).map(n => 'practice/' + n);
+const pracMissing = pracOnDisk.filter(f => !(man.practice || []).includes(f));
+if (pracMissing.length) throw new Error('practice files not in manifest.json: ' + pracMissing.join(', '));
 checkSyntax();
 checkTex();
 const curSummary = checkCurriculum();
@@ -154,8 +159,8 @@ const TOURS_JSON = JSON.stringify(loadTours());
 const wantSplit = process.argv.includes('--split');
 const splitMeta = wantSplit ? captureLessons() : [];
 const scripts = (wantSplit
-  ? [...man.curriculum, ...man.engine].map(read).join('\n') + '\nLAZY_LESSONS.push(...' + JSON.stringify(splitMeta.map(({ file, ...m }) => m)) + ');\n' + man.app.map(read).join('\n')
-  : [...man.curriculum, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n'));
+  ? [...man.curriculum, ...man.practice, ...man.engine].map(read).join('\n') + '\nLAZY_LESSONS.push(...' + JSON.stringify(splitMeta.map(({ file, ...m }) => m)) + ');\n' + man.app.map(read).join('\n')
+  : [...man.curriculum, ...man.practice, ...man.engine, ...man.lessons, ...man.app].map(read).join('\n'));
 const out = read('template.html')
   .replace('/*@STYLES*/', () => man.styles.map(read).join('').replace(/\n$/, ''))
   .replace('/*@SCRIPTS*/', () => scripts.replace(/\n$/, '').replace('__TEACHER_HASH__', () => TH).replace('__TOURS__', () => TOURS_JSON));
