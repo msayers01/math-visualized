@@ -23,7 +23,7 @@
       "at": "ctl:Progress of T",
       "title": "Apply T",
       "text": "T sends z₁, z₂, z₃ to 0, 1 and ∞. Slide the progress, or press Apply T, to watch the violet circle through the three points open up into the real axis.",
-      "try": "Drag z₃ off the circle first, then apply T again."
+      "try": "Drag z₄ off the violet circle, then apply T again: T(z₄) is no longer real."
     },
     {
       "at": "ctl:Re a",

@@ -213,7 +213,7 @@
            ['T(z) = (z + 1)/(2z)', 'This is 1/T: it sends 0 to ∞ and −1 to 0, the reverse of what is asked.'],
            ['T(z) = 2z/(z + 1)', 'T(z) = (z − z₁)(z₂ − z₃)/((z − z₃)(z₂ − z₁)) = z·2/((z + 1)·1). Check: T(0) = 0, T(1) = 2/2 = 1, T(−1) = ∞. Three points fix the map, so it is the only one.'],
            ['T(z) = 2z/(z − 1)', 'The pole must be at z₃ = −1, so the denominator is z + 1. This map sends 1 to ∞ instead.']] },
-    { name: 'a distance', setup: { view: 4, ax: 0, ay: 0, th: 0, s: 1, tri: false, seg: [[0, 0], [0.5, 0]], segLab: false, steps: true }, after: { segLab: true }, ans: 0,
+    { name: 'a distance', setup: { view: 4, ax: 0, ay: 0, th: 0, s: 1, tri: false, seg: [[0, 0], [0.5, 0]], segLab: false, steps: false }, after: { segLab: true, steps: true }, ans: 0,
       q: 'In the Poincaré disk, what is the hyperbolic distance from 0 to 1/2 (the yellow segment)?',
       ch: [['ln 3 ≈ 1.10', 'd(0, r) = 2 artanh r = ln((1 + r)/(1 − r)) = ln(1.5/0.5) = ln 3 ≈ 1.10.'],
            ['1/2', 'That is the Euclidean length. The hyperbolic length element 2|dz|/(1 − |z|²) is at least 2|dz|, so the distance is more than 1. It is ln 3 ≈ 1.10.'],
@@ -231,7 +231,7 @@
            ['About 151.93°, less than 180°', 'The sides from 0 are diameters, so the angle at 0 is 90°. The third side bows toward 0, so the other angles are about 30.96° each. The sum is about 151.93°, and the area is π − sum ≈ 0.49.'],
            ['More than 180°', 'Angle sums above 180° belong to the sphere (positive curvature). The hyperbolic plane has curvature −1, so every triangle has angle sum below 180°.'],
            ['It depends on where the triangle sits, so it cannot be found', 'Where it sits does not matter: isometries keep angles. Its shape does, and here the sum is about 151.93°.']] },
-    { name: 'is it a disk map?', setup: { view: 1, custom: [ONE, [-2, 0], [-2, 0], ONE], customLab: '(z − 2)/(1 − 2z)', u: 0, hl: 'unit', marks: [[0, 0]] }, after: { u: 1 }, ans: 2,
+    { name: 'disk map or not', setup: { view: 1, custom: [ONE, [-2, 0], [-2, 0], ONE], customLab: '(z − 2)/(1 − 2z)', u: 0, hl: 'unit', marks: [[0, 0]] }, after: { u: 1 }, ans: 2,
       q: 'Is f(z) = (z − 2)/(1 − 2z) an automorphism of the unit disk? (The unit circle is violet; the yellow dot is 0.)',
       ch: [['Yes: it has the form (z − a)/(1 − āz)', 'The form matches with a = 2, but disk automorphisms need |a| < 1. Here f(0) = −2 lies outside the disk.'],
            ['Yes, because ad − bc ≠ 0', 'ad − bc = 1 − 4 = −3 only makes f a Möbius map. It must also send the disk into itself, and f(0) = −2 does not.'],
@@ -259,16 +259,16 @@
       c.restore();
       c.beginPath(); c.arc(p.X(0), p.Y(0), p.scale, 0, TAU); c.strokeStyle = pal.text; c.lineWidth = 2; c.stroke();
     },
-    hook: String.raw`M. C. Escher's <em>Circle Limit</em> prints tile a disk with fish that shrink toward the rim, yet in the right geometry every fish is the same size. The maps that move those fish around are fractions \(\frac{az+b}{cz+d}\), the same maps that turn lines into circles. Why do such simple fractions carry a whole geometry where triangles have less than \(180^\circ\)?`,
+    hook: String.raw`M. C. Escher's <em>Circle Limit III</em> tiles a disk with fish that shrink toward the rim, yet in the right geometry every fish is the same size. The maps that move those fish around are fractions \(\frac{az+b}{cz+d}\), the same maps that turn lines into circles. Why do such simple fractions carry a whole geometry where triangles have angle sums less than \(180^\circ\)?`,
     steps: [
       { title: 'Three moves build every Möbius map',
-        text: String.raw`<p>A <b>Möbius map</b> is \(f(z)=\frac{az+b}{cz+d}\) with \(ad-bc\neq0\). Each one is a chain of shifts \(z+b\), turn-and-scale maps \(kz\) and the inversion \(1/z\). Here \(f\) is "\(z+1\), then \(1/z\)", so \(f(z)=\frac{1}{z+1}\).</p><p>Every grid line went to a circle or a line. All of them pass through \(f(\infty)=a/c=0\), and the two through the pole \(-d/c=-1\) stay lines. Add pieces with the buttons.</p>`,
+        text: String.raw`<p>A <b>Möbius map</b> is \(f(z)=\frac{az+b}{cz+d}\) with \(ad-bc\neq0\). Each one is a chain of shifts \(z+b\), turn-and-scale maps \(kz\) and the inversion \(1/z\). Here \(f\) is "\(z+1\), then \(1/z\)", so \(f(z)=\frac{1}{z+1}\).</p><p>Every grid line went to a circle or a line. All of them pass through \(f(\infty)=a/c=0\), and the two through the pole \(-d/c=-1\) stay lines (they land on the two axes). Add pieces with the buttons.</p>`,
         set: { view: 1, pieces: ['p1', 'inv'] } },
       { title: 'Three points pin the map',
         text: String.raw`<p>Drag \(z_1,z_2,z_3\). The map \(T(z)=\frac{(z-z_1)(z_2-z_3)}{(z-z_3)(z_2-z_1)}\) sends them to \(0,1,\infty\), and no other Möbius map does. So the violet circle through them must go to the line through \(0\) and \(1\).</p><p><b>Predict first.</b> Here \(z_1=-1\), \(z_2=i\), \(z_3=1\) and \(z_4=-i\). Where does \(T\) send \(z_4\)? Choose in the Predict box.</p>`,
         set: { view: 2, pred: 0 } },
       { title: 'Slide the disk',
-        text: String.raw`<p>For \(|a|&lt;1\) the map \(\varphi_a(z)=e^{i\theta}\frac{z-a}{1-\bar a z}\) sends the unit disk onto itself. It sends \(a\) to \(0\), and if \(|z|=1\) then \(|1-\bar a z|=|z-a|\), so the boundary circle goes to itself.</p><p>Here \(a=0.5\) and \(\theta=0\): the yellow point \(a\) is now at the center and \(0\) went to \(-0.5\). The pattern is distorted, but it still fills the disk. Drag \(a\), or press Replay the slide.</p>`,
+        text: String.raw`<p>For \(|a|&lt;1\) the map \(\varphi_a(z)=e^{i\theta}\frac{z-a}{1-\bar a z}\) sends the unit disk onto itself. It sends \(a\) to \(0\), and if \(|z|=1\) then \(|1-\bar a z|=|z-a|\), so the boundary circle goes to itself.</p><p>Here \(a=0.5\) and \(\theta=0\): the point \(a\) has moved to the center (yellow dot, \(\varphi(a)=0\)), and the yellow tile that was centered at \(0\) is now centered at \(-0.5\). The pattern is distorted, but it still fills the disk. Drag \(a\), or press Replay the slide.</p>`,
         set: { view: 3, ax: 0.5, ay: 0, th: 0, s: 1 } },
       { title: 'The Poincaré disk',
         text: String.raw`<p>Read the disk as the <b>hyperbolic plane</b>. The distance from \(0\) is \(d(0,r)=2\,\mathrm{artanh}\,r\), so the marks 1 to 4, one unit apart, crowd toward the rim. <b>Geodesics</b> (shortest paths) are diameters and arcs that meet the rim at right angles.</p><p>The violet triangle has angle sum \(100.95^\circ\) and area \(\pi-\text{sum}=1.38\). Each \(\varphi_a\) is an isometry: slide with \(a\) and these numbers stay. Drag a corner.</p>`,
@@ -292,7 +292,7 @@
       the <b>cross-ratio</b> of \(z\) with \(z_1,z_2,z_3\). It is Möbius (its \(ad-bc\) is \((z_2-z_3)(z_2-z_1)(z_1-z_3)\neq0\)) and sends \(z_1,z_2,z_3\) to \(0,1,\infty\). <em>Uniqueness.</em> If \(S\) does the same, then \(g=S\circ T^{-1}\) fixes \(0,1,\infty\). Fixing \(\infty\) forces \(c=0\), so \(g(z)=\alpha z+\beta\); then \(g(0)=0\) gives \(\beta=0\) and \(g(1)=1\) gives \(\alpha=1\). So \(S=T\). Consequences: any three distinct points can be sent to any other three (compose two such maps), and \(z_4\) lies on the generalized circle through \(z_1,z_2,z_3\) exactly when \(T(z_4)\) is real, since that circle goes to \(\mathbb{R}\cup\{\infty\}\).</p>
       <p><em>Worked example.</em> For \(z_1=-1,z_2=i,z_3=1\): \(T(z)=\frac{(z+1)(i-1)}{(z-1)(i+1)}=\frac{(z+1)\,i}{z-1}\), since \(\frac{i-1}{i+1}=i\). Then \(T(-i)=\frac{(1-i)\,i}{-i-1}=\frac{1+i}{-(1+i)}=-1\), real, as it must be: \(-i\) is on the unit circle through the three points.</p>
       <h3>Automorphisms of the disk</h3>
-      <p>Let \(\mathbb{D}=\{|z|&lt;1\}\). For \(|a|&lt;1\) and real \(\theta\) put \(\varphi(z)=e^{i\theta}\frac{z-a}{1-\bar az}\). <em>Claim.</em> \(\varphi\) maps \(\mathbb{D}\) onto itself. <em>Proof.</em> If \(|z|=1\) then \(1-\bar az=z(\bar z-\bar a)\), so \(|1-\bar az|=|z-a|\) and \(|\varphi(z)|=1\). The pole \(1/\bar a\) lies outside the closed disk, so \(\varphi(\mathbb{D})\) is connected, misses the unit circle and contains \(\varphi(a)=0\); hence \(\varphi(\mathbb{D})\subseteq\mathbb{D}\). The inverse \(w\mapsto\frac{e^{-i\theta}w+a}{1+\bar a e^{-i\theta}w}\) has the same form (with \(-ae^{i\theta}\) in place of \(a\)), so it also maps \(\mathbb{D}\) into \(\mathbb{D}\), and \(\varphi\) is onto. \(\square\) The Schwarz lemma shows that these are <em>all</em> the holomorphic bijections of \(\mathbb{D}\); we use that fact without proof.</p>
+      <p>Let \(\mathbb{D}=\{|z|&lt;1\}\). For \(|a|&lt;1\) and real \(\theta\) put \(\varphi(z)=e^{i\theta}\frac{z-a}{1-\bar az}\). <em>Claim.</em> \(\varphi\) maps \(\mathbb{D}\) onto itself. <em>Proof.</em> If \(|z|=1\) then \(1-\bar az=z(\bar z-\bar a)\), so \(|1-\bar az|=|z-a|\) and \(|\varphi(z)|=1\). The pole \(1/\bar a\) lies outside the closed disk, (or is \(\infty\) when \(a=0\)), so \(\varphi(\mathbb{D})\) is connected; it misses the unit circle because \(\varphi\) is injective and already sends the unit circle onto itself; and it contains \(\varphi(a)=0\); hence \(\varphi(\mathbb{D})\subseteq\mathbb{D}\). The inverse \(w\mapsto\frac{e^{-i\theta}w+a}{1+\bar a e^{-i\theta}w}\) has the same form (with \(-ae^{i\theta}\) in place of \(a\)), so it also maps \(\mathbb{D}\) into \(\mathbb{D}\), and \(\varphi\) is onto. \(\square\) The Schwarz lemma shows that these are <em>all</em> the holomorphic bijections of \(\mathbb{D}\); we use that fact without proof.</p>
       <h3>The Poincaré disk</h3>
       <p>Give \(\mathbb{D}\) the length element \(ds=\frac{2|dz|}{1-|z|^2}\): a curve \(\gamma\) has length \(\int\frac{2|\gamma'(t)|}{1-|\gamma(t)|^2}dt\), and the distance \(d(p,q)\) is the least length of a curve from \(p\) to \(q\). This is the <b>Poincaré disk</b>, a model of the hyperbolic plane (curvature \(-1\)).</p>
       <p><em>Isometries.</em> For \(\varphi\) as above, \(|\varphi'(z)|=\frac{1-|a|^2}{|1-\bar az|^2}\), and the identity \(|1-\bar az|^2-|z-a|^2=(1-|a|^2)(1-|z|^2)\) gives \(1-|\varphi(z)|^2=\frac{(1-|a|^2)(1-|z|^2)}{|1-\bar az|^2}\). Dividing, \(\frac{2|\varphi'(z)|}{1-|\varphi(z)|^2}=\frac{2}{1-|z|^2}\): \(\varphi\) preserves \(ds\), so it preserves lengths and distances.</p>
@@ -310,7 +310,7 @@
                   'f(L) is a circle or a line; it is a line exactly when L passes through −d/c, and in every case f(L) passes through a/c.',
                   'f(L) is a circle centered at a/c.',
                   'f(L) is a circle through the origin.'], answer: 1,
-        why: String.raw`On the Riemann sphere a line is a circle through \(\infty\), and Möbius maps send generalized circles to generalized circles. Since \(\infty\in L\), \(f(L)\) contains \(f(\infty)=a/c\). And \(f(L)\) contains \(\infty\) (is a line) exactly when \(L\) contains the point sent to \(\infty\), the pole \(-d/c\). "Lines stay lines" holds only for \(c=0\). The point \(a/c\) lies <em>on</em> the image, not at its center. Passing through \(0\) is special to \(f(z)=1/z\).`,
+        why: String.raw`On the Riemann sphere a line is a circle through \(\infty\), and Möbius maps send generalized circles to generalized circles. Since \(\infty\in L\), \(f(L)\) contains \(f(\infty)=a/c\). And \(f(L)\) contains \(\infty\) (is a line) exactly when \(L\) contains the point sent to \(\infty\), the pole \(-d/c\). "Lines stay lines" holds only for \(c=0\). The point \(a/c\) lies <em>on</em> the image, not at its center. The image passes through \(0\) only when \(a/c=0\), as for \(1/z\).`,
         hint: String.raw`Treat a line as a circle through \(\infty\). Where does \(f\) send \(\infty\), and which point goes to \(\infty\)?` },
       { q: 'In the Poincaré disk the distance between p and q is d(p, q) = 2 artanh( |p − q| / |1 − p̄q| ), where p̄ is the complex conjugate of p, and 2 artanh x = ln((1 + x)/(1 − x)). Find d(1/2, −1/2).',
         choices: ['1, the Euclidean distance', '∞, because |p − q| = 1', 'ln 9 ≈ 2.20', 'ln 3 ≈ 1.10'], answer: 2,
@@ -437,7 +437,7 @@
         const inf = mob(M, INF);
         if (inf !== INF && Math.abs(inf[0]) < 50 && Math.abs(inf[1]) < 50) { p.dot(inf[0], inf[1], 7, pal.yellow, pal.text, 1.5); tag(p, 'f(∞)' + (done ? ' = ' + nfC(inf) : ''), inf, 0, -22, pal.text); }
         st.marks.forEach(m => { const w = mob(M, m); if (w === INF) return; p.dot(w[0], w[1], 7, pal.yellow, pal.text, 1.5); tag(p, done ? 'f(' + nfC(m) + ') = ' + nfC(w) : nfC(m), w, 0, 22, pal.text); });
-        note(c, p, done ? 'Images of grid lines under f' : 'Applying f…', pal.text, 0);
+        note(c, p, done ? 'Images of grid lines under f' : st.u <= 0 ? 'Before f: the plain grid' : 'Applying f…', pal.text, 0);
         note(c, p, small ? 'blue: Re z = k' : 'blue: images of Re z = k (k = −2 … 2)', pal.blue, 1);
         note(c, p, small ? 'green: Im z = k' : 'green: images of Im z = k', pal.green, 2);
         if (st.hl) note(c, p, st.hl === 'unit' ? 'violet: image of |z| = 1' : 'violet: image of Re z = ' + (st.hl === 'x1' ? 1 : 2), pal.violet, 3);
@@ -572,7 +572,7 @@
         prBox = h('div', { style: 'display:flex;flex-direction:column;gap:8px;min-width:0' }); panel.append(prBox);
       });
       const gSlide = group(() => {
-        C.title('The slide φ(z) = e^{iθ}(z − a)/(1 − āz)');
+        C.title('The slide φ(z) = e^(iθ)(z − a)/(1 − āz)');
         aX = C.slider({ label: 'Re a', min: -0.9, max: 0.9, step: .05, value: st.ax, format: nf, onInput: v => setA(v, st.ay) });
         aY = C.slider({ label: 'Im a', min: -0.9, max: 0.9, step: .05, value: st.ay, format: nf, onInput: v => setA(st.ax, v) });
         thS = C.slider({ label: 'Turn θ (degrees)', min: -180, max: 180, step: 15, value: st.th, format: v => nf(v) + '°', onInput: v => { stop(); st.th = v; sync(); } });
@@ -728,7 +728,7 @@
         else {
           const inf = cdiv(M[0], M[2]), pole = cscl(cdiv(M[3], M[2]), -1), L = gridThroughPole(pole);
           s += `${kk('Where ∞ goes')} f(∞) = a/c = ${nfC(inf)}; ${kk('pole')} f(−d/c) = f(${nfC(pole)}) = ∞<br>`;
-          s += `${kk('Grid')} ${L.length ? `${L.length} of the 10 grid lines pass through the pole (${L.join(' and ')}), so they stay lines` : 'no grid line passes through the pole, so none stays a line'}; the other ${10 - L.length} become circles through f(∞) = ${nfC(inf)}.`;
+          s += `${kk('Grid')} ${L.length === 1 ? `1 of the 10 grid lines passes through the pole (${L[0]}), so it stays a line` : L.length ? `${L.length} of the 10 grid lines pass through the pole (${L.join(' and ')}), so they stay lines` : 'no grid line passes through the pole, so none stays a line'}; the other ${10 - L.length} become circles through f(∞) = ${nfC(inf)}.`;
         }
         return s;
       };
@@ -748,7 +748,7 @@
         const M = fullPhi(), a = aPt(); let dev = 0;
         for (let k = 0; k < 360; k++) dev = Math.max(dev, Math.abs(cabs(mob(M, cis(TAU * k / 360))) - 1));
         let s = `${kk('φ(z)')} = ${mobText(M)}<br>${kk('a')} = ${nfC(a)}, |a| = ${nf(cabs(a))} &lt; 1, θ = ${nf(st.th)}°<br>`;
-        s += `${kk('φ(a)')} = ${nfC(mob(M, a))}, ${kk('φ(0)')} = −a·e^{iθ} = ${nfC(mob(M, ZERO))}<br>`;
+        s += `${kk('φ(a)')} = ${nfC(mob(M, a))}, ${kk('φ(0)')} = −a·e^(iθ) = ${nfC(mob(M, ZERO))}<br>`;
         s += `${kk('Rim')} |φ(z)| − 1 over 360 points of |z| = 1: largest size ${f2(dev)}<br>`;
         s += `${kk('Hyperbolic distance moved')} d(0, a) = 2 artanh |a| = ${f2(dH(ZERO, a))}`;
         return s;
