@@ -136,6 +136,7 @@
     "lessons/ugrad/linear-transformations.js",
     "lessons/grad/conformal-maps.js",
     "lessons/grad/mobius-maps-and-the-hyperbolic-plane.js",
+    "lessons/grad/branch-cuts-and-riemann-surfaces.js",
     "lessons/school/perimeter-and-area-of-rectangles.js",
     "lessons/school/volume-with-unit-cubes.js",
     "lessons/school/factors-primes-gcf-and-lcm.js",
