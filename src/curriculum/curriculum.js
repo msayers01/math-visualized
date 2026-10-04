@@ -18,6 +18,8 @@
    have their own benchmarks and Grades 9-11 are one band. A lesson's grades are its course's
    grades plus the band of every benchmark it is tagged with. */
 const GRADES = [
+  { id: '4',    name: 'Grade 4' },
+  { id: '5',    name: 'Grade 5' },
   { id: '6',    name: 'Grade 6' },
   { id: '7',    name: 'Grade 7' },
   { id: '8',    name: 'Grade 8' },
@@ -30,6 +32,8 @@ const GRADES = [
    Algebra 1 through Precalculus are conventional labels, not state-defined courses. A course
    with no lessons is simply not shown. */
 const COURSES = [
+  { id: 'grade4',           level: 'school', name: 'Grade 4 Mathematics',        grades: ['4'] },
+  { id: 'grade5',           level: 'school', name: 'Grade 5 Mathematics',        grades: ['5'] },
   { id: 'grade6',           level: 'school', name: 'Grade 6 Mathematics',        grades: ['6'] },
   { id: 'grade7',           level: 'school', name: 'Grade 7 Mathematics',        grades: ['7'] },
   { id: 'grade8',           level: 'school', name: 'Grade 8 Mathematics',        grades: ['8'] },
