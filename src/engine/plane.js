@@ -77,6 +77,14 @@ class Plane {
     while (this.pulses.length < hs.length) { const e = h('i', { class: 'hpulse', 'aria-hidden': 'true' }); this.host.append(e); this.pulses.push(e); }
     hs.forEach((q, i) => { const t = `${q.px}px ${q.py}px`; if (this.pulses[i]._t !== t) { this.pulses[i]._t = t; this.pulses[i].style.translate = t; } });
   }
+  /* keyboard users: say which handle is selected and where it is (screen-reader live region plus the coordinate chip) */
+  announce(i) {
+    const q = this.handles[i]; if (!q) return;
+    const t = `Handle ${i + 1} of ${this.handles.length}: x ${fmt(q.x)}, y ${fmt(q.y)}`;
+    if (!this.live) { this.live = h('div', { class: 'sr', role: 'status', 'aria-live': 'polite' }); this.host.append(this.live); }
+    this.live.textContent = t;
+    if (this.coordEl) { this.coordEl.textContent = `x ${fmt(q.x)}    y ${fmt(q.y)}`; this.coordEl.classList.add('on'); }
+  }
   clearPulses() { this.pulses.forEach(e => e.remove()); this.pulses = []; }
   requestDraw() {
     if (this._raf) return;
@@ -84,7 +92,7 @@ class Plane {
   }
   destroy() {
     this.ro.disconnect(); cancelAnimationFrame(this._raf);
-    removeEventListener('themechange', this._theme); removeEventListener('pointerup', this._rel); removeEventListener('pointercancel', this._rel); removeEventListener('scroll', this._scr); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
+    removeEventListener('themechange', this._theme); removeEventListener('pointerup', this._rel); removeEventListener('pointercancel', this._rel); removeEventListener('scroll', this._scr); this.clearPulses(); if (this.live) this.live.remove(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
   }
   /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
   glow(color, blur = 10) {

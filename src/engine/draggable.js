@@ -52,7 +52,7 @@ function draggable(plane, { hit, move, hover }) {
   cv.addEventListener('keydown', e => {
     const n = plane.handles.length; if (!n) return;
     if (e.altKey || e.ctrlKey || e.metaKey) return;
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses(); plane.focusIdx = (plane.focusIdx + 1) % n; plane.draw(); return; }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses(); plane.focusIdx = (plane.focusIdx + 1) % n; plane.draw(); plane.announce(plane.focusIdx); return; }
     const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]; if (!dir) return;
     const i = Math.min(plane.focusIdx, n - 1), q = plane.handles[i], hd = hit(q.px, q.py); if (hd == null) return;
     e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses();
@@ -60,6 +60,7 @@ function draggable(plane, { hit, move, hover }) {
       move(hd, q.x + dir[0] * u, q.y + dir[1] * u); plane.draw();
       const q2 = plane.handles[i]; if (!q2 || Math.hypot(q2.px - q.px, q2.py - q.py) > .5) break;
     }
+    plane.announce(i);
   });
   cv.addEventListener('focus', () => { if (cv.matches(':focus-visible')) { plane.kbd = true; plane.draw(); } });
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
