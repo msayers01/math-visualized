@@ -61220,7 +61220,7 @@ register({
            ['12', 'Yes. 24 = 2 × 2 × 2 × 3 and 36 = 2 × 2 × 3 × 3. They share 2, 2 and 3. 2 × 2 × 3 = 12.'],
            ['72', 'Not quite. 72 is a common multiple (the LCM). A factor of 24 cannot be bigger than 24.'],
            ['24', 'Not quite. 24 divides 24 but not 36: 36 ÷ 24 leaves 12.']] },
-    { q: 'A florist has 30 roses and 45 tulips. She makes identical bouquets with no flowers left over, and she wants as many bouquets as possible. How many bouquets does she make?', ans: 0, view: { t: 'tiles', a: 30, b: 45, s: 15 },
+    { q: 'A florist has 30 roses and 45 tulips. She makes identical bouquets with no flowers left over, and she wants as many bouquets as possible. How many bouquets does she make?', ans: 0, view: { t: 'venn', a: 30, b: 45 },
       ch: [['15', 'Yes. The GCF of 30 and 45 is 15. Each bouquet gets 30 ÷ 15 = 2 roses and 45 ÷ 15 = 3 tulips.'],
            ['5', 'Not quite. 5 bouquets works, with 6 roses and 9 tulips each, but more bouquets are possible. The most is the GCF, 15.'],
            ['75', 'Not quite. 75 is 30 + 45, the total number of flowers. You cannot make more bouquets than roses.'],
@@ -61235,8 +61235,8 @@ register({
            ['80', 'Not quite. 80 works, but a smaller number works too. 10 × 8 is not always the first match.'],
            ['2', 'Not quite. 2 is the GCF. You need the smallest shared multiple, so the answer is at least 10.'],
            ['40', 'Yes. Packs of hot dogs: 10, 20, 30, 40. Packs of buns: 8, 16, 24, 32, 40. The first match is 40: 4 packs of hot dogs and 5 packs of buns.']] },
-    { q: 'Write 24 + 36 as a common factor times a sum, so that the two numbers inside the brackets have no common factor.', ans: 0, view: { t: 'dist', a: 24, b: 36, g: 12 },
-      ch: [['12 × (2 + 3)', 'Yes. 12 × 2 = 24 and 12 × 3 = 36. Inside the brackets, 2 and 3 share only 1, so nothing more can come out.'],
+    { q: 'Write 24 + 36 as a common factor times a sum, like 3 × (4 + 5), so that the two numbers inside the parentheses have no common factor.', ans: 0, view: { t: 'dist', a: 24, b: 36, g: 12, op: '+' },
+      ch: [['12 × (2 + 3)', 'Yes. 12 × 2 = 24 and 12 × 3 = 36. Inside the parentheses, 2 and 3 share only 1, so nothing more can come out.'],
            ['6 × (4 + 6)', 'Not quite. 6 × 4 + 6 × 6 is correct, but 4 and 6 still share the factor 2. Pull out 12 instead.'],
            ['4 × (6 + 9)', 'Not quite. 4 × 6 + 4 × 9 is correct, but 6 and 9 still share the factor 3. Pull out 12 instead.'],
            ['24 × (1 + 36)', 'Not quite. 24 × 1 = 24 but 24 × 36 is not 36. The same factor must divide both numbers.']] }
@@ -61392,7 +61392,7 @@ register({
       if (exOk) Tfit(c, p, `${root} = ${live}`, W / 2, yb + fs + 8, W - 20, { size: fs + 3, color: pal.violet, weight: 800, halo: false });
       else T(c, p, 'Now write it with exponents (panel).', W / 2, yb + fs + 8, { size: fs, color: pal.muted, halo: false });
     } else {
-      Tfit(c, p, 'blue ring = composite, split again.  green = prime, stop.', W / 2, H - 14, W - 16, { size: 12, color: pal.muted, halo: false });
+      Tfit(c, p, 'blue ring: split again.  green: prime, stop.', W / 2, H - 14, W - 16, { size: 12, color: pal.muted, halo: false });
     }
   };
 
@@ -61567,10 +61567,10 @@ register({
         text: String.raw`<p>Lay out 12 tiles in a rectangle. You can do it 3 ways: 1 × 12, 2 × 6 and 3 × 4. The numbers in each pair are <b>factors</b> of 12. A factor divides 12 with nothing left over.</p><p>Now slide to 13. Only one rectangle works. A number with exactly two factors, 1 and itself, is <b>prime</b>. A number with more is <b>composite</b>.</p>`,
         set: { mode: 'factors', n: 12 } },
       { title: 'A factor tree',
-        text: String.raw`<p>A <b>factor tree</b> splits a number again and again until every leaf is prime. Start with 36. Choose a split for the highlighted leaf, such as 4 × 9. Keep splitting the blue leaves. Stop at green ones.</p><p>Then write the primes with <b>exponents</b>. An exponent counts how many times a prime appears: 2 × 2 × 3 × 3 is \(2^2 \times 3^2\).</p>`,
+        text: String.raw`<p>A <b>factor tree</b> splits a number again and again until every end number, called a leaf, is prime. Start with 36. Choose a split for the highlighted leaf, such as 4 × 9. Keep splitting the blue leaves. Stop at green ones.</p><p>Then write the primes with <b>exponents</b>. An exponent counts how many times a prime appears: 2 × 2 × 3 × 3 is \(2^2 \times 3^2\).</p>`,
         set: { mode: 'tree', root: 36 } },
       { title: 'The greatest common factor',
-        text: String.raw`<p>Each circle holds the prime factors of one number: 12 = 2 × 2 × 3 and 18 = 2 × 3 × 3. Press <b>Share a 2</b> and <b>Share a 3</b> to move matching primes into the overlap, then check.</p><p>The overlap multiplies to the <b>greatest common factor</b> (GCF): 2 × 3 = 6. It is the biggest number that divides both. The Tiles view shows it as a square tile.</p>`,
+        text: String.raw`<p>Each circle holds the prime factors of one number: 12 = 2 × 2 × 3 and 18 = 2 × 3 × 3. Press <b>Share a 2</b> and <b>Share a 3</b> to move matching primes into the overlap, then check.</p><p>The overlap multiplies to the <b>greatest common factor</b> (GCF): 2 × 3 = 6. The Tiles view shows it as a square tile.</p>`,
         set: { mode: 'venn', a: 12, b: 18 } },
       { title: 'The least common multiple',
         text: String.raw`<p>Skip count by 4 on the top line and by 6 on the bottom line. Always hop the line that is behind.</p><p>The first mark that both lines share is the <b>least common multiple</b> (LCM). For 4 and 6 it is 12. So the two buses leave together again after 12 minutes. First try the guess slider, then hop to see.</p>`,
@@ -61589,7 +61589,7 @@ register({
       <p>The LCM is the smallest number that is a multiple of both. Skip count by each number. The first mark on both lines is the LCM. For 4 and 6 the multiples of 4 are 4, 8, 12 and the multiples of 6 are 6, 12, so the LCM is 12. With primes, take every prime that appears in either number, each with the larger exponent. For \(18 = 2\times 3^2\) and \(24 = 2^3\times 3\) the LCM is \(2^3\times 3^2 = 72\). A check that always works: GCF \(\times\) LCM \(= a\times b\). For 4 and 6, \(2\times 12 = 24 = 4\times 6\).</p>
       <p><b>Which one do I need?</b> Cutting or sharing into equal pieces with nothing left over is a GCF job. Waiting for two repeating things to line up again is an LCM job.</p>
       <h3>Pulling out a common factor</h3>
-      <p>The distributive property says \(g\times m + g\times n = g\times(m+n)\). Read it backwards to pull a common factor out of a sum: \(24+36 = 12\times 2 + 12\times 3 = 12\times(2+3)\). The same works for a difference: \(36-24 = 12\times(3-2)\). If you pull out the GCF, the numbers left inside the brackets share only 1. If you pull out something smaller, such as 6, you get \(6\times(4+6)\) and the 4 and the 6 still share a 2.</p>`,
+      <p>The distributive property says \(g\times m + g\times n = g\times(m+n)\). Read it backwards to pull a common factor out of a sum: \(24+36 = 12\times 2 + 12\times 3 = 12\times(2+3)\). The same works for a difference: \(36-24 = 12\times(3-2)\). If you pull out the GCF, the numbers left inside the parentheses share only 1. If you pull out something smaller, such as 6, you get \(6\times(4+6)\) and the 4 and the 6 still share a 2.</p>`,
     check: [
       { q: 'Which statement about prime numbers is true?',
         choices: [
@@ -61606,7 +61606,7 @@ register({
         hint: 'Find the GCF of 36 and 60 first. Then see how many tiles fit across and along.' },
       { q: 'Lena finds the GCF of 18 and 24. She writes 18 = 2 × 3² and 24 = 2³ × 3. Then she says: "I multiply every prime that shows up, using the bigger exponent: 2³ × 3² = 72. So the GCF is 72." What is her mistake?',
         choices: [
-          '72 is the LCM, not the GCF. For the GCF, keep only the primes both numbers share, with the smaller exponent: 2 × 3 = 6.',
+          '72 is the LCM. For the GCF keep only shared primes, smaller exponent: 2 × 3 = 6.',
           'Nothing is wrong. The GCF always uses the biggest exponent of every prime.',
           'She should add the two numbers: 18 + 24 = 42.',
           'The GCF must be 18 or 24, because it is one of the two numbers.'
@@ -61614,7 +61614,7 @@ register({
         why: String.raw`A common factor must divide both numbers, so it cannot be bigger than 18. Lena found 72, which is a multiple of both numbers: the LCM. For the GCF keep only what both numbers share, and use the smaller exponent: one 2 and one 3, so \(2\times 3 = 6\). Check: \(18\div 6 = 3\) and \(24\div 6 = 4\), and no bigger number divides both. The GCF is not always one of the numbers, and adding does not find a factor.`,
         hint: 'A factor of 18 cannot be larger than 18. Is 72 a factor of 18?' }
     ],
-    links: { related: ['ratios-and-equivalent-ratios', 'equivalent-fractions-on-a-number-line', 'modular-arithmetic', 'adding-fractions-with-unlike-denominators'] },
+    links: { related: ['ratios-and-equivalent-ratios', 'equivalent-fractions-on-a-number-line', 'adding-fractions-with-unlike-denominators'] },
 
     mount({ stage, controls: C }) {
       const MODES = ['factors', 'tree', 'venn', 'tiles', 'lcm', 'dist', 'use'];
@@ -61832,8 +61832,8 @@ register({
       G.nums = group(() => {
         C.title('Choose two numbers');
         presetSel = C.select({ label: 'Pairs to try', value: '0', options: PAIRS.map((q, i) => ({ value: String(i), label: `${q[0]} and ${q[1]}` })).concat([{ value: '-1', label: 'Your numbers' }]), onChange: v => { if (+v >= 0) { st.a = PAIRS[+v][0]; st.b = PAIRS[+v][1]; newPair(); } } });
-        aSlider = C.slider({ label: 'First number', min: 2, max: 100, step: 1, value: st.a, format: v => String(v), onInput: v => { st.a = v; newPair(); } });
-        bSlider = C.slider({ label: 'Second number', min: 2, max: 100, step: 1, value: st.b, format: v => String(v), onInput: v => { st.b = v; newPair(); } });
+        aSlider = C.slider({ label: 'First number', min: 1, max: 100, step: 1, value: st.a, format: v => String(v), onInput: v => { st.a = v; newPair(); } });
+        bSlider = C.slider({ label: 'Second number', min: 1, max: 100, step: 1, value: st.b, format: v => String(v), onInput: v => { st.b = v; newPair(); } });
       });
       const newPair = () => { resetVenn(); resetT(); st.g = null; st.dMsg = ''; sync(); };
 
@@ -62078,7 +62078,7 @@ register({
           const opts = divisors(g).concat([]); let trap = 2; while (trap < 12 && st.a % trap === 0 && st.b % trap === 0) trap++;
           const all = [...new Set(opts.concat(g === 1 || (st.a % trap || st.b % trap) ? [trap] : []))].sort((x, y) => x - y);
           all.forEach(q => { const bt = mkBtn(String(q), () => pickG(q), st.g === q); Object.assign(bt.style, { padding: '6px 14px', minHeight: '40px', fontSize: '.9rem' }); distBox.append(bt); });
-          R.dist.innerHTML = (st.dMsg ? st.dMsg + '<br>' : '') + `${kk('Numbers')} ${big} ${sy} ${small0}<br>${g === 1 ? 'These numbers share only 1, so there is nothing bigger to pull out.' : 'Keep going until the two numbers inside the brackets share only 1.'}`;
+          R.dist.innerHTML = (st.dMsg ? st.dMsg + '<br>' : '') + `${kk('Numbers')} ${big} ${sy} ${small0}<br>${g === 1 ? 'These numbers share only 1, so there is nothing bigger to pull out.' : 'Keep going until the two numbers inside the parentheses share only 1.'}`;
         }
         /* practice */
         if (st.practice) {
@@ -62170,9 +62170,9 @@ register({
   /* ---------- predictions ---------- */
   const PRED = [
     { a: 2, op: 'sub', b: -3, q: 'Predict: what is 2 − (−3)?', choices: [
-      { t: '−1', v: -1, why: 'That is 2 + (−3). This problem has two minus signs: one says subtract, and one is part of the number −3. Subtracting −3 is adding the opposite of −3, which is +3.' },
+      { t: '−1', v: -1, why: 'That is 2 + (−3), or 2 − 3. This problem has two minus signs: one says subtract, and one is part of the number −3. Subtracting −3 means adding +3, so the walker moves right.' },
       { t: '5', v: 5, ok: true, why: 'Subtracting −3 is adding its opposite, 3. So 2 − (−3) = 2 + 3 = 5. The walker moves 3 to the right.' },
-      { t: '1', v: 1, why: '2 − 3 forgets that the number being subtracted is −3. The opposite of −3 is 3, so the walker moves right, not left.' },
+      { t: '1', v: 1, why: 'That is 3 − 2: it takes the smaller number from the larger and ignores the signs. Subtracting −3 is adding +3, so the walker moves right from 2.' },
       { t: '−5', v: -5, why: 'The sign does not flip like that. Start at 2 and add the opposite of −3, which is +3. That is 3 steps to the right, so you land on 5.' }] },
     { a: -3, op: 'sub', b: -5, q: 'Predict: what is −3 − (−5)?', choices: [
       { t: '−8', v: -8, why: 'That is −3 − 5. But the number being subtracted is −5, so you add its opposite, 5, and move right.' },
@@ -62242,13 +62242,13 @@ register({
     hook: String.raw`You have 2 points. Then a referee takes away a 3-point penalty, a score of −3. Do you end up with more points or fewer? How can taking something away make a number bigger?`,
     steps: [
       { title: 'Opposites',
-        text: String.raw`<p>Every number has an <b>opposite</b>. The opposite of 3 is −3. They are the same distance from 0, on opposite sides. The dashed arcs show it: flip over 0, then flip back.</p><p>The opposite of the opposite of 3 is 3 again, so −(−3) = 3. Only 0 is its own opposite. Drag the yellow dot or use the slider. Try a negative <b>p</b>.</p>`,
+        text: String.raw`<p>Every number has an <b>opposite</b>. The opposite of 3 is −3. They are the same distance from 0, on opposite sides. The dashed arcs show it: flip over 0, then flip back.</p><p>The opposite of the opposite of 3 is 3 again, so −(−3) = 3. Only 0 is its own opposite. Drag the dot. <b>p</b> stands for the number. Try a negative <b>p</b>.</p>`,
         set: { view: 'opp', p: 3 } },
       { title: 'Adding and subtracting are moves',
         text: String.raw`<p>A walker starts at 2. Adding a positive number moves right. Adding a negative number moves left. <b>Subtracting</b> 5 is adding the opposite of 5, which is −5. So 2 − 5 = 2 + (−5), and the walker goes 5 steps left to −3.</p><p>Try the <b>Add</b> button, or drag the end dot. Watch the equation and the words change.</p>`,
         set: { view: 'line', a: 2, op: 'sub', b: 5 } },
       { title: 'How far apart?',
-        text: String.raw`<p>How far is −4 from 3? Count 4 steps to reach 0 and 3 more: 7 steps. Subtracting gives the same size. 3 − (−4) = 7, and −4 − 3 = −7. The order changes the sign, but a distance is never negative.</p><p>The distance between two numbers is the absolute value of their difference, |A − B|. Drag A and B and check.</p>`,
+        text: String.raw`<p>How far is −4 from 3? Count 4 steps to reach 0 and 3 more: 7 steps. 3 − (−4) = 7, and −4 − 3 = −7. A distance is never negative.</p><p>The absolute value |x| of a number is its distance from 0, so |−7| = 7. The distance between A and B is |A − B|. Drag A and B.</p>`,
         set: { view: 'dist', A: -4, B: 3 } },
       { title: 'Predict, then see',
         text: String.raw`<p>Predict 2 − (−3) before the walker moves. Pick an answer. A wrong pick shows where it lands, and explains why it misses.</p><p>When you are right, press <b>Check it with chips</b>. A positive chip and a negative chip cancel to 0. Chips show why taking away a negative adds.</p>`,
@@ -62260,7 +62260,7 @@ register({
       \[ -(-3) = 3, \qquad -(-p) = p. \]
       Flipping over \(0\) twice puts you back where you began. The number \(0\) is its own opposite: \(-0 = 0\).</p>
       <h3>Adding is moving</h3>
-      <p>To find \(a + b\), start at \(a\). If \(b\) is positive, move \(b\) steps to the right. If \(b\) is negative, move \(|b|\) steps to the left. So \(-2 + 5 = 3\) and \(2 + (-5) = -3\). A number and its opposite add to zero, because the walker goes out and comes straight back: \(4 + (-4) = 0\).</p>
+      <p>To find \(a + b\), start at \(a\). If \(b\) is positive, move \(b\) steps to the right. If \(b\) is negative, move \(|b|\) steps to the left. (The <em>absolute value</em> \(|x|\) of a number is its distance from \(0\), so \(|-7| = 7\).) So \(-2 + 5 = 3\) and \(2 + (-5) = -3\). A number and its opposite add to zero, because the walker goes out and comes straight back: \(4 + (-4) = 0\).</p>
       <h3>Subtracting is adding the opposite</h3>
       <p>For any integers \(p\) and \(q\),
       \[ p - q = p + (-q). \]
@@ -62269,10 +62269,11 @@ register({
       <h3>Why this is true</h3>
       <p>Subtraction answers the question "what do I add to \(q\) to get \(p\)?" Try \(p + (-q)\). Add \(q\) to it:
       \[ q + \bigl(p + (-q)\bigr) = p + \bigl(q + (-q)\bigr) = p + 0 = p. \]
+      (When we add, we may regroup and reorder.)
       So \(p + (-q)\) is exactly the number that you add to \(q\) to get \(p\). That is what \(p - q\) means.</p>
       <p>Chips show the same thing. A positive chip and a negative chip together are a <em>zero pair</em>, worth 0. Adding a zero pair to a board does not change its value. To work out \(2 - (-3)\), start with 2 positive chips. You cannot take out 3 negative chips, because there are none. So add 3 zero pairs. The board still has the value 2, but now it has 5 positive chips and 3 negative chips. Take out the 3 negative chips. Five positive chips are left. Taking away 3 negative chips made the total 3 bigger.</p>
       <h3>Distance between two numbers</h3>
-      <p>The distance between \(a\) and \(b\) is how many steps it takes to walk from one to the other. It is the absolute value of their difference:
+      <p>The distance between \(a\) and \(b\) is how many steps it takes to walk from one to the other. It is the absolute value of their difference. Remember that \(|x|\) is the distance of \(x\) from \(0\), so \(|-7| = 7\):
       \[ \text{distance} = |a - b|. \]
       For \(-4\) and \(3\): \(3 - (-4) = 7\) and \(-4 - 3 = -7\). The two differences are opposites, so both have absolute value 7. The order does not matter for a distance: \(|a - b| = |b - a|\). In a story, a temperature that goes from \(-5\) °C to \(4\) °C changes by \(4 - (-5) = 9\) degrees, and the two temperatures are \(|4 - (-5)| = 9\) degrees apart.</p>
       <h3>Traps to avoid</h3>
@@ -62385,7 +62386,7 @@ register({
         for (let v = -12; v <= 12; v++) {
           const z = v === 0;
           line(c, X(v), yL - (z ? 9 : v % 2 ? 5 : 7), X(v), yL + (z ? 9 : v % 2 ? 5 : 7), z ? pal.violet : pal['grid-strong'], z ? 3 : 1.6);
-          if (u >= 34 || v % 2 === 0) T(c, p, nf(v), X(v), yL + 22, { size: fs * (z ? 1.08 : 1), color: z ? pal.violet : pal.muted, weight: z ? 800 : 600 });
+          if (u >= 34 || (u >= 20 ? v % 2 === 0 : v % 4 === 0)) T(c, p, nf(v), X(v), yL + 22, { size: fs * (z ? 1.08 : 1), color: z ? pal.violet : pal.muted, weight: z ? 800 : 600 });
         }
       };
       /* labels under the line that never overlap: items sorted by x, put on the first free row */
@@ -62438,6 +62439,13 @@ register({
       const drawOpp = (c, p, g) => {
         const pal = p.pal, { X, yL, fs } = g, q = st.p, labels = [];
         axis(c, p, g);
+        if (st.mode === 'practice' && !st.solved) {
+          T(c, p, `The dot is at p = ${nf(q)}.`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
+          disc(c, X(q), yL, 9, pal.yellow, pal.brass, 3);
+          labels.push({ x: X(q), text: `p = ${nf(q)}`, color: pal.text });
+          stack(c, p, g, labels);
+          return;
+        }
         if (q === 0) T(c, p, `0 is its own opposite: ${MINUS}(0) = 0`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
         else {
           T(c, p, `The opposite of ${nf(q)} is ${nf(-q)}.`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
@@ -62460,19 +62468,22 @@ register({
       };
       const drawDist = (c, p, g) => {
         const pal = p.pal, { X, yL, fs } = g, A = st.A, B = st.B, d = ab(A - B), by = yL - 60 - fs;
-        T(c, p, st.br ? `distance = |${nf(A)} ${MINUS} ${par(B)}| = |${nf(A - B)}| = ${d}` : `distance = |${nf(A)} ${MINUS} ${par(B)}| = ?`, g.W / 2, g.ey, { size: fs * 1.1, weight: 700 });
+        const dv = st.mode === 'practice' && st.dv ? st.dv : null, chg = !!(dv && dv.change);
+        const title = chg ? (st.br ? `change = new ${MINUS} old = ${nf(B)} ${MINUS} ${par(A)} = ${nf(B - A)}` : `change = new ${MINUS} old = ?`)
+          : st.br ? `distance = |${nf(A)} ${MINUS} ${par(B)}| = |${nf(A - B)}| = ${d}` : `distance = |${nf(A)} ${MINUS} ${par(B)}| = ?`;
+        T(c, p, title, g.W / 2, g.ey, { size: fs * 1.1, weight: 700 });
         axis(c, p, g);
         if (st.br) {
           line(c, X(A), by, X(B), by, pal.yellow, 3.4);
           line(c, X(A), by - 7, X(A), by + 7, pal.yellow, 3.4); line(c, X(B), by - 7, X(B), by + 7, pal.yellow, 3.4);
           line(c, X(A), by + 7, X(A), yL - 16, pal.yellow, 1.6, [4, 4]); line(c, X(B), by + 7, X(B), yL - 16, pal.yellow, 1.6, [4, 4]);
-          T(c, p, d === 0 ? '0 steps apart' : `${d} steps apart`, (X(A) + X(B)) / 2, by - 16, { size: fs * 1.1, weight: 800 });
+          T(c, p, chg ? (d === 0 ? 'no change' : `${d} degrees ${B > A ? 'warmer' : 'colder'}`) : d === 0 ? '0 steps apart' : `${d} steps apart`, (X(A) + X(B)) / 2, by - 16, { size: fs * 1.1, weight: 800 });
         } else {
           line(c, X(A), by, X(B), by, pal.muted, 2.4, [6, 5]);
-          T(c, p, 'How many steps apart?', (X(A) + X(B)) / 2, by - 16, { size: fs, color: pal.muted, weight: 700 });
+          T(c, p, chg ? 'old to new: how big a change?' : 'How many steps apart?', (X(A) + X(B)) / 2, by - 16, { size: fs, color: pal.muted, weight: 700 });
         }
         disc(c, X(A), yL, 9, pal.yellow, pal.brass, 3); disc(c, X(B), yL, 9, pal.stage, pal.green, 3.2);
-        stack(c, p, g, [{ x: X(A), text: `A = ${nf(A)}`, color: pal.text }, { x: X(B), text: `B = ${nf(B)}`, color: pal.green }]);
+        stack(c, p, g, [{ x: X(A), text: `${dv ? dv.a : 'A'} = ${nf(A)}`, color: pal.text }, { x: X(B), text: `${dv ? dv.b : 'B'} = ${nf(B)}`, color: pal.green }]);
       };
       const chipAt = (c, p, x, y, d, pos) => {
         disc(c, x, y, d / 2, pos ? p.pal.yellow : p.pal.blue, pos ? p.pal.brass : p.pal.text, 1.8);
@@ -62536,7 +62547,8 @@ register({
         else if (id === 'B') st.B = clamp(v, -10, 10);
         else if (id === 'mk') { st.mk = clamp(v, -12, 12); st.fb = ''; }
         if (st.view === 'chips') chipReset();
-        st.prog = 1; sync();
+        if (id !== 'mk') st.prog = 1;
+        sync();
       };
       const valOf = id => (id === 'p' ? st.p : id === 'a' ? st.a : id === 'e' ? st.b : id === 'A' ? st.A : id === 'B' ? st.B : st.mk);
       let drag = null;
@@ -62603,7 +62615,7 @@ register({
 
       const setOp = op => { cancel(); st.op = op; if (st.view === 'chips') chipReset(); st.prog = 1; sync(); };
       const enterExplore = view => {
-        Object.assign(st, { mode: 'explore', view, prog: 1, mk: null, ghost: null, br: true, rev: true, picks: {}, fb: '', end: false });
+        Object.assign(st, { mode: 'explore', view, prog: 1, mk: null, ghost: null, br: true, rev: true, dv: null, picks: {}, fb: '', end: false });
         if (view === 'chips') chipReset();
       };
       const enterPredict = i => {
@@ -62681,19 +62693,19 @@ register({
             ['−2', 0, 'That is −6 + 4: the right numbers in the wrong order. Start at −4 and move 6 to the right.', -2],
             ['2', 1, '−4 − (−6) = −4 + 6. The opposite of −6 is 6, a positive number, so the walker moves 6 to the right and lands on 2.', 2],
             ['10', 0, 'That ignores the signs and adds 4 and 6. The walker starts at −4 and moves only 6 steps right, so it reaches 2.', 10]]) },
-        { t: 'pick', q: 'A diver is at −12 m, which is 12 meters below sea level. A gull is at +5 m, which is 5 meters above sea level. How far apart are they?', setup() { Object.assign(st, { view: 'dist', A: -12, B: 5, br: false }); },
+        { t: 'pick', q: 'A diver is at −12 m, which is 12 meters below sea level. A gull is at +5 m, which is 5 meters above sea level. How far apart are they?', setup() { Object.assign(st, { view: 'dist', A: -12, B: 5, br: false, dv: { a: 'diver', b: 'gull' } }); },
           choices: choicesOf([
             ['7 meters', 0, 'That is −12 + 5 = −7 with the sign dropped. A distance is not a sum. Count 12 steps up to 0 and 5 more: 17.'],
             ['17 meters', 1, 'The distance is |5 − (−12)| = |17| = 17. You can count it too: 12 meters up to sea level, then 5 more.'],
             ['−17 meters', 0, '5 − (−12) = 17 and −12 − 5 = −17 are both correct differences. But a distance is a length and is never negative. Take the absolute value: 17.'],
             ['5 meters', 0, 'That is only the gull\'s height above sea level. The diver is 12 meters below sea level, so you must also cross those 12 meters.']]) },
-        { t: 'pick', q: 'Chips: you start with 1 positive chip and want 1 − (−4). That means taking out 4 negative chips, but the board has none. How many zero pairs must you add first?', setup() { Object.assign(st, { view: 'chips', a: 1, op: 'sub', b: -4, cp: 1, cn: 0 }); },
+        { t: 'pick', q: 'Chips: you start with 1 positive chip and want 1 − (−4). That means taking out 4 negative chips, but the board has none. What is the smallest number of zero pairs you can add so you can take out 4 negative chips?', setup() { Object.assign(st, { view: 'chips', a: 1, op: 'sub', b: -4, cp: 1, cn: 0 }); },
           choices: choicesOf([
-            ['0 zero pairs. You can take out chips that are not there.', 0, 'You cannot take out chips that are not on the board. Zero pairs make negative chips appear without changing the value.'],
+            ['0 zero pairs', 0, 'You cannot take out chips that are not on the board. Zero pairs make negative chips appear without changing the value.'],
             ['1 zero pair', 0, 'One zero pair brings only 1 negative chip. You need 4 negative chips to take out.'],
             ['3 zero pairs', 0, 'Three zero pairs give 3 negative chips, one short. You need 4 to take out.'],
             ['4 zero pairs', 1, 'Each zero pair brings one negative chip, so 4 pairs give the 4 you need. The board has 5 positive and 4 negative chips, still worth 1. Take out the 4 negative chips and 5 positive chips are left: 1 − (−4) = 5.']]) },
-        { t: 'pick', q: 'At 6 am it was −5 °C. At noon it was 4 °C. Which calculation gives the change in temperature from 6 am to noon?', setup() { Object.assign(st, { view: 'dist', A: -5, B: 4, br: false }); },
+        { t: 'pick', q: 'At 6 am it was −5 °C. At noon it was 4 °C. Which calculation gives the change in temperature from 6 am to noon?', setup() { Object.assign(st, { view: 'dist', A: -5, B: 4, br: false, dv: { a: '6 am', b: 'noon', change: true } }); },
           choices: choicesOf([
             ['−5 − 4 = −9, so it warmed up 9 degrees', 0, '−5 − 4 = −9 would be the change going from 4 °C down to −5 °C, the trip the other way. A change is the new value minus the old value.'],
             ['4 − 5 = −1, so it cooled 1 degree', 0, 'That drops the minus sign on −5. The old temperature is −5, so you subtract −5, which is adding 5.'],
@@ -62703,7 +62715,7 @@ register({
       ];
       const startPractice = i => {
         cancel();
-        Object.assign(st, { mode: 'practice', pi: i, solved: false, wrongN: 0, picks: {}, fb: '', end: false, ghost: null, mk: null, prog: 0, rev: false, br: false });
+        Object.assign(st, { mode: 'practice', pi: i, solved: false, wrongN: 0, picks: {}, fb: '', end: false, ghost: null, mk: null, prog: 0, rev: false, br: false, dv: null });
         PR[i].setup();
         sync();
       };

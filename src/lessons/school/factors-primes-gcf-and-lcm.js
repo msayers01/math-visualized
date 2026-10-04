@@ -75,7 +75,7 @@
            ['12', 'Yes. 24 = 2 × 2 × 2 × 3 and 36 = 2 × 2 × 3 × 3. They share 2, 2 and 3. 2 × 2 × 3 = 12.'],
            ['72', 'Not quite. 72 is a common multiple (the LCM). A factor of 24 cannot be bigger than 24.'],
            ['24', 'Not quite. 24 divides 24 but not 36: 36 ÷ 24 leaves 12.']] },
-    { q: 'A florist has 30 roses and 45 tulips. She makes identical bouquets with no flowers left over, and she wants as many bouquets as possible. How many bouquets does she make?', ans: 0, view: { t: 'tiles', a: 30, b: 45, s: 15 },
+    { q: 'A florist has 30 roses and 45 tulips. She makes identical bouquets with no flowers left over, and she wants as many bouquets as possible. How many bouquets does she make?', ans: 0, view: { t: 'venn', a: 30, b: 45 },
       ch: [['15', 'Yes. The GCF of 30 and 45 is 15. Each bouquet gets 30 ÷ 15 = 2 roses and 45 ÷ 15 = 3 tulips.'],
            ['5', 'Not quite. 5 bouquets works, with 6 roses and 9 tulips each, but more bouquets are possible. The most is the GCF, 15.'],
            ['75', 'Not quite. 75 is 30 + 45, the total number of flowers. You cannot make more bouquets than roses.'],
@@ -90,8 +90,8 @@
            ['80', 'Not quite. 80 works, but a smaller number works too. 10 × 8 is not always the first match.'],
            ['2', 'Not quite. 2 is the GCF. You need the smallest shared multiple, so the answer is at least 10.'],
            ['40', 'Yes. Packs of hot dogs: 10, 20, 30, 40. Packs of buns: 8, 16, 24, 32, 40. The first match is 40: 4 packs of hot dogs and 5 packs of buns.']] },
-    { q: 'Write 24 + 36 as a common factor times a sum, so that the two numbers inside the brackets have no common factor.', ans: 0, view: { t: 'dist', a: 24, b: 36, g: 12 },
-      ch: [['12 × (2 + 3)', 'Yes. 12 × 2 = 24 and 12 × 3 = 36. Inside the brackets, 2 and 3 share only 1, so nothing more can come out.'],
+    { q: 'Write 24 + 36 as a common factor times a sum, like 3 × (4 + 5), so that the two numbers inside the parentheses have no common factor.', ans: 0, view: { t: 'dist', a: 24, b: 36, g: 12, op: '+' },
+      ch: [['12 × (2 + 3)', 'Yes. 12 × 2 = 24 and 12 × 3 = 36. Inside the parentheses, 2 and 3 share only 1, so nothing more can come out.'],
            ['6 × (4 + 6)', 'Not quite. 6 × 4 + 6 × 6 is correct, but 4 and 6 still share the factor 2. Pull out 12 instead.'],
            ['4 × (6 + 9)', 'Not quite. 4 × 6 + 4 × 9 is correct, but 6 and 9 still share the factor 3. Pull out 12 instead.'],
            ['24 × (1 + 36)', 'Not quite. 24 × 1 = 24 but 24 × 36 is not 36. The same factor must divide both numbers.']] }
@@ -247,7 +247,7 @@
       if (exOk) Tfit(c, p, `${root} = ${live}`, W / 2, yb + fs + 8, W - 20, { size: fs + 3, color: pal.violet, weight: 800, halo: false });
       else T(c, p, 'Now write it with exponents (panel).', W / 2, yb + fs + 8, { size: fs, color: pal.muted, halo: false });
     } else {
-      Tfit(c, p, 'blue ring = composite, split again.  green = prime, stop.', W / 2, H - 14, W - 16, { size: 12, color: pal.muted, halo: false });
+      Tfit(c, p, 'blue ring: split again.  green: prime, stop.', W / 2, H - 14, W - 16, { size: 12, color: pal.muted, halo: false });
     }
   };
 
@@ -422,10 +422,10 @@
         text: String.raw`<p>Lay out 12 tiles in a rectangle. You can do it 3 ways: 1 × 12, 2 × 6 and 3 × 4. The numbers in each pair are <b>factors</b> of 12. A factor divides 12 with nothing left over.</p><p>Now slide to 13. Only one rectangle works. A number with exactly two factors, 1 and itself, is <b>prime</b>. A number with more is <b>composite</b>.</p>`,
         set: { mode: 'factors', n: 12 } },
       { title: 'A factor tree',
-        text: String.raw`<p>A <b>factor tree</b> splits a number again and again until every leaf is prime. Start with 36. Choose a split for the highlighted leaf, such as 4 × 9. Keep splitting the blue leaves. Stop at green ones.</p><p>Then write the primes with <b>exponents</b>. An exponent counts how many times a prime appears: 2 × 2 × 3 × 3 is \(2^2 \times 3^2\).</p>`,
+        text: String.raw`<p>A <b>factor tree</b> splits a number again and again until every end number, called a leaf, is prime. Start with 36. Choose a split for the highlighted leaf, such as 4 × 9. Keep splitting the blue leaves. Stop at green ones.</p><p>Then write the primes with <b>exponents</b>. An exponent counts how many times a prime appears: 2 × 2 × 3 × 3 is \(2^2 \times 3^2\).</p>`,
         set: { mode: 'tree', root: 36 } },
       { title: 'The greatest common factor',
-        text: String.raw`<p>Each circle holds the prime factors of one number: 12 = 2 × 2 × 3 and 18 = 2 × 3 × 3. Press <b>Share a 2</b> and <b>Share a 3</b> to move matching primes into the overlap, then check.</p><p>The overlap multiplies to the <b>greatest common factor</b> (GCF): 2 × 3 = 6. It is the biggest number that divides both. The Tiles view shows it as a square tile.</p>`,
+        text: String.raw`<p>Each circle holds the prime factors of one number: 12 = 2 × 2 × 3 and 18 = 2 × 3 × 3. Press <b>Share a 2</b> and <b>Share a 3</b> to move matching primes into the overlap, then check.</p><p>The overlap multiplies to the <b>greatest common factor</b> (GCF): 2 × 3 = 6. The Tiles view shows it as a square tile.</p>`,
         set: { mode: 'venn', a: 12, b: 18 } },
       { title: 'The least common multiple',
         text: String.raw`<p>Skip count by 4 on the top line and by 6 on the bottom line. Always hop the line that is behind.</p><p>The first mark that both lines share is the <b>least common multiple</b> (LCM). For 4 and 6 it is 12. So the two buses leave together again after 12 minutes. First try the guess slider, then hop to see.</p>`,
@@ -444,7 +444,7 @@
       <p>The LCM is the smallest number that is a multiple of both. Skip count by each number. The first mark on both lines is the LCM. For 4 and 6 the multiples of 4 are 4, 8, 12 and the multiples of 6 are 6, 12, so the LCM is 12. With primes, take every prime that appears in either number, each with the larger exponent. For \(18 = 2\times 3^2\) and \(24 = 2^3\times 3\) the LCM is \(2^3\times 3^2 = 72\). A check that always works: GCF \(\times\) LCM \(= a\times b\). For 4 and 6, \(2\times 12 = 24 = 4\times 6\).</p>
       <p><b>Which one do I need?</b> Cutting or sharing into equal pieces with nothing left over is a GCF job. Waiting for two repeating things to line up again is an LCM job.</p>
       <h3>Pulling out a common factor</h3>
-      <p>The distributive property says \(g\times m + g\times n = g\times(m+n)\). Read it backwards to pull a common factor out of a sum: \(24+36 = 12\times 2 + 12\times 3 = 12\times(2+3)\). The same works for a difference: \(36-24 = 12\times(3-2)\). If you pull out the GCF, the numbers left inside the brackets share only 1. If you pull out something smaller, such as 6, you get \(6\times(4+6)\) and the 4 and the 6 still share a 2.</p>`,
+      <p>The distributive property says \(g\times m + g\times n = g\times(m+n)\). Read it backwards to pull a common factor out of a sum: \(24+36 = 12\times 2 + 12\times 3 = 12\times(2+3)\). The same works for a difference: \(36-24 = 12\times(3-2)\). If you pull out the GCF, the numbers left inside the parentheses share only 1. If you pull out something smaller, such as 6, you get \(6\times(4+6)\) and the 4 and the 6 still share a 2.</p>`,
     check: [
       { q: 'Which statement about prime numbers is true?',
         choices: [
@@ -461,7 +461,7 @@
         hint: 'Find the GCF of 36 and 60 first. Then see how many tiles fit across and along.' },
       { q: 'Lena finds the GCF of 18 and 24. She writes 18 = 2 × 3² and 24 = 2³ × 3. Then she says: "I multiply every prime that shows up, using the bigger exponent: 2³ × 3² = 72. So the GCF is 72." What is her mistake?',
         choices: [
-          '72 is the LCM, not the GCF. For the GCF, keep only the primes both numbers share, with the smaller exponent: 2 × 3 = 6.',
+          '72 is the LCM. For the GCF keep only shared primes, smaller exponent: 2 × 3 = 6.',
           'Nothing is wrong. The GCF always uses the biggest exponent of every prime.',
           'She should add the two numbers: 18 + 24 = 42.',
           'The GCF must be 18 or 24, because it is one of the two numbers.'
@@ -469,7 +469,7 @@
         why: String.raw`A common factor must divide both numbers, so it cannot be bigger than 18. Lena found 72, which is a multiple of both numbers: the LCM. For the GCF keep only what both numbers share, and use the smaller exponent: one 2 and one 3, so \(2\times 3 = 6\). Check: \(18\div 6 = 3\) and \(24\div 6 = 4\), and no bigger number divides both. The GCF is not always one of the numbers, and adding does not find a factor.`,
         hint: 'A factor of 18 cannot be larger than 18. Is 72 a factor of 18?' }
     ],
-    links: { related: ['ratios-and-equivalent-ratios', 'equivalent-fractions-on-a-number-line', 'modular-arithmetic', 'adding-fractions-with-unlike-denominators'] },
+    links: { related: ['ratios-and-equivalent-ratios', 'equivalent-fractions-on-a-number-line', 'adding-fractions-with-unlike-denominators'] },
 
     mount({ stage, controls: C }) {
       const MODES = ['factors', 'tree', 'venn', 'tiles', 'lcm', 'dist', 'use'];
@@ -687,8 +687,8 @@
       G.nums = group(() => {
         C.title('Choose two numbers');
         presetSel = C.select({ label: 'Pairs to try', value: '0', options: PAIRS.map((q, i) => ({ value: String(i), label: `${q[0]} and ${q[1]}` })).concat([{ value: '-1', label: 'Your numbers' }]), onChange: v => { if (+v >= 0) { st.a = PAIRS[+v][0]; st.b = PAIRS[+v][1]; newPair(); } } });
-        aSlider = C.slider({ label: 'First number', min: 2, max: 100, step: 1, value: st.a, format: v => String(v), onInput: v => { st.a = v; newPair(); } });
-        bSlider = C.slider({ label: 'Second number', min: 2, max: 100, step: 1, value: st.b, format: v => String(v), onInput: v => { st.b = v; newPair(); } });
+        aSlider = C.slider({ label: 'First number', min: 1, max: 100, step: 1, value: st.a, format: v => String(v), onInput: v => { st.a = v; newPair(); } });
+        bSlider = C.slider({ label: 'Second number', min: 1, max: 100, step: 1, value: st.b, format: v => String(v), onInput: v => { st.b = v; newPair(); } });
       });
       const newPair = () => { resetVenn(); resetT(); st.g = null; st.dMsg = ''; sync(); };
 
@@ -933,7 +933,7 @@
           const opts = divisors(g).concat([]); let trap = 2; while (trap < 12 && st.a % trap === 0 && st.b % trap === 0) trap++;
           const all = [...new Set(opts.concat(g === 1 || (st.a % trap || st.b % trap) ? [trap] : []))].sort((x, y) => x - y);
           all.forEach(q => { const bt = mkBtn(String(q), () => pickG(q), st.g === q); Object.assign(bt.style, { padding: '6px 14px', minHeight: '40px', fontSize: '.9rem' }); distBox.append(bt); });
-          R.dist.innerHTML = (st.dMsg ? st.dMsg + '<br>' : '') + `${kk('Numbers')} ${big} ${sy} ${small0}<br>${g === 1 ? 'These numbers share only 1, so there is nothing bigger to pull out.' : 'Keep going until the two numbers inside the brackets share only 1.'}`;
+          R.dist.innerHTML = (st.dMsg ? st.dMsg + '<br>' : '') + `${kk('Numbers')} ${big} ${sy} ${small0}<br>${g === 1 ? 'These numbers share only 1, so there is nothing bigger to pull out.' : 'Keep going until the two numbers inside the parentheses share only 1.'}`;
         }
         /* practice */
         if (st.practice) {

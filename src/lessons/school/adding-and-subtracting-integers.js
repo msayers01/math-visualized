@@ -34,9 +34,9 @@
   /* ---------- predictions ---------- */
   const PRED = [
     { a: 2, op: 'sub', b: -3, q: 'Predict: what is 2 − (−3)?', choices: [
-      { t: '−1', v: -1, why: 'That is 2 + (−3). This problem has two minus signs: one says subtract, and one is part of the number −3. Subtracting −3 is adding the opposite of −3, which is +3.' },
+      { t: '−1', v: -1, why: 'That is 2 + (−3), or 2 − 3. This problem has two minus signs: one says subtract, and one is part of the number −3. Subtracting −3 means adding +3, so the walker moves right.' },
       { t: '5', v: 5, ok: true, why: 'Subtracting −3 is adding its opposite, 3. So 2 − (−3) = 2 + 3 = 5. The walker moves 3 to the right.' },
-      { t: '1', v: 1, why: '2 − 3 forgets that the number being subtracted is −3. The opposite of −3 is 3, so the walker moves right, not left.' },
+      { t: '1', v: 1, why: 'That is 3 − 2: it takes the smaller number from the larger and ignores the signs. Subtracting −3 is adding +3, so the walker moves right from 2.' },
       { t: '−5', v: -5, why: 'The sign does not flip like that. Start at 2 and add the opposite of −3, which is +3. That is 3 steps to the right, so you land on 5.' }] },
     { a: -3, op: 'sub', b: -5, q: 'Predict: what is −3 − (−5)?', choices: [
       { t: '−8', v: -8, why: 'That is −3 − 5. But the number being subtracted is −5, so you add its opposite, 5, and move right.' },
@@ -106,13 +106,13 @@
     hook: String.raw`You have 2 points. Then a referee takes away a 3-point penalty, a score of −3. Do you end up with more points or fewer? How can taking something away make a number bigger?`,
     steps: [
       { title: 'Opposites',
-        text: String.raw`<p>Every number has an <b>opposite</b>. The opposite of 3 is −3. They are the same distance from 0, on opposite sides. The dashed arcs show it: flip over 0, then flip back.</p><p>The opposite of the opposite of 3 is 3 again, so −(−3) = 3. Only 0 is its own opposite. Drag the yellow dot or use the slider. Try a negative <b>p</b>.</p>`,
+        text: String.raw`<p>Every number has an <b>opposite</b>. The opposite of 3 is −3. They are the same distance from 0, on opposite sides. The dashed arcs show it: flip over 0, then flip back.</p><p>The opposite of the opposite of 3 is 3 again, so −(−3) = 3. Only 0 is its own opposite. Drag the dot. <b>p</b> stands for the number. Try a negative <b>p</b>.</p>`,
         set: { view: 'opp', p: 3 } },
       { title: 'Adding and subtracting are moves',
         text: String.raw`<p>A walker starts at 2. Adding a positive number moves right. Adding a negative number moves left. <b>Subtracting</b> 5 is adding the opposite of 5, which is −5. So 2 − 5 = 2 + (−5), and the walker goes 5 steps left to −3.</p><p>Try the <b>Add</b> button, or drag the end dot. Watch the equation and the words change.</p>`,
         set: { view: 'line', a: 2, op: 'sub', b: 5 } },
       { title: 'How far apart?',
-        text: String.raw`<p>How far is −4 from 3? Count 4 steps to reach 0 and 3 more: 7 steps. Subtracting gives the same size. 3 − (−4) = 7, and −4 − 3 = −7. The order changes the sign, but a distance is never negative.</p><p>The distance between two numbers is the absolute value of their difference, |A − B|. Drag A and B and check.</p>`,
+        text: String.raw`<p>How far is −4 from 3? Count 4 steps to reach 0 and 3 more: 7 steps. 3 − (−4) = 7, and −4 − 3 = −7. A distance is never negative.</p><p>The absolute value |x| of a number is its distance from 0, so |−7| = 7. The distance between A and B is |A − B|. Drag A and B.</p>`,
         set: { view: 'dist', A: -4, B: 3 } },
       { title: 'Predict, then see',
         text: String.raw`<p>Predict 2 − (−3) before the walker moves. Pick an answer. A wrong pick shows where it lands, and explains why it misses.</p><p>When you are right, press <b>Check it with chips</b>. A positive chip and a negative chip cancel to 0. Chips show why taking away a negative adds.</p>`,
@@ -124,7 +124,7 @@
       \[ -(-3) = 3, \qquad -(-p) = p. \]
       Flipping over \(0\) twice puts you back where you began. The number \(0\) is its own opposite: \(-0 = 0\).</p>
       <h3>Adding is moving</h3>
-      <p>To find \(a + b\), start at \(a\). If \(b\) is positive, move \(b\) steps to the right. If \(b\) is negative, move \(|b|\) steps to the left. So \(-2 + 5 = 3\) and \(2 + (-5) = -3\). A number and its opposite add to zero, because the walker goes out and comes straight back: \(4 + (-4) = 0\).</p>
+      <p>To find \(a + b\), start at \(a\). If \(b\) is positive, move \(b\) steps to the right. If \(b\) is negative, move \(|b|\) steps to the left. (The <em>absolute value</em> \(|x|\) of a number is its distance from \(0\), so \(|-7| = 7\).) So \(-2 + 5 = 3\) and \(2 + (-5) = -3\). A number and its opposite add to zero, because the walker goes out and comes straight back: \(4 + (-4) = 0\).</p>
       <h3>Subtracting is adding the opposite</h3>
       <p>For any integers \(p\) and \(q\),
       \[ p - q = p + (-q). \]
@@ -133,10 +133,11 @@
       <h3>Why this is true</h3>
       <p>Subtraction answers the question "what do I add to \(q\) to get \(p\)?" Try \(p + (-q)\). Add \(q\) to it:
       \[ q + \bigl(p + (-q)\bigr) = p + \bigl(q + (-q)\bigr) = p + 0 = p. \]
+      (When we add, we may regroup and reorder.)
       So \(p + (-q)\) is exactly the number that you add to \(q\) to get \(p\). That is what \(p - q\) means.</p>
       <p>Chips show the same thing. A positive chip and a negative chip together are a <em>zero pair</em>, worth 0. Adding a zero pair to a board does not change its value. To work out \(2 - (-3)\), start with 2 positive chips. You cannot take out 3 negative chips, because there are none. So add 3 zero pairs. The board still has the value 2, but now it has 5 positive chips and 3 negative chips. Take out the 3 negative chips. Five positive chips are left. Taking away 3 negative chips made the total 3 bigger.</p>
       <h3>Distance between two numbers</h3>
-      <p>The distance between \(a\) and \(b\) is how many steps it takes to walk from one to the other. It is the absolute value of their difference:
+      <p>The distance between \(a\) and \(b\) is how many steps it takes to walk from one to the other. It is the absolute value of their difference. Remember that \(|x|\) is the distance of \(x\) from \(0\), so \(|-7| = 7\):
       \[ \text{distance} = |a - b|. \]
       For \(-4\) and \(3\): \(3 - (-4) = 7\) and \(-4 - 3 = -7\). The two differences are opposites, so both have absolute value 7. The order does not matter for a distance: \(|a - b| = |b - a|\). In a story, a temperature that goes from \(-5\) °C to \(4\) °C changes by \(4 - (-5) = 9\) degrees, and the two temperatures are \(|4 - (-5)| = 9\) degrees apart.</p>
       <h3>Traps to avoid</h3>
@@ -249,7 +250,7 @@
         for (let v = -12; v <= 12; v++) {
           const z = v === 0;
           line(c, X(v), yL - (z ? 9 : v % 2 ? 5 : 7), X(v), yL + (z ? 9 : v % 2 ? 5 : 7), z ? pal.violet : pal['grid-strong'], z ? 3 : 1.6);
-          if (u >= 34 || v % 2 === 0) T(c, p, nf(v), X(v), yL + 22, { size: fs * (z ? 1.08 : 1), color: z ? pal.violet : pal.muted, weight: z ? 800 : 600 });
+          if (u >= 34 || (u >= 20 ? v % 2 === 0 : v % 4 === 0)) T(c, p, nf(v), X(v), yL + 22, { size: fs * (z ? 1.08 : 1), color: z ? pal.violet : pal.muted, weight: z ? 800 : 600 });
         }
       };
       /* labels under the line that never overlap: items sorted by x, put on the first free row */
@@ -302,6 +303,13 @@
       const drawOpp = (c, p, g) => {
         const pal = p.pal, { X, yL, fs } = g, q = st.p, labels = [];
         axis(c, p, g);
+        if (st.mode === 'practice' && !st.solved) {
+          T(c, p, `The dot is at p = ${nf(q)}.`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
+          disc(c, X(q), yL, 9, pal.yellow, pal.brass, 3);
+          labels.push({ x: X(q), text: `p = ${nf(q)}`, color: pal.text });
+          stack(c, p, g, labels);
+          return;
+        }
         if (q === 0) T(c, p, `0 is its own opposite: ${MINUS}(0) = 0`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
         else {
           T(c, p, `The opposite of ${nf(q)} is ${nf(-q)}.`, g.W / 2, g.ey, { size: fs * 1.15, weight: 700 });
@@ -324,19 +332,22 @@
       };
       const drawDist = (c, p, g) => {
         const pal = p.pal, { X, yL, fs } = g, A = st.A, B = st.B, d = ab(A - B), by = yL - 60 - fs;
-        T(c, p, st.br ? `distance = |${nf(A)} ${MINUS} ${par(B)}| = |${nf(A - B)}| = ${d}` : `distance = |${nf(A)} ${MINUS} ${par(B)}| = ?`, g.W / 2, g.ey, { size: fs * 1.1, weight: 700 });
+        const dv = st.mode === 'practice' && st.dv ? st.dv : null, chg = !!(dv && dv.change);
+        const title = chg ? (st.br ? `change = new ${MINUS} old = ${nf(B)} ${MINUS} ${par(A)} = ${nf(B - A)}` : `change = new ${MINUS} old = ?`)
+          : st.br ? `distance = |${nf(A)} ${MINUS} ${par(B)}| = |${nf(A - B)}| = ${d}` : `distance = |${nf(A)} ${MINUS} ${par(B)}| = ?`;
+        T(c, p, title, g.W / 2, g.ey, { size: fs * 1.1, weight: 700 });
         axis(c, p, g);
         if (st.br) {
           line(c, X(A), by, X(B), by, pal.yellow, 3.4);
           line(c, X(A), by - 7, X(A), by + 7, pal.yellow, 3.4); line(c, X(B), by - 7, X(B), by + 7, pal.yellow, 3.4);
           line(c, X(A), by + 7, X(A), yL - 16, pal.yellow, 1.6, [4, 4]); line(c, X(B), by + 7, X(B), yL - 16, pal.yellow, 1.6, [4, 4]);
-          T(c, p, d === 0 ? '0 steps apart' : `${d} steps apart`, (X(A) + X(B)) / 2, by - 16, { size: fs * 1.1, weight: 800 });
+          T(c, p, chg ? (d === 0 ? 'no change' : `${d} degrees ${B > A ? 'warmer' : 'colder'}`) : d === 0 ? '0 steps apart' : `${d} steps apart`, (X(A) + X(B)) / 2, by - 16, { size: fs * 1.1, weight: 800 });
         } else {
           line(c, X(A), by, X(B), by, pal.muted, 2.4, [6, 5]);
-          T(c, p, 'How many steps apart?', (X(A) + X(B)) / 2, by - 16, { size: fs, color: pal.muted, weight: 700 });
+          T(c, p, chg ? 'old to new: how big a change?' : 'How many steps apart?', (X(A) + X(B)) / 2, by - 16, { size: fs, color: pal.muted, weight: 700 });
         }
         disc(c, X(A), yL, 9, pal.yellow, pal.brass, 3); disc(c, X(B), yL, 9, pal.stage, pal.green, 3.2);
-        stack(c, p, g, [{ x: X(A), text: `A = ${nf(A)}`, color: pal.text }, { x: X(B), text: `B = ${nf(B)}`, color: pal.green }]);
+        stack(c, p, g, [{ x: X(A), text: `${dv ? dv.a : 'A'} = ${nf(A)}`, color: pal.text }, { x: X(B), text: `${dv ? dv.b : 'B'} = ${nf(B)}`, color: pal.green }]);
       };
       const chipAt = (c, p, x, y, d, pos) => {
         disc(c, x, y, d / 2, pos ? p.pal.yellow : p.pal.blue, pos ? p.pal.brass : p.pal.text, 1.8);
@@ -400,7 +411,8 @@
         else if (id === 'B') st.B = clamp(v, -10, 10);
         else if (id === 'mk') { st.mk = clamp(v, -12, 12); st.fb = ''; }
         if (st.view === 'chips') chipReset();
-        st.prog = 1; sync();
+        if (id !== 'mk') st.prog = 1;
+        sync();
       };
       const valOf = id => (id === 'p' ? st.p : id === 'a' ? st.a : id === 'e' ? st.b : id === 'A' ? st.A : id === 'B' ? st.B : st.mk);
       let drag = null;
@@ -467,7 +479,7 @@
 
       const setOp = op => { cancel(); st.op = op; if (st.view === 'chips') chipReset(); st.prog = 1; sync(); };
       const enterExplore = view => {
-        Object.assign(st, { mode: 'explore', view, prog: 1, mk: null, ghost: null, br: true, rev: true, picks: {}, fb: '', end: false });
+        Object.assign(st, { mode: 'explore', view, prog: 1, mk: null, ghost: null, br: true, rev: true, dv: null, picks: {}, fb: '', end: false });
         if (view === 'chips') chipReset();
       };
       const enterPredict = i => {
@@ -545,19 +557,19 @@
             ['−2', 0, 'That is −6 + 4: the right numbers in the wrong order. Start at −4 and move 6 to the right.', -2],
             ['2', 1, '−4 − (−6) = −4 + 6. The opposite of −6 is 6, a positive number, so the walker moves 6 to the right and lands on 2.', 2],
             ['10', 0, 'That ignores the signs and adds 4 and 6. The walker starts at −4 and moves only 6 steps right, so it reaches 2.', 10]]) },
-        { t: 'pick', q: 'A diver is at −12 m, which is 12 meters below sea level. A gull is at +5 m, which is 5 meters above sea level. How far apart are they?', setup() { Object.assign(st, { view: 'dist', A: -12, B: 5, br: false }); },
+        { t: 'pick', q: 'A diver is at −12 m, which is 12 meters below sea level. A gull is at +5 m, which is 5 meters above sea level. How far apart are they?', setup() { Object.assign(st, { view: 'dist', A: -12, B: 5, br: false, dv: { a: 'diver', b: 'gull' } }); },
           choices: choicesOf([
             ['7 meters', 0, 'That is −12 + 5 = −7 with the sign dropped. A distance is not a sum. Count 12 steps up to 0 and 5 more: 17.'],
             ['17 meters', 1, 'The distance is |5 − (−12)| = |17| = 17. You can count it too: 12 meters up to sea level, then 5 more.'],
             ['−17 meters', 0, '5 − (−12) = 17 and −12 − 5 = −17 are both correct differences. But a distance is a length and is never negative. Take the absolute value: 17.'],
             ['5 meters', 0, 'That is only the gull\'s height above sea level. The diver is 12 meters below sea level, so you must also cross those 12 meters.']]) },
-        { t: 'pick', q: 'Chips: you start with 1 positive chip and want 1 − (−4). That means taking out 4 negative chips, but the board has none. How many zero pairs must you add first?', setup() { Object.assign(st, { view: 'chips', a: 1, op: 'sub', b: -4, cp: 1, cn: 0 }); },
+        { t: 'pick', q: 'Chips: you start with 1 positive chip and want 1 − (−4). That means taking out 4 negative chips, but the board has none. What is the smallest number of zero pairs you can add so you can take out 4 negative chips?', setup() { Object.assign(st, { view: 'chips', a: 1, op: 'sub', b: -4, cp: 1, cn: 0 }); },
           choices: choicesOf([
-            ['0 zero pairs. You can take out chips that are not there.', 0, 'You cannot take out chips that are not on the board. Zero pairs make negative chips appear without changing the value.'],
+            ['0 zero pairs', 0, 'You cannot take out chips that are not on the board. Zero pairs make negative chips appear without changing the value.'],
             ['1 zero pair', 0, 'One zero pair brings only 1 negative chip. You need 4 negative chips to take out.'],
             ['3 zero pairs', 0, 'Three zero pairs give 3 negative chips, one short. You need 4 to take out.'],
             ['4 zero pairs', 1, 'Each zero pair brings one negative chip, so 4 pairs give the 4 you need. The board has 5 positive and 4 negative chips, still worth 1. Take out the 4 negative chips and 5 positive chips are left: 1 − (−4) = 5.']]) },
-        { t: 'pick', q: 'At 6 am it was −5 °C. At noon it was 4 °C. Which calculation gives the change in temperature from 6 am to noon?', setup() { Object.assign(st, { view: 'dist', A: -5, B: 4, br: false }); },
+        { t: 'pick', q: 'At 6 am it was −5 °C. At noon it was 4 °C. Which calculation gives the change in temperature from 6 am to noon?', setup() { Object.assign(st, { view: 'dist', A: -5, B: 4, br: false, dv: { a: '6 am', b: 'noon', change: true } }); },
           choices: choicesOf([
             ['−5 − 4 = −9, so it warmed up 9 degrees', 0, '−5 − 4 = −9 would be the change going from 4 °C down to −5 °C, the trip the other way. A change is the new value minus the old value.'],
             ['4 − 5 = −1, so it cooled 1 degree', 0, 'That drops the minus sign on −5. The old temperature is −5, so you subtract −5, which is adding 5.'],
@@ -567,7 +579,7 @@
       ];
       const startPractice = i => {
         cancel();
-        Object.assign(st, { mode: 'practice', pi: i, solved: false, wrongN: 0, picks: {}, fb: '', end: false, ghost: null, mk: null, prog: 0, rev: false, br: false });
+        Object.assign(st, { mode: 'practice', pi: i, solved: false, wrongN: 0, picks: {}, fb: '', end: false, ghost: null, mk: null, prog: 0, rev: false, br: false, dv: null });
         PR[i].setup();
         sync();
       };
