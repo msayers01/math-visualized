@@ -21,13 +21,19 @@ function draggable(plane, { hit, move, hover }) {
     }
     return null;
   };
+  /* Some figures treat the whole canvas as the handle (drag anywhere to set the angle). On touch that would make the
+     figure a scroll trap, so for those a 28 px band along every edge stays free for swiping the page. A figure counts
+     as 'whole canvas' when its hit() answers for all four probes near the corners. */
+  const GUT = 28;
+  const blanket = () => { const w = plane.w, h = plane.h; return [[.12, .12], [.88, .12], [.12, .88], [.88, .88]].every(([a, b]) => hit(w * a, h * b) != null); };
+  const gutter = (px, py) => (px < GUT || py < GUT || px > plane.w - GUT || py > plane.h - GUT) && blanket();
   cv.addEventListener('touchstart', e => {
     if (e.touches.length !== 1 || !e.cancelable) return;
     const [px, py] = pos(e.touches[0]);
-    if (fatHit(px, py) != null) e.preventDefault();
+    if (fatHit(px, py) != null && !gutter(px, py)) e.preventDefault();
   }, { passive: false });
   cv.addEventListener('pointerdown', e => {
-    const [px, py] = pos(e); const hd = e.pointerType === 'touch' ? fatHit(px, py) : hit(px, py);
+    const [px, py] = pos(e); const hd = e.pointerType === 'touch' ? (gutter(px, py) ? null : fatHit(px, py)) : hit(px, py);
     if (hd == null) return;
     active = hd; plane.touched = true; plane.clearPulses(); cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.style.cursor = 'grabbing';
     move(active, ...plane.toMath(px, py));

@@ -135,7 +135,7 @@ class Plane {
     if (!isFinite(px + py) || !isFinite(r)) return;
     /* A handle is a hollow stage-coloured disc with a brass rim (the lessons' convention): it gets a soft halo, a
        lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
-    const handle = r >= 7 && lw >= 2.5 && stroke === this.pal.brass && (!fill || fill === this.pal.stage || fill === this.pal.yellow);
+    const handle = r >= 7 && lw >= 2.5 && stroke === this.pal.brass;   /* the brief reserves a brass rim for handles */
     if (handle) {
       const idx = this.handles.length; if (this.interactive) this.handles.push({ px, py, x, y });
       const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;

@@ -355,7 +355,7 @@
 
       draggable(P1, {
         hit: () => 'corner',
-        move: (_, x, y) => { cancel(); const sd = Math.max(x, y, 0); setN(sd * sd); }
+        move: (_, x, y) => { cancel(); const sd = Math.max((x + y) / 2, 0); setN(sd * sd); }
       });
 
       const apply = (patch, immediate) => {
