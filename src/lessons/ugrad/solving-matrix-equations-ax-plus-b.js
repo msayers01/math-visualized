@@ -129,13 +129,13 @@
         set: { a11: 2, a12: 1, a21: 1, a22: 3, b1: -5, b2: 0, x1: 1, x2: 1, eq: true, grid: false, sol: false, pred: -1 } },
       { title: 'Aim Ax at the target −b',
         text: String.raw`<p>\(A\) sends each \(x\) to \(Ax=x_1Ae_1+x_2Ae_2\). The <b style="color:var(--green)">green</b> arrow \(Ae_1=(2,1)\) and the <b style="color:var(--red)">red</b> arrow \(Ae_2=(1,3)\) are the columns of \(A\): where the unit steps \(e_1,e_2\) land. The violet grid is the whole grid after \(A\).</p><p>Move \(x\) (drag the handle in the top pane, or use the sliders) until the yellow point sits on the target \(-b=(5,0)\).</p>`,
-        set: { x1: 1, x2: 1, eq: true, grid: true, sol: false, pred: -1 } },
+        set: { a11: 2, a12: 1, a21: 1, a22: 3, b1: -5, b2: 0, x1: 1, x2: 1, eq: true, grid: true, sol: false, pred: -1 } },
       { title: 'One solution: undo A with the inverse',
         text: String.raw`<p>Here \(\det A=2\cdot3-1\cdot1=5\), not \(0\), so \(A\) can be undone. Multiplying \(Ax=-b\) by \(A^{-1}\) gives \(x=-A^{-1}b\), with \(A^{-1}=\tfrac15\begin{pmatrix}3&-1\\-1&2\end{pmatrix}\). So \(x=\tfrac15(3\cdot5-1\cdot0,\;-1\cdot5+2\cdot0)=(3,-1)\).</p><p>Verify by plugging back in: \(2\cdot3+1\cdot(-1)-5=0\) and \(3+3\cdot(-1)+0=0\). The yellow point is on the target.</p>`,
-        set: { x1: 3, x2: -1, eq: true, grid: true, sol: true, pred: -1 } },
+        set: { a11: 2, a12: 1, a21: 1, a22: 3, b1: -5, b2: 0, x1: 3, x2: -1, eq: true, grid: true, sol: true, pred: -1 } },
       { title: 'The same answer by row operations',
         text: String.raw`<p>Write the equations as a table \([A\mid -b]\): rows \(2\;1\mid5\) and \(1\;3\mid0\). A <b>row operation</b> (add a multiple of one row to another, swap rows, or scale a row) changes the lines but never the point where they cross.</p><p>In the Row operations box: set \(k=-2\) and do \(R_1\leftarrow R_1+kR_2\); scale \(R_1\); set \(k=-3\) and do \(R_2\leftarrow R_2+kR_1\); then swap. Rows \(1\,0\mid3\) and \(0\,1\mid-1\) read off \(x=(3,-1)\).</p>`,
-        set: { x1: 0, x2: 0, eq: true, grid: false, sol: true, pred: -1 } },
+        set: { a11: 2, a12: 1, a21: 1, a22: 3, b1: -5, b2: 0, x1: 0, x2: 0, eq: true, grid: false, sol: true, pred: -1 } },
       { title: 'When det A = 0: a line or nothing',
         text: String.raw`<p>Now \(A=\begin{pmatrix}1&2\\2&4\end{pmatrix}\) and \(b=(-3,-6)\). The columns \((1,2)\) and \((2,4)\) point the same way, so \(\det A=1\cdot4-2\cdot2=0\) and the whole grid collapses onto one line. \(Ax\) can only land on that line.</p><p><b>Predict first.</b> Is the target \(-b=(3,6)\) on the line? Choose in the Predict box how many solutions there are, then watch. The next prediction changes \(b\) to \((-3,-5)\).</p>`,
         set: { x1: 0, x2: 0, eq: true, grid: false, sol: false, pred: 1 } }
@@ -151,7 +151,7 @@
       \[ x_1=\frac{a_{22}t_1-a_{12}t_2}{D},\qquad x_2=\frac{a_{11}t_2-a_{21}t_1}{D}. \]
       <em>Worked example.</em> \(A=\begin{pmatrix}2&1\\1&3\end{pmatrix}\), \(b=(-5,0)\), \(t=(5,0)\), \(D=5\): \(x_1=\frac{3\cdot5-1\cdot0}{5}=3\), \(x_2=\frac{2\cdot0-1\cdot5}{5}=-1\). <em>Verify:</em> \(A(3,-1)=(6-1,\,3-3)=(5,0)=-b\). Always plug back in: it catches sign slips.</p>
       <h3>det A = 0: none or infinitely many</h3>
-      <p>If \(D=0\) the columns of \(A\) lie on one line (or are both zero), so \(Ax\) is always on that line through the origin. Two cases follow. If \(-b\) is <b>off</b> the line there is <b>no solution</b>: the equations contradict each other. If \(-b\) is <b>on</b> the line there are <b>infinitely many</b>: a nonzero row of \(A\) then determines the other row (it is a multiple on both sides), so the two equations are one equation, and the solutions form a line in the \(x\)-plane. If \(x_p\) is one solution, all of them are \(x_p+n\) where \(An=0\). The vectors \(n\) with \(An=0\) form a line through the origin (the <em>null space</em> of \(A\)); the solution line is that line shifted by \(x_p\).</p>
+      <p>If \(D=0\) the columns of \(A\) lie on one line (or are both zero), so \(Ax\) is always on that line through the origin (if \(A\neq 0\); if \(A=0\) it stays at the origin). Two cases follow. If \(-b\) is <b>off</b> the line there is <b>no solution</b>: the equations contradict each other. If \(-b\) is <b>on</b> the line there are <b>infinitely many</b>: a nonzero row of \(A\) then determines the other row (it is a multiple on both sides), so the two equations are one equation, and the solutions form a line in the \(x\)-plane. If \(x_p\) is one solution, all of them are \(x_p+n\) where \(An=0\). The vectors \(n\) with \(An=0\) form a line through the origin (the <em>null space</em> of \(A\)); the solution line is that line shifted by \(x_p\).</p>
       <p><em>Examples.</em> \(A=\begin{pmatrix}1&2\\2&4\end{pmatrix}\), \(b=(-3,-6)\): \(-b=(3,6)\) is on the line through \((1,2)\), and the equations \(x_1+2x_2=3\) and \(2x_1+4x_2=6\) are the same, so every \(x\) with \(x_1+2x_2=3\) works. With \(b=(-3,-5)\) the equations are \(x_1+2x_2=3\) and \(2x_1+4x_2=5\); doubling the first gives \(6=5\), a contradiction, so there is none. So \(\det A=0\) alone never tells you which; you must compare \(-b\) with the line.</p>
       <h3>Row operations find the same x</h3>
       <p>Write the system as the augmented table \([A\mid -b]\). Three <b>row operations</b> are allowed: swap two rows, scale a row by a nonzero number, add a multiple of one row to another. Each is reversible (undo by swapping again, scaling by the reciprocal, or adding the opposite multiple), so any \(x\) that satisfies the old equations satisfies the new ones and conversely: the solution set does not change. In the picture the lines rotate and move, but they keep crossing at the same point. Aim for the form \([I\mid x]\), which reads off the answer.</p>
@@ -188,7 +188,10 @@
       P2.canvas.setAttribute('aria-label', 'The Ax-plane. The columns of A as green and red arrows, the grid after A, the yellow point A x and the target minus b. Arrow keys move the selected handle; the sliders in the panel do the same.');
 
       const st = { a11: 2, a12: 1, a21: 1, a22: 3, b1: -5, b2: 0, x1: 1, x2: 1, eq: true, grid: false, sol: false, pred: -1, predDone: false };
-      let cancel = () => {}, locked = false, solMsg = '', M = null, rowKey = '', rowMsg = '';
+      let cancel = () => {};
+      /* animate st toward patch; a later cancel() jumps to the end values instead of freezing mid-way */
+      const glide = (patch, ms) => { let live = true; const stop = animateTo(st, patch, ms, sync, () => { live = false; }); cancel = () => { if (live) { live = false; stop(); Object.assign(st, patch); } }; };
+      let locked = false, solMsg = '', M = null, rowKey = '', rowMsg = '';
       const pd = { picked: -1 };
       const pr = { started: false, i: 0, solved: PROB.map(() => false), wrong: PROB.map(() => []), fb: '' };
       const hidden = () => st.pred >= 0 && !st.predDone;
@@ -258,7 +261,7 @@
         p.path([[0, 0], [1, 0], [1, 1], [0, 1]], { fill: alpha(pal.yellow, .14), close: true });
         p.arrow(0, 0, 1, 0, alpha(pal.green, .8), 2.5); p.arrow(0, 0, 0, 1, alpha(pal.red, .8), 2.5);
         /* the rows of the current table as lines */
-        if (st.eq) Mx.forEach((r, i) => {
+        if (st.eq && !hidden()) Mx.forEach((r, i) => {
           if (rz(r[0]) && rz(r[1])) return;
           bigLine(p, rv(r[0]), rv(r[1]), rv(r[2]), { stroke: pal.blue, width: 2.4, dash: i ? [8, 6] : null });
         });
@@ -367,8 +370,8 @@
       const kS = C.slider({ label: 'Multiplier k', min: -4, max: 4, step: .5, value: 1, format: v => rs(rq(v * 2, 2)), onInput: () => {} });
       const rowBtns = C.buttons([
         { label: 'R₁ ← R₁ + k·R₂', onClick: () => addRow(0, 1) }, { label: 'R₂ ← R₂ + k·R₁', onClick: () => addRow(1, 0) },
-        { label: 'Swap R₁ and R₂', onClick: () => swapRows() }, { label: 'Scale R₁ to make its first entry 1', onClick: () => pivotRow(0) },
-        { label: 'Scale R₂ to make its first entry 1', onClick: () => pivotRow(1) }, { label: 'Reset the table', onClick: () => { resetRows(); sync(); } }]);
+        { label: 'Swap R₁ and R₂', onClick: () => swapRows() }, { label: 'Scale R₁ so its first nonzero entry is 1', onClick: () => pivotRow(0) },
+        { label: 'Scale R₂ so its first nonzero entry is 1', onClick: () => pivotRow(1) }, { label: 'Reset the table', onClick: () => { resetRows(); sync(); } }]);
       const lockables = [...lockInputs];
       const setLock = v => { locked = v; lockables.forEach(e => { e.disabled = v; }); };
 
@@ -395,12 +398,12 @@
       const upd = () => {
         const [px, py] = img(), [t1, t2] = tgt(), D = det(), K = info(), Mx = ensureM(), hit = Math.hypot(px - t1, py - t2) < EPS;
         const rows = [[fromNum(st.a11), fromNum(st.a12), fromNum(t1)], [fromNum(st.a21), fromNum(st.a22), fromNum(t2)]];
-        let s = `${kk('Equations')} ${eqText(rows[0])}<br>${kk('and')} ${eqText(rows[1])}<br>`;
+        let s = hidden() ? '' : `${kk('Equations')} ${eqText(rows[0])}<br>${kk('and')} ${eqText(rows[1])}<br>`;
         s += `${kk('Matrix form')} A = rows (${nf(st.a11)}, ${nf(st.a12)}) and (${nf(st.a21)}, ${nf(st.a22)}), b = ${vs(st.b1, st.b2)}<br>`;
         s += `${kk('Columns')} Ae₁ = ${vs(st.a11, st.a21)}, Ae₂ = ${vs(st.a12, st.a22)}<br>${kk('Try')} x = ${vs(st.x1, st.x2)} gives A x = ${vs(px, py)}<br>${kk('Target')} −b = ${vs(t1, t2)}<br>`;
         s += `${kk('A x + b')} = ${vs(px + st.b1, py + st.b2)}`;
         s += hit ? ` ${ok('= 0: x is a solution.')}` : ' not 0 yet.';
-        s += `<br>${kk('det A')} = ${pn(st.a11)}·${pn(st.a22)} − ${pn(st.a12)}·${pn(st.a21)} = ${nf(D)}`;
+        if (!hidden()) s += `<br>${kk('det A')} = ${pn(st.a11)}·${pn(st.a22)} − ${pn(st.a12)}·${pn(st.a21)} = ${nf(D)}`;
         if (!hidden() && st.sol) {
           s += '. ';
           if (K.k === 'one') s += `Not 0, so there is exactly one solution, x = ${'(' + fr(K.n1, K.D) + ', ' + fr(K.n2, K.D) + ')'}.`;
@@ -422,12 +425,12 @@
         const K = info(); let msg;
         st.grid = true; st.sol = true;
         if (K.k === 'one') {
-          msg = `${ok('One solution.')} det A = ${nf(K.D)} is not 0, so x = −A⁻¹b = (1/${nf(K.D)})·(${pn(st.a22)}·${pn(-st.b1)} − ${pn(st.a12)}·${pn(-st.b2)}, ${pn(st.a11)}·${pn(-st.b2)} − ${pn(st.a21)}·${pn(-st.b1)}) = (${fr(K.n1, K.D)}, ${fr(K.n2, K.D)}).`;
+          msg = `${ok('One solution.')} det A = ${nf(K.D)} is not 0, so x = −A⁻¹b = (1/${pn(K.D)})·(${pn(st.a22)}·${pn(-st.b1)} − ${pn(st.a12)}·${pn(-st.b2)}, ${pn(st.a11)}·${pn(-st.b2)} − ${pn(st.a21)}·${pn(-st.b1)}) = (${fr(K.n1, K.D)}, ${fr(K.n2, K.D)}).`;
         } else if (K.k === 'line') msg = `${ok('Infinitely many solutions.')} det A = 0 and −b is on the line, so the equations agree: every x with ${lineText(K)} works.`;
         else if (K.k === 'all') msg = `${ok('Every x works.')} A = 0 and b = 0.`;
         else msg = `${no('No solution.')} det A = 0, so A x stays on one line, and −b is not on it. The equations contradict each other.`;
         const xs = findSol();
-        if (xs) { cancel(); cancel = animateTo(st, { x1: xs[0], x2: xs[1] }, 700, sync); msg += ` The sliders now show x = ${vs(xs[0], xs[1])}.`; }
+        if (xs) { cancel(); glide({ x1: xs[0], x2: xs[1] }, 700); msg += ` The sliders now show x = ${vs(xs[0], xs[1])}.`; }
         else if (K.k === 'one') msg += ' The x sliders move in halves from −5 to 5, so they cannot show this x.';
         solMsg = msg; sync();
       };
@@ -466,7 +469,7 @@
       const answerPred = i => {
         if (st.predDone) return;
         pd.picked = i; st.predDone = true; st.grid = true; st.sol = true; renderPredict();
-        const xs = findSol(); cancel(); if (xs) cancel = animateTo(st, { x1: xs[0], x2: xs[1] }, 700, sync);
+        const xs = findSol(); cancel(); if (xs) glide({ x1: xs[0], x2: xs[1] }, 700);
         sync();
       };
 
@@ -567,7 +570,7 @@
           delete flags.pred; renderPredict();
         }
         Object.assign(st, flags);
-        if (immediate) { Object.assign(st, nums); sync(); } else { cancel = animateTo(st, nums, 900, sync); sync(); }
+        if (immediate) { Object.assign(st, nums); sync(); } else { glide(nums, 900); sync(); }
       };
       const apply = (patch, immediate) => {
         const changed = pr.started; pr.started = false; setLock(false);
