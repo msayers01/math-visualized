@@ -1,0 +1,60 @@
+{
+  "purpose": "This lets you build Möbius maps from shifts, turns and 1/z, pin one down by three points, and then use the maps that keep the unit disk to move around the hyperbolic plane, where you measure distances and triangle angles.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "The figure",
+      "text": "One picture, four views. Brass rings are handles you can drag: z₁ to z₄ in view 2, the point a in views 3 and 4, and the triangle corners P, Q, R in view 4. Labels on the figure say what each color means.",
+      "try": "Go to step 4 and drag the corner R toward the rim. Watch the angle sum."
+    },
+    {
+      "at": "ctl:View",
+      "title": "Pick a view",
+      "text": "1 builds a map from pieces, 2 finds the map through three points, 3 slides the disk with a disk automorphism, 4 reads the disk as the hyperbolic plane. The steps switch views for you.",
+      "try": "Choose view 3 and drag a around."
+    },
+    {
+      "at": "ctl:Invert: 1/z",
+      "title": "Build a map",
+      "text": "Each button adds one piece after the ones already chosen, and the grid moves along a path of Möbius maps. The readout gives a, b, c, d, where ∞ goes, and which grid lines stay lines.",
+      "try": "Press Start over, then Shift: z + 1, then Invert: 1/z."
+    },
+    {
+      "at": "ctl:Progress of T",
+      "title": "Apply T",
+      "text": "T sends z₁, z₂, z₃ to 0, 1 and ∞. Slide the progress, or press Apply T, to watch the violet circle through the three points open up into the real axis.",
+      "try": "Drag z₃ off the circle first, then apply T again."
+    },
+    {
+      "at": "ctl:Re a",
+      "title": "The slide",
+      "text": "Re a, Im a and the turn θ set the disk automorphism φ. Replay the slide shows a travelling to the center while the 12 red rim points stay on the rim.",
+      "try": "Set Re a to 0.8 and press Replay the slide."
+    },
+    {
+      "at": "ctl:Show steps of hyperbolic length 1",
+      "title": "Distances",
+      "text": "The marks 1 to 4 are one hyperbolic unit apart along a radius. They crowd toward the rim because d(0, r) = 2 artanh r grows without bound as r approaches 1.",
+      "try": "Compare the gap from 0 to 1 with the gap from 3 to 4."
+    },
+    {
+      "at": "ctl:Point",
+      "title": "Move without dragging",
+      "text": "Choose a point, then set its real and imaginary parts with the two sliders. This does exactly what dragging does, so the lesson works from the keyboard.",
+      "try": "In view 4 choose R and lower its imaginary part."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice",
+      "text": "Eight fixed problems: where ∞ goes, line or circle, the three-point map, a distance, an automorphism and an angle sum. The figure sets itself up for each one and shows the answer once you have it.",
+      "try": "Answer one problem wrong on purpose and read why."
+    },
+    {
+      "at": "check",
+      "title": "Quick check",
+      "text": "Three questions that also print as an exit ticket: a concept question, a distance to compute, and a worked solution with an error to find.",
+      "try": "Try the spot-the-error question without the figure."
+    }
+  ],
+  "teacher": "Start with step 1 and ask why every image curve passes through one point (f(∞)). In step 4 ask students to shrink the triangle and predict the angle sum. Common misconception: disk automorphisms are isometries of the hyperbolic metric, not of Euclidean distance."
+}
