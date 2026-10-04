@@ -19,6 +19,11 @@
 .stage canvas { display: block; }
 :root[data-theme="dark"] .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); } }
+.stage canvas:focus { outline: none; }
+.stage:has(canvas:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
+.hpulse { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--brass);
+  pointer-events: none; z-index: 1; opacity: 0; animation: hpulse 2.4s ease-out infinite; }
+@keyframes hpulse { 0% { opacity: .7; scale: .55; } 70%, 100% { opacity: 0; scale: 1.35; } }
 .tick { position: absolute; width: 14px; height: 14px; z-index: 2; pointer-events: none; border: 0 solid var(--brass); }
 .tick.tl { top: 10px; left: 10px; border-top-width: 1.5px; border-left-width: 1.5px; }
 .tick.tr { top: 10px; right: 10px; border-top-width: 1.5px; border-right-width: 1.5px; }

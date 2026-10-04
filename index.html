@@ -179,6 +179,11 @@ a.topic:hover::before { transform: scaleY(1); }
 .stage canvas { display: block; }
 :root[data-theme="dark"] .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stage { box-shadow: inset 0 0 0 1px rgba(140,170,230,.08), inset 0 0 60px -20px rgba(0,0,0,.6), 0 18px 40px -24px rgba(0,0,0,.8); } }
+.stage canvas:focus { outline: none; }
+.stage:has(canvas:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
+.hpulse { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--brass);
+  pointer-events: none; z-index: 1; opacity: 0; animation: hpulse 2.4s ease-out infinite; }
+@keyframes hpulse { 0% { opacity: .7; scale: .55; } 70%, 100% { opacity: 0; scale: 1.35; } }
 .tick { position: absolute; width: 14px; height: 14px; z-index: 2; pointer-events: none; border: 0 solid var(--brass); }
 .tick.tl { top: 10px; left: 10px; border-top-width: 1.5px; border-left-width: 1.5px; }
 .tick.tr { top: 10px; right: 10px; border-top-width: 1.5px; border-right-width: 1.5px; }
@@ -3589,6 +3594,9 @@ class Plane {
     cv.addEventListener('pointerdown', e => { this.ptr = rel(e); this.pressed = true; this.touchPtr = e.pointerType === 'touch'; this.requestDraw(); });
     const up = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    this.handles = []; this.focusIdx = 0; this.kbd = false; this.touched = false; this.pulses = [];
+    cv.addEventListener('pointerdown', () => { this.kbd = false; this.touched = true; this.clearPulses(); });
+    cv.addEventListener('blur', () => { this.kbd = false; this.requestDraw(); });
     this._theme = () => this.draw();
     addEventListener('themechange', this._theme);
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
@@ -3620,15 +3628,25 @@ class Plane {
       g.addColorStop(1, this.dark ? 'rgba(0,0,0,.32)' : 'rgba(70,90,130,.05)');
       c.fillStyle = g; c.fillRect(0, 0, this.w, this.h);
     }
+    this.handles = [];
     this.onDraw(c, this);
+    this.syncPulses();
   }
+  /* idle 'grab me' rings: DOM overlays animated by CSS (compositor only, no canvas redraws); gone after first touch */
+  syncPulses() {
+    const hs = this.touched || reduceMotion ? [] : this.handles.slice(0, 4);
+    while (this.pulses.length > hs.length) this.pulses.pop().remove();
+    while (this.pulses.length < hs.length) { const e = h('i', { class: 'hpulse', 'aria-hidden': 'true' }); this.host.append(e); this.pulses.push(e); }
+    hs.forEach((q, i) => { this.pulses[i].style.transform = `translate(${q.px}px, ${q.py}px)`; });
+  }
+  clearPulses() { this.pulses.forEach(e => e.remove()); this.pulses = []; }
   requestDraw() {
     if (this._raf) return;
     this._raf = requestAnimationFrame(() => { this._raf = null; this.draw(); });
   }
   destroy() {
     this.ro.disconnect(); cancelAnimationFrame(this._raf);
-    removeEventListener('themechange', this._theme); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
+    removeEventListener('themechange', this._theme); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
   }
   /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
   glow(color, blur = 10) {
@@ -3679,6 +3697,7 @@ class Plane {
        lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
     const handle = r >= 7 && lw >= 2.5 && fill === this.pal.stage && stroke === this.pal.brass;
     if (handle) {
+      const idx = this.handles.length; this.handles.push({ px, py, x, y });
       const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;
       const k = act ? 1.18 : hov ? 1.1 : 1, rr = r * k;
       const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
@@ -3687,6 +3706,7 @@ class Plane {
       c.save(); c.shadowColor = this.dark ? alpha(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = act ? 14 : 8; c.shadowOffsetY = this.dark ? 0 : 2;
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.fillStyle = fill; c.fill(); c.restore();
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+      if (this.kbd && idx === this.focusIdx) { c.save(); c.setLineDash([4, 4]); c.beginPath(); c.arc(px, py, rr + 7, 0, Math.PI * 2); c.strokeStyle = this.pal.text; c.lineWidth = 1.5; c.stroke(); c.restore(); }
       c.beginPath(); c.arc(px, py, Math.max(1.5, rr * (act ? .5 : .32)), 0, Math.PI * 2); c.fillStyle = stroke; c.globalAlpha = act ? .9 : .55; c.fill(); c.globalAlpha = 1;
       return;
     }
@@ -3793,6 +3813,23 @@ function draggable(plane, { hit, move, hover }) {
     else if (e.pointerType !== 'touch') cv.style.cursor = (hover ? hover(px, py) : hit(px, py) != null) ? 'grab' : 'default';
   });
   const end = () => { active = null; cv.style.cursor = ''; };
+  /* Keyboard: Tab to the stage, arrow keys move the selected handle (Shift = bigger steps), Enter/Space picks the next
+     handle. Handles are the ones the Plane drew this frame; the lesson's own hit()/move() do the work, and the step
+     grows until the handle actually moves, so lessons that snap to a grid still respond. */
+  cv.tabIndex = 0; cv.setAttribute('role', 'application');
+  cv.setAttribute('aria-label', 'Interactive figure. Arrow keys move the selected handle; Enter selects the next handle.');
+  cv.addEventListener('keydown', e => {
+    const n = plane.handles.length; if (!n) return;
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); plane.kbd = true; plane.focusIdx = (plane.focusIdx + 1) % n; plane.draw(); return; }
+    const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]; if (!dir) return;
+    e.preventDefault(); plane.kbd = true; plane.touched = true; plane.clearPulses();
+    const i = Math.min(plane.focusIdx, n - 1), q = plane.handles[i], hd = hit(q.px, q.py); if (hd == null) { plane.draw(); return; }
+    for (const u of (e.shiftKey ? [1, 2] : [.1, .25, .5, 1])) {
+      move(hd, q.x + dir[0] * u, q.y + dir[1] * u); plane.draw();
+      const q2 = plane.handles[i]; if (!q2 || Math.hypot(q2.px - q.px, q2.py - q.py) > .5) break;
+    }
+  });
+  cv.addEventListener('focus', () => { if (cv.matches(':focus-visible')) { plane.kbd = true; plane.draw(); } });
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
 }
 

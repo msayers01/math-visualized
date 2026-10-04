@@ -24,6 +24,9 @@ class Plane {
     cv.addEventListener('pointerdown', e => { this.ptr = rel(e); this.pressed = true; this.touchPtr = e.pointerType === 'touch'; this.requestDraw(); });
     const up = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    this.handles = []; this.focusIdx = 0; this.kbd = false; this.touched = false; this.pulses = [];
+    cv.addEventListener('pointerdown', () => { this.kbd = false; this.touched = true; this.clearPulses(); });
+    cv.addEventListener('blur', () => { this.kbd = false; this.requestDraw(); });
     this._theme = () => this.draw();
     addEventListener('themechange', this._theme);
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(host);
@@ -55,15 +58,25 @@ class Plane {
       g.addColorStop(1, this.dark ? 'rgba(0,0,0,.32)' : 'rgba(70,90,130,.05)');
       c.fillStyle = g; c.fillRect(0, 0, this.w, this.h);
     }
+    this.handles = [];
     this.onDraw(c, this);
+    this.syncPulses();
   }
+  /* idle 'grab me' rings: DOM overlays animated by CSS (compositor only, no canvas redraws); gone after first touch */
+  syncPulses() {
+    const hs = this.touched || reduceMotion ? [] : this.handles.slice(0, 4);
+    while (this.pulses.length > hs.length) this.pulses.pop().remove();
+    while (this.pulses.length < hs.length) { const e = h('i', { class: 'hpulse', 'aria-hidden': 'true' }); this.host.append(e); this.pulses.push(e); }
+    hs.forEach((q, i) => { this.pulses[i].style.transform = `translate(${q.px}px, ${q.py}px)`; });
+  }
+  clearPulses() { this.pulses.forEach(e => e.remove()); this.pulses = []; }
   requestDraw() {
     if (this._raf) return;
     this._raf = requestAnimationFrame(() => { this._raf = null; this.draw(); });
   }
   destroy() {
     this.ro.disconnect(); cancelAnimationFrame(this._raf);
-    removeEventListener('themechange', this._theme); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
+    removeEventListener('themechange', this._theme); this.clearPulses(); this.canvas.remove(); if (this.coordEl) this.coordEl.remove();
   }
   /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
   glow(color, blur = 10) {
@@ -114,6 +127,7 @@ class Plane {
        lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
     const handle = r >= 7 && lw >= 2.5 && fill === this.pal.stage && stroke === this.pal.brass;
     if (handle) {
+      const idx = this.handles.length; this.handles.push({ px, py, x, y });
       const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;
       const k = act ? 1.18 : hov ? 1.1 : 1, rr = r * k;
       const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
@@ -122,6 +136,7 @@ class Plane {
       c.save(); c.shadowColor = this.dark ? alpha(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = act ? 14 : 8; c.shadowOffsetY = this.dark ? 0 : 2;
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.fillStyle = fill; c.fill(); c.restore();
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
+      if (this.kbd && idx === this.focusIdx) { c.save(); c.setLineDash([4, 4]); c.beginPath(); c.arc(px, py, rr + 7, 0, Math.PI * 2); c.strokeStyle = this.pal.text; c.lineWidth = 1.5; c.stroke(); c.restore(); }
       c.beginPath(); c.arc(px, py, Math.max(1.5, rr * (act ? .5 : .32)), 0, Math.PI * 2); c.fillStyle = stroke; c.globalAlpha = act ? .9 : .55; c.fill(); c.globalAlpha = 1;
       return;
     }
