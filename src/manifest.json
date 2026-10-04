@@ -134,7 +134,21 @@
     "lessons/school/exact-trig-values-and-special-triangles.js",
     "lessons/school/arithmetic-and-geometric-series.js",
     "lessons/ugrad/linear-transformations.js",
-    "lessons/grad/conformal-maps.js"
+    "lessons/grad/conformal-maps.js",
+    "lessons/school/perimeter-and-area-of-rectangles.js",
+    "lessons/school/volume-with-unit-cubes.js",
+    "lessons/school/factors-primes-gcf-and-lcm.js",
+    "lessons/school/adding-and-subtracting-integers.js",
+    "lessons/school/box-plots-and-comparing-distributions.js",
+    "lessons/school/polynomials-and-factoring.js",
+    "lessons/school/circle-equations-and-the-distance-formula.js",
+    "lessons/school/inverse-functions-and-composition.js",
+    "lessons/school/logarithms-the-inverse-of-exponentials.js",
+    "lessons/school/misleading-graphs.js",
+    "lessons/ugrad/taylor-series.js",
+    "lessons/ugrad/vectors-span-and-linear-combinations.js",
+    "lessons/ugrad/gradient-and-contour-maps.js",
+    "lessons/ugrad/the-central-limit-theorem.js"
   ],
   "app": [
     "engine/pages.js",

@@ -19,6 +19,8 @@ Instructions for any AI working on this project (including in a new chat):
 
 - **Done (2026-10-04, owner's request: placement, then Algebra 1 and Geometry skills): practice v1.2** (ARCHITECTURE 0.37): adaptive placement (4 problems at most) for a new skill; ten new skills (Algebra 1: slope, functions, factoring quadratics, sequences; Geometry: angles, circles, distance and midpoint, solids, trig ratios, similar figures); 22 skills and ten mixed reviews. Still to do (v2): Elo ratings, analytics, teacher or parent view, more answer types.
 
+- **Done (2026-10-04, owner's request: a new lesson in each grade level or course): 14 lessons** (ARCHITECTURE 0.39), 105 in all, 147 of 265 benchmarks tagged. Graduate untouched (on hold). Next: ask which courses to deepen; planned and unbuilt lessons are in ARCHITECTURE section 9.
+
 ## Project
 Continuum, a 3Blue1Brown-style interactive math visualization website covering three levels: middle & high school, undergraduate, and graduate.
 
