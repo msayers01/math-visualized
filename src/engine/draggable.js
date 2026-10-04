@@ -10,7 +10,7 @@ const near = (plane, x, y, px, py, r = 17) =>
    the page. A non-passive touchstart that lands on a handle calls preventDefault, which stops the browser from
    starting a scroll, so the drag keeps receiving pointer events. */
 function draggable(plane, { hit, move, hover }) {
-  const cv = plane.canvas; let active = null;
+  const cv = plane.canvas; let active = null; plane.interactive = true;
   const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   /* Touch hit test: the lesson's own test first, then a ring of probes 9 and 18 px around the finger, so lessons that
      hard-code a small radius (Math.hypot(...) < 22) still get a finger-sized target without editing them. */

@@ -3588,7 +3588,7 @@ class Plane {
       });
       this.canvas.addEventListener('pointerleave', () => this.coordEl.classList.remove('on'));
     }
-    this.ptr = null; this.pressed = false;
+    this.ptr = null; this.pressed = false; this.dpr = 1; this.interactive = false;
     const cv = this.canvas, rel = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('pointermove', e => { if (e.pointerType === 'touch') return; this.ptr = rel(e); this.requestDraw(); });
     cv.addEventListener('pointerleave', () => { this.ptr = null; this.requestDraw(); });
@@ -3604,7 +3604,7 @@ class Plane {
     this.resize();
   }
   resize() {
-    const r = this.host.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2.5);
+    const r = this.host.getBoundingClientRect(), dpr = this.dpr = Math.min(devicePixelRatio || 1, 2.5);
     this.w = Math.max(1, r.width); this.h = Math.max(1, r.height);
     this.canvas.width = Math.round(this.w * dpr); this.canvas.height = Math.round(this.h * dpr);
     this.canvas.style.width = this.w + 'px'; this.canvas.style.height = this.h + 'px';
@@ -3638,7 +3638,7 @@ class Plane {
     const hs = this.touched || reduceMotion ? [] : this.handles.slice(0, 4);
     while (this.pulses.length > hs.length) this.pulses.pop().remove();
     while (this.pulses.length < hs.length) { const e = h('i', { class: 'hpulse', 'aria-hidden': 'true' }); this.host.append(e); this.pulses.push(e); }
-    hs.forEach((q, i) => { this.pulses[i].style.transform = `translate(${q.px}px, ${q.py}px)`; });
+    hs.forEach((q, i) => { const t = `${q.px}px ${q.py}px`; if (this.pulses[i]._t !== t) { this.pulses[i]._t = t; this.pulses[i].style.translate = t; } });
   }
   clearPulses() { this.pulses.forEach(e => e.remove()); this.pulses = []; }
   requestDraw() {
@@ -3651,10 +3651,11 @@ class Plane {
   }
   /* soft light bleed around bright strokes in dark mode (cheap: one shadow per path) */
   glow(color, blur = 10) {
-    if (!this.dark) return;
-    this.ctx.shadowColor = color; this.ctx.shadowBlur = blur;
+    if (!this.dark || this._glowing) return;
+    this._glowing = true; this.ctx.save();
+    this.ctx.shadowColor = color; this.ctx.shadowBlur = blur * this.dpr;
   }
-  unglow() { this.ctx.shadowBlur = 0; this.ctx.shadowColor = 'transparent'; }
+  unglow() { if (!this._glowing) return; this._glowing = false; this.ctx.restore(); }
   /* primitives */
   path(pts, { stroke, width = 2, fill, close = false, dash } = {}) {
     const c = this.ctx; c.beginPath();
@@ -3694,17 +3695,18 @@ class Plane {
   }
   dot(x, y, r, fill, stroke, lw = 2) {
     const c = this.ctx, px = this.X(x), py = this.Y(y);
+    if (!isFinite(px + py) || !isFinite(r)) return;
     /* A handle is a hollow stage-coloured disc with a brass rim (the lessons' convention): it gets a soft halo, a
        lift shadow, and grows when the pointer is over it or dragging it. Nothing about the lessons changes. */
     const handle = r >= 7 && lw >= 2.5 && fill === this.pal.stage && stroke === this.pal.brass;
     if (handle) {
-      const idx = this.handles.length; this.handles.push({ px, py, x, y });
+      const idx = this.handles.length; if (this.interactive) this.handles.push({ px, py, x, y });
       const hov = this.ptr && Math.hypot(this.ptr[0] - px, this.ptr[1] - py) < r + 12, act = hov && this.pressed;
       const k = act ? 1.18 : hov ? 1.1 : 1, rr = r * k;
       const halo = c.createRadialGradient(px, py, rr * .6, px, py, rr * (act ? 3.1 : hov ? 2.7 : 2.1));
-      halo.addColorStop(0, alpha(stroke, act ? .38 : hov ? .3 : .2)); halo.addColorStop(1, alpha(stroke, 0));
+      halo.addColorStop(0, tint(stroke, act ? .38 : hov ? .3 : .2)); halo.addColorStop(1, tint(stroke, 0));
       c.fillStyle = halo; c.beginPath(); c.arc(px, py, rr * 3.2, 0, Math.PI * 2); c.fill();
-      c.save(); c.shadowColor = this.dark ? alpha(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = act ? 14 : 8; c.shadowOffsetY = this.dark ? 0 : 2;
+      c.save(); c.shadowColor = this.dark ? tint(stroke, .55) : 'rgba(20,30,50,.28)'; c.shadowBlur = (act ? 14 : 8) * this.dpr; c.shadowOffsetY = (this.dark ? 0 : 2) * this.dpr;
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.fillStyle = fill; c.fill(); c.restore();
       c.beginPath(); c.arc(px, py, rr, 0, Math.PI * 2); c.strokeStyle = stroke; c.lineWidth = lw; c.stroke();
       if (this.kbd && idx === this.focusIdx) { c.save(); c.setLineDash([4, 4]); c.beginPath(); c.arc(px, py, rr + 7, 0, Math.PI * 2); c.strokeStyle = this.pal.text; c.lineWidth = 1.5; c.stroke(); c.restore(); }
@@ -3713,7 +3715,7 @@ class Plane {
     }
     c.beginPath(); c.arc(px, py, r, 0, Math.PI * 2);
     if (fill) {
-      if (r >= 4 && fill !== this.pal.stage) { c.save(); c.shadowColor = this.dark ? tint(fill, .6) : 'rgba(20,30,50,.22)'; c.shadowBlur = this.dark ? 8 : 4; c.shadowOffsetY = this.dark ? 0 : 1; c.fillStyle = fill; c.fill(); c.restore(); }
+      if (r >= 4 && fill !== this.pal.stage) { c.save(); c.shadowColor = this.dark ? tint(fill, .6) : 'rgba(20,30,50,.22)'; c.shadowBlur = (this.dark ? 8 : 4) * this.dpr; c.shadowOffsetY = (this.dark ? 0 : 1) * this.dpr; c.fillStyle = fill; c.fill(); c.restore(); }
       else { c.fillStyle = fill; c.fill(); }
     }
     if (stroke) { c.strokeStyle = stroke; c.lineWidth = lw; c.stroke(); }
@@ -3786,7 +3788,7 @@ const near = (plane, x, y, px, py, r = 17) =>
    the page. A non-passive touchstart that lands on a handle calls preventDefault, which stops the browser from
    starting a scroll, so the drag keeps receiving pointer events. */
 function draggable(plane, { hit, move, hover }) {
-  const cv = plane.canvas; let active = null;
+  const cv = plane.canvas; let active = null; plane.interactive = true;
   const pos = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
   /* Touch hit test: the lesson's own test first, then a ring of probes 9 and 18 px around the finger, so lessons that
      hard-code a small radius (Math.hypot(...) < 22) still get a finger-sized target without editing them. */
