@@ -25,7 +25,7 @@ class Plane {
     const up = () => { if (!this.pressed) return; this.pressed = false; if (this.touchPtr) this.ptr = null; this.requestDraw(); };
     cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
     this.handles = []; this.focusIdx = 0; this.kbd = false; this.touched = false; this.pulses = [];
-    cv.addEventListener('pointerdown', () => { this.kbd = false; this.touched = true; this.clearPulses(); });
+    cv.addEventListener('pointerdown', () => { this.kbd = false; });
     cv.addEventListener('blur', () => { this.kbd = false; this.requestDraw(); });
     this._theme = () => this.draw();
     addEventListener('themechange', this._theme);

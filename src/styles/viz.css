@@ -23,7 +23,8 @@
 .stage:has(canvas:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
 .hpulse { position: absolute; left: -22px; top: -22px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--brass);
   pointer-events: none; z-index: 1; opacity: 0; animation: hpulse 2.4s ease-out infinite; }
-@keyframes hpulse { 0% { opacity: .7; scale: .55; } 70%, 100% { opacity: 0; scale: 1.35; } }
+:root[data-theme="dark"] .hpulse { border-width: 2.5px; }
+@keyframes hpulse { 0% { opacity: .85; scale: .55; } 70%, 100% { opacity: 0; scale: 1.35; } }
 .tick { position: absolute; width: 14px; height: 14px; z-index: 2; pointer-events: none; border: 0 solid var(--brass); }
 .tick.tl { top: 10px; left: 10px; border-top-width: 1.5px; border-left-width: 1.5px; }
 .tick.tr { top: 10px; right: 10px; border-top-width: 1.5px; border-right-width: 1.5px; }
@@ -51,11 +52,13 @@
    controls scroll beneath it, so the figure and the text that talks about it are on screen together. A flex column
    (not a grid) so the stage's sticky range is the whole workbench. */
 @media (max-width: 900px) {
-  .workbench { display: flex; flex-direction: column; gap: 14px; }
+  .workbench { display: flex; flex-direction: column; gap: 14px; align-items: stretch; }
   .workbench > * { min-width: 0; max-width: 100%; }
   .panel { position: static; }
   .stage { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--hdr)); z-index: 5; flex: none;
     height: var(--stage-h); min-height: 0; box-shadow: 0 8px 14px -10px rgba(0,0,0,.45); }
+  /* a figure that needs more room than the pinned strip (the lesson sets its own min-height) scrolls with the page instead of covering the screen */
+  .stage[style*="min-height"], .stage[style*="height"] { position: relative; top: auto; box-shadow: none; }
   html:has(.workbench) { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + var(--hdr) + var(--stage-h) + 14px); }
 }
 

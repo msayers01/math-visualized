@@ -29,7 +29,7 @@ function draggable(plane, { hit, move, hover }) {
   cv.addEventListener('pointerdown', e => {
     const [px, py] = pos(e); const hd = e.pointerType === 'touch' ? fatHit(px, py) : hit(px, py);
     if (hd == null) return;
-    active = hd; cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.style.cursor = 'grabbing';
+    active = hd; plane.touched = true; plane.clearPulses(); cv.setPointerCapture(e.pointerId); e.preventDefault(); cv.style.cursor = 'grabbing';
     move(active, ...plane.toMath(px, py));
   });
   cv.addEventListener('pointermove', e => {
