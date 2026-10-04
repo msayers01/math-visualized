@@ -64748,7 +64748,7 @@ register({
       moves: [
         { ask: 'x = 2y + 1. Which move starts to get y alone?', ans: 0, res: 'x − 1 = 2y', opts: [
           ['Subtract 1 from both sides', 'The machine doubled y and then added 1. To run it backward, undo the last step first: take off the 1.'],
-          ['Divide both sides by 2', 'Not yet. The right side is 2y + 1, so dividing everything by 2 leaves (2y + 1)/2 and y is still tangled with the 1. Undo the + 1 first.'],
+          ['Divide both sides by 2', 'This is legal: x/2 = y + 1/2 also works. We undo the machine in reverse order because it avoids fractions. Take off the 1 first.'],
           ['Multiply both sides by 2', 'That makes the right side bigger (4y + 2). To undo doubling you divide, and the + 1 comes off first anyway.']] },
         { ask: 'x − 1 = 2y. What is the last move?', ans: 0, res: 'y = (x − 1)/2', opts: [
           ['Divide both sides by 2', 'Dividing undoes the doubling. Every term on the left is divided too, so the left side becomes (x − 1)/2.'],
@@ -64877,8 +64877,8 @@ register({
         text: String.raw`<p>The inverse \(f^{-1}\) undoes \(f\). If \(f\) turns \(1\) into \(3\), then \(f^{-1}\) turns \(3\) back into \(1\). So \(P=(1,3)\) on \(f\) pairs with \(Q=(3,1)\) on \(f^{-1}\): the two numbers trade places.</p><p>Predict where \(Q\) lands, then drag \(P\). The tables swap columns, and \(Q\) is always the mirror image of \(P\) in the line \(y=x\).</p>`,
         set: { view: 'inv', fn: 'lin', qi: 4, restrict: 1, hlt: 0, ipredOn: 1, ipred: 0, alg: 0 } },
       { title: 'Find the inverse by algebra',
-        text: String.raw`<p>Without a graph: swap \(x\) and \(y\), then solve for \(y\), undoing the steps in reverse order. Use the buttons under Find the inverse.</p><p>A parabola fails the horizontal line test: \(y=5\) crosses \(x^2+1\) twice. Keeping only \(x\ge 0\) makes it cross once, so an inverse function exists.</p>`,
-        set: { view: 'inv', fn: 'quad', qi: 4, restrict: 1, hlt: 1, hc: 5, ipredOn: 0, ipred: 1, alg: 1 } }
+        text: String.raw`<p>Without a graph: swap \(x\) and \(y\), then solve for \(y\), undoing the steps in reverse order. Use the buttons under Find the inverse.</p><p>The horizontal line test: draw a horizontal line. If it crosses the graph twice, two inputs share one output. Here \(y=5\) meets \(x^2+1\) at \(x=-2\) and \(x=2\). Switch on "Keep only \(x\ge 0\)" and it crosses once, so an inverse function exists.</p>`,
+        set: { view: 'inv', fn: 'quad', qi: 4, restrict: 0, hlt: 1, hc: 5, ipredOn: 0, ipred: 1, alg: 1 } }
     ],
     formal: String.raw`
       <h3>Composition: one machine after another</h3>
@@ -65018,7 +65018,7 @@ register({
         if (st.hlt) {
           const c0 = st.hc, rs = F.roots(c0, !!st.restrict || !F.rest).filter(r => r >= lo - 1e-9);
           p.path([[bd.x0, c0], [bd.x1, c0]], { stroke: pal.yellow, width: 2.4, dash: [9, 6] });
-          if (!st.practice) p.dot(p.toMath(22, 0)[0], c0, 7.5, pal.stage, pal.brass, 3);
+          if (!st.practice) p.dot(p.toMath(p.w - 28, 0)[0], c0, 7.5, pal.stage, pal.brass, 3);
           rs.forEach(r => p.dot(r, c0, 7, pal.yellow, pal.stage, 2.5));
           const k = rs.length;
           p.label(`y = ${nf(c0)}: ${k === 0 ? 'no crossing' : k === 1 ? '1 crossing' : k + ' crossings'}`, bd.x1 - .2, c0, { size: sz, italic: false, align: 'right', dy: -14, color: pal.text });
@@ -65026,16 +65026,23 @@ register({
         /* the tracked point and its mirror image */
         const showP = st.practice ? !!st.pshow : true;
         if (showP) {
+          /* keep labels on the canvas: flip sides near the right edge, and below/above near the top/bottom */
+          const place = (x, y, dx, dy) => {
+            let d = dx, v = dy;
+            if (p.X(x) > p.w - 110) d = -Math.abs(dx); else if (p.X(x) < 110) d = Math.abs(dx);
+            if (p.Y(y) < 34) v = Math.abs(dy); else if (p.Y(y) > p.h - 34) v = -Math.abs(dy);
+            return { dx: d, dy: v, align: d < 0 ? 'right' : 'left' };
+          };
           const up = b > a, pl = `P (${nf(a)}, ${nf(b)})`, ql = `Q (${nf(b)}, ${nf(a)})`;
           if (SI) {
             p.path([[a, b], [b, a]], { stroke: alpha(pal.violet, .85), width: 2, dash: [5, 5] });
             p.dot((a + b) / 2, (a + b) / 2, 4.5, pal.stage, pal.violet, 2);
             if (F.rest && !st.restrict && a > 0) p.dot(b, -a, 7, pal.stage, alpha(pal.red, .85), 2.5);
             p.dot(b, a, 8, pal.red, pal.stage, 2.5);
-            p.label(ql, b, a, { size: sz, italic: false, color: pal.red, dx: up ? 12 : -12, dy: up ? 18 : -18, align: up ? 'left' : 'right' });
+            p.label(ql, b, a, Object.assign({ size: sz, italic: false, color: pal.red }, place(b, a, up ? 12 : -12, up ? 18 : -18)));
           }
           p.dot(a, b, 8.5, pal.blue, pal.brass, 3.2);
-          p.label(pl, a, b, { size: sz, italic: false, color: pal.blue, dx: up ? -12 : 12, dy: up ? -18 : 18, align: up ? 'right' : 'left' });
+          p.label(pl, a, b, Object.assign({ size: sz, italic: false, color: pal.blue }, place(a, b, up ? -12 : 12, up ? -18 : 18)));
         }
       };
       P.onDraw = (c, p) => { if (st.view === 'comp') drawComp(c, p); else drawInv(c, p); };
@@ -65132,11 +65139,11 @@ register({
         L.push(`${kk('Q')} (${nf(b)}, ${nf(a)}) is on f⁻¹.` + (a === b ? ' P sits on the line y = x, so its mirror image is P itself.' : ''));
         L.push(`Check: f(f⁻¹(${nf(b)})) = f(${nf(a)}) = ${nf(b)} and f⁻¹(f(${nf(a)})) = f⁻¹(${nf(b)}) = ${nf(a)}.`);
         L.push(unres ? `f over all real x: domain ${F.domU}, range ${F.rng}. ${bad('Its mirror image fails the vertical line test:')} x = ${nf(b)} gets both y = ${nf(a)} and y = ${nf(-a)}.`
-          : `f: domain ${F.dom}, range ${F.rng}. f⁻¹: domain ${F.rng}, range ${F.dom}.`);
+          : `f: domain ${F.dom}, range ${F.rng}. f⁻¹: domain ${F.rng.replace('y', 'x')}, range ${F.dom.replace('x', 'y')}.`);
         if (st.hlt) {
           const rs = F.roots(st.hc, !unres && true).filter(r => r >= dLo() - 1e-9);
           L.push(`Line y = ${nf(st.hc)} crosses f ${rs.length === 0 ? 'nowhere' : `${rs.length} time${rs.length > 1 ? 's' : ''}`}${rs.length ? ' (x = ' + rs.map(xs).join(', ') + ')' : ''}. ` +
-            (rs.length > 1 ? bad('More than one: not one-to-one, so no inverse function.') : good('At most one: one-to-one.')));
+            (rs.length > 1 ? bad('More than one: not one-to-one, so no inverse function.') : good('This line crosses at most once. One-to-one needs every horizontal line to do that.')));
         }
         const pts = F.pts, rowsF = pts.map(v => F.f(v));
         const td = 'padding:2px 8px;border-bottom:1px solid var(--line);text-align:right';
@@ -65288,6 +65295,10 @@ register({
     if (v < 1) { const n = Math.round(1 / v); if (n > 1 && Math.abs(n * v - 1) < 1e-9) return '1/' + n; }
     return (Math.abs(+v.toFixed(3) - v) < 1e-9 ? '' : '≈ ') + nf(v, 3);
   };
+  /* rounded lengths: show the sum of the rounded parts when it matches the true value, else the true value with an approximately-equal sign */
+  const fit3 = (calc, tru) => (Math.abs(calc - +nf(tru, 3)) < 1e-9 ? ['=', nf(calc, 3)] : ['≈', nf(tru, 3)]);
+  const exact2 = v => (Math.abs(v * 100 - Math.round(v * 100)) < 1e-6 ? '=' : '≈');
+  const NOTE3 = '<br><span class="k">(Lengths are rounded to 3 places, so the last digit can be off by 0.001.)</span>';
   const niceStep = v => { const e = Math.pow(10, Math.floor(Math.log10(v))), f = v / e; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e; };
   const kk = t => `<span class="k">${t}</span>`;
   const good = t => `<b style="color:var(--green)">${t}</b>`;
@@ -65319,7 +65330,7 @@ register({
 
   const drawExp = (p, s, o) => {
     const pal = p.pal, V = expView(s.b, s.c);
-    p.fit(GW, GH, { l: 1.5, r: .5, t: 1.35, b: 1.25 });
+    p.fit(GW, GH, { l: 1.5, r: .9, t: 1.35, b: 1.25 });
     const sc = p.scale, fs = clamp(sc * .34, 15, 18);
     const ux = x => (x - V.xlo) / (V.xhi - V.xlo) * GW, vy = y => y / V.ymax * GH;
     const ys = niceStep(V.ymax / 5), xs = Math.max(1, niceStep((V.xhi - V.xlo) / 7));
@@ -65333,7 +65344,7 @@ register({
     }
     p.path([[0, 0], [GW, 0]], { stroke: pal['grid-strong'], width: 2 });
     p.path([[ux(0), 0], [ux(0), GH]], { stroke: pal['grid-strong'], width: 2 });
-    p.label('exponent ' + (o.v || 'x'), s.b < 1 ? 0 : GW, 0, { size: fs, italic: false, color: pal.muted, align: s.b < 1 ? 'left' : 'right', dx: s.b < 1 ? 8 : 0, dy: -14 });
+    p.label('exponent ' + (o.v || 'x'), s.b < 1 ? 0 : GW, 0, { size: fs, italic: false, color: pal.muted, align: s.b < 1 ? 'left' : 'right', dx: s.b < 1 ? 8 : 0, dy: vy(s.c) * sc < 44 && s.b > 1 ? -32 : -14 });
     p.label('value of ' + bTxt(s.b) + '^' + (o.v || 'x'), 0, GH, { size: fs, italic: false, color: pal.muted, align: 'left', dy: -16 });
     /* the curve, cut where it leaves the picture */
     const N = 320, pts = [], lb = Math.log(s.b), xc = Math.log(V.ymax) / lb;
@@ -65347,7 +65358,9 @@ register({
     p.curve(pts, { stroke: pal.blue, width: 3.5 });
     /* the target */
     p.path([[0, vy(s.c)], [GW, vy(s.c)]], { stroke: pal.yellow, width: 3, dash: [8, 6] });
-    p.label('target ' + (o.tTxt || cStr(s.c)), GW, vy(s.c), { size: fs, italic: false, color: pal.yellow, align: 'right', dy: -14 });
+    /* a low target line sits on the 'exponent' label: move the target label to the other end */
+    const lowT = vy(s.c) * sc < 44, tl = lowT && s.b > 1;
+    p.label('target ' + (o.tTxt || cStr(s.c)), tl ? 0 : GW, vy(s.c), { size: fs, italic: false, color: pal.yellow, align: tl ? 'left' : 'right', dx: tl ? 8 : 0, dy: -14 });
     if (o.reveal) {
       const [qx, qy] = [ux(V.Lg), vy(s.c)];
       p.path([[qx, 0], [qx, qy]], { stroke: pal.yellow, width: 2.4, dash: [5, 5] });
@@ -65366,9 +65379,10 @@ register({
 
   /* ---------- the graph and its mirror ---------- */
   const tMax = b => Math.min(3, Math.floor(2 * Math.log(9.5) / Math.log(b > 1 ? b : 1 / b)) / 2);
+  const tMin = b => -Math.min(2.5, tMax(b));
   const drawMirror = (p, s, o) => {
     const pal = p.pal, b = s.b, lb = Math.log(b);
-    p.cx = 3.4; p.cy = 3.9; p.span = 6.8;
+    p.cx = 3.4; p.cy = 3.2; p.span = 6.8;
     const fs = clamp(Math.min(p.w, p.h) * .042, 15, 18);
     p.grid(1); p.ticks(1, { size: fs });
     p.path([[-4, -4], [12, 12]], { stroke: pal.violet, width: 2.6, dash: [9, 7] });
@@ -65390,8 +65404,12 @@ register({
     tags.forEach(([x, y, nm, col, up], i) => {
       if (i === 1 && o.hideQ) return;
       const px = p.X(x), nearX = Math.abs(y) < 1.3, nearY = Math.abs(x) < 1.6;
-      const al = nearY ? 'left' : (up ? px > 120 : px > p.w - 120) ? 'right' : 'left';
-      p.label(`${nm} (${nf(x, 2)}, ${nf(y, 2)})`, x, y, { size: fs, italic: false, color: pal.text, align: al, dx: al === 'left' ? 13 : -13, dy: nearX || up ? -17 : 19 });
+      let al = nearY ? 'left' : (up ? px > 120 : px > p.w - 120) ? 'right' : 'left', dy = nearX || up ? -17 : 19;
+      /* P and Q almost on top of each other: P goes up and left, Q down and right */
+      if (Math.abs(t - v) < .5 && !o.hideQ) { al = i === 0 ? 'right' : 'left'; dy = i === 0 ? -17 : 19; }
+      /* keep the label on the canvas */
+      if (p.Y(y) > p.h - 34) dy = -17; else if (p.Y(y) < 34) dy = 19;
+      p.label(`${nm} (${nf(x, 2)}, ${nf(y, 2)})`, x, y, { size: fs, italic: false, color: pal.text, align: al, dx: al === 'left' ? 13 : -13, dy });
       if (o.handle) p.dot(x, y, 9, pal.stage, pal.brass, 3.5); else p.dot(x, y, 6, col, pal.stage, 2);
     });
     if (o.cap) capText(p, o.cap);
@@ -65412,7 +65430,7 @@ register({
     };
   };
   /* one ruler: a band of `dec` decades, left end at log-position u0 */
-  const band = (k, p, u0, dec, y, fill, maxU = 99) => {
+  const band = (k, p, u0, dec, y, fill, maxU = 99, skipX = []) => {
     const pal = p.pal, ticks = [], cut = Math.min(dec, maxU - u0);
     k.box(k.px(u0), y, cut * k.sw, BH, { fill, stroke: pal['grid-strong'], width: 1.5 });
     for (let d = 0; d < dec; d++) for (let m = 1; m <= 9; m++) ticks.push({ v: m * Math.pow(10, d), x: k.px(u0 + d + lg(m)), big: m === 1, mid: m === 5 });
@@ -65421,7 +65439,7 @@ register({
     const lab = ticks.filter(t => t.big);
     ticks.forEach(t => { if (!t.big && lab.every(l => Math.abs(l.x - t.x) >= 27)) lab.push(t); });
     ticks.forEach(t => k.L(t.x, y, t.x, y + (t.big ? 17 : t.mid ? 13 : 9), { stroke: pal.text, width: t.big ? 2 : 1.4 }));
-    lab.forEach(t => k.T(String(t.v), t.x, y + 28, { size: k.fs, italic: false, color: pal.text }));
+    lab.filter(t => skipX.every(sx => Math.abs(sx - t.x) > 13)).forEach(t => k.T(String(t.v), t.x, y + 28, { size: k.fs, italic: false, color: pal.text }));
   };
   const bar = (k, p, u0, u1, y, color, text) => {
     const x0 = k.px(Math.min(u0, u1)), x1 = k.px(Math.max(u0, u1));
@@ -65450,8 +65468,8 @@ register({
         k.T(String(Math.pow(a, i)), x, yT + 10, { size: k.fs, italic: false, color: last ? pal.yellow : pal.muted });
       }
       if (!hide) {
-        const lt = n * +nf(la, 3), A = Math.pow(a, n);
-        line(`${n} × log ${a} = ${n} × ${nf(la, 3)} = ${nf(lt, 3)}, the length of log ${A}`, yA + BH + 34);
+        const [sg, lt] = fit3(n * +nf(la, 3), n * la), A = Math.pow(a, n);
+        line(`${n} × log ${a} = ${n} × ${nf(la, 3)} ${sg} ${lt}, the length of log ${A}`, yA + BH + 34);
         line(`so ${a}^${n} = ${A}`, yA + BH + 56, pal.yellow);
       } else line(`${n} steps, each as long as log ${a} = ${nf(la, 3)}`, yA + BH + 34);
       flush(); return;
@@ -65469,8 +65487,8 @@ register({
       lay.hy = yB + BH + 21; if (!o.nohandle) { handleDot(k, p, k.px(la), yB + BH + 12); if (rb > 1.2) handleDot(k, p, k.px(lp), yB + BH + 12); }
       const ya = yB + BH + 46;
       if (!hide) {
-        const a3 = nf(la, 3), b3 = nf(lb, 3), sm = +a3 + +b3;
-        line(`log ${nf(ra, 2)} + log ${nf(rb, 2)} = ${a3} + ${b3} = ${nf(sm, 3)}`, ya);
+        const a3 = nf(la, 3), b3 = nf(lb, 3), [sg, sm] = fit3(+a3 + +b3, lp);
+        line(`log ${nf(ra, 2)} + log ${nf(rb, 2)} = ${a3} + ${b3} ${sg} ${sm}`, ya);
         line(`that is the length of log ${nf(prod, 2)}, so ${nf(ra, 2)} × ${nf(rb, 2)} = ${nf(prod, 2)}`, ya + 22, pal.yellow);
       } else line(`B's 1 sits on A's ${ra}. Look above B's ${rb}.`, ya);
     } else {
@@ -65483,9 +65501,9 @@ register({
       lay.hy = yB + BH + 21; if (!o.nohandle) handleDot(k, p, k.px(lx), yB + BH + 12);
       const ya = yB + BH + 46;
       if (!hide) {
-        const x3 = nf(lx, 3), q3 = nf(lq, 3);
-        line(`log ${X} − log ${nf(q, 2)} = ${x3} − ${q3} = ${nf(+x3 - +q3, 3)}`, ya);
-        line(`that is the length of log ${nf(ans, 2)}, so ${X} ÷ ${nf(q, 2)} = ${nf(ans, 2)}`, ya + 22, pal.green);
+        const x3 = nf(lx, 3), q3 = nf(lq, 3), [sg, df] = fit3(+x3 - +q3, la);
+        line(`log ${X} − log ${nf(q, 2)} = ${x3} − ${q3} ${sg} ${df}`, ya);
+        line(`that is the length of log ${nf(ans, 2)}, so ${X} ÷ ${nf(q, 2)} ${exact2(ans)} ${nf(ans, 2)}`, ya + 22, pal.green);
       } else line(`B's ${q} sits under A's ${X}. Look above B's 1.`, ya);
     }
     flush();
@@ -65495,7 +65513,8 @@ register({
   const drawBase = (p, s, o) => {
     const pal = p.pal, b = s.bb, c = s.bc, k = kit(p, 2), oy = k.oy, lb = lg(b), lc = lg(c);
     const yA = 130 + oy * .6;
-    band(k, p, 0, 2, yA, alpha(pal.blue, .1));
+    const hopX = []; for (let j = 0; j * lb <= lc + 1e-9; j++) hopX.push(k.px(j * lb)); hopX.push(k.px(lc));
+    band(k, p, 0, 2, yA, alpha(pal.blue, .1), 99, hopX);
     const arc = (u0, u1, col, dash, txt) => {
       const x0 = k.px(u0), x1 = k.px(u1), hh = clamp((x1 - x0) * .5, 8, 34), pts = [];
       for (let i = 0; i <= 24; i++) { const a = Math.PI * i / 24; pts.push([(x0 + x1) / 2 - (x1 - x0) / 2 * Math.cos(a), k.h - (yA - 4 - hh * Math.sin(a))]); }
@@ -65516,7 +65535,7 @@ register({
     if (!o.hide) {
       k.T(`one hop: ${nm} ${b} = ${nf(lb * f, 4)}`, k.w / 2, ya, { size: k.fs, italic: false, color: pal.green });
       k.T(`whole walk: ${nm} ${c} = ${nf(lc * f, 4)}`, k.w / 2, ya + 22, { size: k.fs, italic: false, color: pal.yellow });
-      k.T(`hops = ${nf(lc * f, 4)} ÷ ${nf(lb * f, 4)} = ${nf(lc / lb, 2)}`, k.w / 2, ya + 44, { size: k.fs, italic: false, color: pal.text });
+      k.T(`hops = ${nf(lc * f, 4)} ÷ ${nf(lb * f, 4)} ${exact2(lc / lb)} ${nf(lc / lb, 2)}`, k.w / 2, ya + 44, { size: k.fs, italic: false, color: pal.text });
     } else k.T(`hops of ×${b} from 1 to ${c}: how many?`, k.w / 2, ya, { size: k.fs, italic: false, color: pal.text });
     if (o.cap) capText(p, o.cap);
   };
@@ -65618,7 +65637,7 @@ register({
         text: String.raw`<p>A <b>log ruler</b> spaces numbers by their logs, so each equal step <em>multiplies</em>. Here log means base 10. Ruler B slides, with its 1 under the 2 on ruler A. Above B's 3 you read \(6\).</p><p>The lengths add: \(\log 2+\log 3=0.301+0.477=0.778\), the length of \(\log 6\). Adding logs multiplies. Try Divide and Powers for the other two rules.</p>`,
         set: { mode: 'ruler', rop: 'prod', ra: 2, rb: 3 } },
       { title: 'Solving for an exponent',
-        text: String.raw`<p>To solve \(2^x=10\), take the log of both sides. The power rule brings the exponent down: \(x\log 2=\log 10\). So \(x=\log 10\div\log 2=1\div 0.301\approx 3.32\).</p><p>Choose each move in the panel, then press the <b>log</b> and <b>ln</b> buttons. Both give 3.32. The graph shows where the curve crosses the line \(y=10\).</p>`,
+        text: String.raw`<p>To solve \(2^x=10\), take the log of both sides. The power rule brings the exponent down: \(x\log 2=\log 10\). So \(x=\log 10\div\log 2=1\div 0.301\approx 3.32\).</p><p>Choose each move in the panel, then press the <b>log</b> and <b>ln</b> buttons. Both give 3.32. The graph shows where the curve crosses \(y=10\). (The power rule holds for any exponent; see The math.)</p>`,
         set: { mode: 'solve', eq: 1 } }
     ],
     formal: String.raw`
@@ -65626,12 +65645,12 @@ register({
       <p>For a base \(b\) with \(b&gt;0\) and \(b\ne 1\), and a number \(x&gt;0\),
       \[ \log_b x = y \quad\text{means}\quad b^y = x. \]
       The two statements say the same thing, so <em>a logarithm is an exponent</em>. For example \(\log_2 8=3\) because \(2^3=8\). Also \(\log_3\frac19=-2\) because \(3^{-2}=\frac19\), and \(\log_4 2=\frac12\) because \(4^{1/2}=2\). Two values always work: \(\log_b 1=0\) and \(\log_b b=1\).</p>
-      <p><em>Why \(x&gt;0\)?</em> A positive base to any power is positive, so \(b^y\) is never 0 or negative. Then \(\log_b 0\) and the log of a negative number do not exist. <em>Why \(b\ne1\)?</em> Because \(1^y=1\) for every \(y\), so a base of 1 could never reach any other number.</p>
+      <p><em>Why \(x&gt;0\)?</em> A positive base to any power is positive, so \(b^y\) is never 0 or negative. Then \(\log_b 0\) and the log of a negative number do not exist as real numbers. <em>Why \(b \ne 1\)?</em> Because \(1^y=1\) for every \(y\), so a base of 1 could never reach any other number.</p>
       <h3>The graph is a reflection</h3>
       <p>The exponential \(y=b^x\) and the log \(y=\log_b x\) undo each other: \(\log_b(b^t)=t\) and \(b^{\log_b x}=x\). If \((t,\,b^t)\) is on the exponential graph, then \(\log_b(b^t)=t\) says that \((b^t,\,t)\) is on the log graph. The coordinates are swapped, and swapping coordinates is the reflection in the line \(y=x\).</p>
       <p>So everything swaps too. The exponential has domain all reals and range \(y&gt;0\). The log has domain \(x&gt;0\) and range all reals. The horizontal line \(y=0\) that the exponential approaches becomes the vertical line \(x=0\) that the log approaches. The point \((0,1)\) becomes \((1,0)\). The log climbs slowly: \(\log_2 1000\) is only about \(10\).</p>
       <h3>The log scale</h3>
-      <p>A log ruler puts the number \(x\) at distance \(\log_{10} x\) from the start. The step from 1 to 10 has length 1, and so does the step from 10 to 100. Equal steps on the ruler multiply the number by the same factor. That is why sound (decibels), earthquakes (the Richter scale) and acidity (pH) use log scales: each step up means ten times as much.</p>
+      <p>A log ruler puts the number \(x\) at distance \(\log_{10} x\) from the start. The step from 1 to 10 has length 1, and so does the step from 10 to 100. Equal steps on the ruler multiply the number by the same factor. That is why sound (decibels), earthquakes (the Richter scale) and acidity (pH) use log scales. A fixed step multiplies the quantity by a fixed factor. One whole Richter number is ten times the wave size, 10 decibels is ten times the sound power, and one pH unit down is ten times the acidity.</p>
       <h3>The three laws</h3>
       <p>Let \(m=\log_b M\) and \(n=\log_b N\), so \(M=b^m\) and \(N=b^n\). Then
       \[ MN=b^m b^n=b^{m+n},\qquad \frac MN=b^{m-n},\qquad M^k=(b^m)^k=b^{mk}. \]
@@ -65659,7 +65678,7 @@ register({
         hint: String.raw`Divide both sides by 1000 first. Then take the log of both sides and use the power rule.` },
       { q: 'Mia says: "log₂ 8 + log₂ 4 = log₂ (8 + 4) = log₂ 12." Which statement is correct?',
         choices: ['Mia is right: the sum of two logs is the log of the sum.', 'Mia is wrong: the sum is log₂ (8 − 4) = log₂ 4 = 2.', 'Mia is wrong: the sum is log₂ (8 ÷ 4) = log₂ 2 = 1.', 'Mia is wrong: adding logs multiplies the inputs, so the sum is log₂ 32 = 5, which is 3 + 2.'], answer: 3,
-        why: String.raw`The product rule says \(\log_b M+\log_b N=\log_b(MN)\). Here \(\log_2 8=3\) and \(\log_2 4=2\), so the sum is \(5\), and \(\log_2(8\cdot4)=\log_2 32=5\). Mia's \(\log_2 12\) is about \(3.58\), not \(5\). Subtracting or dividing the inputs matches subtracting the logs, not adding them.`,
+        why: String.raw`The product rule says \(\log_b M+\log_b N=\log_b(MN)\). Here \(\log_2 8=3\) and \(\log_2 4=2\), so the sum is \(5\), and \(\log_2(8\cdot4)=\log_2 32=5\). Mia's \(\log_2 12\) is about \(3.58\), not \(5\). Dividing the inputs matches subtracting the logs. There is no rule for subtracting the inputs.`,
         hint: String.raw`Work out \(\log_2 8\) and \(\log_2 4\) separately as exponents, then add them.` }
     ],
     links: { related: ['exponential-growth', 'radians-the-circles-own-angle-unit', 'inverse-functions-and-composition', 'exponents-and-scientific-notation', 'functions-as-transformations'] },
@@ -65739,7 +65758,7 @@ register({
       });
 
       /* ===== mode: mirror ===== */
-      const clampT = () => { const m = tMax(st.mb); st.t = clamp(Math.round(st.t * 2) / 2, -m, m); };
+      const clampT = () => { const m = tMax(st.mb); st.t = clamp(Math.round(st.t * 2) / 2, tMin(st.mb), m); };
       grp('mirror', () => {
         predict('Predict first', 'The point (2, 4) is on y = 2^x. Where is its mirror image in the line y = x?',
           [['(4, 2)', 'Reflecting in y = x swaps the two coordinates, so (2, 4) goes to (4, 2). It sits on y = log₂ x because log₂ 4 = 2.', true],
@@ -65750,7 +65769,7 @@ register({
         C.title('Choose a base');
         mirBaseB = C.buttons([2, 3, 4, .5].map(b => ({ label: 'Base ' + bTxt(b), onClick: () => { cancel(); st.mb = b; clampT(); sync(); } })));
         C.title('Move the point');
-        tS = C.slider({ label: 'Exponent t, so P = (t, b^t)', min: -3, max: 3, step: .5, value: st.t, format: v => nf(v, 1), onInput: v => { cancel(); st.t = v; clampT(); sync(); } });
+        tS = C.slider({ label: 'Exponent t, so P = (t, b^t)', min: -2.5, max: 3, step: .5, value: st.t, format: v => nf(v, 1), onInput: v => { cancel(); st.t = v; clampT(); sync(); } });
         C.buttons([{ label: '− 0.5', onClick: () => { cancel(); st.t -= .5; clampT(); sync(); } }, { label: '+ 0.5', onClick: () => { cancel(); st.t += .5; clampT(); sync(); } }]);
       });
 
@@ -65906,9 +65925,9 @@ register({
           const b = st.eb, c = st.c, x = st.x, val = Math.pow(b, x), hit = Math.abs(val - c) <= .01 * c, bt = bTxt(b);
           const L = [`${kk('Base')} b = ${bt}`, `${kk('Exponent')} x = ${nf(x)}`, `${kk('Value')} ${powH(b, nf(x))} = ${nf(val, val >= 100 ? 0 : 3)}`, `${kk('Target')} c = ${cStr(c)}`];
           if (hit) {
-            const Lg = Math.log(c) / Math.log(b), exact = Math.abs(val - c) < 1e-9;
+            const Lg = Math.log(c) / Math.log(b), exact = Math.abs(val - c) < 1e-9, whole = Math.abs(Lg - Math.round(Lg)) < 1e-9;
             L.push(exact ? `<b>${powH(b, nf(x))} = ${cStr(c)}, so ${logT(b)} ${cStr(c)} = ${nf(x)}.</b> The log is the exponent.`
-              : `<b>Close enough: ${powH(b, nf(x))} ≈ ${nf(val, 2)}, so ${logT(b)} ${cStr(c)} ≈ ${nf(Lg, 2)}.</b> It is not a whole number, because ${cStr(c)} is not a whole power of ${bt}.`);
+              : `<b>Close enough: ${powH(b, nf(x))} ≈ ${nf(val, 2)}, so ${logT(b)} ${cStr(c)} ≈ ${nf(Lg, 2)}.</b> ${whole ? `You are a hair off: the exact answer is ${nf(Lg, 0)}.` : `It is not a whole number, because ${cStr(c)} is not a whole power of ${bt}.`}`);
           } else {
             const up = (val < c) === (b > 1);
             L.push(`${val < c ? 'Too small' : 'Too big'}: ${powH(b, nf(x))} is ${val < c ? 'below' : 'above'} ${cStr(c)}. Try a ${up ? 'bigger' : 'smaller'} exponent.`);
@@ -65916,28 +65935,30 @@ register({
           t = L.join('<br>');
         } else if (m === 'mirror') {
           const b = st.mb, tt = st.t, v = Math.pow(b, tt);
-          t = [`${kk('P on y = ' + bTxt(b) + '^x')} (${nf(tt, 1)}, ${vTxt(v)}) since ${powH(b, nf(tt, 1))} = ${vTxt(v)}`,
-            `${kk('Mirror Q on y = ' + logT(b) + ' x')} (${vTxt(v)}, ${nf(tt, 1)}) since ${logT(b)} ${vTxt(v)} = ${nf(tt, 1)}`,
+          const ap = vTxt(v).startsWith('≈'), vn = vTxt(v).replace(/^≈ /, ''), isq = ap ? 'is about' : '=', bp = b < 1 ? '(' + bTxt(b) + ')' : bTxt(b);
+          t = [`${kk('P on y = ' + bTxt(b) + '^x')} (${nf(tt, 1)}, ${vTxt(v)}) since ${bp}<sup>${nf(tt, 1)}</sup> ${isq} ${vn}`,
+            `${kk('Mirror Q on y = ' + logT(b) + ' x')} (${vTxt(v)}, ${nf(tt, 1)}) since ${logT(b)}${ap ? ' of' : ''} ${vn} ${isq} ${nf(tt, 1)}`,
             'Swapping the coordinates reflects P in the line y = x. The log graph exists only for x &gt; 0.'].join('<br>');
         } else if (m === 'ruler') {
           if (st.rop === 'prod') {
-            const a3 = nf(lg(st.ra), 3), b3 = nf(lg(st.rb), 3);
+            const a3 = nf(lg(st.ra), 3), b3 = nf(lg(st.rb), 3), [sg, sm] = fit3(+a3 + +b3, lg(st.ra * st.rb));
             t = [`${kk('B\'s 1 sits on A\'s')} ${nf(st.ra, 2)}, ${kk('read at B\'s')} ${nf(st.rb, 2)}`, `${kk('Lengths')} log ${nf(st.ra, 2)} = ${a3}, log ${nf(st.rb, 2)} = ${b3}`,
-              `${kk('They add')} ${a3} + ${b3} = ${nf(+a3 + +b3, 3)}`, `<b>${nf(st.ra, 2)} × ${nf(st.rb, 2)} = ${nf(st.ra * st.rb, 2)}</b>`].join('<br>');
+              `${kk('They add')} ${a3} + ${b3} ${sg} ${sm}`, `<b>${nf(st.ra, 2)} × ${nf(st.rb, 2)} = ${nf(st.ra * st.rb, 2)}</b>`].join('<br>') + NOTE3;
           } else if (st.rop === 'quot') {
-            const x3 = nf(lg(st.rx), 3), q3 = nf(lg(st.rq), 3), ans = st.rx / st.rq;
+            const x3 = nf(lg(st.rx), 3), q3 = nf(lg(st.rq), 3), ans = st.rx / st.rq, [sg, df] = fit3(+x3 - +q3, lg(ans));
             t = [`${kk('B\'s')} ${nf(st.rq, 2)} ${kk('is under A\'s')} ${nf(st.rx, 2)}`, `${kk('Lengths')} log ${nf(st.rx, 2)} = ${x3}, log ${nf(st.rq, 2)} = ${q3}`,
-              `${kk('Slide left by')} ${q3}: ${x3} − ${q3} = ${nf(+x3 - +q3, 3)}`, `<b>${nf(st.rx, 2)} ÷ ${nf(st.rq, 2)} ${Math.abs(ans * 100 - Math.round(ans * 100)) < 1e-6 ? '=' : '≈'} ${nf(ans, 2)}</b>`].join('<br>');
+              `${kk('Slide left by')} ${q3}: ${x3} − ${q3} ${sg} ${df}`, `<b>${nf(st.rx, 2)} ÷ ${nf(st.rq, 2)} ${exact2(ans)} ${nf(ans, 2)}</b>`].join('<br>') + NOTE3;
           } else {
-            const a = st.pa, n = st.pn, l3 = nf(lg(a), 3);
-            t = [`${kk('One step')} log ${a} = ${l3}`, `${kk('n steps')} ${n} × ${l3} = ${nf(n * +l3, 3)}`, `<b>That is the length of log ${Math.pow(a, n)}, so ${a}<sup>${n}</sup> = ${Math.pow(a, n)}</b>`,
-              `${kk('Power rule')} log(${a}<sup>${n}</sup>) = ${n} · log ${a}`].join('<br>');
+            const a = st.pa, n = st.pn, l3 = nf(lg(a), 3), [sg, pl] = fit3(n * +l3, n * lg(a));
+            t = [`${kk('One step')} log ${a} = ${l3}`, `${kk('n steps')} ${n} × ${l3} ${sg} ${pl}`, `<b>That is the length of log ${Math.pow(a, n)}, so ${a}<sup>${n}</sup> = ${Math.pow(a, n)}</b>`,
+              `${kk('Power rule')} log(${a}<sup>${n}</sup>) = ${n} · log ${a}`].join('<br>') + NOTE3;
           }
         } else if (m === 'base') {
           const b = st.bb, c = st.bc, ln_ = st.calc === 'ln', f = ln_ ? Math.LN10 : 1, nm = ln_ ? 'ln' : 'log', hops = lg(c) / lg(b);
           t = [`${kk('Hop')} ×${b}, ${kk('target')} ${c}`, `${kk('One hop')} ${nm} ${b} = ${nf(lg(b) * f, 4)}`, `${kk('Whole walk')} ${nm} ${c} = ${nf(lg(c) * f, 4)}`,
-            `<b>Hops = ${nf(lg(c) * f, 4)} ÷ ${nf(lg(b) * f, 4)} = ${nf(hops, 2)}, so log<sub>${b}</sub> ${c} ≈ ${nf(hops, 2)}</b>`,
-            `${kk('Check')} ${b}<sup>${nf(hops, 2)}</sup> ≈ ${nf(Math.pow(b, +nf(hops, 2)), 1)}. Press the other button: the lengths change, the ratio does not.`].join('<br>');
+            `<b>Hops = ${nf(lg(c) * f, 4)} ÷ ${nf(lg(b) * f, 4)} ${exact2(hops)} ${nf(hops, 2)}, so log<sub>${b}</sub> ${c} ≈ ${nf(hops, 2)}</b>`,
+            `${kk('Check')} ${b}<sup>${nf(hops, 2)}</sup> ≈ ${nf(Math.pow(b, +nf(hops, 2)), 1)}. Press the other button: the lengths change, the ratio does not.`,
+            '<span class="k">(Lengths are rounded to 4 places, so dividing them can differ from the answer in the last digit.)</span>'].join('<br>');
         }
         ro.innerHTML = t;
       };

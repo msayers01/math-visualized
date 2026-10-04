@@ -82,7 +82,7 @@
       moves: [
         { ask: 'x = 2y + 1. Which move starts to get y alone?', ans: 0, res: 'x − 1 = 2y', opts: [
           ['Subtract 1 from both sides', 'The machine doubled y and then added 1. To run it backward, undo the last step first: take off the 1.'],
-          ['Divide both sides by 2', 'Not yet. The right side is 2y + 1, so dividing everything by 2 leaves (2y + 1)/2 and y is still tangled with the 1. Undo the + 1 first.'],
+          ['Divide both sides by 2', 'This is legal: x/2 = y + 1/2 also works. We undo the machine in reverse order because it avoids fractions. Take off the 1 first.'],
           ['Multiply both sides by 2', 'That makes the right side bigger (4y + 2). To undo doubling you divide, and the + 1 comes off first anyway.']] },
         { ask: 'x − 1 = 2y. What is the last move?', ans: 0, res: 'y = (x − 1)/2', opts: [
           ['Divide both sides by 2', 'Dividing undoes the doubling. Every term on the left is divided too, so the left side becomes (x − 1)/2.'],
@@ -211,8 +211,8 @@
         text: String.raw`<p>The inverse \(f^{-1}\) undoes \(f\). If \(f\) turns \(1\) into \(3\), then \(f^{-1}\) turns \(3\) back into \(1\). So \(P=(1,3)\) on \(f\) pairs with \(Q=(3,1)\) on \(f^{-1}\): the two numbers trade places.</p><p>Predict where \(Q\) lands, then drag \(P\). The tables swap columns, and \(Q\) is always the mirror image of \(P\) in the line \(y=x\).</p>`,
         set: { view: 'inv', fn: 'lin', qi: 4, restrict: 1, hlt: 0, ipredOn: 1, ipred: 0, alg: 0 } },
       { title: 'Find the inverse by algebra',
-        text: String.raw`<p>Without a graph: swap \(x\) and \(y\), then solve for \(y\), undoing the steps in reverse order. Use the buttons under Find the inverse.</p><p>A parabola fails the horizontal line test: \(y=5\) crosses \(x^2+1\) twice. Keeping only \(x\ge 0\) makes it cross once, so an inverse function exists.</p>`,
-        set: { view: 'inv', fn: 'quad', qi: 4, restrict: 1, hlt: 1, hc: 5, ipredOn: 0, ipred: 1, alg: 1 } }
+        text: String.raw`<p>Without a graph: swap \(x\) and \(y\), then solve for \(y\), undoing the steps in reverse order. Use the buttons under Find the inverse.</p><p>The horizontal line test: draw a horizontal line. If it crosses the graph twice, two inputs share one output. Here \(y=5\) meets \(x^2+1\) at \(x=-2\) and \(x=2\). Switch on "Keep only \(x\ge 0\)" and it crosses once, so an inverse function exists.</p>`,
+        set: { view: 'inv', fn: 'quad', qi: 4, restrict: 0, hlt: 1, hc: 5, ipredOn: 0, ipred: 1, alg: 1 } }
     ],
     formal: String.raw`
       <h3>Composition: one machine after another</h3>
@@ -352,7 +352,7 @@
         if (st.hlt) {
           const c0 = st.hc, rs = F.roots(c0, !!st.restrict || !F.rest).filter(r => r >= lo - 1e-9);
           p.path([[bd.x0, c0], [bd.x1, c0]], { stroke: pal.yellow, width: 2.4, dash: [9, 6] });
-          if (!st.practice) p.dot(p.toMath(22, 0)[0], c0, 7.5, pal.stage, pal.brass, 3);
+          if (!st.practice) p.dot(p.toMath(p.w - 28, 0)[0], c0, 7.5, pal.stage, pal.brass, 3);
           rs.forEach(r => p.dot(r, c0, 7, pal.yellow, pal.stage, 2.5));
           const k = rs.length;
           p.label(`y = ${nf(c0)}: ${k === 0 ? 'no crossing' : k === 1 ? '1 crossing' : k + ' crossings'}`, bd.x1 - .2, c0, { size: sz, italic: false, align: 'right', dy: -14, color: pal.text });
@@ -360,16 +360,23 @@
         /* the tracked point and its mirror image */
         const showP = st.practice ? !!st.pshow : true;
         if (showP) {
+          /* keep labels on the canvas: flip sides near the right edge, and below/above near the top/bottom */
+          const place = (x, y, dx, dy) => {
+            let d = dx, v = dy;
+            if (p.X(x) > p.w - 110) d = -Math.abs(dx); else if (p.X(x) < 110) d = Math.abs(dx);
+            if (p.Y(y) < 34) v = Math.abs(dy); else if (p.Y(y) > p.h - 34) v = -Math.abs(dy);
+            return { dx: d, dy: v, align: d < 0 ? 'right' : 'left' };
+          };
           const up = b > a, pl = `P (${nf(a)}, ${nf(b)})`, ql = `Q (${nf(b)}, ${nf(a)})`;
           if (SI) {
             p.path([[a, b], [b, a]], { stroke: alpha(pal.violet, .85), width: 2, dash: [5, 5] });
             p.dot((a + b) / 2, (a + b) / 2, 4.5, pal.stage, pal.violet, 2);
             if (F.rest && !st.restrict && a > 0) p.dot(b, -a, 7, pal.stage, alpha(pal.red, .85), 2.5);
             p.dot(b, a, 8, pal.red, pal.stage, 2.5);
-            p.label(ql, b, a, { size: sz, italic: false, color: pal.red, dx: up ? 12 : -12, dy: up ? 18 : -18, align: up ? 'left' : 'right' });
+            p.label(ql, b, a, Object.assign({ size: sz, italic: false, color: pal.red }, place(b, a, up ? 12 : -12, up ? 18 : -18)));
           }
           p.dot(a, b, 8.5, pal.blue, pal.brass, 3.2);
-          p.label(pl, a, b, { size: sz, italic: false, color: pal.blue, dx: up ? -12 : 12, dy: up ? -18 : 18, align: up ? 'right' : 'left' });
+          p.label(pl, a, b, Object.assign({ size: sz, italic: false, color: pal.blue }, place(a, b, up ? -12 : 12, up ? -18 : 18)));
         }
       };
       P.onDraw = (c, p) => { if (st.view === 'comp') drawComp(c, p); else drawInv(c, p); };
@@ -466,11 +473,11 @@
         L.push(`${kk('Q')} (${nf(b)}, ${nf(a)}) is on f⁻¹.` + (a === b ? ' P sits on the line y = x, so its mirror image is P itself.' : ''));
         L.push(`Check: f(f⁻¹(${nf(b)})) = f(${nf(a)}) = ${nf(b)} and f⁻¹(f(${nf(a)})) = f⁻¹(${nf(b)}) = ${nf(a)}.`);
         L.push(unres ? `f over all real x: domain ${F.domU}, range ${F.rng}. ${bad('Its mirror image fails the vertical line test:')} x = ${nf(b)} gets both y = ${nf(a)} and y = ${nf(-a)}.`
-          : `f: domain ${F.dom}, range ${F.rng}. f⁻¹: domain ${F.rng}, range ${F.dom}.`);
+          : `f: domain ${F.dom}, range ${F.rng}. f⁻¹: domain ${F.rng.replace('y', 'x')}, range ${F.dom.replace('x', 'y')}.`);
         if (st.hlt) {
           const rs = F.roots(st.hc, !unres && true).filter(r => r >= dLo() - 1e-9);
           L.push(`Line y = ${nf(st.hc)} crosses f ${rs.length === 0 ? 'nowhere' : `${rs.length} time${rs.length > 1 ? 's' : ''}`}${rs.length ? ' (x = ' + rs.map(xs).join(', ') + ')' : ''}. ` +
-            (rs.length > 1 ? bad('More than one: not one-to-one, so no inverse function.') : good('At most one: one-to-one.')));
+            (rs.length > 1 ? bad('More than one: not one-to-one, so no inverse function.') : good('This line crosses at most once. One-to-one needs every horizontal line to do that.')));
         }
         const pts = F.pts, rowsF = pts.map(v => F.f(v));
         const td = 'padding:2px 8px;border-bottom:1px solid var(--line);text-align:right';
