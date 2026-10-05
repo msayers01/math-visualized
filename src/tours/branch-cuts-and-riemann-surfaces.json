@@ -1,0 +1,60 @@
+{
+  "purpose": "This follows a root or a logarithm continuously while z moves, and shows why √z and log z cannot be single-valued and continuous on the punctured plane. A branch cut makes a choice; the Riemann surface is where the function becomes one continuous function.",
+  "stops": [
+    {
+      "at": "stage",
+      "title": "Two panes",
+      "text": "Left (or top): the z-plane, with the handle z, its path in blue, the violet branch point and the red cut. Right (or bottom): the followed value w in yellow and the branch value as a red ring. A red dashed line marks a jump.",
+      "try": "Drag z once around 0 and back to where it started. Is w where it started?"
+    },
+    {
+      "at": "ctl:Function f(z)",
+      "title": "Pick the function",
+      "text": "√z has two values, z^(1/n) has n, log z has infinitely many. √(z² − 1) has two branch points, −1 and +1. Changing the function starts over at the start point.",
+      "try": "Choose z^(1/n) with n = 3 and count the turns until w returns."
+    },
+    {
+      "at": "ctl:Angle θ of z",
+      "title": "Wind without dragging",
+      "text": "The angle θ is unwrapped: 360° is one full turn, so the slider from −1080° to 1080° winds z up to three times either way. |z| sets the distance from 0, kept at least 0.2.",
+      "try": "Slide θ from 0° to 720° and watch w."
+    },
+    {
+      "at": "ctl:+1 turn",
+      "title": "Turns and loops",
+      "text": "+1 turn and −1 turn send z once around 0. Loop that misses 0 runs a loop with 0 outside it. For √(z² − 1) the buttons loop around −1, +1, both or neither.",
+      "try": "Press +1 turn twice."
+    },
+    {
+      "at": "ctl:Cut angle",
+      "title": "Move the cut",
+      "text": "The branch cut is the red ray at angle α. The branch value is continuous everywhere except across it. α = 180° gives the principal branch. Moving the cut changes which sheet is called sheet 1, not the function.",
+      "try": "Set α = 90° and drag z across the new cut."
+    },
+    {
+      "at": "ctl:Second pane shows",
+      "title": "The Riemann surface",
+      "text": "Switch the second pane to a 3D sketch of the Riemann surface: one sheet per value, glued along the red seams. The yellow point moves on it without ever jumping. Turn the surface with its slider.",
+      "try": "Show the surface for log z and press +1 turn."
+    },
+    {
+      "at": "panel",
+      "title": "The readout",
+      "text": "The readout lists z, the turns around each branch point, the followed w, the branch value and the sheet. Each time z comes back to the start, it records the turns and the value of w.",
+      "try": "Compare the followed w and the branch value after one turn."
+    },
+    {
+      "at": "ctl:Set up prediction",
+      "title": "Predict, then see",
+      "text": "Three predictions: commit to a choice, then the figure runs the loop and explains the result.",
+      "try": "Do prediction 1 before pressing any turn button."
+    },
+    {
+      "at": "ctl:Start practice",
+      "title": "Practice",
+      "text": "Ten fixed problems: values after loops, principal values of Log, cuts, sheets, and two where you move z yourself to reach a target value. Every choice gets an explanation. Nothing is saved.",
+      "try": "Start practice and try problem 2."
+    }
+  ],
+  "teacher": "Ask for the prediction before any turn. A common misconception is that the cut is a property of the function (the negative axis). Use the cut slider to show it is a choice, and √(z² − 1) to show that a loop around both branch points changes nothing."
+}

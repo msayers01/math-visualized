@@ -182,5 +182,7 @@ const ALIGN = [
   { id: 'the-fundamental-theorem-of-calculus', course: 'calculus', skill: 'mid', standards: [] },
   { id: 'linear-transformations', course: 'linear-algebra',   skill: 'mid', standards: [] },
   { id: 'solving-matrix-equations-ax-plus-b', course: 'linear-algebra', skill: 'mid', standards: [] },
-  { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] }
+  { id: 'conformal-maps',         course: 'complex-analysis', skill: 'adv', standards: [] },
+  { id: 'mobius-maps-and-the-hyperbolic-plane', course: 'complex-analysis', skill: 'adv', standards: [] },
+  { id: 'branch-cuts-and-riemann-surfaces', course: 'complex-analysis', skill: 'adv', standards: [] }
 ];

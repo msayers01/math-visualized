@@ -1,11 +1,11 @@
 # Continuum: Context Window
 
-**Version:** v61 (series lesson; tour follow-up fixes; lesson tours: How this works, see ARCHITECTURE 0.33; teacher mode with password gate; classroom polish pass: touch, layout, accessibility, resilience, search; see ARCHITECTURE 0.31)
-**Last updated:** 2026-10-02
+**Version:** v62 (two graduate lessons; series lesson; tour follow-up fixes; lesson tours: How this works, see ARCHITECTURE 0.33; teacher mode with password gate; classroom polish pass: touch, layout, accessibility, resilience, search; see ARCHITECTURE 0.31)
+**Last updated:** 2026-10-05
 
 ## ⚠️ Current priority: middle & high school ONLY
 Instructions for any AI working on this project (including in a new chat):
-- **Update 2026-10-01: the owner lifted the hold for UNDERGRADUATE lessons** (build the 15 unbuilt ones, plan in ARCHITECTURE.md section 9). Graduate lessons stay on hold. Otherwise work only on school lessons unless the owner says otherwise.
+- **Update 2026-10-01: the owner lifted the hold for UNDERGRADUATE lessons** (build the 15 unbuilt ones, plan in ARCHITECTURE.md section 9). Graduate lessons stay on hold except where the owner asks for specific ones (2026-10-05: two Complex Analysis lessons, built). Otherwise work only on school lessons unless the owner says otherwise.
 - Do **not** build, draft, prototype, or code any undergraduate or graduate lessons, even if they appear in the curriculum or roadmap below. They are listed for planning only.
 - Engine and lesson-format work is allowed, since the school lessons need it. When touching the existing undergraduate and graduate lessons, change only what an engine update requires; do not extend them (this includes their "planned" lists).
 - If a request is ambiguous about level, assume middle & high school and ask before touching upper-level content.
@@ -18,6 +18,8 @@ Instructions for any AI working on this project (including in a new chat):
 - **Done (2026-10-04, owner's request: easiest topics, then mixed review): practice v1.1** (ARCHITECTURE 0.36): twelve skills (Grade 4 multiply, divide, rectangles; Grade 5 fractions, decimals, order of operations; Grade 6 percent, mean; Grade 7 integers; Grade 8 equations, Pythagorean; Algebra 1 systems) and mixed review per course and per unit, weighted toward weak and stale skills, mastered skills kept in rotation. Still to do (v2): placement, Elo ratings, analytics, teacher or parent view.
 
 - **Done (2026-10-04, owner's request: placement, then Algebra 1 and Geometry skills): practice v1.2** (ARCHITECTURE 0.37): adaptive placement (4 problems at most) for a new skill; ten new skills (Algebra 1: slope, functions, factoring quadratics, sequences; Geometry: angles, circles, distance and midpoint, solids, trig ratios, similar figures); 22 skills and ten mixed reviews. Still to do (v2): Elo ratings, analytics, teacher or parent view, more answer types.
+
+- **Done (2026-10-05, owner's request: "work on 2 graduate lessons"): two Complex Analysis lessons** (ARCHITECTURE 0.44), 108 in all: `mobius-maps-and-the-hyperbolic-plane` and `branch-cuts-and-riemann-surfaces` (grad, complex-analysis, adv, prereq conformal-maps; full format with Practice, predictions, 3 checks, tours). Built by two parallel builders on the shared brief plus a graduate section (kept in the session scratchpad, summarized in 0.44), each independently reviewed and fixed. Branch `claude/graduate-complex-analysis-lessons`. Other graduate topics stay on hold; next: ask the owner.
 
 - **Done (2026-10-04, owner's request: a new lesson in each grade level or course): 14 lessons** (ARCHITECTURE 0.39), 105 in all, 147 of 265 benchmarks tagged. Graduate untouched (on hold). Next: ask which courses to deepen; planned and unbuilt lessons are in ARCHITECTURE section 9.
 
@@ -81,7 +83,7 @@ School (40), in computed display order:
 - Statistics & Probability: mean-median-and-spread, probability-with-repeated-trials, correlation-and-causation, the-normal-distribution, two-way-tables-and-conditional-probability, expected-value, permutations-and-combinations, pascals-triangle-and-the-galton-board
 
 All use the full lesson format (hook, 4 guided steps, formal math, 2 quick-check questions, links).
-Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-slopes, riemann-sums-and-the-integral, the-fundamental-theorem-of-calculus (full format); Linear Algebra: linear-transformations (legacy format). Graduate (1): conformal-maps. The two legacy-format lessons (`explain` prose only), untouched since v0.4 apart from carrying a course and skill level.
+Undergraduate (5): Calculus: limits-and-epsilon-delta, derivatives-as-tangent-slopes, riemann-sums-and-the-integral, the-fundamental-theorem-of-calculus (full format); Linear Algebra: linear-transformations (legacy format). Graduate (3): conformal-maps (legacy format), mobius-maps-and-the-hyperbolic-plane, branch-cuts-and-riemann-surfaces (full format, 2026-10-05). The two legacy-format lessons (`explain` prose only), untouched since v0.4 apart from carrying a course and skill level.
 
 ## How lessons are authored and checked
 1. Write `src/lessons/<level>/<id>.js` modeled on an existing lesson (for example `slope-and-linear-functions.js`). Keep default state free of overlapping drag handles. Snap dragged values so readouts stay clean.
@@ -149,7 +151,7 @@ The original draft was 42 lessons (15 built then, 27 not built); the school part
 - Complex, Fourier & probability: Euler's formula and complex multiplication; Fourier series as epicycles; Central limit theorem; Bayes' theorem
 
 **Graduate (13), ON HOLD**
-- Complex analysis: Conformal maps ✓; Möbius maps and the hyperbolic plane; Branch cuts and Riemann surfaces
+- Complex analysis: Conformal maps ✓; Möbius maps and the hyperbolic plane ✓; Branch cuts and Riemann surfaces ✓
 - Algebra: Cayley graphs of groups; Rotations, quaternions, and SO(3)
 - Topology: Homotopy and the fundamental group; Covering spaces
 - Geometry: Manifolds and tangent spaces; Curvature and parallel transport
